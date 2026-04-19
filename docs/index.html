@@ -344,7 +344,7 @@ const VOCAB = {
     { en: "Nice to meet you", zh: "很高興認識你" },
     { en: "cousin", zh: "表/堂兄弟姊妹" },
     { en: "really", zh: "真的" },
-    { en: "year(s) old", zh: "...歲" },
+    { en: "year(s) old", zh: "...歲", alts: ["old", "years", "year"] },
     { en: "I see.", zh: "我懂了" },
     { en: "singer", zh: "歌手" },
     { en: "office worker", zh: "上班族" },
@@ -899,6 +899,26 @@ function pickWeakWords(unitName, n) {
 }
 function normalize(s) {
   return (s || '').trim().toLowerCase().replace(/\s+/g, ' ').replace(/[.!?]+$/, '');
+}
+
+// 產出一個 word 所有可接受的答案（normalize 後）
+// 支援：
+//   - "year(s) old" → "year old" / "years old"
+//   - word.alts: ["old"]   顯式額外答案（老師接受的版本）
+function acceptedAnswersOf(word) {
+  const set = new Set();
+  const add = (s) => { if (s) set.add(normalize(s)); };
+  add(word.en);
+  if (word.en.includes('(')) {
+    // 去掉括號內的選項
+    add(word.en.replace(/\([^)]*\)/g, '').replace(/\s+/g, ' '));
+    // 保留括號內的選項（去掉括號本身）
+    add(word.en.replace(/\(([^)]*)\)/g, '$1'));
+  }
+  if (Array.isArray(word.alts)) {
+    for (const a of word.alts) add(a);
+  }
+  return set;
 }
 function shuffleArray(arr) {
   const a = [...arr];
@@ -1794,7 +1814,8 @@ function submitAnswer(skip) {
   const word = state.quizQueue[state.quizIndex];
   const input = document.getElementById('answer');
   const raw = skip ? '' : (input ? input.value : '');
-  const correct = !skip && normalize(raw) === normalize(word.en);
+  const accepted = acceptedAnswersOf(word);
+  const correct = !skip && accepted.has(normalize(raw));
   state.quizResults.push({ word, userAnswer: raw, correct });
   S.incTested(word.en);
   const m = S.getMastery(word.en);
