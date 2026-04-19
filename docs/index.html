@@ -624,6 +624,35 @@ const PERFECT_BONUS = 100;    // 全部答對獎金（不計日上限）
 const COMP_QUESTIONS_PER_STORY = 3;  // 閱讀理解每次抽 N 題
 const MIN_PREDICTION_PERCENT = 0.6;  // 預測最低 60%
 
+// 學習紀錄 Apps Script 端點 — 事件會 fire-and-forget POST 到這裡
+const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwMyBcg2umn_D_Zrn6F6_K84ePVzNELvP1V78EZs8afatwFBb24ZmR7v-xwHdbFW0beZw/exec";
+
+function logEvent(data) {
+  if (!LOG_WEBAPP_URL) return;
+  try {
+    const payload = {
+      event: data.event || "",
+      unit: data.unit || "",
+      quizSize: data.quizSize ?? "",
+      correct: data.correct ?? "",
+      prediction: data.prediction ?? "",
+      amount: data.amount ?? "",
+      note: data.note || "",
+      money: S.getMoney(),
+      totalPaid: S.getTotalPaid(),
+      streak: S.getStreak(),
+    };
+    fetch(LOG_WEBAPP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload),
+    }).catch(() => {});
+  } catch (e) {
+    // 不影響使用：log 失敗就當沒這回事
+  }
+}
+
 // ============ STORAGE ============
 const S = {
   get(key, def) {
@@ -653,6 +682,7 @@ const S = {
     if (!confirm(`確認要發出 $${amt} 給孩子嗎？\n\n「本期零用錢」會歸 0，「累積已領」會加 $${amt}。`)) return;
     S.set('totalPaid', S.getTotalPaid() + amt);
     S.set('money', 0);
+    logEvent({ event: "claim", amount: -amt, note: `媽媽發 $${amt}` });
     alert(`發出 $${amt}！記得把現金給孩子 💰\n\n累積已領：$${S.getTotalPaid()}`);
     render();
   },
@@ -976,6 +1006,12 @@ function tryRewardUnit(unitName) {
   S.setDayUnitRewarded(unitName);
   S.addTodayEarnings(amount);
   S.set('money', S.getMoney() + amount);
+  logEvent({
+    event: "unit_reward",
+    unit: unitName,
+    amount,
+    note: streakBonus ? `連續 ${streak} 天 ×2` : "完整循環"
+  });
 
   return {
     amount,
@@ -996,6 +1032,14 @@ function tryPredictionBonus(unitName, actualScore, prediction) {
   const bonus = Math.min(10, DAILY_CAP - earned);
   S.addTodayEarnings(bonus);
   S.set('money', S.getMoney() + bonus);
+  logEvent({
+    event: "prediction_bonus",
+    unit: unitName,
+    amount: bonus,
+    prediction,
+    correct: actualScore,
+    note: `贏自己預測（${prediction} → ${actualScore}）`
+  });
   return { amount: bonus, capReached: earned + bonus >= DAILY_CAP };
 }
 
@@ -1019,6 +1063,12 @@ function tryPerfectBonus(unitName, actualScore, totalQuestions) {
   S.set('lastPerfect_' + unitName, today);
   S.set('perfectChain_' + unitName, newChain);
   S.set('money', S.getMoney() + amount);
+  logEvent({
+    event: "perfect_bonus",
+    unit: unitName,
+    amount,
+    note: newChain === 1 ? "首次滿分" : `連續 ${newChain} 天滿分`
+  });
 
   return { amount, chain: newChain };
 }
@@ -1758,6 +1808,16 @@ function nextQuestion() {
   } else {
     // 測驗結束
     const correct = state.quizResults.filter(r => r.correct).length;
+
+    // 記錄測驗本身（不管哪個模式）
+    logEvent({
+      event: state.quizWeakMode ? "weak_quiz_done" : "quiz_done",
+      unit: state.currentUnit,
+      quizSize: size,
+      correct,
+      prediction: state.quizPrediction,
+      note: state.quizWeakMode ? "弱字複習" : ""
+    });
 
     // 弱字模式：只是加強練習，不給任何獎勵（避免刷弱字）
     if (state.quizWeakMode) {
