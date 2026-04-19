@@ -1,0 +1,2022 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英文練習</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Helvetica Neue", sans-serif;
+    background: #faf6f1;
+    color: #2d2d2d;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  #app {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 24px 20px 80px;
+    min-height: 100vh;
+  }
+  h1 { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+  h2 { font-size: 20px; font-weight: 600; margin-bottom: 16px; }
+  h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: #555; }
+  p { margin-bottom: 8px; }
+  .muted { color: #888; font-size: 14px; }
+
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-num { font-size: 28px; font-weight: 700; color: #6b9080; }
+  .stat-label { font-size: 13px; color: #888; margin-top: 4px; }
+
+  button {
+    background: #6b9080;
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 10px;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:hover { background: #5a7d6e; }
+  button:active { transform: scale(0.98); }
+  button.secondary { background: white; color: #6b9080; border: 1.5px solid #6b9080; }
+  button.secondary:hover { background: #f0f5f2; }
+  button.danger { background: #d98585; }
+  button.danger:hover { background: #c97575; }
+  button.small { padding: 10px 14px; font-size: 14px; width: auto; margin: 4px; }
+  button:disabled { background: #ccc; cursor: not-allowed; }
+
+  .unit-item {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.1s;
+  }
+  .unit-item:hover { background: #f5f0e8; }
+  .unit-item:active { transform: scale(0.99); }
+  .unit-title { font-weight: 500; }
+  .unit-progress { font-size: 13px; color: #888; }
+  .unit-badge { background: #e8f0ea; color: #2d5a2d; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-left: 6px; font-weight: 500; }
+
+  .mode-card {
+    background: white;
+    border: 2px solid #e8e4de;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .mode-card:hover { border-color: #6b9080; background: #f8fbfa; }
+  .mode-card.recommended { border-color: #6b9080; background: #f0f5f2; }
+  .mode-card-title { font-weight: 600; font-size: 17px; margin-bottom: 6px; color: #2d2d2d; }
+  .mode-card.recommended .mode-card-title { color: #6b9080; }
+  .mode-card-desc { color: #777; font-size: 14px; line-height: 1.5; }
+
+  .flashcard {
+    background: white;
+    border-radius: 20px;
+    padding: 50px 30px;
+    text-align: center;
+    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .flashcard-big { font-size: 42px; font-weight: 600; margin-bottom: 10px; }
+  .flashcard-medium { font-size: 22px; margin-bottom: 10px; }
+  .flashcard-hint { color: #999; font-size: 14px; margin-top: 20px; }
+
+  .progress-bar {
+    height: 8px;
+    background: #e8e4de;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: #6b9080;
+    transition: width 0.3s;
+  }
+
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e8e4de;
+    border-radius: 12px;
+    font-size: 18px;
+    font-family: inherit;
+    margin-bottom: 12px;
+    background: white;
+  }
+  input[type="text"]:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: #6b9080;
+  }
+
+  .btn-row { display: flex; gap: 10px; }
+  .btn-row button { margin-bottom: 0; }
+
+  .feedback {
+    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .feedback.correct { background: #d7e9d7; color: #2d5a2d; }
+  .feedback.wrong { background: #f4d7d7; color: #8a3535; }
+
+  .checks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .check { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .check.yes { background: #6b9080; color: white; }
+  .check.no { background: #f4d7d7; color: #8a3535; }
+
+  .back-link {
+    display: inline-block;
+    color: #888;
+    font-size: 14px;
+    text-decoration: none;
+    margin-bottom: 16px;
+    cursor: pointer;
+  }
+  .back-link:hover { color: #6b9080; }
+
+  .streak-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 12px; }
+  .streak-day { width: 22px; height: 22px; border-radius: 4px; background: #e8e4de; }
+  .streak-day.done { background: #6b9080; }
+
+  .speak-btn {
+    background: none;
+    border: none;
+    color: #6b9080;
+    font-size: 18px;
+    padding: 6px 10px;
+    margin: 0;
+    width: auto;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+  .speak-btn:hover { background: #f0f5f2; }
+
+  /* Story mode */
+  .story-container {
+    background: white;
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 16px;
+    line-height: 2;
+    font-size: 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .story-container p { margin-bottom: 14px; }
+  .story-chinese {
+    color: #888;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-top: 4px;
+    margin-bottom: 14px;
+    padding-left: 12px;
+    border-left: 3px solid #e8e4de;
+  }
+  .vocab {
+    background: #e8f0ea;
+    padding: 1px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #2d5a2d;
+    font-weight: 500;
+    transition: background 0.1s;
+  }
+  .vocab:hover { background: #c8dfd0; }
+  .vocab.tapped { background: #6b9080; color: white; }
+
+  .popup {
+    position: fixed;
+    background: white;
+    border: 2px solid #6b9080;
+    border-radius: 12px;
+    padding: 14px 18px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    z-index: 200;
+    max-width: 280px;
+    min-width: 180px;
+  }
+  .popup-en { font-size: 18px; font-weight: 600; margin-bottom: 2px; color: #2d2d2d; }
+  .popup-zh { font-size: 15px; color: #555; margin-bottom: 6px; }
+
+  .option {
+    background: white;
+    border: 2px solid #e8e4de;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.12s;
+    font-size: 15px;
+  }
+  .option:hover { background: #f5f0e8; border-color: #ccc; }
+  .option.picked { border-color: #6b9080; background: #e8f0ea; }
+  .option.correct { border-color: #6b9080; background: #d7e9d7; color: #2d5a2d; }
+  .option.wrong { border-color: #d98585; background: #f4d7d7; color: #8a3535; }
+
+  .toggle-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .toggle-btn {
+    flex: 1;
+    padding: 10px;
+    border: 1.5px solid #e8e4de;
+    background: white;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    color: #555;
+    margin: 0;
+  }
+  .toggle-btn.active {
+    background: #6b9080;
+    color: white;
+    border-color: #6b9080;
+  }
+
+  @media (max-width: 480px) {
+    #app { padding: 16px 14px 80px; }
+    .flashcard-big { font-size: 34px; }
+    h1 { font-size: 22px; }
+    .story-container { font-size: 17px; padding: 18px; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="popup-root"></div>
+
+<script>
+// ============ VOCABULARY ============
+const VOCAB = {
+  "一下 Unit 3": [
+    { en: "painting", zh: "畫作" },
+    { en: "flower", zh: "花" },
+    { en: "which", zh: "哪一個" },
+    { en: "thirsty", zh: "口渴的" },
+    { en: "coffee", zh: "咖啡" },
+    { en: "shop", zh: "商店" },
+    { en: "later", zh: "待會" },
+    { en: "Of course.", zh: "當然" },
+    { en: "clerk", zh: "店員" },
+    { en: "may", zh: "可以" },
+    { en: "juice", zh: "果汁" },
+    { en: "want", zh: "想要" },
+    { en: "anything", zh: "任何東西" },
+    { en: "else", zh: "其他" },
+    { en: "treat", zh: "請客" },
+    { en: "sweet", zh: "甜的" },
+    { en: "hot", zh: "熱的" },
+    { en: "chocolate", zh: "巧克力" },
+    { en: "dollar", zh: "元" },
+    { en: "for here", zh: "內用" },
+    { en: "to go", zh: "外帶" },
+    { en: "Here you are.", zh: "給你" },
+    { en: "bright", zh: "明亮的" },
+    { en: "dark", zh: "黑暗的" },
+    { en: "art", zh: "藝術" },
+    { en: "milk", zh: "牛奶" },
+    { en: "hamburger", zh: "漢堡" },
+    { en: "chicken rice", zh: "雞肉飯" },
+    { en: "tea", zh: "茶" },
+    { en: "ice cream", zh: "冰淇淋" },
+    { en: "soup", zh: "湯" },
+    { en: "sandwich", zh: "三明治" },
+    { en: "work", zh: "作品；工作" },
+    { en: "show", zh: "展覽；展示" },
+    { en: "part", zh: "部分" },
+    { en: "sky", zh: "天空" },
+    { en: "street", zh: "街道" },
+    { en: "by", zh: "藉由；搭乘" },
+  ],
+  "一上 Unit 1": [
+    { en: "handsome", zh: "英俊的" },
+    { en: "new", zh: "新的" },
+    { en: "classmate", zh: "同學" },
+    { en: "young", zh: "年輕的" },
+    { en: "woman", zh: "女人" },
+    { en: "very", zh: "非常" },
+    { en: "beautiful", zh: "美麗的" },
+    { en: "too", zh: "也" },
+    { en: "Nice to meet you", zh: "很高興認識你" },
+    { en: "cousin", zh: "表/堂兄弟姊妹" },
+    { en: "really", zh: "真的" },
+    { en: "year(s) old", zh: "...歲" },
+    { en: "I see.", zh: "我懂了" },
+    { en: "singer", zh: "歌手" },
+    { en: "office worker", zh: "上班族" },
+    { en: "housewife", zh: "家庭主婦" },
+    { en: "police officer", zh: "警察" },
+    { en: "writer", zh: "作家" },
+    { en: "uncle", zh: "叔叔/舅舅" },
+    { en: "aunt", zh: "阿姨/姑姑" },
+    { en: "wife", zh: "妻子" },
+    { en: "daughter", zh: "女兒" },
+    { en: "husband", zh: "丈夫" },
+    { en: "son", zh: "兒子" },
+    { en: "dear", zh: "親愛的" },
+    { en: "family", zh: "家人" },
+    { en: "elementary school", zh: "國小" },
+    { en: "junior high school", zh: "國中" },
+    { en: "baby", zh: "嬰兒" },
+  ],
+  "一上 Unit 2": [
+    { en: "house", zh: "房子" },
+    { en: "parents", zh: "父母" },
+    { en: "living room", zh: "客廳" },
+    { en: "wall", zh: "牆壁" },
+    { en: "purple", zh: "紫色" },
+    { en: "favorite", zh: "最喜歡的" },
+    { en: "color", zh: "顏色" },
+    { en: "kitchen", zh: "廚房" },
+    { en: "dining room", zh: "餐廳" },
+    { en: "but", zh: "但是" },
+    { en: "gray", zh: "灰色" },
+    { en: "brown", zh: "棕色" },
+    { en: "cookie", zh: "餅乾" },
+    { en: "mice", zh: "老鼠（複數）" },
+    { en: "maybe", zh: "也許" },
+    { en: "sofa", zh: "沙發" },
+    { en: "hungry", zh: "飢餓的" },
+    { en: "notebook", zh: "筆記本" },
+    { en: "marker", zh: "麥克筆" },
+    { en: "brush", zh: "刷子/畫筆" },
+    { en: "gift", zh: "禮物" },
+    { en: "pencil case", zh: "鉛筆盒" },
+    { en: "bathroom", zh: "浴室" },
+    { en: "table", zh: "桌子" },
+    { en: "bedroom", zh: "臥室" },
+    { en: "near", zh: "靠近" },
+    { en: "between", zh: "在...之間" },
+    { en: "behind", zh: "在...後面" },
+    { en: "in front of", zh: "在...前面" },
+    { en: "special", zh: "特別的" },
+    { en: "inside", zh: "裡面" },
+    { en: "right", zh: "右邊/正確的" },
+    { en: "each other", zh: "彼此" },
+    { en: "above", zh: "在...上面" },
+    { en: "enough", zh: "足夠的" },
+    { en: "person", zh: "人" },
+  ],
+  "一上 Unit 3": [
+    { en: "guy", zh: "傢伙" },
+    { en: "magic", zh: "魔法" },
+    { en: "with", zh: "和...一起" },
+    { en: "can", zh: "可以" },
+    { en: "many", zh: "很多" },
+    { en: "place", zh: "地方" },
+    { en: "use", zh: "使用" },
+    { en: "sure", zh: "當然" },
+    { en: "let's", zh: "讓我們" },
+    { en: "careful", zh: "小心的" },
+    { en: "museum", zh: "博物館" },
+    { en: "hurry!", zh: "快！" },
+    { en: "please", zh: "請" },
+    { en: "wait", zh: "等待" },
+    { en: "man", zh: "男人" },
+    { en: "now", zh: "現在" },
+    { en: "or", zh: "或" },
+    { en: "time", zh: "時間" },
+    { en: "wake up", zh: "起床" },
+    { en: "class", zh: "班級/課" },
+    { en: "Oh my!", zh: "喔天啊！" },
+    { en: "see", zh: "看" },
+    { en: "quiet", zh: "安靜" },
+    { en: "turn off", zh: "關掉" },
+    { en: "sign", zh: "標誌" },
+    { en: "talk", zh: "說話" },
+    { en: "fight", zh: "吵架" },
+    { en: "turn", zh: "轉" },
+    { en: "follow", zh: "遵守/跟隨" },
+    { en: "rule", zh: "規則" },
+    { en: "safe", zh: "安全的" },
+    { en: "wash", zh: "洗" },
+    { en: "hand", zh: "手" },
+    { en: "after class", zh: "下課後" },
+  ],
+  "一上 Unit 4": [
+    { en: "music video", zh: "音樂錄影帶" },
+    { en: "band", zh: "樂團" },
+    { en: "take a look", zh: "看一下" },
+    { en: "all", zh: "全部" },
+    { en: "cute", zh: "可愛的" },
+    { en: "great", zh: "很棒" },
+    { en: "free", zh: "空閒的" },
+    { en: "weekend", zh: "週末" },
+    { en: "Saturday", zh: "星期六" },
+    { en: "together", zh: "一起" },
+    { en: "ready", zh: "準備好的" },
+    { en: "p.m.", zh: "下午" },
+    { en: "o'clock", zh: "點鐘" },
+    { en: "day", zh: "日子" },
+    { en: "today", zh: "今天" },
+    { en: "Friday", zh: "星期五" },
+    { en: "Sunday", zh: "星期日" },
+    { en: "Monday", zh: "星期一" },
+    { en: "Tuesday", zh: "星期二" },
+    { en: "Wednesday", zh: "星期三" },
+    { en: "Thursday", zh: "星期四" },
+    { en: "week", zh: "星期" },
+    { en: "a.m.", zh: "上午" },
+    { en: "study", zh: "讀書" },
+    { en: "English", zh: "英文" },
+    { en: "take a walk", zh: "散步" },
+    { en: "movie", zh: "電影" },
+    { en: "take a picture", zh: "拍照" },
+    { en: "party", zh: "派對" },
+    { en: "report", zh: "報告" },
+    { en: "popular", zh: "受歡迎的" },
+    { en: "fan", zh: "粉絲" },
+    { en: "shake hands", zh: "握手" },
+    { en: "everyone", zh: "每個人" },
+    { en: "sign", zh: "簽名" },
+  ],
+  "一上 Unit 5": [
+    { en: "date", zh: "日期" },
+    { en: "November", zh: "十一月" },
+    { en: "first", zh: "第一" },
+    { en: "Thanksgiving", zh: "感恩節" },
+    { en: "important", zh: "重要的" },
+    { en: "holiday", zh: "假日" },
+    { en: "when", zh: "何時" },
+    { en: "fourth", zh: "第四" },
+    { en: "birthday", zh: "生日" },
+    { en: "also", zh: "也" },
+    { en: "before", zh: "在...之前" },
+    { en: "around", zh: "大約/在...附近" },
+    { en: "How about...?", zh: "...如何？" },
+    { en: "second", zh: "第二" },
+    { en: "next", zh: "下一個" },
+    { en: "month", zh: "月份" },
+    { en: "January", zh: "一月" },
+    { en: "February", zh: "二月" },
+    { en: "March", zh: "三月" },
+    { en: "April", zh: "四月" },
+    { en: "May", zh: "五月" },
+    { en: "June", zh: "六月" },
+    { en: "July", zh: "七月" },
+    { en: "August", zh: "八月" },
+    { en: "September", zh: "九月" },
+    { en: "October", zh: "十月" },
+    { en: "December", zh: "十二月" },
+    { en: "Christmas", zh: "聖誕節" },
+    { en: "New Year's Eve", zh: "除夕" },
+    { en: "third", zh: "第三" },
+    { en: "animal", zh: "動物" },
+    { en: "cow", zh: "牛" },
+    { en: "think", zh: "想/認為" },
+    { en: "lucky", zh: "幸運的" },
+    { en: "only", zh: "只有" },
+  ],
+};
+
+// ============ STORIES ============
+// 每個單元 = 故事陣列。每個故事有題庫（6+題），每次考試隨機抽 3 題 + 選項打亂順序
+// 2026-04 暫時停用故事模式，等拿到課本 PDF 後重寫。草稿保留在 STORIES_DRAFT。
+const STORIES = {};
+const STORIES_DRAFT = {
+  "一下 Unit 3": [
+    {
+      id: "coffee-art",
+      title: "The Coffee Shop Art Show",
+      titleZh: "咖啡店的藝術展",
+      hint: "湯姆走進新開的咖啡店，發現牆上竟然有畫展⋯",
+      paragraphs: [
+        { en: "Tom is thirsty. He walks down the street. Then he sees a new shop. \"A coffee shop! Great!\" He walks in.",
+          zh: "湯姆口渴了。他走在街上。然後他看到一家新店。「一家咖啡店！太棒了！」他走了進去。" },
+        { en: "A clerk smiles. \"Hi! May I help you?\" Tom looks at the menu. There is coffee, tea, milk, and juice. There are hamburgers, sandwiches, chicken rice, and soup.",
+          zh: "店員笑著說：「嗨！有什麼可以為您服務的嗎？」湯姆看著菜單。有咖啡、茶、牛奶和果汁。有漢堡、三明治、雞肉飯和湯。" },
+        { en: "\"I want a hot chocolate and a sandwich, please. For here.\" \"Anything else? Our ice cream is very sweet today.\" \"OK, one ice cream, too. And a juice — that's to go.\" \"Sure. Here you are. It's six dollars.\"",
+          zh: "「我想要一杯熱巧克力和一個三明治，謝謝。內用。」「還要其他的嗎？我們的冰淇淋今天很甜。」「好的，再來一個冰淇淋。還有一杯果汁——外帶。」「好的。給您。一共六元。」" },
+        { en: "Tom sits down. He looks at the wall. Wow! There are many paintings on the wall! One painting has a bright sky and a yellow flower. Another one is dark, with a red street.",
+          zh: "湯姆坐下來。他看著牆壁。哇！牆上有好多畫作！其中一幅有明亮的天空和一朵黃色的花。另一幅很黑暗，有一條紅色的街道。" },
+        { en: "\"Which one do you like?\" a man at the next table asks. \"I like the flower one. The sky is so bright.\" \"Thank you!\" the man says. \"The paintings are my work. This is my art show.\" \"Really? Great art!\"",
+          zh: "「你喜歡哪一幅？」隔壁桌的一位男士問。「我喜歡有花的那幅。天空好明亮。」「謝謝！」那位男士說。「那些畫是我的作品。這是我的藝術展。」「真的嗎？很棒的藝術！」" },
+        { en: "\"Would you like to see more later?\" the man asks. \"There are more paintings by the window. Which part do you want to see first?\" \"Of course! I want to see all of them. It's my first art show.\" \"Then today, your hot chocolate is my treat.\"",
+          zh: "「你待會想看更多嗎？」男士問。「窗邊還有更多畫作。你想先看哪一部分？」「當然！我想看全部。這是我第一次看藝術展。」「那今天，你的熱巧克力由我請客。」" }
+      ],
+      questions: [
+        { qEn: "Why does Tom go into the shop?", qZh: "Tom 為什麼走進那家店？",
+          options: ["他想買畫", "他口渴，看到新開的咖啡店", "他約朋友在那裡見面", "他餓了想吃飯"],
+          answer: 1,
+          explain: "故事開頭說「Tom is thirsty」(口渴)，然後看到「a new shop / a coffee shop」。" },
+        { qEn: "Who painted the paintings on the wall?", qZh: "牆上的畫是誰畫的？",
+          options: ["店員", "Tom 的朋友", "坐在隔壁桌的男士", "咖啡店老闆"],
+          answer: 2,
+          explain: "那位男士說「The paintings are my work. This is my art show.」" },
+        { qEn: "What does \"your hot chocolate is my treat\" mean?", qZh: "最後男士說「your hot chocolate is my treat」是什麼意思？",
+          options: ["熱巧克力是他做的", "熱巧克力很好喝", "他要請 Tom 喝那杯熱巧克力（免費招待）", "熱巧克力是店裡的招牌"],
+          answer: 2,
+          explain: "treat 在這裡是「請客、招待」的意思——男士因為 Tom 喜歡他的畫，所以請他喝這杯熱巧克力。" },
+        { qEn: "What does Tom order to eat here (for here)?", qZh: "Tom 一開始點了什麼內用？",
+          options: ["咖啡和沙拉", "冰淇淋和湯", "熱巧克力和三明治", "漢堡和果汁"],
+          answer: 2,
+          explain: "Tom 說 \"I want a hot chocolate and a sandwich, please. For here.\"" },
+        { qEn: "What does Tom take to go?", qZh: "Tom 外帶的是什麼？",
+          options: ["蛋糕", "果汁", "咖啡", "漢堡"],
+          answer: 1,
+          explain: "Tom 說 \"And a juice — that's to go.\"" },
+        { qEn: "Which painting does Tom like best?", qZh: "Tom 最喜歡哪一幅畫？",
+          options: ["紅色街道的那幅", "有花朵和明亮天空的那幅", "很黑暗的那幅", "雨景的那幅"],
+          answer: 1,
+          explain: "Tom 說 \"I like the flower one. The sky is so bright.\"" }
+      ]
+    },
+    {
+      id: "birthday-tea",
+      title: "Tina's Birthday Tea",
+      titleZh: "Tina 的生日下午茶",
+      hint: "今天是 Tina 的生日，媽媽帶她去新開的咖啡店慶祝⋯",
+      paragraphs: [
+        { en: "Today is Tina's birthday. She is thirsty. Her mom says, \"Let's go for tea later.\" They walk down the street.",
+          zh: "今天是 Tina 的生日。她口渴了。媽媽說：「我們待會去喝茶吧。」她們走在街上。" },
+        { en: "Tina sees a new coffee shop. Inside, there are many paintings. \"Oh! It's so bright. Which flower painting do you like, mom?\" \"That yellow one. Very sweet.\"",
+          zh: "Tina 看到一家新的咖啡店。店內有很多畫作。「喔！這裡好明亮。媽媽，你喜歡哪一幅花的畫？」「那幅黃色的。很甜美。」" },
+        { en: "A clerk says, \"May I help you?\" \"I want a hot tea and a sandwich. For here.\" \"Anything else? We have soup, chicken rice, and hamburgers today.\" \"Just a juice and some ice cream for my daughter, please.\"",
+          zh: "店員說：「我可以為您服務嗎？」「我想要一杯熱茶和一個三明治。內用。」「還要其他的嗎？我們今天有湯、雞肉飯和漢堡。」「給我女兒一杯果汁和一些冰淇淋，謝謝。」" },
+        { en: "\"OK. And for you?\" \"A chocolate cake — to go! And a milk, too.\" \"Sure! Here you are. That's ten dollars.\"",
+          zh: "「好。那您呢？」「一份巧克力蛋糕——外帶！還有一杯牛奶。」「好的。給您。一共十元。」" },
+        { en: "A woman at another table smiles. \"Happy birthday! The paintings are my work. This is my art show.\" \"Of course we love your art! It's great.\" \"Today, your chocolate cake is my treat.\"",
+          zh: "另一桌的女士微笑著說：「生日快樂！那些畫是我的作品，這是我的藝術展。」「當然喜歡你的藝術！很棒。」「今天，你的巧克力蛋糕由我請客。」" },
+        { en: "Tina is so happy. The sky by the window is dark, but inside the shop is bright with art, food, and family. \"The best part is your treat! Thank you so much.\"",
+          zh: "Tina 很開心。窗外的天空很黑，但店裡因為藝術、食物和家人而明亮。「最棒的部分是你的招待！真的太感謝你了。」" }
+      ],
+      questions: [
+        { q: "Tina 一家人為什麼去咖啡店？",
+          options: ["媽媽想看畫展", "Tina 口渴，媽媽想帶她去喝茶慶生", "想吃巧克力蛋糕", "他們走累了"],
+          answer: 1,
+          explain: "故事開頭說今天是 Tina 的生日，她口渴，媽媽說「我們待會去喝茶吧」。" },
+        { q: "Tina 點了什麼給自己？",
+          options: ["熱茶和三明治", "湯和漢堡", "果汁和冰淇淋", "巧克力蛋糕"],
+          answer: 2,
+          explain: "媽媽說「給我女兒一杯果汁和一些冰淇淋」。" },
+        { q: "誰請 Tina 他們吃巧克力蛋糕？",
+          options: ["店員", "媽媽", "隔壁桌的女士（畫家）", "咖啡店老闆"],
+          answer: 2,
+          explain: "那位女士說 \"your chocolate cake is my treat\"（我請客）。" },
+        { q: "進到咖啡店後，Tina 最驚訝的是什麼？",
+          options: ["蛋糕很大", "店裡有很多畫作", "店員很漂亮", "有音樂表演"],
+          answer: 1,
+          explain: "Tina 說「這裡好明亮。媽媽，你喜歡哪一幅花的畫？」" },
+        { q: "媽媽喜歡哪一幅畫？",
+          options: ["黑暗的那幅", "紅色街道的那幅", "黃色花的那幅", "有月亮的那幅"],
+          answer: 2,
+          explain: "媽媽說「那幅黃色的。很甜美。」" },
+        { q: "故事最後，Tina 覺得最棒的部分是什麼？",
+          options: ["她得到了巧克力蛋糕", "她看到很多畫", "畫家請客", "她的家人來了"],
+          answer: 2,
+          explain: "她說 \"The best part is your treat! Thank you so much.\" — 最棒的是畫家的請客。" }
+      ]
+    }
+  ]
+};
+
+// ============ CONFIG ============
+const REWARD_PER_UNIT = 20;   // 每完成一課完整循環 $20
+const DAILY_CAP = 100;        // 每日上限 $100（不含全對獎勵）
+const STREAK_BONUS_DAYS = 5;  // 連續 N 天獎金加倍
+const DEFAULT_QUIZ_SIZE = 10; // 每次測驗預設 10 題
+const MIN_QUIZ_SIZE = 6;      // 每次測驗最少 6 題
+const PERFECT_BONUS = 100;    // 全部答對獎金（不計日上限）
+const COMP_QUESTIONS_PER_STORY = 3;  // 閱讀理解每次抽 N 題
+const MIN_PREDICTION_PERCENT = 0.6;  // 預測最低 60%
+
+// ============ STORAGE ============
+const S = {
+  get(key, def) {
+    try { const v = localStorage.getItem(key); return v === null ? def : JSON.parse(v); }
+    catch { return def; }
+  },
+  set(key, val) { localStorage.setItem(key, JSON.stringify(val)); },
+  todayStr() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  },
+  yesterdayStr() {
+    const d = new Date(); d.setDate(d.getDate()-1);
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  },
+  getStreak() { return S.get('streak', 0); },
+  getMoney() { return S.get('money', 0); },
+  getTotalPaid() { return S.get('totalPaid', 0); },
+  // 媽媽實際發出現金後點這個：把本期零用錢轉到「累積已領」，本期歸 0
+  // 規則：至少要存滿 $100 才能領
+  claimMoney() {
+    const amt = S.getMoney();
+    if (amt < 100) {
+      alert(`至少要 $100 才能領錢。\n\n目前本期零用錢：$${amt}\n還差 $${100 - amt} 就能領。`);
+      return;
+    }
+    if (!confirm(`確認要發出 $${amt} 給孩子嗎？\n\n「本期零用錢」會歸 0，「累積已領」會加 $${amt}。`)) return;
+    S.set('totalPaid', S.getTotalPaid() + amt);
+    S.set('money', 0);
+    alert(`發出 $${amt}！記得把現金給孩子 💰\n\n累積已領：$${S.getTotalPaid()}`);
+    render();
+  },
+  getCompletedDays() { return S.get('completedDays', []); },
+  getMastery(word) { return S.get('mastery_' + word, 0); },
+  setMastery(word, level) { S.set('mastery_' + word, Math.max(0, Math.min(5, level))); },
+  getTested(word) { return S.get('tested_' + word, 0); },
+  incTested(word) { S.set('tested_' + word, S.getTested(word) + 1); },
+  getRate() {
+    const r = S.get('rate', 0.75);
+    if (![0.5, 0.75, 1, 1.5].includes(r)) {
+      S.set('rate', 0.75);
+      return 0.75;
+    }
+    return r;
+  },
+  setRate(r) { S.set('rate', r); },
+
+  // 上次測驗分數（每單元）{correct, total}
+  getLastQuiz(unit) { return S.get('lastQuiz_' + unit, null); },
+  setLastQuiz(unit, correct, total) { S.set('lastQuiz_' + unit, { correct, total }); },
+  // 偏好：上次用的題數（每單元）
+  getPreferredQuizSize(unit) { return S.get('prefSize_' + unit, DEFAULT_QUIZ_SIZE); },
+  setPreferredQuizSize(unit, n) { S.set('prefSize_' + unit, n); },
+
+  // 今日每單元進度：{flashcards, quiz, story, comp, rewarded}
+  getDayUnit(unit) {
+    const today = S.todayStr();
+    return S.get('dayUnit_' + today + '_' + unit, {});
+  },
+  setDayUnitStep(unit, step) {
+    const today = S.todayStr();
+    const key = 'dayUnit_' + today + '_' + unit;
+    const data = S.get(key, {});
+    data[step] = true;
+    S.set(key, data);
+    return data;
+  },
+  setDayUnitRewarded(unit) {
+    const today = S.todayStr();
+    const key = 'dayUnit_' + today + '_' + unit;
+    const data = S.get(key, {});
+    data.rewarded = true;
+    S.set(key, data);
+  },
+
+  // 今日總收入
+  getTodayEarnings() {
+    const today = S.todayStr();
+    return S.get('earn_' + today, 0);
+  },
+  addTodayEarnings(amt) {
+    const today = S.todayStr();
+    S.set('earn_' + today, S.getTodayEarnings() + amt);
+  },
+
+  // 讀過的故事（每單元）
+  getSeenStories(unit) { return S.get('seen_' + unit, []); },
+  addSeenStory(unit, storyId) {
+    const seen = S.getSeenStories(unit);
+    if (!seen.includes(storyId)) seen.push(storyId);
+    S.set('seen_' + unit, seen);
+  },
+  resetSeenStories(unit) { S.set('seen_' + unit, []); },
+
+  // 更新 streak（只在第一次完成當天第一課時呼叫）
+  updateStreakOnFirstCompleteToday() {
+    const today = S.todayStr();
+    const done = S.getCompletedDays();
+    if (done.includes(today)) return S.getStreak();
+    done.push(today);
+    S.set('completedDays', done);
+
+    // 連續天數計算：
+    // - 昨天有完成 → streak + 1
+    // - 前天有完成、昨天沒完成 → 暫停（streak 不變，不增加）
+    // - 更久沒完成 → 重置為 1
+    const yesterday = S.yesterdayStr();
+    const dayBefore = (() => {
+      const d = new Date(); d.setDate(d.getDate()-2);
+      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    })();
+    const streak = S.getStreak();
+    let newStreak;
+    if (done.includes(yesterday)) newStreak = streak + 1;
+    else if (done.includes(dayBefore)) newStreak = streak; // 暫停，不變
+    else newStreak = 1;
+    S.set('streak', newStreak);
+    return newStreak;
+  },
+
+  resetAll() {
+    if (confirm('確定要重設所有紀錄嗎？零用錢、打卡、單字熟練度都會歸零。\n\n（建議先按「匯出備份」再重設）')) {
+      localStorage.clear();
+      state.screen = 'home';
+      render();
+    }
+  },
+
+  // 匯出整包資料
+  exportAll() {
+    const data = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      data[k] = localStorage.getItem(k);
+    }
+    const json = JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), data }, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '英文練習備份_' + S.todayStr() + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  },
+
+  // 匯入備份
+  importAll(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const obj = JSON.parse(e.target.result);
+        if (!obj.data) throw new Error('備份檔格式不對');
+        if (!confirm('匯入會覆蓋目前所有紀錄，確定嗎？')) return;
+        localStorage.clear();
+        for (const k in obj.data) {
+          localStorage.setItem(k, obj.data[k]);
+        }
+        alert('匯入成功！');
+        state.screen = 'home';
+        render();
+      } catch (err) {
+        alert('匯入失敗：' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  },
+};
+
+// ============ STATE ============
+const state = {
+  screen: 'home',
+  currentUnit: null,
+  learnIndex: 0,
+  learnFlipped: false,
+  quizQueue: [],
+  quizSize: DEFAULT_QUIZ_SIZE,
+  quizIndex: 0,
+  quizPrediction: null,
+  quizResults: [],
+  quizFeedback: null,
+  currentStory: null,       // 當前讀的故事物件
+  storyPage: 0,             // 故事分頁，目前是段落索引
+  storyShowZh: false,
+  compQuestions: [],        // 當次抽的題目（含打亂的選項）
+  compIndex: 0,
+  compResults: [],
+  compPicked: null,
+  lastReward: null,         // 最近一次獎勵的摘要，顯示在結果頁
+  predictionBonus: null,    // 贏自己預測的獎金
+  quizWeakMode: false,      // 是否為「弱字複習」模式（無預測、不計循環）
+};
+
+// ============ HELPERS ============
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+function unitProgress(unitName) {
+  const words = VOCAB[unitName];
+  const mastered = words.filter(w => S.getMastery(w.en) >= 3).length;
+  const tested = words.filter(w => S.getTested(w.en) >= 1).length;
+  const weak = words.filter(w => S.getTested(w.en) >= 1 && S.getMastery(w.en) < 3).length;
+  return { mastered, tested, weak, total: words.length };
+}
+// 取弱字清單（測過但沒熟練）
+function getWeakWords(unitName) {
+  const words = VOCAB[unitName];
+  return words.filter(w => S.getTested(w.en) >= 1 && S.getMastery(w.en) < 3);
+}
+// 挑測驗單字：
+// 1. 從沒測過的字 → 最優先
+// 2. 測過但沒熟（弱字）→ 次優先（按熟練度由低到高）
+// 3. 已熟練的 → 最後
+// 同層級內隨機
+function pickQuizWords(unitName, n) {
+  const words = VOCAB[unitName];
+  const scored = words.map(w => {
+    const tested = S.getTested(w.en);
+    const mastery = S.getMastery(w.en);
+    // 優先數字越小越先出：從沒測 < 弱字 < 熟字
+    let tier;
+    if (tested === 0) tier = 0;
+    else if (mastery < 3) tier = 1000;
+    else tier = 2000;
+    return {
+      word: w,
+      priority: tier + mastery * 10 + Math.random()
+    };
+  });
+  scored.sort((a, b) => a.priority - b.priority);
+  return scored.slice(0, n).map(s => s.word);
+}
+// 只從弱字挑（用於「弱字複習」模式）
+function pickWeakWords(unitName, n) {
+  const weak = getWeakWords(unitName);
+  const scored = weak.map(w => ({
+    word: w,
+    priority: S.getMastery(w.en) * 10 + Math.random()  // 熟練度低的先出
+  }));
+  scored.sort((a, b) => a.priority - b.priority);
+  return scored.slice(0, n).map(s => s.word);
+}
+function normalize(s) {
+  return (s || '').trim().toLowerCase().replace(/\s+/g, ' ').replace(/[.!?]+$/, '');
+}
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// 計算最低預測：同時滿足「≥ 60%」和「比上次分數高（換算成同比例）」
+function computeMinPrediction(unitName, quizSize) {
+  const sixty = Math.ceil(quizSize * MIN_PREDICTION_PERCENT);
+  const last = S.getLastQuiz(unitName);
+  if (!last || !last.total) return sixty;
+  const lastPct = last.correct / last.total;
+  // 把上次成績換成本次題數的同比例，再 +1（必須贏過）
+  const scaled = Math.floor(lastPct * quizSize) + 1;
+  return Math.min(quizSize, Math.max(sixty, scaled));
+}
+
+// 隨機挑一個故事（優先還沒讀過的）
+function pickStory(unitName) {
+  const stories = STORIES[unitName];
+  if (!stories || !stories.length) return null;
+  const seen = S.getSeenStories(unitName);
+  let pool = stories.filter(s => !seen.includes(s.id));
+  if (pool.length === 0) {
+    S.resetSeenStories(unitName);
+    pool = stories;
+  }
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+// 從題庫隨機抽 N 題，並打亂每題選項
+function pickAndShuffleCompQuestions(story, n) {
+  const shuffled = shuffleArray(story.questions);
+  const picked = shuffled.slice(0, n);
+  return picked.map(q => {
+    const indexed = q.options.map((opt, i) => ({ opt, i }));
+    const shuf = shuffleArray(indexed);
+    return {
+      q: q.q,
+      options: shuf.map(x => x.opt),
+      answer: shuf.findIndex(x => x.i === q.answer),
+      explain: q.explain
+    };
+  });
+}
+
+// 判斷該單元今天是否有做過任一項（新規則：任一項即得 $20）
+function isUnitCompleteToday(unitName) {
+  const data = S.getDayUnit(unitName);
+  const hasStory = STORIES[unitName] && STORIES[unitName].length > 0;
+  const tracked = ['flashcards', 'quiz'];
+  if (hasStory) tracked.push('story', 'comp');
+  return tracked.some(s => data[s]);
+}
+// 掃描所有單元，補發應得但還沒領的獎勵（例如規則改過後的回溯補發）
+function sweepRewards() {
+  for (const unit of Object.keys(VOCAB)) {
+    tryRewardUnit(unit);
+  }
+}
+
+// 今天已經獎勵過的單元數
+function countRewardedUnitsToday() {
+  let n = 0;
+  for (const unit of Object.keys(VOCAB)) {
+    const d = S.getDayUnit(unit);
+    if (d.rewarded) n++;
+  }
+  return n;
+}
+
+// 嘗試獎勵某單元（若該單元今日完成且尚未領過）
+// 回傳：{amount, capReached, streakBonus, message} 或 null（沒符合條件）
+function tryRewardUnit(unitName) {
+  if (!isUnitCompleteToday(unitName)) return null;
+  const data = S.getDayUnit(unitName);
+  if (data.rewarded) return null; // 已領過
+
+  // 檢查日上限
+  const earned = S.getTodayEarnings();
+  if (earned >= DAILY_CAP) {
+    S.setDayUnitRewarded(unitName);
+    return { amount: 0, capReached: true, streakBonus: false, message: '今日已達每日上限 $' + DAILY_CAP + '，這課完成但不加錢' };
+  }
+
+  // 首次完成當天第一課時，更新 streak
+  const isFirstToday = countRewardedUnitsToday() === 0;
+  if (isFirstToday) S.updateStreakOnFirstCompleteToday();
+
+  // 計算獎勵
+  const streak = S.getStreak();
+  const streakBonus = streak >= STREAK_BONUS_DAYS;
+  let base = REWARD_PER_UNIT;
+  let amount = streakBonus ? base * 2 : base;
+
+  // 套用日上限
+  const room = DAILY_CAP - earned;
+  amount = Math.min(amount, room);
+
+  // 發獎
+  S.setDayUnitRewarded(unitName);
+  S.addTodayEarnings(amount);
+  S.set('money', S.getMoney() + amount);
+
+  return {
+    amount,
+    capReached: earned + amount >= DAILY_CAP,
+    streakBonus,
+    streak,
+    message: streakBonus
+      ? `完成 ${unitName} +$${amount}（連續 ${streak} 天獎金加倍）`
+      : `完成 ${unitName} +$${amount}`
+  };
+}
+
+// 額外的「贏自己預測」獎金（$10，套用日上限）
+function tryPredictionBonus(unitName, actualScore, prediction) {
+  if (prediction === null || actualScore <= prediction) return null;
+  const earned = S.getTodayEarnings();
+  if (earned >= DAILY_CAP) return { amount: 0, capReached: true };
+  const bonus = Math.min(10, DAILY_CAP - earned);
+  S.addTodayEarnings(bonus);
+  S.set('money', S.getMoney() + bonus);
+  return { amount: bonus, capReached: earned + bonus >= DAILY_CAP };
+}
+
+// 全部答對獎金（不計日上限，每天每課最多一次）
+// 連續天數規則：第 1 天 $100、第 2 天 $50、第 3 天 $25…（每天減半），最低 $1
+function tryPerfectBonus(unitName, actualScore, totalQuestions) {
+  if (actualScore !== totalQuestions) return null;
+  const dayUnit = S.getDayUnit(unitName);
+  if (dayUnit.perfectRewarded) return null; // 今天這課已領過
+
+  const today = S.todayStr();
+  const yesterday = S.yesterdayStr();
+  const lastDate = S.get('lastPerfect_' + unitName, null);
+  const currentChain = S.get('perfectChain_' + unitName, 0);
+
+  // 連續規則：昨天也滿分 → chain+1；其他（斷了或第一次）→ chain=1
+  const newChain = (lastDate === yesterday) ? currentChain + 1 : 1;
+  const amount = Math.max(1, Math.floor(PERFECT_BONUS / Math.pow(2, newChain - 1)));
+
+  S.setDayUnitStep(unitName, 'perfectRewarded');
+  S.set('lastPerfect_' + unitName, today);
+  S.set('perfectChain_' + unitName, newChain);
+  S.set('money', S.getMoney() + amount);
+
+  return { amount, chain: newChain };
+}
+let _lastSpokenText = '';
+function speak(text) {
+  if (!('speechSynthesis' in window) || !text) return;
+  _lastSpokenText = text;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = S.getRate();
+  window.speechSynthesis.speak(u);
+  setTimeout(updatePauseBtnLabel, 120);
+}
+function speakLong(text) { speak(text); }
+function stopSpeak() {
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  setTimeout(updatePauseBtnLabel, 50);
+}
+function toggleStoryPause() {
+  const ss = window.speechSynthesis;
+  if (!ss) return;
+  if (ss.paused) ss.resume();
+  else if (ss.speaking) ss.pause();
+  else speakStory();
+  setTimeout(updatePauseBtnLabel, 120);
+}
+function updatePauseBtnLabel() {
+  const btn = document.getElementById('pause-btn');
+  if (!btn) return;
+  const ss = window.speechSynthesis;
+  if (!ss) return;
+  if (ss.paused) btn.textContent = '▶ 繼續';
+  else if (ss.speaking) btn.textContent = '⏸ 暫停';
+  else btn.textContent = '⏸ 暫停';
+}
+function setSpeechRate(r) {
+  S.setRate(r);
+  const ss = window.speechSynthesis;
+  const wasSpeaking = ss && ss.speaking && !ss.paused;
+  const text = _lastSpokenText;
+  render();
+  if (wasSpeaking && text) {
+    setTimeout(() => speak(text), 100);
+  }
+}
+function speakFromBtn(btn) {
+  if (btn && btn.dataset && btn.dataset.word) speak(btn.dataset.word);
+}
+function speakStory() {
+  const story = state.currentStory;
+  if (!story) return;
+  speak(story.paragraphs.map(p => p.en).join(' '));
+}
+function speakCurrentPage() {
+  const story = state.currentStory;
+  if (!story) return;
+  const p = story.paragraphs[state.storyPage];
+  if (p) speak(p.en);
+}
+
+// 幫故事英文段落加上可點擊的單字 span
+function highlightStoryHtml(text, unitName) {
+  const words = VOCAB[unitName] || [];
+  const wordMap = {};
+  words.forEach(w => {
+    const key = w.en.replace(/[.!?]+$/, '').toLowerCase();
+    wordMap[key] = w;
+  });
+  const keys = Object.keys(wordMap).sort((a, b) => b.length - a.length);
+  if (keys.length === 0) return esc(text);
+  const patterns = keys.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const regex = new RegExp('(' + patterns.join('|') + ')', 'gi');
+  const escaped = esc(text);
+  return escaped.replace(regex, (match) => {
+    const w = wordMap[match.toLowerCase()];
+    if (!w) return match;
+    const enAttr = esc(w.en).replace(/"/g, '&quot;');
+    const zhAttr = esc(w.zh).replace(/"/g, '&quot;');
+    return `<span class="vocab" data-en="${enAttr}" data-zh="${zhAttr}">${match}</span>`;
+  });
+}
+
+// ============ POPUP ============
+function showPopup(x, y, en, zh) {
+  hidePopup();
+  const root = document.getElementById('popup-root');
+  const div = document.createElement('div');
+  div.className = 'popup';
+  div.innerHTML = `
+    <div class="popup-en">${esc(en)}</div>
+    <div class="popup-zh">${esc(zh)}</div>
+    <button class="speak-btn" data-word="${esc(en)}" onclick="event.stopPropagation(); speakFromBtn(this)">🔊 聽發音</button>
+  `;
+  root.appendChild(div);
+  // Position with viewport clamping
+  const pw = 260, ph = 120;
+  let px = x - pw / 2;
+  let py = y + 12;
+  if (px < 10) px = 10;
+  if (px + pw > window.innerWidth - 10) px = window.innerWidth - pw - 10;
+  if (py + ph > window.innerHeight - 10) py = y - ph - 12;
+  div.style.left = px + 'px';
+  div.style.top = py + 'px';
+}
+function hidePopup() {
+  const root = document.getElementById('popup-root');
+  root.innerHTML = '';
+  document.querySelectorAll('.vocab.tapped').forEach(el => el.classList.remove('tapped'));
+}
+document.addEventListener('click', e => {
+  if (e.target && e.target.classList && e.target.classList.contains('vocab')) {
+    e.stopPropagation();
+    document.querySelectorAll('.vocab.tapped').forEach(el => el.classList.remove('tapped'));
+    e.target.classList.add('tapped');
+    const rect = e.target.getBoundingClientRect();
+    showPopup(rect.left + rect.width / 2, rect.bottom, e.target.dataset.en, e.target.dataset.zh);
+  } else if (e.target && !e.target.closest('.popup')) {
+    hidePopup();
+  }
+});
+
+// ============ RENDER ============
+const app = document.getElementById('app');
+
+let _prevScreen = null;
+function render() {
+  window.scrollTo(0, 0);
+  if (_prevScreen !== state.screen) {
+    stopSpeak();
+    hidePopup();
+  }
+  _prevScreen = state.screen;
+  const fn = {
+    home: renderHome,
+    unitList: renderUnitList,
+    unitMenu: renderUnitMenu,
+    learn: renderLearn,
+    quizStart: renderQuizStart,
+    quizQuestion: renderQuizQuestion,
+    quizResult: renderQuizResult,
+    story: renderStory,
+    comp: renderComp,
+    compResult: renderCompResult,
+    settings: renderSettings,
+    rules: renderRules,
+  }[state.screen];
+  if (fn) fn();
+}
+
+function renderHome() {
+  sweepRewards(); // 回溯補發：規則變動後或今天有做但沒領的都會檢查
+  const streak = S.getStreak();
+  const money = S.getMoney();
+  const todayEarned = S.getTodayEarnings();
+  const completedSet = new Set(S.getCompletedDays());
+  let streakRow = '';
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    streakRow += `<div class="streak-day ${completedSet.has(key) ? 'done' : ''}"></div>`;
+  }
+  // 今日完成的單元
+  const todayDoneUnits = Object.keys(VOCAB).filter(u => S.getDayUnit(u).rewarded);
+  const doneText = todayDoneUnits.length > 0
+    ? `今天完成：${todayDoneUnits.join('、')}`
+    : '今天還沒完成任何一課，開始吧';
+  const atCap = todayEarned >= DAILY_CAP;
+  const streakInfo = streak >= STREAK_BONUS_DAYS
+    ? `<span style="color:#6b9080;">🔥 連續 ${streak} 天（獎金 ×2！）</span>`
+    : `🔥 連續 ${streak} 天${streak > 0 ? `（再 ${STREAK_BONUS_DAYS - streak} 天獎金加倍）` : ''}`;
+
+  const totalPaid = S.getTotalPaid();
+  app.innerHTML = `
+    <h1>英文練習</h1>
+    <p class="muted">每天 15 分鐘，比昨天進步一點點就好</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">$${money}</div><div class="stat-label">本期零用錢（待領）</div></div>
+      <div class="stat"><div class="stat-num">$${totalPaid}</div><div class="stat-label">累積已領</div></div>
+    </div>
+    <div class="card">
+      <p>${streakInfo}</p>
+      <p class="muted" style="margin-top:6px; font-size:14px;">今日已賺 $${todayEarned} / $${DAILY_CAP}</p>
+      <h3 style="margin-top:12px;">近 14 天打卡</h3>
+      <div class="streak-row">${streakRow}</div>
+      <p class="muted" style="margin-top:12px;">${esc(doneText)}</p>
+      ${atCap ? '<p class="muted" style="color:#6b9080; margin-top:8px;">✓ 今日上限已達！繼續練習不加錢，但可以繼續學。</p>' : ''}
+    </div>
+    <button onclick="go('unitList')">開始練習</button>
+    ${money >= 100
+      ? `<button class="secondary" onclick="S.claimMoney()">💰 媽媽發錢（領走 $${money}）</button>`
+      : money > 0
+        ? `<button class="secondary" disabled style="opacity:0.5; cursor:not-allowed;">💰 存滿 $100 才能領（還差 $${100 - money}）</button>`
+        : ''}
+    <button class="secondary" onclick="go('rules')">📋 看獎勵規則</button>
+    <button class="secondary" onclick="go('settings')">設定</button>
+  `;
+}
+
+function renderUnitList() {
+  let items = '';
+  for (const unitName of Object.keys(VOCAB)) {
+    const { mastered, total } = unitProgress(unitName);
+    const pct = Math.round(mastered / total * 100);
+    const storyCount = (STORIES[unitName] || []).length;
+    const rewardedToday = S.getDayUnit(unitName).rewarded;
+    const badges = [];
+    if (storyCount > 0) badges.push(`<span class="unit-badge">📖 ${storyCount} 篇故事</span>`);
+    if (rewardedToday) badges.push(`<span class="unit-badge" style="background:#6b9080; color:white;">今日 ✓</span>`);
+    items += `
+      <div class="unit-item" onclick="selectUnit('${esc(unitName)}')">
+        <div>
+          <div class="unit-title">${esc(unitName)}${badges.join('')}</div>
+          <div class="unit-progress">已掌握 ${mastered} / ${total}（${pct}%）</div>
+        </div>
+        <div style="color:#6b9080; font-size:20px;">›</div>
+      </div>
+    `;
+  }
+  app.innerHTML = `
+    <a class="back-link" onclick="go('home')">‹ 回首頁</a>
+    <h2>選擇單元</h2>
+    <p class="muted" style="margin-bottom:16px;">「今日 ✓」＝今天這課已完成完整循環並領過獎勵</p>
+    ${items}
+  `;
+}
+
+function selectUnit(unitName) {
+  state.currentUnit = unitName;
+  go('unitMenu');
+}
+
+function renderUnitMenu() {
+  const stories = STORIES[state.currentUnit] || [];
+  const hasStory = stories.length > 0;
+  const prog = unitProgress(state.currentUnit);
+  const dayUnit = S.getDayUnit(state.currentUnit);
+  const lastQuiz = S.getLastQuiz(state.currentUnit);
+  const perfectChain = S.get('perfectChain_' + state.currentUnit, 0);
+  const lastPerfect = S.get('lastPerfect_' + state.currentUnit, null);
+  const chainIsActive = lastPerfect && (lastPerfect === S.todayStr() || lastPerfect === S.yesterdayStr());
+
+  // 今日循環進度
+  const steps = [
+    { key: 'flashcards', label: '單字卡看完' },
+    { key: 'quiz', label: '中翻英測驗' },
+  ];
+  if (hasStory) steps.push({ key: 'story', label: '故事讀完' }, { key: 'comp', label: '閱讀理解' });
+  const stepsHtml = steps.map(s => `${dayUnit[s.key] ? '✓' : '○'} ${s.label}`).join('　');
+  const doneUnits = [dayUnit.flashcards, dayUnit.quiz, hasStory ? dayUnit.story : true, hasStory ? dayUnit.comp : true].filter(Boolean).length;
+  const totalUnits = hasStory ? 4 : 2;
+
+  const storyCard = hasStory ? `
+    <div class="mode-card recommended" onclick="startStory()">
+      <div class="mode-card-title">📖 讀迷你故事（推薦，約 15 分鐘）</div>
+      <div class="mode-card-desc">
+        本課有 <b>${stories.length} 篇故事</b>，每次隨機出一篇（優先沒讀過的）。點綠色單字看中文+發音。讀完回答 ${COMP_QUESTIONS_PER_STORY} 題閱讀理解（題庫隨機抽題 + 選項打亂，背不起來）。
+      </div>
+    </div>
+  ` : '';
+
+  const weakBtn = prog.weak >= 3 ? `
+    <div class="mode-card" onclick="startWeakQuiz()">
+      <div class="mode-card-title">💪 弱字複習（${prog.weak} 個字）</div>
+      <div class="mode-card-desc">只考你還沒熟的字，不限題數、沒預測、只專注加強記憶。不計完整循環獎勵。</div>
+    </div>
+  ` : '';
+
+  const lastQuizText = (lastQuiz && lastQuiz.total)
+    ? `上次 ${lastQuiz.correct}/${lastQuiz.total}`
+    : '尚未測驗';
+
+  app.innerHTML = `
+    <a class="back-link" onclick="go('unitList')">‹ 換單元</a>
+    <h2>${esc(state.currentUnit)}</h2>
+    <p class="muted">
+      已掌握 ${prog.mastered} / ${prog.total}　·　已測過 ${prog.tested} / ${prog.total}　·　${lastQuizText}
+      ${chainIsActive && perfectChain > 0 ? `<br><span style="color:#6b9080;">🔥 連續 ${perfectChain} 天滿分（下次滿分獎金 $${Math.max(1, Math.floor(PERFECT_BONUS / Math.pow(2, perfectChain)))}）</span>` : ''}
+    </p>
+    <div class="card" style="padding:12px 16px;">
+      <p class="muted" style="margin-bottom:4px; font-size:13px;">今日完整循環進度（${doneUnits}/${totalUnits}）</p>
+      <p style="font-size:14px;">${stepsHtml}</p>
+      ${dayUnit.rewarded ? '<p style="color:#6b9080; margin-top:6px;">✓ 已領取完整循環獎勵</p>' : ''}
+    </div>
+
+    ${storyCard}
+
+    <div class="mode-card" onclick="go('learn')">
+      <div class="mode-card-title">🗂️ 單字卡學習</div>
+      <div class="mode-card-desc">一張一張翻單字卡，看英文猜中文、看中文猜英文。熟練度低、沒測過的字會先出現。看完自動標記「單字卡看完」。</div>
+    </div>
+
+    <div class="mode-card" onclick="go('quizStart')">
+      <div class="mode-card-title">✍️ 中翻英拼字測驗</div>
+      <div class="mode-card-desc">可自訂題數（最少 ${MIN_QUIZ_SIZE}）。新字優先出，輪流涵蓋全部字。全對 +$${PERFECT_BONUS}！</div>
+    </div>
+
+    ${weakBtn}
+  `;
+}
+
+function startStory() {
+  const story = pickStory(state.currentUnit);
+  if (!story) { go('unitMenu'); return; }
+  state.currentStory = story;
+  state.storyShowZh = false;
+  state.storyPage = 0;
+  S.addSeenStory(state.currentUnit, story.id);
+  state.screen = 'story';
+  render();
+}
+
+function renderStory() {
+  const story = state.currentStory;
+  if (!story) { go('unitMenu'); return; }
+
+  const paragraphsHtml = story.paragraphs.map(p => {
+    const enHtml = highlightStoryHtml(p.en, state.currentUnit);
+    return `<p>${enHtml}</p>${state.storyShowZh ? `<div class="story-chinese">${esc(p.zh)}</div>` : ''}`;
+  }).join('');
+
+  app.innerHTML = `
+    <a class="back-link" onclick="go('unitMenu')">‹ 回單元選單</a>
+    <h2>📖 ${esc(story.title)}</h2>
+    <p class="muted">${esc(story.titleZh)}　·　${esc(story.hint)}</p>
+
+    <div class="toggle-row">
+      <button class="toggle-btn ${!state.storyShowZh ? 'active' : ''}" onclick="toggleStoryZh(false)">只看英文</button>
+      <button class="toggle-btn ${state.storyShowZh ? 'active' : ''}" onclick="toggleStoryZh(true)">對照中文</button>
+    </div>
+
+    <div class="muted" style="font-size:13px; margin-bottom:6px;">語速（1x = 正常，數字越小越慢）</div>
+    <div class="toggle-row" style="margin-bottom:10px;">
+      <button class="toggle-btn ${Math.abs(S.getRate() - 0.5) < 0.01 ? 'active' : ''}" onclick="setSpeechRate(0.5)">0.5x</button>
+      <button class="toggle-btn ${Math.abs(S.getRate() - 0.75) < 0.01 ? 'active' : ''}" onclick="setSpeechRate(0.75)">0.75x</button>
+      <button class="toggle-btn ${Math.abs(S.getRate() - 1) < 0.01 ? 'active' : ''}" onclick="setSpeechRate(1)">1x</button>
+      <button class="toggle-btn ${Math.abs(S.getRate() - 1.5) < 0.01 ? 'active' : ''}" onclick="setSpeechRate(1.5)">1.5x</button>
+    </div>
+
+    <div class="btn-row" style="margin-bottom:14px;">
+      <button class="secondary" onclick="speakStory()">🔊 唸整篇</button>
+      <button class="secondary" id="pause-btn" onclick="toggleStoryPause()">⏸ 暫停</button>
+      <button class="secondary" onclick="stopSpeak()">⏹ 停</button>
+    </div>
+
+    <div class="story-container">${paragraphsHtml}</div>
+
+    <p class="muted" style="text-align:center; margin-bottom:12px;">
+      綠色的字是本課單字，點一下看中文 + 聽發音
+    </p>
+
+    <button onclick="startComp()">讀完了，回答問題 →</button>
+    <button class="secondary" onclick="go('home')">回首頁</button>
+  `;
+}
+
+function toggleStoryZh(show) {
+  state.storyShowZh = show;
+  render();
+}
+
+function startComp() {
+  // 進入理解題代表故事已讀完 → 記錄 story step
+  if (state.currentStory) {
+    S.setDayUnitStep(state.currentUnit, 'story');
+  }
+  const story = state.currentStory;
+  if (!story) { go('unitMenu'); return; }
+  state.compQuestions = pickAndShuffleCompQuestions(story, COMP_QUESTIONS_PER_STORY);
+  state.screen = 'comp';
+  state.compIndex = 0;
+  state.compResults = [];
+  state.compPicked = null;
+  render();
+}
+
+function renderComp() {
+  const qs = state.compQuestions;
+  const q = qs[state.compIndex];
+  const total = qs.length;
+  const pct = Math.round(state.compIndex / total * 100);
+
+  const picked = state.compPicked;
+  const optionsHtml = q.options.map((opt, i) => {
+    let cls = 'option';
+    if (picked !== null) {
+      if (i === q.answer) cls += ' correct';
+      else if (i === picked) cls += ' wrong';
+    }
+    const onClick = picked === null ? `onclick="pickAnswer(${i})"` : '';
+    return `<div class="${cls}" ${onClick}>${String.fromCharCode(65+i)}. ${esc(opt)}</div>`;
+  }).join('');
+
+  const feedbackHtml = picked !== null ? `
+    <div class="feedback ${picked === q.answer ? 'correct' : 'wrong'}">
+      ${picked === q.answer ? '答對了！' : '沒關係，再看一次就記得了。'}<br>
+      <span style="font-weight:normal; font-size:14px;">${esc(q.explain)}</span>
+    </div>
+    <button onclick="nextComp()">${state.compIndex === total - 1 ? '看結果 →' : '下一題 →'}</button>
+  ` : '';
+
+  app.innerHTML = `
+    <h2>閱讀理解（${state.compIndex + 1} / ${total}）</h2>
+    <div class="progress-bar"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+    <p style="font-size:17px; margin-bottom:14px; font-weight:500;">${esc(q.q)}</p>
+    ${optionsHtml}
+    ${feedbackHtml}
+  `;
+}
+
+function pickAnswer(idx) {
+  const q = state.compQuestions[state.compIndex];
+  state.compPicked = idx;
+  state.compResults.push({ picked: idx, correct: idx === q.answer });
+  render();
+}
+
+function nextComp() {
+  const qs = state.compQuestions;
+  if (state.compIndex < qs.length - 1) {
+    state.compIndex++;
+    state.compPicked = null;
+    render();
+  } else {
+    // 完成閱讀測驗 → 記錄 comp step + 試算獎勵
+    S.setDayUnitStep(state.currentUnit, 'comp');
+    const reward = tryRewardUnit(state.currentUnit);
+    state.lastReward = reward;
+    state.screen = 'compResult';
+    render();
+  }
+}
+
+function renderCompResult() {
+  const correct = state.compResults.filter(r => r.correct).length;
+  const total = state.compResults.length;
+  const perfect = correct === total;
+  const reward = state.lastReward;
+
+  const checksHtml = state.compResults.map(r =>
+    `<div class="check ${r.correct ? 'yes' : 'no'}">${r.correct ? '✓' : '✗'}</div>`
+  ).join('');
+
+  const headline = perfect
+    ? '全對！閱讀理解滿分！'
+    : correct >= Math.ceil(total / 2)
+      ? `不錯，對了 ${correct} / ${total} 題`
+      : `這次對 ${correct} / ${total} 題，沒關係，再讀一次會更清楚`;
+
+  // 顯示本課缺哪些步驟
+  const dayUnit = S.getDayUnit(state.currentUnit);
+  const hasStory = STORIES[state.currentUnit] && STORIES[state.currentUnit].length > 0;
+  const steps = [
+    { key: 'flashcards', label: '單字卡全部看過' },
+    { key: 'quiz', label: '中翻英測驗完成' },
+  ];
+  if (hasStory) {
+    steps.push({ key: 'story', label: '故事讀完' }, { key: 'comp', label: '閱讀理解完成' });
+  }
+  const stepsHtml = steps.map(s => `<div>${dayUnit[s.key] ? '✓' : '○'} ${s.label}</div>`).join('');
+
+  let rewardHtml;
+  if (reward && reward.amount > 0) {
+    rewardHtml = `<div class="card" style="background:#d7e9d7;">
+      <h3>完整循環完成 +$${reward.amount}</h3>
+      <p>${reward.streakBonus ? `連續 ${reward.streak} 天，獎金加倍！<br>` : ''}累積零用錢 $${S.getMoney()}　今日已領 $${S.getTodayEarnings()} / $${DAILY_CAP}</p>
+    </div>`;
+  } else if (reward && reward.capReached) {
+    rewardHtml = `<div class="card"><p class="muted">今日已達上限 $${DAILY_CAP}，本課完成但不加錢。明天再拿 💪</p></div>`;
+  } else if (!reward) {
+    // 還沒拿到獎勵，缺別的步驟
+    rewardHtml = `<div class="card"><p class="muted">本課還沒走完完整循環。下面勾勾顯示缺哪些步驟：</p>${stepsHtml}</div>`;
+  } else {
+    rewardHtml = `<div class="card"><p class="muted">今天這課已經領過獎勵了，再讀只為了自己 💪</p></div>`;
+  }
+
+  app.innerHTML = `
+    <h2>${esc(headline)}</h2>
+    <div class="checks">${checksHtml}</div>
+
+    <div class="stats" style="margin-top:20px;">
+      <div class="stat"><div class="stat-num">${correct} / ${total}</div><div class="stat-label">閱讀理解</div></div>
+      <div class="stat"><div class="stat-num">🔥 ${S.getStreak()}</div><div class="stat-label">連續打卡</div></div>
+    </div>
+
+    ${rewardHtml}
+
+    <button onclick="go('quizStart')">去做單字測驗</button>
+    <button class="secondary" onclick="go('home')">回首頁</button>
+    <button class="secondary" onclick="startStory()">再讀一次（換別篇）</button>
+  `;
+}
+
+function renderLearn() {
+  const words = VOCAB[state.currentUnit];
+  const sorted = [...words].sort((a,b) => S.getMastery(a.en) - S.getMastery(b.en));
+  const word = sorted[state.learnIndex];
+  const total = sorted.length;
+  const pct = Math.round((state.learnIndex) / total * 100);
+
+  app.innerHTML = `
+    <a class="back-link" onclick="go('unitMenu')">‹ 換模式</a>
+    <h2>${esc(state.currentUnit)} · 單字卡</h2>
+    <p class="muted">點卡片翻面，覺得看夠了按「來測試」</p>
+
+    <div class="progress-bar"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+    <p class="muted" style="text-align:center; margin-bottom:12px;">第 ${state.learnIndex + 1} / ${total} 張</p>
+
+    <div class="flashcard" onclick="flipCard()">
+      ${state.learnFlipped
+        ? `<div class="flashcard-medium">${esc(word.zh)}</div>
+           <button class="speak-btn" data-word="${esc(word.en)}" onclick="event.stopPropagation(); speakFromBtn(this)">🔊 聽發音</button>
+           <div class="flashcard-hint">再點一下看回英文</div>`
+        : `<div class="flashcard-big">${esc(word.en)}</div>
+           <button class="speak-btn" data-word="${esc(word.en)}" onclick="event.stopPropagation(); speakFromBtn(this)">🔊 聽發音</button>
+           <div class="flashcard-hint">點卡片看中文</div>`
+      }
+    </div>
+
+    <div class="btn-row">
+      <button class="secondary" onclick="prevCard()" ${state.learnIndex === 0 ? 'disabled' : ''}>‹ 上一張</button>
+      <button onclick="nextCard()">${state.learnIndex === total - 1 ? '看完了' : '下一張 ›'}</button>
+    </div>
+    <button onclick="go('quizStart')">來測試</button>
+  `;
+}
+
+function flipCard() {
+  state.learnFlipped = !state.learnFlipped;
+  render();
+}
+function nextCard() {
+  const words = VOCAB[state.currentUnit];
+  if (state.learnIndex < words.length - 1) {
+    state.learnIndex++;
+    state.learnFlipped = false;
+    // 看完最後一張（到達末尾）→ 記錄 flashcards step 並嘗試獎勵
+    if (state.learnIndex === words.length - 1) {
+      S.setDayUnitStep(state.currentUnit, 'flashcards');
+      tryRewardUnit(state.currentUnit);
+    }
+    render();
+  } else {
+    // 已在最後一張，再按 → 去測驗（若未記錄也補記）
+    S.setDayUnitStep(state.currentUnit, 'flashcards');
+    tryRewardUnit(state.currentUnit);
+    go('quizStart');
+  }
+}
+function prevCard() {
+  if (state.learnIndex > 0) {
+    state.learnIndex--;
+    state.learnFlipped = false;
+    render();
+  }
+}
+
+function renderQuizStart() {
+  // 弱字模式：直接開始，跳過本頁
+  if (state.quizWeakMode) {
+    const weak = pickWeakWords(state.currentUnit, 999);
+    if (weak.length === 0) {
+      alert('目前沒有弱字，先做幾次測驗吧！');
+      state.quizWeakMode = false;
+      go('unitMenu');
+      return;
+    }
+    state.quizQueue = weak;
+    state.quizSize = weak.length;
+    state.quizIndex = 0;
+    state.quizPrediction = null; // 弱字模式無預測
+    state.quizResults = [];
+    state.quizFeedback = null;
+    state.screen = 'quizQuestion';
+    render();
+    return;
+  }
+
+  const totalWords = VOCAB[state.currentUnit].length;
+  const pref = Math.min(S.getPreferredQuizSize(state.currentUnit), totalWords);
+  const initialSize = Math.max(MIN_QUIZ_SIZE, pref);
+
+  state.quizSize = initialSize;
+  state.quizQueue = pickQuizWords(state.currentUnit, initialSize);
+  state.quizIndex = 0;
+  state.quizPrediction = null;
+  state.quizResults = [];
+  state.quizFeedback = null;
+
+  const lastScore = S.getLastQuiz(state.currentUnit);
+  const minPred = computeMinPrediction(state.currentUnit, initialSize);
+  const hasLast = lastScore && lastScore.total;
+
+  app.innerHTML = `
+    <a class="back-link" onclick="go('unitMenu')">‹ 換模式</a>
+    <h2>測驗：${esc(state.currentUnit)}</h2>
+    <p class="muted" style="margin-bottom:16px;">
+      題型：中翻英拼字（跟學校小考一樣）· 大小寫沒關係
+    </p>
+
+    <div class="card">
+      <h3>題數</h3>
+      <p class="muted" style="font-size:13px; margin-bottom:8px;">
+        最少 ${MIN_QUIZ_SIZE} 題。輸入的數字超過全部字數（${totalWords}）就會考全部 ${totalWords} 字。
+      </p>
+      <input type="number" id="quizSize" min="${MIN_QUIZ_SIZE}" placeholder="${initialSize}" value="${initialSize}" />
+    </div>
+
+    <div class="card">
+      <h3>預測遊戲 🎯</h3>
+      ${hasLast ? `<p class="muted">上次這課你對了 <b>${lastScore.correct} / ${lastScore.total}</b> 題</p>` : '<p class="muted">這是你第一次考這課</p>'}
+      <p>猜這次會對幾題。贏自己的預測 <b>+$10</b>，全部答對 <b>+$${PERFECT_BONUS}</b>！</p>
+      <p class="muted" style="font-size:13px; margin-bottom:8px;" id="pred-rule">
+        規則：最低 ${minPred} 題（≥ 60% 且 > 上次同比例）。改題數會自動重算。
+      </p>
+      <input type="number" id="prediction" min="${minPred}" placeholder="最少 ${minPred}" />
+    </div>
+
+    <button onclick="startQuiz()">開始測驗</button>
+  `;
+  setTimeout(() => {
+    const szInput = document.getElementById('quizSize');
+    const predInput = document.getElementById('prediction');
+    const rule = document.getElementById('pred-rule');
+    if (szInput && predInput && rule) {
+      szInput.addEventListener('input', () => {
+        const raw = parseInt(szInput.value);
+        const s = isNaN(raw) ? initialSize : Math.max(MIN_QUIZ_SIZE, Math.min(raw, totalWords));
+        const m = computeMinPrediction(state.currentUnit, s);
+        predInput.min = m;
+        predInput.placeholder = '最少 ' + m;
+        rule.textContent = `規則：最低 ${m} 題（≥ 60% 且 > 上次同比例）。目前題數 ${s}。`;
+      });
+    }
+    if (predInput) predInput.focus();
+  }, 60);
+}
+
+function startQuiz() {
+  const totalWords = VOCAB[state.currentUnit].length;
+  const rawSize = parseInt(document.getElementById('quizSize').value);
+  if (isNaN(rawSize) || rawSize < MIN_QUIZ_SIZE) {
+    alert(`題數最少 ${MIN_QUIZ_SIZE}`);
+    return;
+  }
+  const size = Math.min(rawSize, totalWords);
+  const minPred = computeMinPrediction(state.currentUnit, size);
+  const p = parseInt(document.getElementById('prediction').value);
+  if (isNaN(p) || p < minPred || p > size) {
+    alert(`請輸入 ${minPred} 到 ${size} 之間的數字（規則：≥ 60% 且 > 上次同比例）`);
+    return;
+  }
+  S.setPreferredQuizSize(state.currentUnit, rawSize);
+  state.quizSize = size;
+  state.quizQueue = pickQuizWords(state.currentUnit, size);
+  state.quizIndex = 0;
+  state.quizPrediction = p;
+  state.quizResults = [];
+  state.quizFeedback = null;
+  state.screen = 'quizQuestion';
+  render();
+}
+
+function startWeakQuiz() {
+  state.quizWeakMode = true;
+  go('quizStart');
+}
+
+function renderQuizQuestion() {
+  const word = state.quizQueue[state.quizIndex];
+  const size = state.quizQueue.length;
+  const progress = Math.round(state.quizIndex / size * 100);
+  const predLabel = state.quizPrediction !== null ? `　預測對 ${state.quizPrediction} 題` : '';
+  const modeLabel = state.quizWeakMode ? '💪 弱字複習' : '測驗中…';
+  const correctSoFar = state.quizResults.filter(r => r.correct).length;
+  const scoreLabel = state.quizResults.length > 0
+    ? `　目前 ${correctSoFar} / ${state.quizResults.length} 對`
+    : '';
+
+  if (state.quizFeedback) {
+    const last = state.quizResults[state.quizResults.length - 1];
+    app.innerHTML = `
+      <h2>${modeLabel}</h2>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:${progress}%"></div></div>
+      <p class="muted" style="text-align:center;">第 ${state.quizIndex + 1} / ${size} 題${predLabel}${scoreLabel}</p>
+      <div class="feedback ${last.correct ? 'correct' : 'wrong'}">
+        ${last.correct
+          ? `答對了！${esc(last.word.zh)} = <b>${esc(last.word.en)}</b>`
+          : `可惜，你寫的是「${esc(last.userAnswer || '（空白）')}」<br>正確答案是 <b>${esc(last.word.en)}</b>（${esc(last.word.zh)}）`}
+      </div>
+      <button class="speak-btn" data-word="${esc(last.word.en)}" onclick="speakFromBtn(this)" style="margin-bottom:12px;">🔊 聽發音</button>
+      <button onclick="nextQuestion()">${state.quizIndex === size - 1 ? '看結果' : '下一題 ›'}</button>
+    `;
+    return;
+  }
+
+  app.innerHTML = `
+    <h2>${modeLabel}</h2>
+    <div class="progress-bar"><div class="progress-bar-fill" style="width:${progress}%"></div></div>
+    <p class="muted" style="text-align:center;">第 ${state.quizIndex + 1} / ${size} 題${predLabel}${scoreLabel}</p>
+    <div class="flashcard">
+      <div class="flashcard-medium" style="color:#888; font-size:16px;">請寫出英文</div>
+      <div class="flashcard-big" style="font-size:36px;">${esc(word.zh)}</div>
+    </div>
+    <input type="text" id="answer" placeholder="在這裡輸入英文…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" />
+    <button onclick="submitAnswer()">送出</button>
+    <button class="secondary" onclick="submitAnswer(true)">不會（跳過）</button>
+  `;
+  setTimeout(() => {
+    const i = document.getElementById('answer');
+    if (i) {
+      i.focus();
+      i.addEventListener('keydown', e => { if (e.key === 'Enter') submitAnswer(); });
+    }
+  }, 50);
+}
+
+function submitAnswer(skip) {
+  const word = state.quizQueue[state.quizIndex];
+  const input = document.getElementById('answer');
+  const raw = skip ? '' : (input ? input.value : '');
+  const correct = !skip && normalize(raw) === normalize(word.en);
+  state.quizResults.push({ word, userAnswer: raw, correct });
+  S.incTested(word.en);
+  const m = S.getMastery(word.en);
+  S.setMastery(word.en, correct ? m + 1 : Math.max(0, m - 1));
+  state.quizFeedback = correct ? 'correct' : 'wrong';
+  render();
+}
+
+function nextQuestion() {
+  const size = state.quizQueue.length;
+  state.quizFeedback = null;
+  if (state.quizIndex < size - 1) {
+    state.quizIndex++;
+    render();
+  } else {
+    // 測驗結束
+    const correct = state.quizResults.filter(r => r.correct).length;
+
+    // 弱字模式：只是加強練習，不給任何獎勵（避免刷弱字）
+    if (state.quizWeakMode) {
+      state.predictionBonus = null;
+      state.perfectBonus = null;
+      state.lastReward = null;
+    } else {
+      S.setLastQuiz(state.currentUnit, correct, size);
+      S.setDayUnitStep(state.currentUnit, 'quiz');
+      state.predictionBonus = tryPredictionBonus(state.currentUnit, correct, state.quizPrediction);
+      state.perfectBonus = tryPerfectBonus(state.currentUnit, correct, size);
+      state.lastReward = tryRewardUnit(state.currentUnit);
+    }
+    state.screen = 'quizResult';
+    render();
+  }
+}
+
+function renderQuizResult() {
+  const size = state.quizResults.length;
+  const correct = state.quizResults.filter(r => r.correct).length;
+  const prediction = state.quizPrediction;
+  const beat = prediction !== null && correct > prediction;
+  const perfect = correct === size;
+  const predBonus = state.predictionBonus;
+  const perfectBonus = state.perfectBonus;
+  const reward = state.lastReward;
+  const wasWeakMode = state.quizWeakMode;
+
+  const checksHtml = state.quizResults.map(r =>
+    `<div class="check ${r.correct ? 'yes' : 'no'}">${r.correct ? '✓' : '✗'}</div>`
+  ).join('');
+  const wrongList = state.quizResults.filter(r => !r.correct);
+  const wrongHtml = wrongList.length
+    ? `<div class="card"><h3>這幾個字明天再練一次</h3>` +
+      wrongList.map(r => `<p><b>${esc(r.word.en)}</b> — ${esc(r.word.zh)}</p>`).join('') + `</div>`
+    : `<div class="card"><h3>全對！真的很厲害 👏</h3><p>這些字 3 天後再複習即可，先去玩。</p></div>`;
+  let headline;
+  if (perfect) headline = `滿分！${size} / ${size} 全對！`;
+  else if (beat) headline = `贏自己了！你預測 ${prediction}，實際對 ${correct}`;
+  else if (correct === prediction) headline = `跟預測一樣準，對 ${correct} 題`;
+  else headline = `這次對 ${correct} / ${size} 題`;
+
+  // 獎勵顯示
+  const rewardLines = [];
+  if (perfectBonus && perfectBonus.amount > 0) {
+    const chainNote = perfectBonus.chain > 1
+      ? `（連續第 ${perfectBonus.chain} 天滿分，每天減半）`
+      : '（第一次滿分這課）';
+    rewardLines.push(`🎉 全對獎金 +$${perfectBonus.amount}！${chainNote}`);
+  }
+  if (predBonus && predBonus.amount > 0) rewardLines.push(`贏自己預測 +$${predBonus.amount}`);
+  if (reward && reward.amount > 0) {
+    rewardLines.push(reward.streakBonus
+      ? `完成${esc(state.currentUnit)}完整循環 +$${reward.amount}（連續 ${reward.streak} 天 ×2）`
+      : `完成${esc(state.currentUnit)}完整循環 +$${reward.amount}`);
+  }
+
+  // 缺哪些步驟（弱字模式不顯示）
+  const dayUnit = S.getDayUnit(state.currentUnit);
+  const hasStory = STORIES[state.currentUnit] && STORIES[state.currentUnit].length > 0;
+  const steps = [
+    { key: 'flashcards', label: '單字卡看完' },
+    { key: 'quiz', label: '中翻英測驗' },
+  ];
+  if (hasStory) steps.push({ key: 'story', label: '故事讀完' }, { key: 'comp', label: '閱讀理解' });
+  const stepsHtml = steps.map(s => `<div>${dayUnit[s.key] ? '✓' : '○'} ${s.label}</div>`).join('');
+
+  let rewardCardHtml;
+  if (rewardLines.length > 0) {
+    rewardCardHtml = `<div class="card" style="background:#d7e9d7;">
+      ${rewardLines.map(l => `<p><b>${l}</b></p>`).join('')}
+      <p style="margin-top:8px;">累積零用錢 $${S.getMoney()}　今日已領 $${S.getTodayEarnings()} / $${DAILY_CAP}</p>
+    </div>`;
+  } else if (wasWeakMode) {
+    rewardCardHtml = `<div class="card"><p class="muted">弱字複習是加強練習，不算完整循環。繼續加油 💪</p></div>`;
+  } else {
+    rewardCardHtml = `<div class="card">
+      <p class="muted" style="margin-bottom:8px;">還沒拿到完整循環獎勵，再完成這些步驟才有 $${REWARD_PER_UNIT}：</p>
+      ${stepsHtml}
+    </div>`;
+  }
+
+  // 重設弱字模式旗標，避免下次測驗還是弱字模式
+  state.quizWeakMode = false;
+
+  const predText = prediction !== null
+    ? `<div class="stat"><div class="stat-num">${prediction}</div><div class="stat-label">你的預測</div></div>`
+    : `<div class="stat"><div class="stat-num">${size}</div><div class="stat-label">弱字題數</div></div>`;
+
+  app.innerHTML = `
+    <h2>${esc(headline)}</h2>
+    <div class="checks">${checksHtml}</div>
+    <div class="stats" style="margin-top:20px;">
+      <div class="stat"><div class="stat-num">${correct} / ${size}</div><div class="stat-label">實際答對</div></div>
+      ${predText}
+    </div>
+    ${rewardCardHtml}
+    ${wrongHtml}
+    <button onclick="go('home')">回首頁</button>
+    <button class="secondary" onclick="go('unitMenu')">這課再練一次</button>
+  `;
+}
+
+function renderSettings() {
+  app.innerHTML = `
+    <a class="back-link" onclick="go('home')">‹ 回首頁</a>
+    <h2>設定</h2>
+
+    <div class="card">
+      <h3>目前狀況</h3>
+      <p>連續打卡：${S.getStreak()} 天${S.getStreak() >= STREAK_BONUS_DAYS ? '（獎金 ×2）' : ''}</p>
+      <p>本期零用錢（待領）：$${S.getMoney()}</p>
+      <p>累積已領：$${S.getTotalPaid()}</p>
+      <p>總共賺過：$${S.getMoney() + S.getTotalPaid()}</p>
+      <p>今日已賺：$${S.getTodayEarnings()} / $${DAILY_CAP}</p>
+      <p>累積練習天數：${S.getCompletedDays().length} 天</p>
+    </div>
+
+    <div class="card">
+      <h3>媽媽發錢</h3>
+      <p class="muted" style="margin-bottom:10px;">
+        現金實際給孩子後按這個，把「本期零用錢」轉到「累積已領」。<br>
+        <b>規則：至少存滿 $100 才能領</b>（避免小額頻繁兌換）。
+      </p>
+      ${S.getMoney() >= 100
+        ? `<button onclick="S.claimMoney()">💰 發放 $${S.getMoney()}（領走本期）</button>`
+        : `<button disabled style="opacity:0.5; cursor:not-allowed;">💰 還差 $${100 - S.getMoney()} 才能領</button>`}
+    </div>
+
+    <div class="card">
+      <h3>備份與還原</h3>
+      <p class="muted" style="margin-bottom:10px;">
+        所有紀錄存在這台裝置。建議每週按一次「匯出備份」，存到桌面或雲端。
+      </p>
+      <button class="secondary" onclick="S.exportAll()">💾 匯出備份（下載 JSON）</button>
+      <button class="secondary" onclick="document.getElementById('import-input').click()">📂 匯入備份（上傳 JSON）</button>
+      <input type="file" id="import-input" accept="application/json" style="display:none;" onchange="handleImport(event)" />
+    </div>
+
+    <div class="card">
+      <h3>獎勵規則</h3>
+      <p class="muted" style="font-size:13px;">
+        • <b>完成一課完整循環</b>（單字卡 + 測驗 + 故事 + 閱讀理解）= +$${REWARD_PER_UNIT}<br>
+        • <b>每日上限</b> $${DAILY_CAP}（不含全對獎勵）<br>
+        • <b>贏自己預測</b>（測驗對的題數 > 預測）= +$10<br>
+        • <b>全對獎勵</b>（測驗 100% 滿分）= +$${PERFECT_BONUS}！<br>
+        &nbsp;&nbsp;&nbsp;連續滿分 2/3/4 天 = $50/$25/$12… 每天減半，最低 $1<br>
+        • <b>連續 ${STREAK_BONUS_DAYS} 天以上</b>：完整循環獎金 ×2<br>
+        • <b>預測最低</b>：60% 且 > 上次同比例<br>
+        • <b>連續打卡規則</b>：斷一天暫停、斷兩天歸零<br>
+        • <b>弱字複習</b>：只是加強練習，沒有獎勵
+      </p>
+    </div>
+
+    <button class="danger" onclick="S.resetAll()">重設所有紀錄</button>
+  `;
+}
+
+function handleImport(e) {
+  const f = e.target.files[0];
+  if (f) S.importAll(f);
+  e.target.value = ''; // reset input
+}
+
+function renderRules() {
+  app.innerHTML = `
+    <a class="back-link" onclick="go('home')">‹ 回首頁</a>
+    <h2>📋 獎勵規則</h2>
+    <p class="muted" style="margin-bottom:16px;">
+      這裡列出所有拿錢的方法。規則都寫在這，不會偷偷改。
+    </p>
+
+    <div class="card">
+      <h3>🎯 基本獎勵</h3>
+      <p><b>做任一項練習 = $${REWARD_PER_UNIT}</b></p>
+      <p class="muted" style="font-size:14px;">
+        「任一項」= 單字卡全部看完 或 測驗做完 任一個。<br>
+        每個單元每天只算一次（不能重做刷錢）。<br>
+        多個單元都練 = 多個 $${REWARD_PER_UNIT} 疊加。
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>🏆 加碼獎勵</h3>
+      <p><b>贏自己預測 = +$10</b></p>
+      <p class="muted" style="font-size:14px;">測驗前先猜自己會對幾題，實際對的比預測多就拿 $10。</p>
+      <p style="margin-top:8px;"><b>全部答對 = +$${PERFECT_BONUS}！</b></p>
+      <p class="muted" style="font-size:14px;">
+        測驗 100% 滿分就有 $${PERFECT_BONUS}，不算日上限。<br>
+        連續滿分遞減：<br>
+        第 1 天 $100　·　第 2 天 $50　·　第 3 天 $25　·　第 4 天 $12 ... 每天減半<br>
+        最低保底 $1（不會變 $0）。
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>🔥 連續打卡</h3>
+      <p><b>連續 ${STREAK_BONUS_DAYS} 天有練習 → 獎勵 ×2</b></p>
+      <p class="muted" style="font-size:14px;">
+        你的「基本獎勵」會加倍（$${REWARD_PER_UNIT} 變 $${REWARD_PER_UNIT * 2}）。<br>
+        斷一天 = 暫停（不加也不歸零）<br>
+        斷兩天 = 歸零，重新開始
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>💰 領錢規則</h3>
+      <p><b>至少存滿 $100 才能領</b></p>
+      <p class="muted" style="font-size:14px;">
+        媽媽按「發錢」鍵，把你本期的錢換成現金。<br>
+        領走後本期歸 0，累積已領會加上去。
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>📏 每天上限</h3>
+      <p><b>基本獎勵每天最多 $${DAILY_CAP}</b></p>
+      <p class="muted" style="font-size:14px;">
+        完成 5 個單元 = 達標（${DAILY_CAP / REWARD_PER_UNIT} × $${REWARD_PER_UNIT} = $${DAILY_CAP}）。<br>
+        全對獎金（$${PERFECT_BONUS}）不算在這個上限裡。
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>🎲 預測規則</h3>
+      <p><b>最低 60% 以上，而且要比上次分數高</b></p>
+      <p class="muted" style="font-size:14px;">
+        例：這次考 10 題，最低要猜 6（60%）。<br>
+        如果上次你對 7 / 10（70%），這次最低要猜 8。<br>
+        系統會自動算給你看，不用自己算。
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>💪 弱字複習</h3>
+      <p><b>沒有獎勵，純練習</b></p>
+      <p class="muted" style="font-size:14px;">
+        只挑你測過但還不熟的字來考，幫你加強記憶。<br>
+        做這個不會拿錢，但會讓下次測驗比較有把握。
+      </p>
+    </div>
+
+    <button onclick="go('unitList')">開始練習</button>
+    <button class="secondary" onclick="go('home')">回首頁</button>
+  `;
+}
+
+function go(screen) {
+  state.screen = screen;
+  if (screen === 'learn') {
+    state.learnIndex = 0;
+    state.learnFlipped = false;
+  }
+  render();
+}
+
+// ============ INIT ============
+render();
+</script>
+</body>
+</html>
