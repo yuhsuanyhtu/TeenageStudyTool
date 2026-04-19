@@ -1044,9 +1044,13 @@ function tryPredictionBonus(unitName, actualScore, prediction) {
 }
 
 // 全部答對獎金（不計日上限，每天每課最多一次）
+// 新規則：測驗必須涵蓋「整課所有單字」且全部答對才算（不能只考 10/30）
 // 連續天數規則：第 1 天 $100、第 2 天 $50、第 3 天 $25…（每天減半），最低 $1
 function tryPerfectBonus(unitName, actualScore, totalQuestions) {
   if (actualScore !== totalQuestions) return null;
+  // 必須是「考整課所有單字」才算——考部分不算
+  const totalUnitWords = (VOCAB[unitName] || []).length;
+  if (totalQuestions !== totalUnitWords) return null;
   const dayUnit = S.getDayUnit(unitName);
   if (dayUnit.perfectRewarded) return null; // 今天這課已領過
 
@@ -1986,78 +1990,88 @@ function handleImport(e) {
 function renderRules() {
   app.innerHTML = `
     <a class="back-link" onclick="go('home')">‹ 回首頁</a>
-    <h2>📋 獎勵規則</h2>
-    <p class="muted" style="margin-bottom:16px;">
-      這裡列出所有拿錢的方法。規則都寫在這，不會偷偷改。
+    <h2>📋 遊戲規則（定版）</h2>
+    <p class="muted" style="margin-bottom:12px;">
+      <b>最後更新：2026-04-19</b><br>
+      規則都在這。媽媽說好不再偷偷改——要改會先跟你講、並在這裡寫新日期。
     </p>
 
     <div class="card">
-      <h3>🎯 基本獎勵</h3>
-      <p><b>做任一項練習 = $${REWARD_PER_UNIT}</b></p>
+      <h3>💰 怎麼賺錢（三種方式）</h3>
+      <p style="margin-bottom:6px;">1️⃣ <b>做練習 = $${REWARD_PER_UNIT}</b>／一課／一天</p>
+      <p class="muted" style="font-size:14px; margin-bottom:10px;">
+        「做練習」＝ 單字卡全部看完 <b>或</b> 測驗做完（任一個就算）。<br>
+        多個單元都做 = 多個 $${REWARD_PER_UNIT} 疊加（最多 5 課 = $${DAILY_CAP}）。
+      </p>
+      <p style="margin-bottom:6px;">2️⃣ <b>贏自己預測 = +$10</b></p>
+      <p class="muted" style="font-size:14px; margin-bottom:10px;">
+        考試前猜自己會對幾題，實際比預測多就有 $10。<br>
+        預測有規則 → 下面「預測規則」區看。
+      </p>
+      <p style="margin-bottom:6px;">3️⃣ <b>整課全對 = +$${PERFECT_BONUS}</b>（超級獎金！）</p>
       <p class="muted" style="font-size:14px;">
-        「任一項」= 單字卡全部看完 或 測驗做完 任一個。<br>
-        每個單元每天只算一次（不能重做刷錢）。<br>
-        多個單元都練 = 多個 $${REWARD_PER_UNIT} 疊加。
+        ⚠️ <b>必須考整課所有單字</b>且全部答對！<br>
+        例：這課有 30 個字 → 題數要設成 30，全 30 題都對才算。<br>
+        考 10/30 對了 10 題不算（這只能領 $10 預測獎）。<br><br>
+        <b>連續滿分遞減：</b>第 1 天 $100 → 2 天 $50 → 3 天 $25 → 4 天 $12 → 5 天 $6 ... 每天減半，最低 $1。<br>
+        （這樣設計是因為你已經會了，應該去攻別課或弱字）
       </p>
     </div>
 
     <div class="card">
-      <h3>🏆 加碼獎勵</h3>
-      <p><b>贏自己預測 = +$10</b></p>
-      <p class="muted" style="font-size:14px;">測驗前先猜自己會對幾題，實際對的比預測多就拿 $10。</p>
-      <p style="margin-top:8px;"><b>全部答對 = +$${PERFECT_BONUS}！</b></p>
+      <h3>🔥 連續打卡加倍</h3>
+      <p><b>連續 ${STREAK_BONUS_DAYS} 天以上練習 → 「做練習 $${REWARD_PER_UNIT}」自動變成 $${REWARD_PER_UNIT * 2}</b></p>
       <p class="muted" style="font-size:14px;">
-        測驗 100% 滿分就有 $${PERFECT_BONUS}，不算日上限。<br>
-        連續滿分遞減：<br>
-        第 1 天 $100　·　第 2 天 $50　·　第 3 天 $25　·　第 4 天 $12 ... 每天減半<br>
-        最低保底 $1（不會變 $0）。
+        斷 1 天 = streak 暫停（不歸零，也不加）<br>
+        斷 2 天 = 全部歸零、從頭開始<br>
+        生病、考試週可以偷懶 1 天沒事，2 天就累了
       </p>
     </div>
 
     <div class="card">
-      <h3>🔥 連續打卡</h3>
-      <p><b>連續 ${STREAK_BONUS_DAYS} 天有練習 → 獎勵 ×2</b></p>
+      <h3>💵 領錢規則</h3>
+      <p><b>本期零用錢至少存滿 $100 才能叫媽媽發錢</b></p>
       <p class="muted" style="font-size:14px;">
-        你的「基本獎勵」會加倍（$${REWARD_PER_UNIT} 變 $${REWARD_PER_UNIT * 2}）。<br>
-        斷一天 = 暫停（不加也不歸零）<br>
-        斷兩天 = 歸零，重新開始
+        發錢後「本期」歸 0，「累計已領」加上去（總共拿過多少都看得到）。
       </p>
     </div>
 
     <div class="card">
-      <h3>💰 領錢規則</h3>
-      <p><b>至少存滿 $100 才能領</b></p>
+      <h3>📏 每日上限</h3>
+      <p><b>「做練習」一天最多 $${DAILY_CAP}（= 5 課）</b></p>
       <p class="muted" style="font-size:14px;">
-        媽媽按「發錢」鍵，把你本期的錢換成現金。<br>
-        領走後本期歸 0，累積已領會加上去。
-      </p>
-    </div>
-
-    <div class="card">
-      <h3>📏 每天上限</h3>
-      <p><b>基本獎勵每天最多 $${DAILY_CAP}</b></p>
-      <p class="muted" style="font-size:14px;">
-        完成 5 個單元 = 達標（${DAILY_CAP / REWARD_PER_UNIT} × $${REWARD_PER_UNIT} = $${DAILY_CAP}）。<br>
-        全對獎金（$${PERFECT_BONUS}）不算在這個上限裡。
+        但「整課全對 $${PERFECT_BONUS}」<b>不算在這個上限內</b>——那是特別獎，再多也拿得到。
       </p>
     </div>
 
     <div class="card">
       <h3>🎲 預測規則</h3>
-      <p><b>最低 60% 以上，而且要比上次分數高</b></p>
+      <p><b>預測必須至少 60%，而且要比上次分數的同比例高</b></p>
       <p class="muted" style="font-size:14px;">
-        例：這次考 10 題，最低要猜 6（60%）。<br>
-        如果上次你對 7 / 10（70%），這次最低要猜 8。<br>
-        系統會自動算給你看，不用自己算。
+        例：這次考 10 題 → 最低要猜 <b>6</b>（60%）。<br>
+        如果上次對 7/10（70%）→ 這次最低要猜 <b>8</b>（比 70% 高）。<br>
+        系統會自動幫你算最低預測是多少，不用自己算。<br><br>
+        為什麼要這樣？因為你預測太低就不算挑戰自己。要贏，就要敢猜。
       </p>
     </div>
 
     <div class="card">
-      <h3>💪 弱字複習</h3>
-      <p><b>沒有獎勵，純練習</b></p>
+      <h3>💪 弱字複習（沒錢，但幫你進步）</h3>
       <p class="muted" style="font-size:14px;">
-        只挑你測過但還不熟的字來考，幫你加強記憶。<br>
-        做這個不會拿錢，但會讓下次測驗比較有把握。
+        只考你測過但還不熟的字。<br>
+        ❌ 沒有獎勵（不能刷錢）<br>
+        ✅ 但可以讓你下次正式測驗分數更高<br>
+        考完會告訴你哪些字還要加強
+      </p>
+    </div>
+
+    <div class="card" style="background:#f5f0e8;">
+      <h3>📊 你的總成績都在哪裡</h3>
+      <p class="muted" style="font-size:14px;">
+        • <b>首頁</b>：本期零用錢、累計已領、連續打卡天數、近 14 天打卡<br>
+        • <b>每個單元</b>：已掌握幾字、已測過幾字、上次分數、連續滿分鎖鏈<br>
+        • <b>測驗結果頁</b>：這次拿多少、還差哪些步驟、連勝狀態<br>
+        • 媽媽那邊會看得到紀錄（每次考試、每次領錢都會記在媽媽的表格裡）
       </p>
     </div>
 
