@@ -614,8 +614,66 @@ const STORIES_DRAFT = {
   ]
 };
 
+// ============ SAP 閱讀（離線讀本 + 線上計分）============
+// 只存「篇名 + 我寫的原創理解題」。課文本身不放進這裡（版權）。
+// 孩子從本機 AirDrop 來的 閱讀練習.html 讀文章，到線上 app 答題。
+const SAP_READINGS = [
+  {
+    id: "sap-l2-mischievous-sister",
+    title: "My Mischievous Sister",
+    titleZh: "我淘氣的妹妹",
+    level: 2,
+    theme: "家人",
+    relatedUnit: "一上 Unit 1",
+    questions: [
+      { q: "How old is Cheryl?", qZh: "Cheryl 幾歲？",
+        options: ["three", "five", "seven", "ten"],
+        answer: 1, explain: "故事第一段提到她的年紀。" },
+      { q: "What does Cheryl do when the narrator is at school?", qZh: "作者在學校時，Cheryl 做什麼？",
+        options: ["plays at the park", "hides the narrator's things", "does homework", "sleeps all day"],
+        answer: 1, explain: "她會把作者的東西藏起來，所以回家就找不到。" },
+      { q: "How does Cheryl scare people?", qZh: "Cheryl 怎麼嚇人？",
+        options: ["by making scary faces", "by shouting in their ears", "by hiding behind doors", "by wearing masks"],
+        answer: 1, explain: "她會靠近別人耳邊大叫。" },
+      { q: "What nearly happened when Cheryl scared her mother?", qZh: "Cheryl 嚇媽媽時，差點發生什麼事？",
+        options: ["mother fell down", "mother nearly spilt hot soup", "mother dropped the phone", "mother broke a plate"],
+        answer: 1, explain: "媽媽在煮東西，差點把熱湯灑到手上。" },
+      { q: "What does the narrator try to do?", qZh: "作者想做什麼？",
+        options: ["keep an eye on Cheryl", "tell the teacher", "lock Cheryl in her room", "move out of the house"],
+        answer: 0, explain: "作者希望盯著 Cheryl 不讓她搗蛋。" }
+    ]
+  },
+  {
+    id: "sap-l2-my-brother",
+    title: "My Brother",
+    titleZh: "我的哥哥",
+    level: 2,
+    theme: "家人",
+    relatedUnit: "一上 Unit 1",
+    questions: [
+      { q: "How old is Albert?", qZh: "Albert 幾歲？",
+        options: ["five", "eight", "ten", "twelve"],
+        answer: 2, explain: "故事第二段提到他的年紀。" },
+      { q: "When did Albert start playing the piano?", qZh: "Albert 幾歲開始學鋼琴？",
+        options: ["at age three", "at age five", "at age seven", "at age ten"],
+        answer: 1, explain: "他已經彈琴五年了，從某個年齡算起。" },
+      { q: "How long does Albert practise the piano each day?", qZh: "Albert 每天練琴多久？",
+        options: ["one hour", "two hours", "three hours", "four hours"],
+        answer: 1, explain: "他每天花兩小時練習。" },
+      { q: "What does the narrator do when Albert plays?", qZh: "Albert 彈琴時作者在做什麼？",
+        options: ["leaves the room", "sings along", "does homework", "plays games"],
+        answer: 1, explain: "作者喜歡聽，有時會跟著唱。" },
+      { q: "What does the narrator hope to do?", qZh: "作者希望做到什麼？",
+        options: ["become a famous composer", "play the piano like Albert", "stop Albert from playing", "sell the piano"],
+        answer: 1, explain: "作者剛開始學琴，希望以後能彈得跟哥哥一樣好。" }
+    ]
+  }
+];
+
 // ============ CONFIG ============
 const REWARD_PER_UNIT = 20;   // 每完成一課完整循環 $20
+const SAP_READING_REWARD = 20;  // SAP 閱讀完成 $20（跟單元同等）
+const SAP_COMP_QUESTIONS = 3;   // SAP 每次答 3 題（從 5 題題庫抽）
 const DAILY_CAP = 100;        // 每日上限 $100（不含全對獎勵）
 const STREAK_BONUS_DAYS = 5;  // 連續 N 天獎金加倍
 const DEFAULT_QUIZ_SIZE = 10; // 每次測驗預設 10 題
@@ -846,6 +904,12 @@ const state = {
   lastReward: null,         // 最近一次獎勵的摘要，顯示在結果頁
   predictionBonus: null,    // 贏自己預測的獎金
   quizWeakMode: false,      // 是否為「弱字複習」模式（無預測、不計循環）
+  currentSap: null,         // 當前在讀的 SAP 篇目
+  sapQuestions: [],         // 本次抽的題目（打亂選項）
+  sapIndex: 0,
+  sapResults: [],
+  sapPicked: null,          // 已送出的選項（觸發 feedback）
+  sapSelected: null,        // 已選但還沒送出（送出鈕才送出）
 };
 
 // ============ HELPERS ============
@@ -1239,6 +1303,10 @@ function render() {
     compResult: renderCompResult,
     settings: renderSettings,
     rules: renderRules,
+    sapList: renderSapList,
+    sapReading: renderSapReading,
+    sapResult: renderSapResult,
+    parent: renderParent,
   }[state.screen];
   if (fn) fn();
 }
@@ -1281,13 +1349,15 @@ function renderHome() {
       <p class="muted" style="margin-top:12px;">${esc(doneText)}</p>
       ${atCap ? '<p class="muted" style="color:#6b9080; margin-top:8px;">✓ 今日上限已達！繼續練習不加錢，但可以繼續學。</p>' : ''}
     </div>
-    <button onclick="go('unitList')">開始練習</button>
+    <button onclick="go('unitList')">🗂️ 單字練習</button>
+    <button class="secondary" onclick="go('sapList')">📖 SAP 閱讀（讀完答題領錢）</button>
     ${money >= 100
       ? `<button class="secondary" onclick="S.claimMoney()">💰 媽媽發錢（領走 $${money}）</button>`
       : money > 0
         ? `<button class="secondary" disabled style="opacity:0.5; cursor:not-allowed;">💰 存滿 $100 才能領（還差 $${100 - money}）</button>`
         : ''}
     <button class="secondary" onclick="go('rules')">📋 看獎勵規則</button>
+    <button class="secondary" onclick="go('parent')">📊 家長總覽</button>
     <button class="secondary" onclick="go('settings')">設定</button>
   `;
 }
@@ -1947,6 +2017,313 @@ function renderQuizResult() {
   `;
 }
 
+// ============ SAP 閱讀 ============
+
+function trySapReward(sapId) {
+  const today = S.todayStr();
+  const key = 'sapRewarded_' + today + '_' + sapId;
+  if (S.get(key, false)) return null;
+  const earned = S.getTodayEarnings();
+  if (earned >= DAILY_CAP) {
+    S.set(key, true);
+    return { amount: 0, capReached: true };
+  }
+  S.updateStreakOnFirstCompleteToday();
+  const streak = S.getStreak();
+  const streakBonus = streak >= STREAK_BONUS_DAYS;
+  let amount = streakBonus ? SAP_READING_REWARD * 2 : SAP_READING_REWARD;
+  amount = Math.min(amount, DAILY_CAP - earned);
+  S.set(key, true);
+  S.addTodayEarnings(amount);
+  S.set('money', S.getMoney() + amount);
+  logEvent({
+    event: "sap_reward",
+    unit: sapId,
+    amount,
+    note: streakBonus ? `SAP 連續 ${streak} 天 ×2` : "SAP 閱讀"
+  });
+  return { amount, streakBonus, streak };
+}
+
+function sapDoneToday(sapId) {
+  return S.get('sapRewarded_' + S.todayStr() + '_' + sapId, false);
+}
+
+function pickSapQuestions(sap) {
+  const shuffled = shuffleArray(sap.questions);
+  const picked = shuffled.slice(0, Math.min(SAP_COMP_QUESTIONS, shuffled.length));
+  return picked.map(q => {
+    const indexed = q.options.map((opt, i) => ({ opt, i }));
+    const shuf = shuffleArray(indexed);
+    return {
+      q: q.q, qZh: q.qZh || "",
+      options: shuf.map(x => x.opt),
+      answer: shuf.findIndex(x => x.i === q.answer),
+      explain: q.explain || ""
+    };
+  });
+}
+
+function renderSapList() {
+  const items = SAP_READINGS.map(sap => {
+    const done = sapDoneToday(sap.id);
+    const doneBadge = done ? '<span class="unit-badge" style="background:#6b9080;color:white;">今日已答 ✓</span>' : '';
+    return `
+      <div class="unit-item" onclick="selectSap('${esc(sap.id)}')">
+        <div>
+          <div class="unit-title">${esc(sap.title)}${doneBadge}</div>
+          <div class="unit-progress">${esc(sap.titleZh)}　·　Level ${sap.level}　·　${esc(sap.theme)}${sap.relatedUnit ? ` · 搭配 ${esc(sap.relatedUnit)}` : ''}</div>
+        </div>
+        <div style="color:#6b9080; font-size:20px;">›</div>
+      </div>
+    `;
+  }).join('');
+  app.innerHTML = `
+    <a class="back-link" onclick="go('home')">‹ 回首頁</a>
+    <h2>📖 SAP 閱讀</h2>
+    <p class="muted" style="margin-bottom:10px;">
+      讀完課文（<b>閱讀練習.html</b> 本機檔）後來這裡答題，答對就有 $${SAP_READING_REWARD}！
+    </p>
+    <p class="muted" style="margin-bottom:16px; font-size:13px;">
+      每篇每天只能領一次。閱讀理解題用選項打亂，不會背答案。
+    </p>
+    ${items || '<div class="card"><p class="muted">尚未加入任何閱讀</p></div>'}
+  `;
+}
+
+function selectSap(sapId) {
+  const sap = SAP_READINGS.find(s => s.id === sapId);
+  if (!sap) return;
+  state.currentSap = sap;
+  state.sapQuestions = [];
+  state.sapIndex = 0;
+  state.sapResults = [];
+  state.sapPicked = null;
+  state.sapSelected = null;
+  state.screen = 'sapReading';
+  render();
+}
+
+function startSapQuiz() {
+  if (!state.currentSap) return;
+  state.sapQuestions = pickSapQuestions(state.currentSap);
+  state.sapIndex = 0;
+  state.sapResults = [];
+  state.sapPicked = null;
+  state.sapSelected = null;
+  render();
+}
+
+function renderSapReading() {
+  const sap = state.currentSap;
+  if (!sap) { go('sapList'); return; }
+
+  // 尚未開始答題 → 顯示 intro 畫面
+  if (state.sapQuestions.length === 0) {
+    const done = sapDoneToday(sap.id);
+    app.innerHTML = `
+      <a class="back-link" onclick="go('sapList')">‹ 換一篇</a>
+      <h2>📖 ${esc(sap.title)}</h2>
+      <p class="muted">${esc(sap.titleZh)} · Level ${sap.level} · ${esc(sap.theme)}${sap.relatedUnit ? ` · 搭配 ${esc(sap.relatedUnit)}` : ''}</p>
+
+      <div class="card">
+        <h3>怎麼玩</h3>
+        <p>1. 先到本機 <b>閱讀練習.html</b> 打開《${esc(sap.title)}》讀一遍</p>
+        <p>2. 讀完回來這裡，按下面按鈕開始答 ${SAP_COMP_QUESTIONS} 題理解題</p>
+        <p>3. 完成就拿 $${SAP_READING_REWARD}（今天如果再進來，不會再給）</p>
+        ${done ? '<p style="color:#6b9080; margin-top:8px;"><b>你今天已經答過這篇。可以再練習，但不會再給獎金。</b></p>' : ''}
+      </div>
+
+      <button onclick="startSapQuiz()">${done ? '再練習一次（不加獎金）' : '我讀完了，開始答題 →'}</button>
+      <button class="secondary" onclick="go('sapList')">還沒讀，去讀</button>
+    `;
+    return;
+  }
+
+  // 答題中
+  const q = state.sapQuestions[state.sapIndex];
+  const total = state.sapQuestions.length;
+  const pct = Math.round(state.sapIndex / total * 100);
+  const selected = state.sapSelected;
+  const picked = state.sapPicked;
+
+  const optionsHtml = q.options.map((opt, i) => {
+    let cls = 'option';
+    if (picked !== null) {
+      if (i === q.answer) cls += ' correct';
+      else if (i === picked) cls += ' wrong';
+    } else if (selected === i) {
+      cls += ' picked';
+    }
+    const onClick = picked === null ? `onclick="selectSapOption(${i})"` : '';
+    return `<div class="${cls}" ${onClick}>${String.fromCharCode(65+i)}. ${esc(opt)}</div>`;
+  }).join('');
+
+  const submitArea = picked !== null
+    ? `<div class="feedback ${picked === q.answer ? 'correct' : 'wrong'}">
+         ${picked === q.answer ? '答對了！' : '沒關係，再讀一次就明白。'}<br>
+         <span style="font-weight:normal; font-size:14px;">${esc(q.explain)}</span>
+       </div>
+       <button onclick="nextSap()">${state.sapIndex === total - 1 ? '看結果 →' : '下一題 →'}</button>`
+    : `<button ${selected === null ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''} onclick="submitSapAnswer()">送出</button>`;
+
+  app.innerHTML = `
+    <h2>📖 ${esc(state.currentSap.title)}</h2>
+    <p class="muted" style="text-align:center;">閱讀理解 ${state.sapIndex + 1} / ${total}</p>
+    <div class="progress-bar"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+    <p style="font-size:17px; margin-top:14px; margin-bottom:4px; font-weight:500;">${esc(q.q)}</p>
+    ${q.qZh ? `<p class="muted" style="font-size:14px; margin-bottom:14px;">${esc(q.qZh)}</p>` : '<div style="margin-bottom:14px;"></div>'}
+    ${optionsHtml}
+    ${submitArea}
+  `;
+}
+
+function selectSapOption(idx) {
+  state.sapSelected = idx;
+  render();
+}
+
+function submitSapAnswer() {
+  if (state.sapSelected === null) return;
+  const q = state.sapQuestions[state.sapIndex];
+  state.sapPicked = state.sapSelected;
+  state.sapResults.push({ picked: state.sapSelected, correct: state.sapSelected === q.answer });
+  render();
+}
+
+function nextSap() {
+  if (state.sapIndex < state.sapQuestions.length - 1) {
+    state.sapIndex++;
+    state.sapPicked = null;
+    state.sapSelected = null;
+    render();
+  } else {
+    // 完成 → 計算獎勵
+    state.lastReward = trySapReward(state.currentSap.id);
+    state.screen = 'sapResult';
+    render();
+  }
+}
+
+function renderSapResult() {
+  const sap = state.currentSap;
+  const correct = state.sapResults.filter(r => r.correct).length;
+  const total = state.sapResults.length;
+  const perfect = correct === total;
+  const reward = state.lastReward;
+
+  const checksHtml = state.sapResults.map(r =>
+    `<div class="check ${r.correct ? 'yes' : 'no'}">${r.correct ? '✓' : '✗'}</div>`
+  ).join('');
+
+  const headline = perfect
+    ? `全對！《${sap.title}》讀懂了 📖`
+    : correct >= Math.ceil(total / 2)
+      ? `不錯，${correct} / ${total} 題對`
+      : `${correct} / ${total} 題對，再讀一遍會更清楚`;
+
+  let rewardCardHtml;
+  if (reward && reward.amount > 0) {
+    rewardCardHtml = `<div class="card" style="background:#d7e9d7;">
+      <h3>SAP 閱讀完成 +$${reward.amount}</h3>
+      <p>${reward.streakBonus ? `連續 ${reward.streak} 天，獎金加倍！<br>` : ''}
+      累積零用錢 $${S.getMoney()}　今日已領 $${S.getTodayEarnings()} / $${DAILY_CAP}</p>
+    </div>`;
+  } else if (reward && reward.capReached) {
+    rewardCardHtml = `<div class="card"><p class="muted">今日已達 $${DAILY_CAP} 上限，這次沒加錢。明天再領 💪</p></div>`;
+  } else {
+    rewardCardHtml = `<div class="card"><p class="muted">這篇今天已經領過獎勵了，再讀只為了練習 💪</p></div>`;
+  }
+
+  app.innerHTML = `
+    <h2>${esc(headline)}</h2>
+    <div class="checks">${checksHtml}</div>
+    <div class="stats" style="margin-top:20px;">
+      <div class="stat"><div class="stat-num">${correct} / ${total}</div><div class="stat-label">閱讀理解</div></div>
+      <div class="stat"><div class="stat-num">🔥 ${S.getStreak()}</div><div class="stat-label">連續打卡</div></div>
+    </div>
+    ${rewardCardHtml}
+    <button onclick="go('home')">回首頁</button>
+    <button class="secondary" onclick="go('sapList')">換一篇 SAP</button>
+  `;
+}
+
+// ============ 家長頁（計分版）============
+
+function renderParent() {
+  // 統計
+  const money = S.getMoney();
+  const totalPaid = S.getTotalPaid();
+  const streak = S.getStreak();
+  const completedDays = S.getCompletedDays();
+  const todayEarned = S.getTodayEarnings();
+  const todayStr = S.todayStr();
+
+  // 今日完成哪些單元 / SAP
+  const todayUnits = Object.keys(VOCAB).filter(u => S.getDayUnit(u).rewarded || S.getDayUnit(u).quiz || S.getDayUnit(u).flashcards);
+  const todaySaps = SAP_READINGS.filter(s => sapDoneToday(s.id));
+
+  // 各單元掌握度
+  const unitStatsHtml = Object.keys(VOCAB).map(u => {
+    const p = unitProgress(u);
+    const pct = Math.round(p.mastered / p.total * 100);
+    const lq = S.getLastQuiz(u);
+    const last = lq && lq.total ? `${lq.correct}/${lq.total}` : '—';
+    return `<div style="padding:6px 0; border-bottom:1px solid #eee; font-size:14px;">
+      <b>${esc(u)}</b>：掌握 ${p.mastered}/${p.total} (${pct}%)　·　測過 ${p.tested}/${p.total}　·　上次 ${last}
+    </div>`;
+  }).join('');
+
+  const sapStatsHtml = SAP_READINGS.map(s => {
+    const done = sapDoneToday(s.id);
+    return `<div style="padding:4px 0; font-size:14px;">
+      ${done ? '✓' : '○'} <b>${esc(s.title)}</b> <span class="muted">(${esc(s.titleZh)})</span>
+    </div>`;
+  }).join('');
+
+  app.innerHTML = `
+    <a class="back-link" onclick="go('home')">‹ 回首頁</a>
+    <h2>📊 家長總覽</h2>
+    <p class="muted" style="margin-bottom:16px;">媽媽看的頁面。所有孩子的紀錄都在這。</p>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">$${money}</div><div class="stat-label">本期（待領）</div></div>
+      <div class="stat"><div class="stat-num">$${totalPaid}</div><div class="stat-label">累積已領</div></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">${streak}</div><div class="stat-label">連續天數</div></div>
+      <div class="stat"><div class="stat-num">${completedDays.length}</div><div class="stat-label">累積天數</div></div>
+    </div>
+
+    <div class="card">
+      <h3>今天（${todayStr}）</h3>
+      <p>今日已賺：$${todayEarned} / $${DAILY_CAP}</p>
+      <p>做過的單元：${todayUnits.length > 0 ? todayUnits.join('、') : '無'}</p>
+      <p>讀過的 SAP：${todaySaps.length > 0 ? todaySaps.map(s => s.title).join('、') : '無'}</p>
+    </div>
+
+    <div class="card">
+      <h3>各單元掌握</h3>
+      ${unitStatsHtml}
+    </div>
+
+    <div class="card">
+      <h3>SAP 閱讀狀態（今天）</h3>
+      ${sapStatsHtml || '<p class="muted">尚未加入任何閱讀</p>'}
+    </div>
+
+    <div class="card">
+      <h3>完整紀錄（自動上傳）</h3>
+      <p class="muted" style="font-size:14px; margin-bottom:10px;">
+        每次測驗、領獎、領錢都自動記在 Google Sheet，可看歷史。
+      </p>
+      <button class="secondary" onclick="window.open('https://docs.google.com/spreadsheets/d/10B3Cd6o3Bl1JoOgHwpy5rw-LDj419Z6xZPvichEhQqo/', '_blank')">開啟學習紀錄 Sheet ↗</button>
+    </div>
+
+    <button onclick="go('home')">回首頁</button>
+  `;
+}
+
 function renderSettings() {
   app.innerHTML = `
     <a class="back-link" onclick="go('home')">‹ 回首頁</a>
@@ -2083,6 +2460,17 @@ function renderRules() {
         ❌ 沒有獎勵（不能刷錢）<br>
         ✅ 但可以讓你下次正式測驗分數更高<br>
         考完會告訴你哪些字還要加強
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>📖 SAP 閱讀（也能賺錢）</h3>
+      <p class="muted" style="font-size:14px;">
+        SAP 閱讀 = 額外的英文短文。流程：<br>
+        1. 打開本機的 <b>閱讀練習.html</b> 讀一篇<br>
+        2. 回到這個 app，點「SAP 閱讀」→ 選那一篇 → 答 3 題<br>
+        3. 完成就 +$${SAP_READING_REWARD}（跟做一課一樣）<br>
+        每篇每天只能領一次。讀愈多、讀愈懂，錢愈多。
       </p>
     </div>
 
