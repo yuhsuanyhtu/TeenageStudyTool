@@ -676,9 +676,8 @@ const SAP_READING_REWARD = 20;  // SAP 閱讀完成 $20（跟單元同等）
 const SAP_COMP_QUESTIONS = 3;   // SAP 每次答 3 題（從 5 題題庫抽）
 const DAILY_CAP = 100;        // 每日上限 $100（不含全對獎勵）
 const STREAK_BONUS_DAYS = 5;  // 連續 N 天獎金加倍
-const DEFAULT_QUIZ_SIZE = 6;  // 每次測驗預設 6 題（從 10 降下來，降低壓力）
+const DEFAULT_QUIZ_SIZE = 6;  // 每次測驗預設 6 題
 const MIN_QUIZ_SIZE = 6;      // 每次測驗最少 6 題
-const DAILY_CHUNK_SIZE = 5;   // 每日單字卡份量：5 個新字
 const PERFECT_BONUS = 100;    // 全部答對獎金（不計日上限）
 const COMP_QUESTIONS_PER_STORY = 3;  // 閱讀理解每次抽 N 題
 const MIN_PREDICTION_PERCENT = 0.6;  // 預測最低 60%
@@ -889,7 +888,6 @@ const state = {
   currentUnit: null,
   learnIndex: 0,
   learnFlipped: false,
-  learnChunk: null,         // 今日單字卡份量（5 字），進 learn 時填入
   quizQueue: [],
   quizSize: DEFAULT_QUIZ_SIZE,
   quizIndex: 0,
@@ -953,34 +951,6 @@ function pickQuizWords(unitName, n) {
   scored.sort((a, b) => a.priority - b.priority);
   return scored.slice(0, n).map(s => s.word);
 }
-// 選出今日的單字卡份量（5 字），持久化一整天
-// 優先：從沒測過 > 測過但沒熟 > 已熟（通常不選）
-function pickTodayChunk(unitName, size) {
-  const today = S.todayStr();
-  const key = 'chunk_' + today + '_' + unitName;
-  const savedEns = S.get(key, null);
-  if (savedEns && Array.isArray(savedEns) && savedEns.length > 0) {
-    const words = savedEns
-      .map(en => VOCAB[unitName].find(w => w.en === en))
-      .filter(Boolean);
-    if (words.length > 0) return words;
-  }
-  const allWords = VOCAB[unitName];
-  const scored = allWords.map(w => {
-    const tested = S.getTested(w.en);
-    const mastery = S.getMastery(w.en);
-    let tier;
-    if (tested === 0) tier = 0;          // 最優先：從沒測過
-    else if (mastery < 3) tier = 1000;   // 次優先：測過但沒熟
-    else tier = 2000;                    // 最後：已熟（通常不選）
-    return { word: w, priority: tier + mastery * 10 + Math.random() };
-  });
-  scored.sort((a, b) => a.priority - b.priority);
-  const chunk = scored.slice(0, size).map(s => s.word);
-  S.set(key, chunk.map(w => w.en));
-  return chunk;
-}
-
 // 只從弱字挑（用於「弱字複習」模式）
 function pickWeakWords(unitName, n) {
   const weak = getWeakWords(unitName);
@@ -1413,7 +1383,7 @@ function renderUnitList() {
   app.innerHTML = `
     <a class="back-link" onclick="go('home')">‹ 回首頁</a>
     <h2>選擇單元</h2>
-    <p class="muted" style="margin-bottom:16px;">每天每課只要學 ${DAILY_CHUNK_SIZE} 個字就好，慢慢累積。</p>
+    <p class="muted" style="margin-bottom:16px;">沒測過的字、錯過的字會優先出現——讓他自然複習。</p>
     ${items}
   `;
 }
@@ -1433,14 +1403,9 @@ function renderUnitMenu() {
   const lastPerfect = S.get('lastPerfect_' + state.currentUnit, null);
   const chainIsActive = lastPerfect && (lastPerfect === S.todayStr() || lastPerfect === S.yesterdayStr());
 
-  // 取得今日份量（5 字）→ 顯示在主 CTA 上
-  const todayChunk = pickTodayChunk(state.currentUnit, DAILY_CHUNK_SIZE);
-  const chunkRemaining = todayChunk.length;
-  const chunkDoneToday = dayUnit.flashcards === true;
-
   const storyCard = hasStory ? `
     <div class="mode-card recommended" onclick="startStory()">
-      <div class="mode-card-title">📖 讀迷你故事（推薦）</div>
+      <div class="mode-card-title">📖 讀迷你故事</div>
       <div class="mode-card-desc">點綠色單字看中文+發音，讀完答 ${COMP_QUESTIONS_PER_STORY} 題。</div>
     </div>
   ` : '';
@@ -1448,24 +1413,9 @@ function renderUnitMenu() {
   const weakBtn = prog.weak >= 3 ? `
     <div class="mode-card" onclick="startWeakQuiz()">
       <div class="mode-card-title">💪 弱字複習（${prog.weak} 個字）</div>
-      <div class="mode-card-desc">只考你還沒熟的字，沒預測、沒獎金，純加強記憶。</div>
+      <div class="mode-card-desc">只考這課「測過但還不熟」的字。加強記憶用，不算獎勵。</div>
     </div>
   ` : '';
-
-  // 今日任務 card：主 CTA
-  const todayTaskCard = chunkRemaining > 0 ? `
-    <div class="mode-card recommended" onclick="go('learn')">
-      <div class="mode-card-title">🎯 今日任務：學 ${chunkRemaining} 個字</div>
-      <div class="mode-card-desc">
-        ${chunkDoneToday ? '✅ 已看完今日份量。可以再複習，或直接去測驗。' : `看完這 ${chunkRemaining} 張單字卡 = 拿 $${REWARD_PER_UNIT}！每天一點點，不用慌。`}
-      </div>
-    </div>
-  ` : `
-    <div class="mode-card" style="opacity:0.7;">
-      <div class="mode-card-title">🎉 這課的字你都學過了</div>
-      <div class="mode-card-desc">可以去下面「弱字複習」或挑新單元。</div>
-    </div>
-  `;
 
   const lastQuizText = (lastQuiz && lastQuiz.total)
     ? `上次測驗 ${lastQuiz.correct}/${lastQuiz.total}`
@@ -1475,17 +1425,21 @@ function renderUnitMenu() {
     <a class="back-link" onclick="go('unitList')">‹ 換單元</a>
     <h2>${esc(state.currentUnit)}</h2>
     <p class="muted" style="margin-bottom:14px;">
-      進度 ${Math.round(prog.mastered/prog.total*100)}%　·　已會 ${prog.mastered} 字${lastQuizText ? '　·　' + lastQuizText : ''}
+      共 ${prog.total} 字　·　已會 ${prog.mastered}　·　已測過 ${prog.tested}　·　還弱 ${prog.weak}
+      ${lastQuizText ? '<br>' + lastQuizText : ''}
       ${chainIsActive && perfectChain > 0 ? `<br><span style="color:#6b9080;">🔥 連續 ${perfectChain} 天滿分</span>` : ''}
     </p>
 
-    ${todayTaskCard}
-
     ${storyCard}
+
+    <div class="mode-card recommended" onclick="go('learn')">
+      <div class="mode-card-title">🗂️ 單字卡學習</div>
+      <div class="mode-card-desc">還沒測過的字、不熟的字優先出現。看完全部 = 拿 $${REWARD_PER_UNIT}。中途離開也會記住進度。</div>
+    </div>
 
     <div class="mode-card" onclick="go('quizStart')">
       <div class="mode-card-title">✍️ 做測驗</div>
-      <div class="mode-card-desc">預設 ${DEFAULT_QUIZ_SIZE} 題（可調）。考整課所有字還全對 → +$${PERFECT_BONUS}！</div>
+      <div class="mode-card-desc">沒測過的字優先出，錯過的字會重複出現（加強記憶）。考整課全對 → +$${PERFECT_BONUS}！</div>
     </div>
 
     ${weakBtn}
@@ -1689,33 +1643,28 @@ function renderCompResult() {
 }
 
 function renderLearn() {
-  // 取得今日份量（5 字，持久化一整天）
-  if (!state.learnChunk || state.learnChunk.length === 0) {
-    state.learnChunk = pickTodayChunk(state.currentUnit, DAILY_CHUNK_SIZE);
-  }
-  const chunk = state.learnChunk;
-  if (chunk.length === 0) {
-    // 已經全部熟練了（罕見）
-    app.innerHTML = `
-      <a class="back-link" onclick="go('unitMenu')">‹ 回</a>
-      <h2>${esc(state.currentUnit)} · 單字卡</h2>
-      <div class="card"><p>🎉 這課的字你都熟練了！</p><p class="muted">可以去做弱字複習，或挑別的單元。</p></div>
-      <button onclick="go('unitMenu')">回單元選單</button>
-    `;
-    return;
-  }
-  const idx = Math.min(state.learnIndex, chunk.length - 1);
-  const word = chunk[idx];
-  const total = chunk.length;
-  const pct = Math.round(idx / total * 100);
+  // 優先順序排全部字：從沒測過 → 測過但沒熟 → 已熟
+  const allWords = VOCAB[state.currentUnit];
+  const sorted = [...allWords].sort((a, b) => {
+    const ta = S.getTested(a.en), tb = S.getTested(b.en);
+    const ma = S.getMastery(a.en), mb = S.getMastery(b.en);
+    const tierA = ta === 0 ? 0 : (ma < 3 ? 1 : 2);
+    const tierB = tb === 0 ? 0 : (mb < 3 ? 1 : 2);
+    if (tierA !== tierB) return tierA - tierB;
+    return ma - mb;
+  });
+  const idx = Math.min(state.learnIndex, sorted.length - 1);
+  const word = sorted[idx];
+  const total = sorted.length;
+  const pct = Math.round((idx + 1) / total * 100);
 
   app.innerHTML = `
     <a class="back-link" onclick="go('unitMenu')">‹ 換模式</a>
-    <h2>今日單字卡</h2>
-    <p class="muted">${esc(state.currentUnit)}　·　今天只要看完這 ${total} 張，就完成今日份量</p>
+    <h2>${esc(state.currentUnit)} · 單字卡</h2>
+    <p class="muted">還沒測過的字、不熟的字會優先出現</p>
 
     <div class="progress-bar"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
-    <p class="muted" style="text-align:center; margin-bottom:12px;">今日第 ${idx + 1} / ${total} 張</p>
+    <p class="muted" style="text-align:center; margin-bottom:12px;">第 ${idx + 1} / ${total} 張</p>
 
     <div class="flashcard" onclick="flipCard()">
       ${state.learnFlipped
@@ -1730,7 +1679,7 @@ function renderLearn() {
 
     <div class="btn-row">
       <button class="secondary" onclick="prevCard()" ${idx === 0 ? 'disabled' : ''}>‹ 上一張</button>
-      <button onclick="nextCard()">${idx === total - 1 ? '看完了 →' : '下一張 ›'}</button>
+      <button onclick="nextCard()">${idx === total - 1 ? '看完了，去測驗 →' : '下一張 ›'}</button>
     </div>
     <button class="secondary" onclick="go('quizStart')">跳過直接測驗</button>
   `;
@@ -1741,18 +1690,18 @@ function flipCard() {
   render();
 }
 function nextCard() {
-  const chunk = state.learnChunk || [];
-  if (state.learnIndex < chunk.length - 1) {
+  const total = VOCAB[state.currentUnit].length;
+  if (state.learnIndex < total - 1) {
     state.learnIndex++;
     state.learnFlipped = false;
-    // 看完最後一張 → 記錄 flashcards step + 嘗試獎勵
-    if (state.learnIndex === chunk.length - 1) {
+    // 到達末尾 → 記錄 flashcards step + 嘗試獎勵
+    if (state.learnIndex === total - 1) {
       S.setDayUnitStep(state.currentUnit, 'flashcards');
       tryRewardUnit(state.currentUnit);
     }
     render();
   } else {
-    // 已在最後一張，再按 → 去測驗（若未記錄也補記）
+    // 在最後一張按下一張 → 去測驗（若未記錄也補記）
     S.setDayUnitStep(state.currentUnit, 'flashcards');
     tryRewardUnit(state.currentUnit);
     go('quizStart');
@@ -2445,7 +2394,6 @@ function renderRules() {
       <p style="margin-bottom:6px;">1️⃣ <b>做練習 = $${REWARD_PER_UNIT}</b>／一課／一天</p>
       <p class="muted" style="font-size:14px; margin-bottom:10px;">
         「做練習」＝ 單字卡全部看完 <b>或</b> 測驗做完（任一個就算）。<br>
-        <b>📌 今日份量只有 ${DAILY_CHUNK_SIZE} 個字，不是整課！</b>每天只要學 ${DAILY_CHUNK_SIZE} 字，慢慢累積。<br>
         多個單元都做 = 多個 $${REWARD_PER_UNIT} 疊加（最多 5 課 = $${DAILY_CAP}）。
       </p>
       <p style="margin-bottom:6px;">2️⃣ <b>贏自己預測 = +$10</b></p>
@@ -2541,7 +2489,6 @@ function go(screen) {
   if (screen === 'learn') {
     state.learnIndex = 0;
     state.learnFlipped = false;
-    state.learnChunk = null; // renderLearn 會重取（會從 localStorage 拿今日份量）
   }
   render();
 }
