@@ -682,8 +682,8 @@ const PERFECT_BONUS = 100;    // 全部答對獎金（不計日上限）
 const COMP_QUESTIONS_PER_STORY = 3;  // 閱讀理解每次抽 N 題
 const MIN_PREDICTION_PERCENT = 0.6;  // 預測最低 60%
 
-// 學習紀錄 + 自動備份 Apps Script 端點（v2）
-const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzEjVtjfSzV3Ifi53zj2mvalVBLCnT7_Zv3v3TyJ6uR8UfRvgVdYpiyIatAXhyHM3kp8A/exec";
+// 學習紀錄 + 自動備份 Apps Script 端點（v3，加裝置欄位）
+const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
 
 function logEvent(data) {
   if (!LOG_WEBAPP_URL) return;
@@ -699,6 +699,7 @@ function logEvent(data) {
       money: S.getMoney(),
       totalPaid: S.getTotalPaid(),
       streak: S.getStreak(),
+      device: S.getDeviceName() || "",
     };
     fetch(LOG_WEBAPP_URL, {
       method: "POST",
@@ -794,6 +795,8 @@ const S = {
   getStreak() { return S.get('streak', 0); },
   getMoney() { return S.get('money', 0); },
   getTotalPaid() { return S.get('totalPaid', 0); },
+  getDeviceName() { return S.get('deviceName', ''); },
+  setDeviceName(name) { S.set('deviceName', name); },
   // 媽媽實際發出現金後點這個：把本期零用錢轉到「累積已領」，本期歸 0
   // 規則：至少要存滿 $100 才能領
   claimMoney() {
@@ -1401,16 +1404,17 @@ function renderHome() {
   const totalPaid = S.getTotalPaid();
   const totalEver = money + totalPaid;
   const completedDays = S.getCompletedDays().length;
+  const deviceName = S.getDeviceName() || "未命名";
   app.innerHTML = `
     <h1>英文練習</h1>
-    <p class="muted">每天 15 分鐘，比昨天進步一點點就好</p>
+    <p class="muted">每天 15 分鐘，比昨天進步一點點就好　·　🖥️ ${esc(deviceName)} 的電腦</p>
     <div class="stats">
-      <div class="stat"><div class="stat-num">$${totalEver}</div><div class="stat-label">總共賺過（累積）</div></div>
-      <div class="stat"><div class="stat-num">$${money}</div><div class="stat-label">本期（待媽媽發）</div></div>
+      <div class="stat"><div class="stat-num">$${totalEver}</div><div class="stat-label">累計賺過</div></div>
+      <div class="stat"><div class="stat-num">$${money}</div><div class="stat-label">尚未領（等媽媽發）</div></div>
     </div>
     <div class="stats">
-      <div class="stat"><div class="stat-num">🔥 ${streak}</div><div class="stat-label">連續打卡</div></div>
-      <div class="stat"><div class="stat-num">${completedDays}</div><div class="stat-label">累積練習天</div></div>
+      <div class="stat"><div class="stat-num">$${totalPaid}</div><div class="stat-label">已領走的</div></div>
+      <div class="stat"><div class="stat-num">🔥 ${streak}</div><div class="stat-label">連續打卡（天）</div></div>
     </div>
     <div class="card">
       <p>${streakInfo}</p>
@@ -2342,18 +2346,20 @@ function renderParent() {
     </div>`;
   }).join('');
 
+  const deviceName = S.getDeviceName() || "未命名";
+  const totalEver = money + totalPaid;
   app.innerHTML = `
     <a class="back-link" onclick="go('home')">‹ 回首頁</a>
     <h2>📊 家長總覽</h2>
-    <p class="muted" style="margin-bottom:16px;">媽媽看的頁面。所有孩子的紀錄都在這。</p>
+    <p class="muted" style="margin-bottom:16px;">這台電腦（<b>${esc(deviceName)}</b>）的紀錄。跨裝置紀錄請看 Google Sheet。</p>
 
     <div class="stats">
-      <div class="stat"><div class="stat-num">$${money}</div><div class="stat-label">本期（待領）</div></div>
-      <div class="stat"><div class="stat-num">$${totalPaid}</div><div class="stat-label">累積已領</div></div>
+      <div class="stat"><div class="stat-num">$${totalEver}</div><div class="stat-label">累計賺過</div></div>
+      <div class="stat"><div class="stat-num">$${money}</div><div class="stat-label">尚未領走</div></div>
     </div>
     <div class="stats">
-      <div class="stat"><div class="stat-num">${streak}</div><div class="stat-label">連續天數</div></div>
-      <div class="stat"><div class="stat-num">${completedDays.length}</div><div class="stat-label">累積天數</div></div>
+      <div class="stat"><div class="stat-num">$${totalPaid}</div><div class="stat-label">已領走</div></div>
+      <div class="stat"><div class="stat-num">${streak}</div><div class="stat-label">連續打卡（天）</div></div>
     </div>
 
     <div class="card" style="background:#faf6f1; border:2px solid #8b7aa0;">
@@ -2429,10 +2435,11 @@ function renderSettings() {
 
     <div class="card">
       <h3>目前狀況</h3>
+      <p>🖥️ 這台電腦：<b>${esc(S.getDeviceName() || "未命名")}</b>　<button class="secondary" style="width:auto; padding:4px 10px; font-size:13px; margin-left:8px;" onclick="renameDevice()">改名</button></p>
       <p>連續打卡：${S.getStreak()} 天${S.getStreak() >= STREAK_BONUS_DAYS ? '（獎金 ×2）' : ''}</p>
-      <p>本期零用錢（待領）：$${S.getMoney()}</p>
-      <p>累積已領：$${S.getTotalPaid()}</p>
-      <p>總共賺過：$${S.getMoney() + S.getTotalPaid()}</p>
+      <p>尚未領走：$${S.getMoney()}</p>
+      <p>已領走：$${S.getTotalPaid()}</p>
+      <p>累計賺過：$${S.getMoney() + S.getTotalPaid()}</p>
       <p>今日已賺：$${S.getTodayEarnings()} / $${DAILY_CAP}</p>
       <p>累積練習天數：${S.getCompletedDays().length} 天</p>
     </div>
@@ -2481,6 +2488,15 @@ function handleImport(e) {
   const f = e.target.files[0];
   if (f) S.importAll(f);
   e.target.value = ''; // reset input
+}
+
+function renameDevice() {
+  const current = S.getDeviceName() || "";
+  const newName = prompt("這台電腦叫什麼名字？", current);
+  if (newName && newName.trim()) {
+    S.setDeviceName(newName.trim());
+    render();
+  }
 }
 
 function renderRules() {
@@ -2597,6 +2613,18 @@ function go(screen) {
 }
 
 // ============ INIT ============
+function ensureDeviceName() {
+  let name = S.getDeviceName();
+  if (name) return name;
+  const answer = prompt("🖥️ 這是誰的電腦？（輸入名字，例：謙恩 / 媽媽）\n\n這個名字會記在每筆紀錄上，讓媽媽可以區分是誰做的。");
+  if (answer && answer.trim()) {
+    S.setDeviceName(answer.trim());
+    return answer.trim();
+  }
+  S.setDeviceName("未命名");
+  return "未命名";
+}
+
 async function bootApp() {
   // 先正常 render（即便空的也要看到畫面）
   render();
@@ -2617,6 +2645,9 @@ async function bootApp() {
       }
     }
   }
+
+  // 要求裝置名稱（若還沒設）
+  ensureDeviceName();
 
   // 打開即備份一次（保底；不會覆蓋剛還原的資料）
   setTimeout(() => backupState(), 1500);

@@ -5,7 +5,7 @@ const LOG_SHEET_NAME = "學習紀錄";
 const BACKUP_SHEET_NAME = "state_backups";
 const LOG_HEADERS = [
   "時間", "事件", "單元", "題數", "對",
-  "預測", "獎金", "本期零用錢", "累計已領", "連勝天數", "備註"
+  "預測", "獎金", "本期零用錢", "累計已領", "連續打卡天數", "備註", "裝置"
 ];
 const BACKUP_HEADERS = ["時間戳", "keys_count", "payload_json"];
 
@@ -73,7 +73,8 @@ function doPost(e) {
       body.money ?? "",
       body.totalPaid ?? "",
       body.streak ?? "",
-      body.note || ""
+      body.note || "",
+      body.device || ""
     ]);
     return jsonOut({ ok: true, saved: "log" });
   } catch (err) {
