@@ -682,8 +682,8 @@ const PERFECT_BONUS = 100;    // 全部答對獎金（不計日上限）
 const COMP_QUESTIONS_PER_STORY = 3;  // 閱讀理解每次抽 N 題
 const MIN_PREDICTION_PERCENT = 0.6;  // 預測最低 60%
 
-// 學習紀錄 Apps Script 端點 — 事件會 fire-and-forget POST 到這裡
-const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwMyBcg2umn_D_Zrn6F6_K84ePVzNELvP1V78EZs8afatwFBb24ZmR7v-xwHdbFW0beZw/exec";
+// 學習紀錄 + 自動備份 Apps Script 端點（v2）
+const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzEjVtjfSzV3Ifi53zj2mvalVBLCnT7_Zv3v3TyJ6uR8UfRvgVdYpiyIatAXhyHM3kp8A/exec";
 
 function logEvent(data) {
   if (!LOG_WEBAPP_URL) return;
@@ -706,9 +706,74 @@ function logEvent(data) {
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(payload),
     }).catch(() => {});
+    // 每次事件後自動備份（延遲避免兩個 POST 打架）
+    if (data.event && data.event !== "state_backup") {
+      setTimeout(() => backupState(), 600);
+    }
   } catch (e) {
-    // 不影響使用：log 失敗就當沒這回事
+    // log 失敗不影響使用
   }
+}
+
+// 自動雲端備份：把當前 localStorage 完整 POST 到 GAS → backup sheet
+// 空狀態不備份（避免蓋掉之前的好資料）
+function backupState() {
+  if (!LOG_WEBAPP_URL) return;
+  if (isEmptyLocalState()) return;
+  try {
+    const payload = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      payload[k] = localStorage.getItem(k);
+    }
+    fetch(LOG_WEBAPP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        event: "state_backup",
+        payload: JSON.stringify(payload),
+        keysCount: Object.keys(payload).length,
+      }),
+    }).catch(() => {});
+  } catch (e) {}
+}
+
+function isEmptyLocalState() {
+  if (S.getMoney() > 0) return false;
+  if (S.getTotalPaid() > 0) return false;
+  if (S.getCompletedDays().length > 0) return false;
+  // 任何學習紀錄都算非空
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && (k.startsWith('mastery_') || k.startsWith('tested_') || k.startsWith('lastQuiz_') || k.startsWith('perfectChain_'))) {
+      return false;
+    }
+  }
+  return true;
+}
+
+async function tryFetchBackup() {
+  if (!LOG_WEBAPP_URL) return null;
+  try {
+    const res = await fetch(LOG_WEBAPP_URL + "?action=restore");
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.ok || !data.payload) return null;
+    return data; // {ok, timestamp, keysCount, payload}
+  } catch (e) {
+    return null;
+  }
+}
+
+function applyBackup(payloadStr) {
+  try {
+    const map = JSON.parse(payloadStr);
+    for (const k in map) {
+      localStorage.setItem(k, map[k]);
+    }
+    return true;
+  } catch (e) { return false; }
 }
 
 // ============ STORAGE ============
@@ -1334,12 +1399,18 @@ function renderHome() {
     : `🔥 連續 ${streak} 天${streak > 0 ? `（再 ${STREAK_BONUS_DAYS - streak} 天獎金加倍）` : ''}`;
 
   const totalPaid = S.getTotalPaid();
+  const totalEver = money + totalPaid;
+  const completedDays = S.getCompletedDays().length;
   app.innerHTML = `
     <h1>英文練習</h1>
     <p class="muted">每天 15 分鐘，比昨天進步一點點就好</p>
     <div class="stats">
-      <div class="stat"><div class="stat-num">$${money}</div><div class="stat-label">本期零用錢（待領）</div></div>
-      <div class="stat"><div class="stat-num">$${totalPaid}</div><div class="stat-label">累積已領</div></div>
+      <div class="stat"><div class="stat-num">$${totalEver}</div><div class="stat-label">總共賺過（累積）</div></div>
+      <div class="stat"><div class="stat-num">$${money}</div><div class="stat-label">本期（待媽媽發）</div></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">🔥 ${streak}</div><div class="stat-label">連續打卡</div></div>
+      <div class="stat"><div class="stat-num">${completedDays}</div><div class="stat-label">累積練習天</div></div>
     </div>
     <div class="card">
       <p>${streakInfo}</p>
@@ -1348,17 +1419,12 @@ function renderHome() {
       <div class="streak-row">${streakRow}</div>
       <p class="muted" style="margin-top:12px;">${esc(doneText)}</p>
       ${atCap ? '<p class="muted" style="color:#6b9080; margin-top:8px;">✓ 今日上限已達！繼續練習不加錢，但可以繼續學。</p>' : ''}
+      ${money > 0 ? `<p class="muted" style="margin-top:8px;">累積已領 $${totalPaid}　·　本期待領 $${money}${money >= 100 ? '（媽媽可以發給你了）' : `（再存 $${100 - money} 就可以請媽媽發）`}</p>` : ''}
     </div>
     <button onclick="go('unitList')">🗂️ 單字練習</button>
     <button class="secondary" onclick="go('sapList')">📖 SAP 閱讀（讀完答題領錢）</button>
-    ${money >= 100
-      ? `<button class="secondary" onclick="S.claimMoney()">💰 媽媽發錢（領走 $${money}）</button>`
-      : money > 0
-        ? `<button class="secondary" disabled style="opacity:0.5; cursor:not-allowed;">💰 存滿 $100 才能領（還差 $${100 - money}）</button>`
-        : ''}
     <button class="secondary" onclick="go('rules')">📋 看獎勵規則</button>
-    <button class="secondary" onclick="go('parent')">📊 家長總覽</button>
-    <button class="secondary" onclick="go('settings')">設定</button>
+    <button class="secondary" onclick="go('parent')">📊 家長總覽（含發錢）</button>
   `;
 }
 
@@ -2290,6 +2356,18 @@ function renderParent() {
       <div class="stat"><div class="stat-num">${completedDays.length}</div><div class="stat-label">累積天數</div></div>
     </div>
 
+    <div class="card" style="background:#faf6f1; border:2px solid #8b7aa0;">
+      <h3>💰 發錢（提領）</h3>
+      <p class="muted" style="margin-bottom:10px;">
+        孩子累積到 $100 以上，按這裡把本期轉到「累積已領」。記得把現金給他。
+      </p>
+      ${money >= 100
+        ? `<button onclick="S.claimMoney()">💰 發放 $${money} 給孩子</button>`
+        : money > 0
+          ? `<button disabled style="opacity:0.5; cursor:not-allowed;">本期 $${money}（還差 $${100 - money} 才能發）</button>`
+          : `<button disabled style="opacity:0.5; cursor:not-allowed;">本期 $0（等孩子做練習）</button>`}
+    </div>
+
     <div class="card">
       <h3>今天（${todayStr}）</h3>
       <p>今日已賺：$${todayEarned} / $${DAILY_CAP}</p>
@@ -2310,13 +2388,38 @@ function renderParent() {
     <div class="card">
       <h3>完整紀錄（自動上傳）</h3>
       <p class="muted" style="font-size:14px; margin-bottom:10px;">
-        每次測驗、領獎、領錢都自動記在 Google Sheet，可看歷史。
+        每次測驗、領獎、領錢都自動記在 Google Sheet，可看歷史。<br>
+        <b>另外</b>：每次做完活動會把整個進度備份到同一個 Sheet 的 <code>state_backups</code> tab，保險用。
       </p>
       <button class="secondary" onclick="window.open('https://docs.google.com/spreadsheets/d/10B3Cd6o3Bl1JoOgHwpy5rw-LDj419Z6xZPvichEhQqo/', '_blank')">開啟學習紀錄 Sheet ↗</button>
+      <button class="secondary" onclick="manualRestore()">🔄 從雲端還原最新備份</button>
+      <button class="secondary" onclick="backupState(); alert('已手動備份')">💾 立刻備份</button>
+    </div>
+
+    <div class="card">
+      <h3>設定與進階</h3>
+      <button class="secondary" onclick="go('settings')">⚙️ 打開設定頁（匯出/匯入 JSON、重設）</button>
     </div>
 
     <button onclick="go('home')">回首頁</button>
   `;
+}
+
+async function manualRestore() {
+  const backup = await tryFetchBackup();
+  if (!backup || !backup.payload) {
+    alert("雲端沒有備份");
+    return;
+  }
+  const msg = `雲端最新備份：${backup.timestamp}（${backup.keysCount} 筆資料）\n\n確定要還原？這會覆蓋目前的本地資料。`;
+  if (confirm(msg)) {
+    if (applyBackup(backup.payload)) {
+      alert("還原完成！");
+      render();
+    } else {
+      alert("還原失敗，格式異常");
+    }
+  }
 }
 
 function renderSettings() {
@@ -2494,7 +2597,31 @@ function go(screen) {
 }
 
 // ============ INIT ============
-render();
+async function bootApp() {
+  // 先正常 render（即便空的也要看到畫面）
+  render();
+
+  // 如果本地是空狀態（新裝置 或 被 Safari 清掉），嘗試從雲端還原
+  if (isEmptyLocalState()) {
+    const backup = await tryFetchBackup();
+    if (backup && backup.payload && backup.payload.length > 20) {
+      const msg = `🔄 雲端找到 ${backup.timestamp} 的備份（${backup.keysCount} 筆資料）。\n\n` +
+                  `要還原嗎？\n\n` +
+                  `• 是你原本的資料 → 按確定\n` +
+                  `• 這是新的裝置、不想還原 → 按取消`;
+      if (confirm(msg)) {
+        if (applyBackup(backup.payload)) {
+          alert("還原完成！");
+        }
+        render();
+      }
+    }
+  }
+
+  // 打開即備份一次（保底；不會覆蓋剛還原的資料）
+  setTimeout(() => backupState(), 1500);
+}
+bootApp();
 </script>
 </body>
 </html>

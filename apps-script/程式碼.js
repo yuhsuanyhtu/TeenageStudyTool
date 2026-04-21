@@ -1,12 +1,13 @@
-// TeenageStudyTool — 學習紀錄 Apps Script 端點
-// 接收 app 送來的事件，寫進學習紀錄 Sheet
+// TeenageStudyTool — 學習紀錄 + 自動雲端備份 Apps Script 端點
 
 const LOG_SHEET_ID = "10B3Cd6o3Bl1JoOgHwpy5rw-LDj419Z6xZPvichEhQqo";
 const LOG_SHEET_NAME = "學習紀錄";
-const HEADERS = [
+const BACKUP_SHEET_NAME = "state_backups";
+const LOG_HEADERS = [
   "時間", "事件", "單元", "題數", "對",
   "預測", "獎金", "本期零用錢", "累計已領", "連勝天數", "備註"
 ];
+const BACKUP_HEADERS = ["時間戳", "keys_count", "payload_json"];
 
 function getLogSheet_() {
   const ss = SpreadsheetApp.openById(LOG_SHEET_ID);
@@ -14,18 +15,33 @@ function getLogSheet_() {
   if (!ws) {
     ws = ss.insertSheet(LOG_SHEET_NAME);
   }
-  // 確保有 header
-  const lastCol = ws.getLastColumn();
-  if (lastCol === 0) {
-    ws.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+  if (ws.getLastColumn() === 0) {
+    ws.getRange(1, 1, 1, LOG_HEADERS.length).setValues([LOG_HEADERS]);
     ws.setFrozenRows(1);
-    const range = ws.getRange(1, 1, 1, HEADERS.length);
+    const range = ws.getRange(1, 1, 1, LOG_HEADERS.length);
     range.setFontWeight("bold");
     range.setBackground("#6b9080");
     range.setFontColor("#ffffff");
+  }
+  return ws;
+}
+
+function getBackupSheet_() {
+  const ss = SpreadsheetApp.openById(LOG_SHEET_ID);
+  let ws = ss.getSheetByName(BACKUP_SHEET_NAME);
+  if (!ws) {
+    ws = ss.insertSheet(BACKUP_SHEET_NAME);
+  }
+  if (ws.getLastColumn() === 0) {
+    ws.getRange(1, 1, 1, BACKUP_HEADERS.length).setValues([BACKUP_HEADERS]);
+    ws.setFrozenRows(1);
+    const range = ws.getRange(1, 1, 1, BACKUP_HEADERS.length);
+    range.setFontWeight("bold");
+    range.setBackground("#8b7aa0");
+    range.setFontColor("#ffffff");
     ws.setColumnWidth(1, 160);
-    ws.setColumnWidth(2, 120);
-    ws.setColumnWidth(3, 120);
+    ws.setColumnWidth(2, 90);
+    ws.setColumnWidth(3, 600);
   }
   return ws;
 }
@@ -33,10 +49,21 @@ function getLogSheet_() {
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
-    const ws = getLogSheet_();
     const now = new Date();
-    const row = [
-      Utilities.formatDate(now, "Asia/Taipei", "yyyy-MM-dd HH:mm:ss"),
+    const ts = Utilities.formatDate(now, "Asia/Taipei", "yyyy-MM-dd HH:mm:ss");
+
+    // 狀態備份寫到另一個 tab
+    if (body.event === "state_backup") {
+      const ws = getBackupSheet_();
+      const payloadStr = typeof body.payload === "string" ? body.payload : JSON.stringify(body.payload || {});
+      ws.appendRow([ts, body.keysCount || "", payloadStr]);
+      return jsonOut({ ok: true, saved: "backup" });
+    }
+
+    // 一般學習紀錄
+    const ws = getLogSheet_();
+    ws.appendRow([
+      ts,
       body.event || "",
       body.unit || "",
       body.quizSize ?? "",
@@ -47,36 +74,52 @@ function doPost(e) {
       body.totalPaid ?? "",
       body.streak ?? "",
       body.note || ""
-    ];
-    ws.appendRow(row);
-    return ContentService
-      .createTextOutput(JSON.stringify({ ok: true }))
-      .setMimeType(ContentService.MimeType.JSON);
+    ]);
+    return jsonOut({ ok: true, saved: "log" });
   } catch (err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ ok: false, error: String(err) }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonOut({ ok: false, error: String(err) });
   }
 }
 
 function doGet(e) {
-  // 健康檢查：打開 URL 用瀏覽器看會看到這段
+  // 還原端點：回傳最後一筆備份
+  if (e && e.parameter && e.parameter.action === "restore") {
+    try {
+      const ws = getBackupSheet_();
+      const vals = ws.getDataRange().getValues();
+      if (vals.length <= 1) return jsonOut({ ok: false, error: "尚無備份" });
+      const last = vals[vals.length - 1];
+      return jsonOut({ ok: true, timestamp: String(last[0]), keysCount: last[1], payload: String(last[2]) });
+    } catch (err) {
+      return jsonOut({ ok: false, error: String(err) });
+    }
+  }
+  // 健康檢查
+  return jsonOut({
+    ok: true,
+    service: "TeenageStudyTool log endpoint",
+    hint: "POST JSON to log, or GET ?action=restore for latest backup"
+  });
+}
+
+function jsonOut(obj) {
   return ContentService
-    .createTextOutput(JSON.stringify({
-      ok: true,
-      service: "TeenageStudyTool log endpoint",
-      hint: "POST JSON here to log an event."
-    }))
+    .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-// 手動測試用：在 Apps Script 編輯器點「執行」就會寫一筆測試資料
+// 手動測試用
 function testLog() {
   const ws = getLogSheet_();
   ws.appendRow([
     Utilities.formatDate(new Date(), "Asia/Taipei", "yyyy-MM-dd HH:mm:ss"),
-    "test",
-    "testing",
-    10, 8, 6, 30, 70, 0, 3, "手動測試"
+    "test", "testing", 10, 8, 6, 30, 70, 0, 3, "手動測試"
+  ]);
+}
+function testBackup() {
+  const ws = getBackupSheet_();
+  ws.appendRow([
+    Utilities.formatDate(new Date(), "Asia/Taipei", "yyyy-MM-dd HH:mm:ss"),
+    2, JSON.stringify({money: 40, streak: 3})
   ]);
 }
