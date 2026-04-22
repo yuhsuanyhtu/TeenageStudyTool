@@ -1083,7 +1083,7 @@ function logEvent(data) {
       money: S.getMoney(),
       totalPaid: S.getTotalPaid(),
       streak: S.getStreak(),
-      device: S.getDeviceName() || "",
+      user: S.getUserName() || "",
     };
     fetch(LOG_WEBAPP_URL, {
       method: "POST",
@@ -1119,6 +1119,7 @@ function backupState() {
         event: "state_backup",
         payload: JSON.stringify(payload),
         keysCount: Object.keys(payload).length,
+        user: S.getUserName() || "",
       }),
     }).catch(() => {});
   } catch (e) {}
@@ -1128,27 +1129,104 @@ function isEmptyLocalState() {
   if (S.getMoney() > 0) return false;
   if (S.getTotalPaid() > 0) return false;
   if (S.getCompletedDays().length > 0) return false;
-  // 任何學習紀錄都算非空
+  // 任何學習紀錄都算非空（相容前綴版 {user}:mastery_xxx 與舊無前綴版）
+  const user = S.getUserName();
+  const prefix = user ? (user + ':') : '';
   for (let i = 0; i < localStorage.length; i++) {
     const k = localStorage.key(i);
-    if (k && (k.startsWith('mastery_') || k.startsWith('tested_') || k.startsWith('lastQuiz_') || k.startsWith('perfectChain_'))) {
+    if (!k) continue;
+    if (k.startsWith('__')) continue; // 內部 flag 不算
+    const rel = prefix && k.startsWith(prefix) ? k.slice(prefix.length) : k;
+    if (rel.startsWith('mastery_') || rel.startsWith('tested_') || rel.startsWith('lastQuiz_') || rel.startsWith('perfectChain_')) {
       return false;
     }
   }
   return true;
 }
 
-async function tryFetchBackup() {
+async function tryFetchBackup(user) {
   if (!LOG_WEBAPP_URL) return null;
   try {
-    const res = await fetch(LOG_WEBAPP_URL + "?action=restore");
+    const params = new URLSearchParams({ action: "restore" });
+    if (user) params.set("user", user);
+    const res = await fetch(LOG_WEBAPP_URL + "?" + params.toString());
     if (!res.ok) return null;
     const data = await res.json();
-    if (!data.ok || !data.payload) return null;
-    return data; // {ok, timestamp, keysCount, payload}
+    if (!data.ok || data.found === false || !data.payload) return null;
+    return data; // {ok, found, timestamp, user, keysCount, payload}
   } catch (e) {
     return null;
   }
+}
+
+// POST 一筆遷移前快照到 Sheet 的 migration_snapshots 分頁（保險用）
+function postMigrationSnapshot(user, snapshot, note) {
+  if (!LOG_WEBAPP_URL) return;
+  try {
+    fetch(LOG_WEBAPP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        event: "migration_snapshot",
+        user: user || "",
+        payload: JSON.stringify(snapshot || {}),
+        keysCount: Object.keys(snapshot || {}).length,
+        note: note || "",
+      }),
+    }).catch(() => {});
+  } catch (e) {}
+}
+
+// 判斷一個 localStorage key 是不是「尚未加上使用者前綴的舊 key」
+function isLegacyScopedKey(k) {
+  if (!k) return false;
+  if (k === 'userName') return false;          // 使用者名字本身
+  if (k.includes(':')) return false;            // 已經是前綴版
+  if (k.startsWith('__')) return false;         // 內部旗標（如 __migration_backup_*）
+  const exact = ['money', 'totalPaid', 'streak', 'completedDays', 'deviceName', 'rate'];
+  if (exact.includes(k)) return true;
+  const prefixes = ['mastery_', 'tested_', 'lastQuiz_', 'prefSize_', 'dayUnit_', 'earn_', 'seen_', 'perfectChain_'];
+  return prefixes.some(p => k.startsWith(p));
+}
+
+// 把舊 key（無前綴）搬到 {user}:key 格式。若本機沒有舊 key 就 no-op。
+// 搬家前會 (A) POST 雲端快照 (B) 本機複製一份到 __migration_backup_{user}
+function migrateOldKeysIfNeeded(user) {
+  if (!user) return false;
+  const snapshot = {};
+  const keysToMove = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && isLegacyScopedKey(k)) {
+      keysToMove.push(k);
+      snapshot[k] = localStorage.getItem(k);
+    }
+  }
+  if (keysToMove.length === 0) return false;
+
+  // 保險 A：雲端快照（async，失敗不擋搬家，因為本機還有保險 B）
+  postMigrationSnapshot(user, snapshot, "Stage 2 自動遷移舊 localStorage key");
+
+  // 保險 B：本機完整複製（__ 開頭 key 永不會被遷移規則動到）
+  try {
+    localStorage.setItem('__migration_backup_' + user, JSON.stringify({
+      ts: new Date().toISOString(),
+      data: snapshot,
+    }));
+  } catch (e) {}
+
+  // 搬家：舊 key → {user}:舊 key，然後刪舊 key
+  for (const k of keysToMove) {
+    const newKey = user + ':' + k;
+    // 若新 key 已存在（理論上不該發生），保留新 key 的值，不覆蓋
+    if (localStorage.getItem(newKey) === null) {
+      localStorage.setItem(newKey, localStorage.getItem(k));
+    }
+    localStorage.removeItem(k);
+  }
+  localStorage.setItem('__migrated_' + user, new Date().toISOString());
+  return true;
 }
 
 function applyBackup(payloadStr) {
@@ -1163,11 +1241,25 @@ function applyBackup(payloadStr) {
 
 // ============ STORAGE ============
 const S = {
+  // 依當前使用者決定 localStorage 實際 key：`{user}:xxx`
+  // 例外：'userName' 本身不加前綴（否則死循環）
+  _userPrefix() {
+    const raw = localStorage.getItem('userName');
+    if (!raw) return '';
+    try {
+      const u = JSON.parse(raw);
+      return (typeof u === 'string' && u) ? (u + ':') : '';
+    } catch { return ''; }
+  },
+  _scopedKey(key) {
+    if (key === 'userName') return key;
+    return S._userPrefix() + key;
+  },
   get(key, def) {
-    try { const v = localStorage.getItem(key); return v === null ? def : JSON.parse(v); }
+    try { const v = localStorage.getItem(S._scopedKey(key)); return v === null ? def : JSON.parse(v); }
     catch { return def; }
   },
-  set(key, val) { localStorage.setItem(key, JSON.stringify(val)); },
+  set(key, val) { localStorage.setItem(S._scopedKey(key), JSON.stringify(val)); },
   todayStr() {
     const d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
@@ -1179,8 +1271,14 @@ const S = {
   getStreak() { return S.get('streak', 0); },
   getMoney() { return S.get('money', 0); },
   getTotalPaid() { return S.get('totalPaid', 0); },
-  getDeviceName() { return S.get('deviceName', ''); },
-  setDeviceName(name) { S.set('deviceName', name); },
+  getUserName() {
+    // userName 是全域 key（不加前綴）
+    try { const v = localStorage.getItem('userName'); return v === null ? '' : JSON.parse(v); }
+    catch { return ''; }
+  },
+  setUserName(name) {
+    localStorage.setItem('userName', JSON.stringify(name));
+  },
   // 媽媽實際發出現金後點這個：把待領零用錢轉到「累積已領」，待領歸 0
   // 規則：至少要存滿 $100 才能領
   claimMoney() {
@@ -1560,9 +1658,9 @@ function tryRewardUnit(unitName) {
   };
 }
 
-// 額外的「贏自己預測」獎金（$10，套用日上限）
+// 達成或超越自己預測的獎金（$10，套用日上限）
 function tryPredictionBonus(unitName, actualScore, prediction) {
-  if (prediction === null || actualScore <= prediction) return null;
+  if (prediction === null || actualScore < prediction) return null;
   const earned = S.getTodayEarnings();
   if (earned >= DAILY_CAP) return { amount: 0, capReached: true };
   const bonus = Math.min(10, DAILY_CAP - earned);
@@ -1788,10 +1886,10 @@ function renderHome() {
   const totalPaid = S.getTotalPaid();
   const totalEver = money + totalPaid;
   const completedDays = S.getCompletedDays().length;
-  const deviceName = S.getDeviceName() || "未命名";
+  const userName = S.getUserName() || "未命名";
   app.innerHTML = `
     <h1>英文練習</h1>
-    <p class="muted">每天 15 分鐘，比昨天進步一點點就好　·　🖥️ ${esc(deviceName)} 的電腦</p>
+    <p class="muted">每天 15 分鐘，比昨天進步一點點就好　·　👤 ${esc(userName)}</p>
     <div class="stats">
       <div class="stat"><div class="stat-num">$${totalEver}</div><div class="stat-label">累計賺過</div></div>
       <div class="stat"><div class="stat-num">$${money}</div><div class="stat-label">尚未領（等媽媽發）</div></div>
@@ -2730,12 +2828,12 @@ function renderParent() {
     </div>`;
   }).join('');
 
-  const deviceName = S.getDeviceName() || "未命名";
+  const userName = S.getUserName() || "未命名";
   const totalEver = money + totalPaid;
   app.innerHTML = `
     <a class="back-link" onclick="go('home')">‹ 回首頁</a>
     <h2>📊 家長總覽</h2>
-    <p class="muted" style="margin-bottom:16px;">這台電腦（<b>${esc(deviceName)}</b>）的紀錄。跨裝置紀錄請看 Google Sheet。</p>
+    <p class="muted" style="margin-bottom:16px;"><b>${esc(userName)}</b> 的紀錄。多使用者紀錄請看 Google Sheet。</p>
 
     <div class="stats">
       <div class="stat"><div class="stat-num">$${totalEver}</div><div class="stat-label">累計賺過</div></div>
@@ -2819,7 +2917,7 @@ function renderSettings() {
 
     <div class="card">
       <h3>目前狀況</h3>
-      <p>🖥️ 這台電腦：<b>${esc(S.getDeviceName() || "未命名")}</b>　<button class="secondary" style="width:auto; padding:4px 10px; font-size:13px; margin-left:8px;" onclick="renameDevice()">改名</button></p>
+      <p>👤 使用者：<b>${esc(S.getUserName() || "未命名")}</b></p>
       <p>連續打卡：${S.getStreak()} 天${S.getStreak() >= STREAK_BONUS_DAYS ? '（獎金 ×2）' : ''}</p>
       <p>尚未領走：$${S.getMoney()}</p>
       <p>已領走：$${S.getTotalPaid()}</p>
@@ -2872,15 +2970,6 @@ function handleImport(e) {
   const f = e.target.files[0];
   if (f) S.importAll(f);
   e.target.value = ''; // reset input
-}
-
-function renameDevice() {
-  const current = S.getDeviceName() || "";
-  const newName = prompt("這台電腦叫什麼名字？", current);
-  if (newName && newName.trim()) {
-    S.setDeviceName(newName.trim());
-    render();
-  }
 }
 
 function renderRules() {
@@ -2997,43 +3086,65 @@ function go(screen) {
 }
 
 // ============ INIT ============
-function ensureDeviceName() {
-  let name = S.getDeviceName();
-  if (name) return name;
-  const answer = prompt("🖥️ 這是誰的電腦？（輸入名字，例：謙恩 / 媽媽）\n\n這個名字會記在每筆紀錄上，讓媽媽可以區分是誰做的。");
-  if (answer && answer.trim()) {
-    S.setDeviceName(answer.trim());
-    return answer.trim();
+// 取得使用者名字；沒有就彈窗問（預設「謙恩」，不接受空白）
+// 無縫升級：若本機有舊的 deviceName（且非「未命名」）→ 當作 userName 存起來，不打擾使用者
+function ensureUserName() {
+  let name = S.getUserName();
+  if (name && name.trim()) return name.trim();
+
+  // 從舊版 deviceName 升級（謙恩的電腦走這條，不會看到彈窗）
+  const legacyRaw = localStorage.getItem('deviceName');
+  if (legacyRaw) {
+    try {
+      const legacy = JSON.parse(legacyRaw);
+      if (typeof legacy === 'string' && legacy.trim() && legacy.trim() !== '未命名') {
+        S.setUserName(legacy.trim());
+        return legacy.trim();
+      }
+    } catch {}
   }
-  S.setDeviceName("未命名");
-  return "未命名";
+
+  // 彈窗問（預設「謙恩」）— 空白會重問
+  while (true) {
+    const answer = prompt("👤 你是誰？\n\n按 Enter 就是「謙恩」；其他人幫忙測試請輸入自己的名字。", "謙恩");
+    // 使用者按「取消」→ 視同接受預設值
+    if (answer === null) {
+      S.setUserName('謙恩');
+      return '謙恩';
+    }
+    const trimmed = answer.trim();
+    if (!trimmed) {
+      alert("名字不能空白，請再輸入一次。");
+      continue;
+    }
+    S.setUserName(trimmed);
+    return trimmed;
+  }
 }
 
 async function bootApp() {
-  // 先正常 render（即便空的也要看到畫面）
+  // 1. 確定使用者名字（若無則彈窗；謙恩的電腦會從 deviceName 無縫升級，不會看到彈窗）
+  const user = ensureUserName();
+
+  // 2. 把舊的無前綴 key 遷移成 {user}:key（第一次會 POST 一份快照到雲端保險）
+  migrateOldKeysIfNeeded(user);
+
+  // 3. 先 render（即便空狀態也要立刻看到畫面）
   render();
 
-  // 如果本地是空狀態（新裝置 或 被 Safari 清掉），嘗試從雲端還原
+  // 4. 本地是空狀態（新使用者 / 無痕模式新視窗）→ 嘗試從雲端還原該使用者的資料
   if (isEmptyLocalState()) {
-    const backup = await tryFetchBackup();
+    const backup = await tryFetchBackup(user);
     if (backup && backup.payload && backup.payload.length > 20) {
-      const msg = `🔄 雲端找到 ${backup.timestamp} 的備份（${backup.keysCount} 筆資料）。\n\n` +
-                  `要還原嗎？\n\n` +
-                  `• 是你原本的資料 → 按確定\n` +
-                  `• 這是新的裝置、不想還原 → 按取消`;
-      if (confirm(msg)) {
-        if (applyBackup(backup.payload)) {
-          alert("還原完成！");
-        }
+      if (applyBackup(backup.payload)) {
+        // 若雲端備份是舊版（無前綴 key），還原後再搬一次
+        migrateOldKeysIfNeeded(user);
         render();
       }
     }
   }
 
-  // 要求裝置名稱（若還沒設）
-  ensureDeviceName();
-
-  // 打開即備份一次（保底；不會覆蓋剛還原的資料）
+  // 5. 打開即備份一次（保底）
   setTimeout(() => backupState(), 1500);
 }
 bootApp();
