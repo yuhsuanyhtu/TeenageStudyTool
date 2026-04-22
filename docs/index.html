@@ -1447,17 +1447,37 @@ const S = {
   },
   // 媽媽實際發出現金後點這個：把待領零用錢轉到「累積已領」，待領歸 0
   // 規則：至少要存滿 $100 才能領
-  claimMoney() {
-    const amt = S.getMoney();
-    if (amt < 100) {
-      alert(`至少要 $100 才能領錢。\n\n目前待領零用錢：$${amt}\n還差 $${100 - amt} 就能領。`);
+  // Story C：媽媽指定發多少（必須 $100 倍數，不超過待領）
+  claimMoney(amount) {
+    const money = S.getMoney();
+    if (money < 100) {
+      alert(`至少要 $100 才能領錢。\n\n目前待領零用錢：$${money}\n還差 $${100 - money} 就能領。`);
       return;
     }
-    if (!confirm(`確認要發出 $${amt} 給孩子嗎？\n\n「待領零用錢」會歸 0，「累積已領」會加 $${amt}。`)) return;
-    S.set('totalPaid', S.getTotalPaid() + amt);
-    S.set('money', 0);
-    logEvent({ event: "claim", amount: -amt, note: `媽媽發 $${amt}` });
-    alert(`發出 $${amt}！記得把現金給孩子 💰\n\n累積已領：$${S.getTotalPaid()}`);
+    if (!Number.isInteger(amount) || amount <= 0 || amount % 100 !== 0) {
+      alert(`發放金額必須是 $100 的倍數（$100、$200、$300…）。`);
+      return;
+    }
+    if (amount > money) {
+      alert(`不能發超過待領金額。\n\n待領只有 $${money}，不能發 $${amount}。`);
+      return;
+    }
+    const newMoney = money - amount;
+    const newTotalPaid = S.getTotalPaid() + amount;
+    if (!confirm(
+      `確認發 $${amount} 給孩子？\n\n` +
+      `待領零用錢：$${money} → $${newMoney}\n` +
+      `累計已領：$${S.getTotalPaid()} → $${newTotalPaid}\n\n` +
+      `記得把現金給孩子 💰`
+    )) return;
+    S.set('totalPaid', newTotalPaid);
+    S.set('money', newMoney);
+    logEvent({ event: "claim", amount: -amount, note: `媽媽發 $${amount}` });
+    alert(
+      `✅ 已發 $${amount}！\n\n` +
+      `待領剩：$${newMoney}${newMoney > 0 ? '（繼續累積）' : ''}\n` +
+      `累計已領：$${newTotalPaid}`
+    );
     render();
   },
   getCompletedDays() { return S.get('completedDays', []); },
@@ -1631,6 +1651,29 @@ const state = {
 // ============ HELPERS ============
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+
+// Story C：發錢按鈕群（金額必須 $100 倍數，動態依當前 money 生成）
+function renderClaimButtons(money) {
+  if (money < 100) {
+    if (money <= 0) {
+      return `<button disabled style="opacity:0.5; cursor:not-allowed;">待領 $0（等孩子做練習）</button>`;
+    }
+    return `<button disabled style="opacity:0.5; cursor:not-allowed;">待領 $${money}（再存 $${100 - money} 才能發）</button>`;
+  }
+  const maxClaim = Math.floor(money / 100) * 100;
+  const buttons = [];
+  for (let n = 100; n <= maxClaim; n += 100) {
+    buttons.push(`<button onclick="S.claimMoney(${n})" style="margin:0 6px 6px 0;">💰 發 $${n}</button>`);
+  }
+  const remainder = money - maxClaim;
+  const hint = remainder > 0
+    ? `可選 $100 倍數，最多 $${maxClaim}；剩 $${remainder} 繼續累積。`
+    : `可選 $100 倍數，最多 $${maxClaim}（全部發完）。`;
+  return `
+    <div style="margin-bottom:8px;">${buttons.join('')}</div>
+    <p class="muted" style="font-size:13px; margin:0;">${hint}</p>
+  `;
 }
 function unitProgress(unitName) {
   const words = VOCAB[unitName];
@@ -3013,13 +3056,10 @@ function renderParent() {
     <div class="card" style="background:#faf6f1; border:2px solid #8b7aa0;">
       <h3>💰 發錢（提領）</h3>
       <p class="muted" style="margin-bottom:10px;">
-        孩子累積到 $100 以上，按這裡把待領零用錢轉到「累積已領」。記得把現金給他。
+        累積到 $100 以上才能發。金額必須 <b>$100 的倍數</b>，可以不用一次清光——
+        例：待領 $250，可以只發 $100 或 $200，剩下繼續累積。
       </p>
-      ${money >= 100
-        ? `<button onclick="S.claimMoney()">💰 發放 $${money} 給孩子</button>`
-        : money > 0
-          ? `<button disabled style="opacity:0.5; cursor:not-allowed;">待領 $${money}（還差 $${100 - money} 才能發）</button>`
-          : `<button disabled style="opacity:0.5; cursor:not-allowed;">待領 $0（等孩子做練習）</button>`}
+      ${renderClaimButtons(money)}
     </div>
 
     <div class="card">
@@ -3221,11 +3261,9 @@ function renderSettings() {
       <h3>媽媽發錢</h3>
       <p class="muted" style="margin-bottom:10px;">
         現金實際給孩子後按這個，把「待領零用錢」轉到「累積已領」。<br>
-        <b>規則：至少存滿 $100 才能領</b>（避免小額頻繁兌換）。
+        <b>規則：金額必須 $100 的倍數</b>，可分次發（例：$250 可發 $100 或 $200，剩下繼續累積）。
       </p>
-      ${S.getMoney() >= 100
-        ? `<button onclick="S.claimMoney()">💰 發放 $${S.getMoney()}（領走待領零用錢）</button>`
-        : `<button disabled style="opacity:0.5; cursor:not-allowed;">💰 還差 $${100 - S.getMoney()} 才能領</button>`}
+      ${renderClaimButtons(S.getMoney())}
     </div>
 
     <div class="card">
