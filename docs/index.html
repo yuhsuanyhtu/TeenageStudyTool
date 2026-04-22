@@ -2712,44 +2712,84 @@ function renderQuizResult() {
   else if (correct === prediction) headline = `跟預測一樣準，對 ${correct} 題`;
   else headline = `這次對 ${correct} / ${size} 題`;
 
-  // 獎勵顯示
-  const rewardLines = [];
-  if (perfectBonus && perfectBonus.amount > 0) {
-    const chainNote = perfectBonus.chain > 1
-      ? `（連續第 ${perfectBonus.chain} 天滿分，每天減半）`
-      : '（第一次滿分這課）';
-    rewardLines.push(`🎉 全對獎金 +$${perfectBonus.amount}！${chainNote}`);
-  }
-  if (predBonus && predBonus.amount > 0) rewardLines.push(`贏自己預測 +$${predBonus.amount}`);
-  if (reward && reward.amount > 0) {
-    rewardLines.push(reward.streakBonus
-      ? `完成${esc(state.currentUnit)}完整循環 +$${reward.amount}（連續 ${reward.streak} 天 ×2）`
-      : `完成${esc(state.currentUnit)}完整循環 +$${reward.amount}`);
-  }
-
-  // 缺哪些步驟（弱字模式不顯示）
-  const dayUnit = S.getDayUnit(state.currentUnit);
-  const hasStory = STORIES[state.currentUnit] && STORIES[state.currentUnit].length > 0;
+  const unitName = state.currentUnit;
+  const totalUnitWords = (VOCAB[unitName] || []).length;
+  const isWholeUnit = size === totalUnitWords; // 考整課所有單字
+  const dayUnit = S.getDayUnit(unitName);
+  const hasStory = STORIES[unitName] && STORIES[unitName].length > 0;
   const steps = [
-    { key: 'flashcards', label: '單字卡看完' },
+    { key: 'flashcards', label: '單字卡' },
     { key: 'quiz', label: '中翻英測驗' },
   ];
-  if (hasStory) steps.push({ key: 'story', label: '故事讀完' }, { key: 'comp', label: '閱讀理解' });
-  const stepsHtml = steps.map(s => `<div>${dayUnit[s.key] ? '✓' : '○'} ${s.label}</div>`).join('');
+  if (hasStory) steps.push({ key: 'story', label: '故事' }, { key: 'comp', label: '閱讀理解' });
 
-  let rewardCardHtml;
-  if (rewardLines.length > 0) {
-    rewardCardHtml = `<div class="card" style="background:#d7e9d7;">
-      ${rewardLines.map(l => `<p><b>${l}</b></p>`).join('')}
-      <p style="margin-top:8px;">累積零用錢 $${S.getMoney()}　今日已領 $${S.getTodayEarnings()} / $${DAILY_CAP}</p>
+  // Story G：分成「拿到的獎」和「沒拿到但接近的鼓勵」兩類訊息，一次顯示所有
+  const gotMsgs = [];
+  const missMsgs = [];
+
+  if (!wasWeakMode) {
+    // ── 拿到的獎 ──
+    if (perfectBonus && perfectBonus.amount > 0) {
+      const chainNote = perfectBonus.chain > 1
+        ? `（連續第 ${perfectBonus.chain} 天滿分、每天減半）`
+        : '（第一次滿分這課）';
+      gotMsgs.push(`💎 <b>整課全對 +$${perfectBonus.amount}</b>${chainNote}`);
+    }
+    if (predBonus && predBonus.amount > 0 && prediction !== null) {
+      if (correct > prediction) {
+        gotMsgs.push(`✅ <b>你預測 ${prediction} 題、實際答對 ${correct} 題 — 超越預測 ${correct - prediction} 題！+$${predBonus.amount}</b>`);
+      } else {
+        gotMsgs.push(`✅ <b>你預測 ${prediction} 題、實際答對 ${correct} 題 — 達成預測！+$${predBonus.amount}</b>`);
+      }
+    }
+    if (reward && reward.amount > 0) {
+      gotMsgs.push(`🎁 <b>完成 ${esc(unitName)} 整個循環 +$${reward.amount}</b>`);
+      if (reward.streakBonus) {
+        gotMsgs.push(`🔥 <b>連續 ${reward.streak} 天，獎金 ×2！</b>`);
+      }
+    }
+
+    // ── 沒拿到但接近的鼓勵 ──
+    // 沒達成預測
+    if (!predBonus && prediction !== null && correct < prediction) {
+      const diff = prediction - correct;
+      missMsgs.push(`😊 你預測 ${prediction} 題、實際答對 ${correct} 題。再多 ${diff} 題就達標，下次會更近的！`);
+    }
+    // 差 1 題 perfect（必須是考整課所有單字，且差 1 題）
+    if (!perfectBonus && isWholeUnit && correct === size - 1) {
+      missMsgs.push(`💎 這次對 ${correct}/${size} — 差 1 題就拿 $${PERFECT_BONUS} 全對獎金！明天再挑戰一次`);
+    }
+    // 沒完成單元循環（缺步驟就提示缺哪些）
+    if (!reward) {
+      const missingSteps = steps.filter(s => !dayUnit[s.key]).map(s => s.label);
+      if (missingSteps.length > 0) {
+        missMsgs.push(`🎁 再完成「${missingSteps.join('、')}」就能拿 $${REWARD_PER_UNIT} 完整循環獎！`);
+      }
+    }
+    // 日上限碰到（循環完成但 amount=0）
+    if (reward && reward.amount === 0 && reward.capReached) {
+      missMsgs.push(`🏁 這課做完了 👏 不過今天已達每日上限 $${DAILY_CAP}，不再加錢（明天繼續）`);
+    }
+  }
+
+  // ── 組 HTML ──
+  let rewardCardHtml = '';
+  if (gotMsgs.length > 0) {
+    rewardCardHtml += `<div class="card" style="background:#d7e9d7;">
+      ${gotMsgs.map(m => `<p style="margin:6px 0;">${m}</p>`).join('')}
+      <p style="margin-top:10px; font-size:14px;">累積待領 $${S.getMoney()}　·　今日已賺 $${S.getTodayEarnings()} / $${DAILY_CAP}</p>
     </div>`;
-  } else if (wasWeakMode) {
+  }
+  if (missMsgs.length > 0) {
+    rewardCardHtml += `<div class="card" style="background:#eef4fa;">
+      ${missMsgs.map(m => `<p style="margin:6px 0;">${m}</p>`).join('')}
+    </div>`;
+  }
+  if (wasWeakMode) {
     rewardCardHtml = `<div class="card"><p class="muted">弱字複習是加強練習，不算完整循環。繼續加油 💪</p></div>`;
-  } else {
-    rewardCardHtml = `<div class="card">
-      <p class="muted" style="margin-bottom:8px;">還沒拿到完整循環獎勵，再完成這些步驟才有 $${REWARD_PER_UNIT}：</p>
-      ${stepsHtml}
-    </div>`;
+  } else if (gotMsgs.length === 0 && missMsgs.length === 0) {
+    // 極罕見 fallback：沒拿、也沒鼓勵訊息（通常不會發生）
+    rewardCardHtml = `<div class="card"><p class="muted">這次沒拿到獎勵，明天再挑戰 💪</p></div>`;
   }
 
   // 重設弱字模式旗標，避免下次測驗還是弱字模式
