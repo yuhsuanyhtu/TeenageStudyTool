@@ -183,6 +183,46 @@ function doGet(e) {
     }
   }
 
+  // Debug 端點：?action=all&days=N 回傳最近 N 天所有列（不過濾使用者，只過濾 test*/diag*）
+  // 用來查「某天有沒有任何紀錄、使用者欄位是誰」
+  if (e && e.parameter && e.parameter.action === "all") {
+    try {
+      const days = Math.max(1, Math.min(30, Number(e.parameter.days) || 3));
+      const ws = getLogSheet_();
+      const vals = ws.getDataRange().getValues();
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - days);
+      const rows = [];
+      for (let i = 1; i < vals.length; i++) {
+        const row = vals[i];
+        const tsRaw = row[0];
+        let tsDate, tsStr;
+        if (tsRaw instanceof Date) {
+          tsDate = tsRaw;
+          tsStr = Utilities.formatDate(tsRaw, "Asia/Taipei", "yyyy-MM-dd HH:mm:ss");
+        } else {
+          tsStr = String(tsRaw);
+          tsDate = new Date(tsStr);
+        }
+        if (isNaN(tsDate) || tsDate < cutoff) continue;
+        const eventName = (row[1] || "").toString();
+        if (/^(test|diag)/i.test(eventName)) continue;
+        rows.push({
+          timestamp: tsStr,
+          event: eventName,
+          unit: row[2] === "" ? null : String(row[2]),
+          amount: row[6] === "" ? null : Number(row[6]),
+          note: row[10] === "" ? "" : String(row[10]),
+          user: (row[11] || "").toString(),
+        });
+      }
+      rows.sort(function (a, b) { return a.timestamp < b.timestamp ? -1 : a.timestamp > b.timestamp ? 1 : 0; });
+      return jsonOut({ ok: true, days: days, count: rows.length, rows: rows });
+    } catch (err) {
+      return jsonOut({ ok: false, error: String(err) });
+    }
+  }
+
   // 還原端點：按使用者撈最後一筆備份
   if (e && e.parameter && e.parameter.action === "restore") {
     try {
