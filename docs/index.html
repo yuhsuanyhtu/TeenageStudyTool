@@ -1159,6 +1159,30 @@ async function tryFetchBackup(user) {
   }
 }
 
+// Story E：帶 timeout + 狀態回報版本，給 bootApp loading 流程用
+// 回傳 {status: 'found'|'empty'|'timeout'|'error', data?}
+async function tryFetchBackupOrFail(user, timeoutMs) {
+  if (!LOG_WEBAPP_URL) return { status: 'error', reason: 'no-endpoint' };
+  if (!user) return { status: 'error', reason: 'no-user' };
+  const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
+  try {
+    const params = new URLSearchParams({ action: "restore", user });
+    const opts = ctrl ? { signal: ctrl.signal } : {};
+    const res = await fetch(LOG_WEBAPP_URL + "?" + params.toString(), opts);
+    if (timer) clearTimeout(timer);
+    if (!res.ok) return { status: 'error', reason: 'http-' + res.status };
+    const data = await res.json();
+    if (!data.ok) return { status: 'error', reason: data.error || 'server-error' };
+    if (data.found === false || !data.payload) return { status: 'empty' };
+    return { status: 'found', data };
+  } catch (e) {
+    if (timer) clearTimeout(timer);
+    if (e && e.name === 'AbortError') return { status: 'timeout' };
+    return { status: 'error', reason: String(e) };
+  }
+}
+
 // POST 一筆遷移前快照到 Sheet 的 migration_snapshots 分頁（保險用）
 function postMigrationSnapshot(user, snapshot, note) {
   if (!LOG_WEBAPP_URL) return;
@@ -3389,6 +3413,44 @@ function ensureUserName() {
   }
 }
 
+// Story E loading UI（A 方案）— App 啟動時先顯示，等雲端資料回來再進首頁
+function renderLoading(user) {
+  app.innerHTML = `
+    <div style="text-align:center; padding:80px 20px;">
+      <div style="font-size:56px; margin-bottom:16px;">✨</div>
+      <p style="font-size:18px; font-weight:bold; margin-bottom:8px;">${esc(user)}，正在從雲端載入進度…</p>
+      <p class="muted" style="font-size:14px;">第一次開啟比較慢，請稍候</p>
+    </div>
+  `;
+}
+
+function renderRestoreError(user, result) {
+  const reason = result && result.status === 'timeout' ? '雲端回應太慢（超過 8 秒）' : '雲端連不上';
+  app.innerHTML = `
+    <div style="text-align:center; padding:40px 20px;">
+      <div style="font-size:56px; margin-bottom:12px;">😵</div>
+      <p style="font-size:18px; font-weight:bold; margin-bottom:8px;">${reason}</p>
+      <p class="muted" style="font-size:14px; margin-bottom:24px;">
+        網路可能有問題，或 Google 伺服器忙。<br>
+        <b>${esc(user)}</b> 這台裝置本機沒有進度，沒辦法顯示最新狀態。
+      </p>
+      <div style="display:flex; flex-direction:column; gap:10px; max-width:280px; margin:0 auto;">
+        <button onclick="location.reload()">🔄 重試（重新載入）</button>
+        <button class="secondary" onclick="skipRestoreAndContinue()">以空白狀態繼續</button>
+      </div>
+      <p class="muted" style="font-size:12px; margin-top:24px;">
+        （按「以空白狀態繼續」會當新使用者開始，之後連上雲端時會自動備份）
+      </p>
+    </div>
+  `;
+}
+
+function skipRestoreAndContinue() {
+  state.screen = 'home';
+  render();
+  setTimeout(() => backupState(), 1500);
+}
+
 async function bootApp() {
   // 1. 確定使用者名字（若無則彈窗；謙恩的電腦會從 deviceName 無縫升級，不會看到彈窗）
   const user = ensureUserName();
@@ -3396,23 +3458,32 @@ async function bootApp() {
   // 2. 把舊的無前綴 key 遷移成 {user}:key（第一次會 POST 一份快照到雲端保險）
   migrateOldKeysIfNeeded(user);
 
-  // 3. 先 render（即便空狀態也要立刻看到畫面）
-  render();
-
-  // 4. 本地是空狀態（新使用者 / 無痕模式新視窗）→ 嘗試從雲端還原該使用者的資料
-  if (isEmptyLocalState()) {
-    const backup = await tryFetchBackup(user);
-    if (backup && backup.payload && backup.payload.length > 20) {
-      if (applyBackup(backup.payload)) {
-        // 若雲端備份是舊版（無前綴 key），還原後再搬一次
-        migrateOldKeysIfNeeded(user);
-        render();
-      }
-    }
+  // 3. A 方案：本機有資料直接進首頁；本機空則先顯示 loading 等雲端
+  const hadLocal = !isEmptyLocalState();
+  if (hadLocal) {
+    render();
+    setTimeout(() => backupState(), 1500);
+    return;
   }
 
-  // 5. 打開即備份一次（保底）
-  setTimeout(() => backupState(), 1500);
+  // 本機空 → 先 loading
+  renderLoading(user);
+
+  const result = await tryFetchBackupOrFail(user, 8000);
+  if (result.status === 'found' && result.data.payload && result.data.payload.length > 20) {
+    if (applyBackup(result.data.payload)) {
+      migrateOldKeysIfNeeded(user); // 雲端若是舊版（無前綴 key）再搬一次
+    }
+    render();
+    setTimeout(() => backupState(), 1500);
+  } else if (result.status === 'empty') {
+    // 雲端也沒資料 → 全新使用者，進首頁空狀態
+    render();
+    setTimeout(() => backupState(), 1500);
+  } else {
+    // timeout / error → 顯示錯誤頁，讓使用者決定
+    renderRestoreError(user, result);
+  }
 }
 bootApp();
 </script>
