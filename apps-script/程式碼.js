@@ -139,6 +139,50 @@ function doPost(e) {
 }
 
 function doGet(e) {
+  // 事件清單端點：給前端重算狀態用
+  // ?action=events&user=XXX → 回傳該使用者所有學習紀錄事件（由舊到新）
+  if (e && e.parameter && e.parameter.action === "events") {
+    try {
+      const wantUser = (e.parameter.user || "").toString().trim();
+      if (!wantUser) {
+        return jsonOut({ ok: false, error: "missing user param" });
+      }
+      const ws = getLogSheet_();
+      const vals = ws.getDataRange().getValues();
+      // vals[0] = header：時間、事件、單元、題數、對、預測、獎金、待領零用錢、累計已領、連續打卡天數、備註、使用者
+      const events = [];
+      for (let i = 1; i < vals.length; i++) {
+        const row = vals[i];
+        const rowUser = (row[11] || "").toString().trim();
+        if (rowUser !== wantUser) continue; // 過濾其他人 & 空 user（系統測試）
+        const eventName = (row[1] || "").toString();
+        if (!eventName) continue;
+        // 過濾 test*/diag* 事件（雙保險）
+        if (/^(test|diag)/i.test(eventName)) continue;
+        // 時間欄：Sheet 可能把字串轉成 Date 物件，統一格式化成 yyyy-MM-dd HH:mm:ss
+        const tsRaw = row[0];
+        const tsStr = (tsRaw instanceof Date)
+          ? Utilities.formatDate(tsRaw, "Asia/Taipei", "yyyy-MM-dd HH:mm:ss")
+          : String(tsRaw);
+        events.push({
+          timestamp: tsStr,
+          event: eventName,
+          unit: row[2] === "" ? null : String(row[2]),
+          quizSize: row[3] === "" ? null : Number(row[3]),
+          correct: row[4] === "" ? null : Number(row[4]),
+          prediction: row[5] === "" ? null : Number(row[5]),
+          amount: row[6] === "" ? null : Number(row[6]),
+          note: row[10] === "" ? "" : String(row[10]),
+        });
+      }
+      // 附表頭時間已是順序寫入（appendRow 都追加在最後），時間字串可直接比字典序（yyyy-MM-dd HH:mm:ss）
+      events.sort(function (a, b) { return a.timestamp < b.timestamp ? -1 : a.timestamp > b.timestamp ? 1 : 0; });
+      return jsonOut({ ok: true, user: wantUser, count: events.length, events: events });
+    } catch (err) {
+      return jsonOut({ ok: false, error: String(err) });
+    }
+  }
+
   // 還原端點：按使用者撈最後一筆備份
   if (e && e.parameter && e.parameter.action === "restore") {
     try {
@@ -203,7 +247,7 @@ function doGet(e) {
   return jsonOut({
     ok: true,
     service: "TeenageStudyTool log endpoint",
-    hint: "POST JSON to log, or GET ?action=restore&user=xxx for latest backup"
+    hint: "POST JSON to log, GET ?action=restore&user=xxx for latest backup, GET ?action=events&user=xxx for event list"
   });
 }
 

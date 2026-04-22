@@ -1239,6 +1239,148 @@ function applyBackup(payloadStr) {
   } catch (e) { return false; }
 }
 
+// ============ RECOMPUTE (Story H.1) ============
+// 從 Apps Script 撈當前使用者所有事件
+async function fetchUserEvents(user) {
+  if (!LOG_WEBAPP_URL) return null;
+  if (!user) return null;
+  try {
+    const params = new URLSearchParams({ action: "events", user: user });
+    const res = await fetch(LOG_WEBAPP_URL + "?" + params.toString());
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.ok) return null;
+    return data.events || [];
+  } catch (e) { return null; }
+}
+
+// 純函式：依規格 §3 Story H.1 套用當前規則重跑所有事件
+// events: [{timestamp, event, unit, quizSize, correct, prediction, amount, note}, ...] 由舊到新
+// 回傳 {money, totalPaid, streak, completedDays, todayEarned, summary[], ignored}
+function recomputeFromEvents(events) {
+  let money = 0;
+  let totalPaid = 0;
+  const dayEarned = {};       // {date: 累積當日已賺（不含 perfect_bonus）}
+  const unitDays = new Set(); // 有 unit_reward 的日期
+  const summary = [];
+  let ignored = 0;
+
+  const todayKey = S.todayStr();
+  const dateOf = (ts) => (ts || "").slice(0, 10); // "yyyy-MM-dd HH:mm:ss" → "yyyy-MM-dd"
+
+  // 先掃一次：記錄每 (date + unit) 有哪些 prediction_bonus
+  const predBonusKey = new Set(); // "date|unit"
+  for (const ev of events) {
+    if (ev.event === "prediction_bonus") {
+      predBonusKey.add(dateOf(ev.timestamp) + "|" + (ev.unit || ""));
+    }
+  }
+
+  // 套 DAILY_CAP：回傳實際加到 money 的金額
+  const applyCap = (date, want) => {
+    const used = dayEarned[date] || 0;
+    const room = Math.max(0, DAILY_CAP - used);
+    const actual = Math.min(want, room);
+    dayEarned[date] = used + actual;
+    return actual;
+  };
+
+  for (const ev of events) {
+    const date = dateOf(ev.timestamp);
+    const amt = Number(ev.amount || 0);
+
+    if (ev.event === "unit_reward") {
+      // 信 Sheet 的 amount（已含 x2 倍率），但套 DAILY_CAP
+      const actual = applyCap(date, Math.abs(amt));
+      money += actual;
+      unitDays.add(date);
+      summary.push(`${date} unit_reward +$${actual}${actual !== Math.abs(amt) ? ` (CAP 限制,原本 $${Math.abs(amt)})` : ''}${ev.unit ? ` [${ev.unit}]` : ''}`);
+    } else if (ev.event === "prediction_bonus") {
+      const actual = applyCap(date, Math.abs(amt));
+      money += actual;
+      summary.push(`${date} prediction_bonus +$${actual}${ev.unit ? ` [${ev.unit}]` : ''}`);
+    } else if (ev.event === "perfect_bonus") {
+      // 不套 DAILY_CAP
+      money += Math.abs(amt);
+      summary.push(`${date} perfect_bonus +$${Math.abs(amt)}${ev.unit ? ` [${ev.unit}]` : ''}`);
+    } else if (ev.event === "claim") {
+      // amount 寫入時是負數（例 -100）
+      const paid = Math.abs(amt);
+      money -= paid;
+      totalPaid += paid;
+      summary.push(`${date} claim -$${paid} (媽媽發錢)`);
+    } else if (ev.event === "manual_adjust") {
+      money += amt; // 可正可負
+      const sign = amt >= 0 ? '+' : '-';
+      summary.push(`${date} manual_adjust ${sign}$${Math.abs(amt)} ${ev.note ? `(${ev.note})` : ''}`);
+    } else if (ev.event === "quiz_done" || ev.event === "weak_quiz_done") {
+      // 追溯：對 ≥ 預測 且 (date, unit) 沒有 prediction_bonus → +$10（新規則）
+      const correct = Number(ev.correct || 0);
+      const prediction = Number(ev.prediction || 0);
+      const key = date + "|" + (ev.unit || "");
+      if (ev.event === "quiz_done" && correct >= prediction && prediction > 0 && !predBonusKey.has(key)) {
+        const actual = applyCap(date, 10);
+        if (actual > 0) {
+          money += actual;
+          summary.push(`${date} quiz_done 追溯 +$${actual} (對${correct}≥預測${prediction})${ev.unit ? ` [${ev.unit}]` : ''}`);
+          // 標記：避免同日同單元多筆 quiz_done 都追加（僅補第一筆）
+          predBonusKey.add(key);
+        }
+      }
+    } else {
+      ignored++;
+    }
+  }
+
+  // streak：對齊 Story I 規則
+  // - 第一天：streak=1
+  // - 後續每天：若昨天有完成 → streak+1
+  //             若昨天沒但前天有 → streak 不變（暫停）
+  //             否則 → streak=1（歸 1）
+  const sortedDays = Array.from(unitDays).sort();
+  const daySet = new Set(sortedDays);
+  const addDays = (ymd, delta) => {
+    const d = new Date(ymd + "T00:00:00");
+    d.setDate(d.getDate() + delta);
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  };
+  let streak = 0;
+  for (let i = 0; i < sortedDays.length; i++) {
+    const today = sortedDays[i];
+    if (i === 0) { streak = 1; continue; }
+    const y = addDays(today, -1);
+    const db = addDays(today, -2);
+    if (daySet.has(y)) streak = streak + 1;
+    else if (daySet.has(db)) { /* 暫停，streak 不變 */ }
+    else streak = 1;
+  }
+
+  return {
+    money,
+    totalPaid,
+    streak,
+    completedDays: sortedDays,
+    todayEarned: dayEarned[todayKey] || 0,
+    summary,
+    ignored,
+  };
+}
+
+// 套用重算結果：覆蓋 localStorage + POST state_backup + log recompute 事件
+function applyRecompute(result, beforeState) {
+  S.set('money', result.money);
+  S.set('totalPaid', result.totalPaid);
+  S.set('streak', result.streak);
+  S.set('completedDays', result.completedDays);
+  // today 的 earn_ 也要同步（避免今天後續行為誤判日上限）
+  S.set('earn_' + S.todayStr(), result.todayEarned);
+
+  logEvent({
+    event: "recompute",
+    note: `before money=$${beforeState.money} totalPaid=$${beforeState.totalPaid} streak=${beforeState.streak} → after money=$${result.money} totalPaid=$${result.totalPaid} streak=${result.streak} (掃 ${result.summary.length} 項、忽略 ${result.ignored})`,
+  });
+}
+
 // ============ STORAGE ============
 const S = {
   // 依當前使用者決定 localStorage 實際 key：`{user}:xxx`
@@ -2884,6 +3026,32 @@ function renderParent() {
       <button class="secondary" onclick="backupState(); alert('已手動備份')">💾 立刻備份</button>
     </div>
 
+    <div class="card" style="border:2px solid #c97b6b;">
+      <h3>🛠 資料修復</h3>
+      <p class="muted" style="font-size:14px; margin-bottom:10px;">
+        <b>從 Sheet 重算狀態</b>：若本機數字不對（例如無痕模式遺失、懷疑漏記），<br>
+        掃 Sheet 的事件日誌、套用當前規則重跑一次。會先預覽結果、再讓你確認才套用。
+      </p>
+      <button class="secondary" onclick="triggerRecompute()">🔄 從 Sheet 重算狀態</button>
+
+      <hr style="margin:16px 0; border:none; border-top:1px solid #ddd;">
+
+      <h4 style="margin:12px 0 8px;">✏️ 手動補正（加減待領零用錢）</h4>
+      <p class="muted" style="font-size:14px; margin-bottom:10px;">
+        直接調整「待領零用錢」。正數加錢（補償、鼓勵），負數扣錢（誤發、收回）。<br>
+        每次補正都會寫一筆 <code>manual_adjust</code> 事件到 Sheet，可追溯。
+      </p>
+      <div style="margin-bottom:8px;">
+        <label style="display:block; font-size:14px; margin-bottom:4px;">金額（例：+70 或 -20）</label>
+        <input id="manual-adjust-amount" type="number" placeholder="正數加、負數扣" style="width:100%; padding:8px; font-size:16px; box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="display:block; font-size:14px; margin-bottom:4px;">理由（必填）</label>
+        <input id="manual-adjust-reason" type="text" placeholder="例：補償 4/18-4/19 遺失" style="width:100%; padding:8px; font-size:16px; box-sizing:border-box;">
+      </div>
+      <button class="secondary" onclick="triggerManualAdjust()">套用補正</button>
+    </div>
+
     <div class="card">
       <h3>設定與進階</h3>
       <button class="secondary" onclick="go('settings')">⚙️ 打開設定頁（匯出/匯入 JSON、重設）</button>
@@ -2891,6 +3059,105 @@ function renderParent() {
 
     <button onclick="go('home')">回首頁</button>
   `;
+}
+
+// Story H.2：手動補正待領零用錢（寫 manual_adjust 事件）
+function triggerManualAdjust() {
+  const amountEl = document.getElementById('manual-adjust-amount');
+  const reasonEl = document.getElementById('manual-adjust-reason');
+  const amount = parseInt(amountEl?.value, 10);
+  const reason = (reasonEl?.value || "").trim();
+
+  if (!Number.isFinite(amount) || amount === 0) {
+    alert("請輸入非 0 的整數金額（正數加、負數扣）");
+    amountEl?.focus();
+    return;
+  }
+  if (!reason) {
+    alert("請填理由（例：補償遺失日、收回誤發）");
+    reasonEl?.focus();
+    return;
+  }
+  const before = S.getMoney();
+  const after = before + amount;
+  const sign = amount >= 0 ? '+' : '-';
+
+  if (!confirm(
+    `✏️ 確認補正 ${S.getUserName()}\n\n` +
+    `金額：${sign}$${Math.abs(amount)}\n` +
+    `理由：${reason}\n\n` +
+    `待領：$${before} → $${after}\n\n` +
+    `按確定會寫一筆 manual_adjust 事件到 Sheet。`
+  )) return;
+
+  S.set('money', after);
+  logEvent({ event: "manual_adjust", amount: amount, note: reason });
+  alert(
+    `✅ 補正完成\n\n` +
+    `待領零用錢：$${after}\n\n` +
+    `已寫 manual_adjust 事件到 Sheet。`
+  );
+  render();
+}
+
+// Story H.1：從 Sheet 重算狀態（兩段 confirm）
+async function triggerRecompute() {
+  const user = S.getUserName();
+  if (!user) { alert("還沒設定使用者名字"); return; }
+
+  const before = {
+    money: S.getMoney(),
+    totalPaid: S.getTotalPaid(),
+    streak: S.getStreak(),
+  };
+
+  const ok1 = confirm(
+    `🔄 從 Sheet 重算 ${user} 的狀態\n\n` +
+    `目前：待領 $${before.money}、累計已領 $${before.totalPaid}、連續打卡 ${before.streak} 天\n\n` +
+    `將掃 Google Sheet「學習紀錄」中所有 ${user} 的事件、套用當前規則重算，然後覆蓋本機。\n\n` +
+    `這個動作是安全的（會再給一次確認預覽），要繼續嗎？`
+  );
+  if (!ok1) return;
+
+  const events = await fetchUserEvents(user);
+  if (events === null) {
+    alert("抓 Sheet 失敗（網路 or Apps Script 出錯）");
+    return;
+  }
+  if (events.length === 0) {
+    alert(`Sheet 上沒有 ${user} 的任何事件紀錄。無法重算。`);
+    return;
+  }
+
+  const result = recomputeFromEvents(events);
+  const diffMoney = result.money - before.money;
+  const diffStreak = result.streak - before.streak;
+  const sign = (n) => n > 0 ? `+$${n}` : n < 0 ? `-$${Math.abs(n)}` : '±$0';
+
+  // 摘要只顯示前 30 筆避免 confirm 窗太長
+  const shownSummary = result.summary.slice(0, 30).join('\n');
+  const moreLine = result.summary.length > 30 ? `\n… 另 ${result.summary.length - 30} 項（詳見 Sheet）` : '';
+
+  const ok2 = confirm(
+    `📋 重算結果預覽（${user}）\n\n` +
+    `  待領：$${before.money} → $${result.money}（${sign(diffMoney)}）\n` +
+    `  累計已領：$${before.totalPaid} → $${result.totalPaid}\n` +
+    `  連續打卡：${before.streak} 天 → ${result.streak} 天（${diffStreak >= 0 ? '+' : ''}${diffStreak}）\n` +
+    `  今日已賺：$${result.todayEarned}\n` +
+    `  有練習的天數：${result.completedDays.length} 天\n\n` +
+    `處理事件：${result.summary.length} 項（忽略 ${result.ignored} 項）\n\n` +
+    `----- 明細 -----\n${shownSummary}${moreLine}\n\n` +
+    `確定套用嗎？會覆蓋目前的本機狀態，並寫一筆 recompute 事件到 Sheet。`
+  );
+  if (!ok2) return;
+
+  applyRecompute(result, before);
+  alert(
+    `✅ 重算完成\n\n` +
+    `待領 $${result.money}、累計已領 $${result.totalPaid}、連續 ${result.streak} 天\n\n` +
+    `已寫 recompute 事件到 Sheet。`
+  );
+  render();
 }
 
 async function manualRestore() {
