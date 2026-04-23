@@ -1100,6 +1100,56 @@ function logEvent(data) {
   }
 }
 
+// 測驗中途離開（關瀏覽器 / 切頁面 / 按回首頁）記錄一筆 quiz_abandoned
+// 用 navigator.sendBeacon 確保頁面關閉前真的送出
+let _abandonedSent = false;
+function logQuizAbandoned(reason) {
+  if (!LOG_WEBAPP_URL) return;
+  if (_abandonedSent) return; // 同一次測驗只記一次，避免 pagehide + go 重複觸發
+  if (!state || state.screen !== 'quizQuestion') return;
+  const answered = state.quizResults ? state.quizResults.length : 0;
+  const total = state.quizQueue ? state.quizQueue.length : 0;
+  if (answered === 0 || total === 0) return; // 還沒答任何題就不記（避免雜訊）
+  if (answered >= total) return; // 已做完整套，不算 abandoned
+  _abandonedSent = true;
+  const correct = state.quizResults.filter(r => r.correct).length;
+  const payload = {
+    event: state.quizWeakMode ? "weak_quiz_abandoned" : "quiz_abandoned",
+    unit: state.currentUnit,
+    quizSize: total,
+    correct,
+    prediction: state.quizPrediction,
+    note: `中途離開（${reason}，做到第 ${answered}/${total} 題）`,
+    money: S.getMoney(),
+    totalPaid: S.getTotalPaid(),
+    streak: S.getStreak(),
+    user: S.getUserName() || "",
+  };
+  try {
+    const body = JSON.stringify(payload);
+    const blob = new Blob([body], { type: 'text/plain;charset=utf-8' });
+    const sent = (typeof navigator !== 'undefined' && navigator.sendBeacon)
+      ? navigator.sendBeacon(LOG_WEBAPP_URL, blob)
+      : false;
+    if (!sent) {
+      // fallback: fetch keepalive
+      fetch(LOG_WEBAPP_URL, {
+        method: 'POST', mode: 'no-cors', keepalive: true,
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body,
+      }).catch(() => {});
+    }
+  } catch (e) {}
+}
+
+// pagehide 比 beforeunload 可靠（支援 mobile BFCache）
+if (typeof window !== 'undefined') {
+  window.addEventListener('pagehide', () => logQuizAbandoned('關瀏覽器'));
+}
+
+// 進入新測驗時重置旗標
+function resetAbandonedFlag() { _abandonedSent = false; }
+
 // 自動雲端備份：把當前 localStorage 完整 POST 到 GAS → backup sheet
 // 空狀態不備份（避免蓋掉之前的好資料）
 function backupState() {
@@ -2492,6 +2542,7 @@ function renderQuizStart() {
     state.quizPrediction = null; // 弱字模式無預測
     state.quizResults = [];
     state.quizFeedback = null;
+    resetAbandonedFlag();
     state.screen = 'quizQuestion';
     render();
     return;
@@ -2578,6 +2629,7 @@ function startQuiz() {
   state.quizPrediction = p;
   state.quizResults = [];
   state.quizFeedback = null;
+  resetAbandonedFlag();
   state.screen = 'quizQuestion';
   render();
 }
@@ -3446,6 +3498,10 @@ function renderRules() {
 }
 
 function go(screen) {
+  // Story G+：從 quizQuestion 切走且不是去 quizResult → 中途放棄，記一筆
+  if (state.screen === 'quizQuestion' && screen !== 'quizResult') {
+    logQuizAbandoned('切換畫面');
+  }
   state.screen = screen;
   if (screen === 'learn') {
     state.learnIndex = 0;
