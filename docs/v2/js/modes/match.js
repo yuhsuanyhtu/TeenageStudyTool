@@ -12,7 +12,7 @@
 // 完成回呼：
 //   onComplete({ sessionCorrect, totalQuestions, wrongAttempts, message, usedWords })
 
-import { speak, speakZh } from '../tts.js';
+import { speak } from '../tts.js';
 
 const PAIRS_PER_ROUND = 6;
 
@@ -101,8 +101,7 @@ export function startMatchMode({ root, words, onComplete, seenSet }) {
     } else {
       const wasSelected = state.selectedZh === idx;
       state.selectedZh = wasSelected ? null : idx;
-      // v2.12：點中文 → 唸中文發音（確認選擇）
-      if (!wasSelected) speakZh(cards[idx].zh);
+      // 點中文不唸（媽媽 2026-05-16 要求）
     }
 
     if (state.selectedEn !== null && state.selectedZh !== null) {

@@ -12,7 +12,7 @@
 //   - 帶括號的單字（如 "pencil case (= pencil box)"）允許括號內外兩種寫法
 //   - "year(s) old" 允許 year old / years old
 
-import { speak, speakZh, speakEnThenZh, speakSpell } from '../tts.js';
+import { speak, speakSpell } from '../tts.js';
 
 const QUESTIONS_PER_ROUND = 8;
 
@@ -79,8 +79,7 @@ export function startZh2EnMode({ root, words, onComplete, seenSet }) {
       });
     });
 
-    // 自動唸中文提示（讓孩子用聽覺輔助理解題目）
-    setTimeout(() => speakZh(zh), 200);
+    // 中文提示不唸（媽媽 2026-05-16 要求）
   }
 
   function handleSubmit(skip) {
@@ -100,8 +99,8 @@ export function startZh2EnMode({ root, words, onComplete, seenSet }) {
 
     // 顯示所有可接受的英文寫法（人類友好版本，不是 normalize 後的）
     const allEn = wordsForZh.map(w => w.en);
-    // 不論對錯都唸：英文（拼字+整字）→ 中文，雙語強化
-    speakEnThenZh(allEn[0], zh);
+    // 不論對錯都唸英文（中文不唸 — 媽媽 2026-05-16 要求）
+    speak(allEn[0]);
 
     // 軟化錯誤回饋：不用 ❌、不用「再記一次」這類羞辱性字眼
     const headerCls = isCorrect ? 'feedback-correct' : (skip ? 'feedback-skip' : 'feedback-soft');
@@ -126,7 +125,7 @@ export function startZh2EnMode({ root, words, onComplete, seenSet }) {
       </div>
       <button id="next">${state.idx === round.length - 1 ? '看結果' : '下一題 →'}</button>
     `;
-    root.querySelector('#speak').addEventListener('click', () => speakEnThenZh(allEn[0], zh));
+    root.querySelector('#speak').addEventListener('click', () => speak(allEn[0]));
     root.querySelector('#spell').addEventListener('click', () => speakSpell(allEn[0]));
     root.querySelector('#next').addEventListener('click', () => {
       state.idx++;

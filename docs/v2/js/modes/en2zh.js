@@ -7,7 +7,7 @@
 //   - 用 allWords 當干擾選項池，避免單字數少時抽不出 3 個
 //   - 完全避開舊版「中翻英只接受唯一答案」的設計缺陷
 
-import { speak, speakEnThenZh, speakSpell } from '../tts.js';
+import { speak, speakSpell } from '../tts.js';
 
 const QUESTIONS_PER_ROUND = 8;
 const MIN_DISTRACTORS_NEEDED = 4;  // 1 正解 + 3 干擾
@@ -68,8 +68,10 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
       <div class="en2zh-choices">
         ${choices.map(c => `<button class="choice" data-choice="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}
       </div>
-      <button id="submit" disabled>送出答案</button>
+      <button id="submit">送出答案</button>
     `;
+    // v2.13 後續修：不再 disable 送出按鈕（部分瀏覽器對「剛 enable 的按鈕」第一次點擊會吃掉）
+    // 改成永遠可按，handleSubmit 內已檢查 state.selected===null 會直接 return
 
     root.querySelector('#back').addEventListener('click', () => {
       onComplete({
@@ -83,7 +85,6 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
     root.querySelector('#speak').addEventListener('click', () => speak(w.en));
     root.querySelector('#spell').addEventListener('click', () => speakSpell(w.en));
 
-    const submitBtn = root.querySelector('#submit');
     root.querySelectorAll('.choice').forEach(el => {
       el.addEventListener('click', () => {
         if (state.answered) return;
@@ -92,10 +93,9 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
         // 標目前選的
         el.classList.add('selected');
         state.selected = el.dataset.choice;
-        submitBtn.disabled = false;
       });
     });
-    submitBtn.addEventListener('click', handleSubmit);
+    root.querySelector('#submit').addEventListener('click', handleSubmit);
 
     // 自動唸：只唸整字（拼字按 🔤 按鈕觸發，v2.8 起 default 不拼字）
     setTimeout(() => speak(w.en), 200);
@@ -150,8 +150,8 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
       state.idx++;
       renderQuestion();
     });
-    // 答對／答錯都唸一次「英→中」雙語，強化記憶
-    speakEnThenZh(w.en, w.zh);
+    // 答對／答錯只唸英文（中文不唸 — 媽媽 2026-05-16 要求）
+    speak(w.en);
   }
 
   renderQuestion();
