@@ -13,7 +13,7 @@ import { startMatchMode } from './modes/match.js';
 import { startEn2ZhMode } from './modes/en2zh.js';
 import { startZh2EnMode } from './modes/zh2en.js';
 import { startReviewMode } from './modes/review.js';
-import { logEvent } from './logger.js';
+import { logEvent, logEventBeacon } from './logger.js';
 import { renderRules } from './rules.js';
 
 const root = document.getElementById('app');
@@ -24,6 +24,16 @@ let currentUnit = null;
 (async function init() {
   try {
     appData = await loadAll();
+    // 第一次開：先讓使用者命名這台裝置（不然 Google Sheet 的「裝置」欄會混在一起）
+    if (!state.getDeviceName()) {
+      renderNameDevice();
+      return;
+    }
+    // 開啟時記一筆 session_start，媽媽在 Sheet 看得到誰幾點打開
+    logEvent({
+      event: 'v2_session_start',
+      note: 'v2 開啟',
+    }, s);
     refreshAndRenderHome();
   } catch (e) {
     root.innerHTML = `
@@ -33,6 +43,34 @@ let currentUnit = null;
     `;
   }
 })();
+
+function renderNameDevice() {
+  const suggest = state.guessDeviceName();
+  root.innerHTML = `
+    <h1>幫這台裝置取個名字</h1>
+    <p class="muted">媽媽會在紀錄上看到這個名字，方便分辨是「媽媽電腦」還是「謙恩 iPad」。</p>
+    <p class="muted small">兩台機器要取不一樣的名字（這台不會影響另一台）。</p>
+    <input type="text" id="dev-name" class="zh2en-input"
+      value="${escapeHtml(suggest)}" maxlength="40"
+      placeholder="例：謙恩 iPad、媽媽 Mac">
+    <button id="save">儲存並開始</button>
+  `;
+  const input = root.querySelector('#dev-name');
+  input.focus();
+  input.select();
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); save(); }
+  });
+  root.querySelector('#save').addEventListener('click', save);
+
+  function save() {
+    let name = input.value.trim();
+    if (!name) name = suggest;
+    state.setDeviceName(name);
+    logEvent({ event: 'v2_device_named', note: `命名為「${name}」` }, s);
+    refreshAndRenderHome();
+  }
+}
 
 function refreshAndRenderHome() {
   const r = state.refreshDailyState(s);
@@ -82,8 +120,16 @@ function renderHome() {
         `).join('')
     }
 
-    <p class="muted small center" style="margin-top:24px">v2 · ${state.today()}</p>
+    <p class="muted small center" style="margin-top:24px">
+      v2 · ${state.today()} · 本機名：<b>${escapeHtml(state.getDeviceName() || '(未命名)')}</b>
+      <a href="#" id="rename" style="margin-left:8px; color:#888;">改名</a>
+    </p>
   `;
+  root.querySelector('#rename').addEventListener('click', e => {
+    e.preventDefault();
+    state.setDeviceName('');  // 清空就會觸發命名頁
+    renderNameDevice();
+  });
   root.querySelector('#rules-btn').addEventListener('click', () => {
     renderRules(root, refreshAndRenderHome);
   });
@@ -125,10 +171,18 @@ function renderModePicker() {
   });
 }
 
+// 追蹤目前進行中的 mode，給 pagehide listener 用
+// （孩子直接關瀏覽器時，Sheet 至少能留一筆「沒完成」紀錄）
+let currentModeMeta = null;
+
 function startMode(mode) {
   const words = appData.units[currentUnit];
   root.innerHTML = '';
-  const onComplete = (result) => handleComplete(mode, result);
+  currentModeMeta = { mode, unit: currentUnit, totalQuestions: words.length, startedAt: Date.now() };
+  const onComplete = (result) => {
+    currentModeMeta = null;  // 正常結束不需 pagehide log
+    handleComplete(mode, result);
+  };
   if (mode === 'match') {
     startMatchMode({ root, words, onComplete });
   } else if (mode === 'en2zh') {
@@ -138,6 +192,22 @@ function startMode(mode) {
   } else if (mode === 'review') {
     startReviewMode({ root, words, onComplete });
   }
+}
+
+// 關瀏覽器 / 切到背景時，如果還在 mode 中，送一筆 beacon log
+// （fetch keepalive 也加了，但 sendBeacon 是專門設計給這場景，更可靠）
+if (typeof window !== 'undefined') {
+  window.addEventListener('pagehide', () => {
+    if (currentModeMeta) {
+      logEventBeacon({
+        event: `v2_${currentModeMeta.mode}_pagehide`,
+        unit: currentModeMeta.unit,
+        quizSize: currentModeMeta.totalQuestions,
+        note: `v2 ${currentModeMeta.mode} 關瀏覽器/切背景（沒做完）`,
+      }, s);
+      currentModeMeta = null;
+    }
+  });
 }
 
 function handleComplete(mode, result) {

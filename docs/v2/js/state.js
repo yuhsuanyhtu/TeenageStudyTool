@@ -66,3 +66,29 @@ export function refreshDailyState(state) {
 export function reset() {
   localStorage.removeItem(KEY);
 }
+
+// ===== 裝置名（每台瀏覽器自己取，寫到 Google Sheet 的「裝置」欄） =====
+const DEVICE_KEY = 'sv2.deviceName';
+
+export function getDeviceName() {
+  try { return localStorage.getItem(DEVICE_KEY); } catch (e) { return null; }
+}
+
+export function setDeviceName(name) {
+  try { localStorage.setItem(DEVICE_KEY, String(name).trim().slice(0, 40)); } catch (e) {}
+}
+
+// 依 UA 猜一個合理的預設值
+export function guessDeviceName() {
+  const ua = (typeof navigator !== 'undefined' ? navigator.userAgent : '') || '';
+  let kind = '裝置';
+  if (/iPad/i.test(ua)) kind = 'iPad';
+  else if (/iPhone/i.test(ua)) kind = 'iPhone';
+  else if (/Android.*Mobile/i.test(ua)) kind = 'Android';
+  else if (/Android/i.test(ua)) kind = 'Android平板';
+  else if (/Macintosh/i.test(ua)) kind = 'Mac';
+  else if (/Windows/i.test(ua)) kind = 'Windows';
+  // 加 4 碼隨機讓兩台同型也能分
+  const suffix = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `${kind}-${suffix}`;
+}
