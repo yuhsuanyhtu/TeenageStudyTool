@@ -34,8 +34,7 @@ let syncMessage = '';
       renderNameDevice();
       return;
     }
-    // 開啟時記一筆 session_start
-    logEvent({ event: 'v2_session_start', note: 'v2 開啟' }, s);
+    // v2.9 起不再 log session_start（雜訊太多，每次刷新都會記一筆）
     refreshAndRenderHome();
     // 背景跨裝置同步（不阻塞 UI，完成後 refresh 主畫面數字）
     syncInBackground();
@@ -59,14 +58,15 @@ async function syncInBackground() {
     updateSyncIndicator();
     return;
   }
-  const computed = recomputeFromEvents(result.events, state.today());
+  // v2.9：每台裝置只算自己的紀錄
+  const computed = recomputeFromEvents(result.events, state.today(), state.getDeviceName());
   // 用 Sheet 的數字覆蓋本地（Sheet 是真相）
   s.totalEarned = computed.totalEarned;
   s.todayEarned = computed.todayEarned;
   s.streak = computed.streak;
   state.save(s);
   syncStatus = 'done';
-  syncMessage = `${computed.eventCount} 筆事件、${computed.completedDayCount} 天打卡`;
+  syncMessage = `本機 ${computed.eventCount} 筆、${computed.completedDayCount} 天`;
   updateSyncIndicator();
   // 若還在 home，重 render 反映新數字
   if (document.querySelector('.unit-btn')) {

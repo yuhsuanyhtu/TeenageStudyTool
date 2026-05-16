@@ -29,17 +29,20 @@ export async function fetchV2Events() {
   }
 }
 
-// 從事件流水帳重算狀態
+// 從事件流水帳重算狀態（v2.9 起：每台裝置只算自己的紀錄）
 // 規則：
-//   - 排除 device 開頭是「[測試]」的事件（媽媽測試裝置）
+//   - 只計入 device 等於當前裝置名的事件（不跨裝置加總）
 //   - 只算事件名 endsWith('_done')
 //   - 累計獎金 = 所有 amount 加總
 //   - 今日獎金 = 日期 == todayStr 的 amount 加總
 //   - 打卡日門檻：v2_review_done 一律算；其他 mode 需要 correct ≥ 5
 //   - streak = 從今天往回，連續打卡天數
-export function recomputeFromEvents(events, todayStr) {
+//
+// myDevice：當前裝置名（從 state.getDeviceName 傳入）。null/空 → 不算任何事件
+export function recomputeFromEvents(events, todayStr, myDevice) {
+  const dev = String(myDevice || '').trim();
   const real = (events || []).filter(ev =>
-    !String(ev.device || '').startsWith('[測試]')
+    dev && String(ev.device || '') === dev
   );
 
   let totalEarned = 0;
