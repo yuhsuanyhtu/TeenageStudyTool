@@ -34,11 +34,14 @@ export async function fetchV2Events() {
 //   - 只計入 device 等於當前裝置名的事件（不跨裝置加總）
 //   - 只算事件名 endsWith('_done')
 //   - 累計獎金 = 所有 amount 加總
-//   - 今日獎金 = 日期 == todayStr 的 amount 加總
+//   - 今日獎金 = 日期 == todayStr 的 amount 加總，**v2.10 起套用日上限 $100**
+//     （之前歷史事件因 localStorage 同步亂寫，sum 可能超過 cap，要在 replay 階段壓回去）
 //   - 打卡日門檻：v2_review_done 一律算；其他 mode 需要 correct ≥ 5
 //   - streak = 從今天往回，連續打卡天數
 //
 // myDevice：當前裝置名（從 state.getDeviceName 傳入）。null/空 → 不算任何事件
+import { REWARD_CONFIG } from './reward.js';
+
 export function recomputeFromEvents(events, todayStr, myDevice) {
   const dev = String(myDevice || '').trim();
   const real = (events || []).filter(ev =>
@@ -69,12 +72,19 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
 
   const streak = computeStreak(completedDays, todayStr);
 
+  // v2.10：套用日上限。歷史事件因之前同步亂寫，sum 可能超過 cap，這裡壓回去
+  const rawTodayEarned = todayEarned;
+  const cap = REWARD_CONFIG.dailyCapPreMultiplier;
+  if (todayEarned > cap) todayEarned = cap;
+
   return {
     totalEarned,
     todayEarned,
+    todayPreEarned: todayEarned,   // 用同值（無 streak 時 pre=final）讓本地 cap 檢查正確
     streak,
     eventCount: real.length,
     completedDayCount: completedDays.size,
+    rawTodayEarned,                // 給 debug 用，看歷史 sum 跟 cap 後差多少
   };
 }
 

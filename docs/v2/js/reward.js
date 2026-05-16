@@ -14,7 +14,7 @@ export const REWARD_CONFIG = {
   perCorrect: 2,
   dailyCapPreMultiplier: 100,     // 每日「基礎+按字數」封頂（連勝倍率不算在內）
   minCorrectForBase: 5,
-  reviewBase: 10,                 // 從頭複習一輪固定獎金（pre-multiplier）
+  reviewBase: 20,                 // 從頭複習一輪固定獎金（pre-multiplier）— v2.10 起 10→20 對齊舊版直覺
   streakTiers: [
     { days: 7,  multiplier: 1.2 },
     { days: 14, multiplier: 1.4 },

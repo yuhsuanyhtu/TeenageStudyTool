@@ -63,6 +63,7 @@ async function syncInBackground() {
   // 用 Sheet 的數字覆蓋本地（Sheet 是真相）
   s.totalEarned = computed.totalEarned;
   s.todayEarned = computed.todayEarned;
+  s.todayPreEarned = computed.todayPreEarned;   // v2.10：同步 cap 後的 pre，讓本地 cap 檢查正確
   s.streak = computed.streak;
   state.save(s);
   syncStatus = 'done';
