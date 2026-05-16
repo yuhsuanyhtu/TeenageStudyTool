@@ -191,6 +191,11 @@ button.back:hover { background: transparent; text-decoration: underline; }
   margin: 0;
 }
 .choice:hover { border-color: #6b9080; background: #f8fbfa; }
+.choice.selected {
+  background: #6b9080;
+  border-color: #6b9080;
+  color: white;
+}
 .choice.correct {
   background: #d4edda;
   border-color: #6b9080;
@@ -202,6 +207,7 @@ button.back:hover { background: transparent; text-decoration: underline; }
   border-color: #d98585;
   color: #b34747;
 }
+.choice:disabled { cursor: default; }
 
 .speak-btn {
   display: inline-block;
@@ -317,6 +323,53 @@ button.back:hover { background: transparent; text-decoration: underline; }
 .feedback-correct { color: #2d5a3d; }
 .feedback-wrong { color: #b34747; }
 .feedback-skip { color: #888; }
+
+/* ===== Review (從頭複習) ===== */
+.review-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 20px;
+  margin: 16px 0;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.review-card:hover { background: #f8fbfa; }
+.review-en {
+  font-size: 36px;
+  font-weight: 700;
+  color: #2d2d2d;
+  margin-bottom: 12px;
+  word-break: break-word;
+  line-height: 1.2;
+}
+.review-zh {
+  font-size: 22px;
+  color: #6b9080;
+  margin-bottom: 16px;
+  word-break: break-word;
+  line-height: 1.3;
+}
+.review-controls {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.review-controls button { margin-bottom: 0; }
+.review-controls button:disabled { opacity: 0.4; cursor: not-allowed; }
+.review-progress-bar {
+  height: 8px;
+  background: #e8e4de;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.review-progress-fill {
+  height: 100%;
+  background: #6b9080;
+  transition: width 0.3s;
+}
 
 /* ===== Tablet & up ===== */
 @media (min-width: 700px) {

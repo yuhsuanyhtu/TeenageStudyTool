@@ -77,6 +77,37 @@ export function stopSpeak() {
   if ('speechSynthesis' in window) window.speechSynthesis.cancel();
 }
 
+// 先唸字母拼讀（A-P-P-L-E）再唸整個字
+// 只對「純字母單字」拼讀；詞組或含特殊字元直接唸整段
+export function speakSpellThenWord(text) {
+  if (!('speechSynthesis' in window) || !text) return;
+  window.speechSynthesis.cancel();
+  const trimmed = String(text).trim();
+  const isSingleWord = /^[a-zA-Z]+$/.test(trimmed);
+  if (!isSingleWord) {
+    // 詞組（含空格、標點、連字號）→ 直接唸整段
+    const u = new SpeechSynthesisUtterance(trimmed);
+    u.lang = 'en-US';
+    u.rate = 0.9;
+    if (bestVoice) u.voice = bestVoice;
+    window.speechSynthesis.speak(u);
+    return;
+  }
+  // 字母逐字唸：大寫 + 句號讓 TTS 把每個字母當獨立片段
+  const spelled = trimmed.toUpperCase().split('').join('. ') + '.';
+  const u1 = new SpeechSynthesisUtterance(spelled);
+  u1.lang = 'en-US';
+  u1.rate = 0.6;  // 字母慢慢唸
+  if (bestVoice) u1.voice = bestVoice;
+  window.speechSynthesis.speak(u1);
+  // 接著唸整個字（speechSynthesis 會自動排隊）
+  const u2 = new SpeechSynthesisUtterance(trimmed);
+  u2.lang = 'en-US';
+  u2.rate = 0.9;
+  if (bestVoice) u2.voice = bestVoice;
+  window.speechSynthesis.speak(u2);
+}
+
 export function listVoices() {
   return voicesCache.filter(v => v.lang.toLowerCase().startsWith('en'));
 }

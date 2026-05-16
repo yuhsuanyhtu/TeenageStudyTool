@@ -12,8 +12,9 @@
 export const REWARD_CONFIG = {
   base: 10,
   perCorrect: 2,
-  dailyCapPreMultiplier: 30,
+  dailyCapPreMultiplier: 100,     // 每日「基礎+按字數」封頂（連勝倍率不算在內）
   minCorrectForBase: 5,
+  reviewBase: 10,                 // 從頭複習一輪固定獎金（pre-multiplier）
   streakTiers: [
     { days: 7,  multiplier: 1.2 },
     { days: 14, multiplier: 1.4 },
@@ -66,6 +67,32 @@ export function calcSessionReward({ sessionCorrect, streak, todayPreEarned }) {
     multiplier: mul,
     base: eligibleBase,
     perWord,
+    breakdown,
+  };
+}
+
+// 從頭複習一輪的獎金（固定 reviewBase 元，受日上限與連勝倍率影響）
+// 不依賴 sessionCorrect，只要走完一輪就拿
+export function calcReviewReward({ streak, todayPreEarned }) {
+  const cfg = REWARD_CONFIG;
+  const remainingCap = Math.max(0, cfg.dailyCapPreMultiplier - todayPreEarned);
+  const sessionPre = Math.min(cfg.reviewBase, remainingCap);
+  const mul = streakMultiplier(streak);
+  const sessionFinal = Math.round(sessionPre * mul);
+
+  let breakdown;
+  if (sessionPre === 0) {
+    breakdown = `今天獎金已達上限（${cfg.dailyCapPreMultiplier} 元封頂）。複習仍然有用，明天再來領！`;
+  } else {
+    const mulTxt = mul > 1 ? `　×${mul.toFixed(1)}（連勝 ${streak} 天）` : '';
+    breakdown = `從頭複習一輪 +$${sessionPre}${mulTxt} = $${sessionFinal} 元`;
+  }
+  return {
+    sessionPre,
+    sessionFinal,
+    multiplier: mul,
+    base: sessionPre,
+    perWord: 0,
     breakdown,
   };
 }

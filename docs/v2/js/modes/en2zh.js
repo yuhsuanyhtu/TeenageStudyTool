@@ -1,10 +1,13 @@
 // modes/en2zh.js — 英文 → 中文 4 選 1
-// 為什麼有這個模式：
-//   - 對基礎弱的孩子，「識字」比「拼字」門檻低、信心更穩
-//   - 自動唸發音 + 4 選 1 → 視聽結合
+//
+// 設計：
+//   - 兩階段：先選（可改） → 按「送出」才判定 → 顯示對錯後手動「下一題」
+//     （孩子要求：不要點到就當最後答案）
+//   - 自動先唸字母拼讀（A-P-P-L-E）→ 再唸整字（apple）
+//   - 用 allWords 當干擾選項池，避免單字數少時抽不出 3 個
 //   - 完全避開舊版「中翻英只接受唯一答案」的設計缺陷
 
-import { speak } from '../tts.js';
+import { speak, speakSpellThenWord } from '../tts.js';
 
 const QUESTIONS_PER_ROUND = 8;
 const MIN_DISTRACTORS_NEEDED = 4;  // 1 正解 + 3 干擾
@@ -25,14 +28,14 @@ export function startEn2ZhMode({ root, words, onComplete, allWords }) {
     ? allWords.filter(w => w.en && w.zh)
     : usable;
 
-  const state = { idx: 0, correct: 0, answered: false };
+  const state = { idx: 0, correct: 0, selected: null, answered: false };
 
   function pickDistractors(correctZh) {
     const pool = distractorPool.filter(w => w.zh !== correctZh);
     return shuffle(pool).slice(0, 3).map(w => w.zh);
   }
 
-  function render() {
+  function renderQuestion() {
     if (state.idx >= round.length) {
       onComplete({
         sessionCorrect: state.correct,
@@ -43,6 +46,10 @@ export function startEn2ZhMode({ root, words, onComplete, allWords }) {
     }
     const w = round[state.idx];
     const choices = shuffle([w.zh, ...pickDistractors(w.zh)]);
+    state.choices = choices;
+    state.currentWord = w;
+    state.selected = null;
+    state.answered = false;
 
     root.innerHTML = `
       <button class="back" id="back">← 中途離開</button>
@@ -55,6 +62,7 @@ export function startEn2ZhMode({ root, words, onComplete, allWords }) {
       <div class="en2zh-choices">
         ${choices.map(c => `<button class="choice" data-choice="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}
       </div>
+      <button id="submit" disabled>送出答案</button>
     `;
 
     root.querySelector('#back').addEventListener('click', () => {
@@ -65,34 +73,54 @@ export function startEn2ZhMode({ root, words, onComplete, allWords }) {
         aborted: true,
       });
     });
-    root.querySelector('#speak').addEventListener('click', () => speak(w.en));
+    root.querySelector('#speak').addEventListener('click', () => speakSpellThenWord(w.en));
 
-    state.answered = false;
+    const submitBtn = root.querySelector('#submit');
     root.querySelectorAll('.choice').forEach(el => {
       el.addEventListener('click', () => {
         if (state.answered) return;
-        state.answered = true;
-        const picked = el.dataset.choice;
-        if (picked === w.zh) {
-          el.classList.add('correct');
-          state.correct++;
-          setTimeout(() => { state.idx++; render(); }, 600);
-        } else {
-          el.classList.add('wrong');
-          // 同時把正解標出來，讓孩子學到正確答案
-          root.querySelectorAll('.choice').forEach(b => {
-            if (b.dataset.choice === w.zh) b.classList.add('correct');
-          });
-          setTimeout(() => { state.idx++; render(); }, 1600);
-        }
+        // 取消其他選項的 selected
+        root.querySelectorAll('.choice').forEach(b => b.classList.remove('selected'));
+        // 標目前選的
+        el.classList.add('selected');
+        state.selected = el.dataset.choice;
+        submitBtn.disabled = false;
       });
     });
+    submitBtn.addEventListener('click', handleSubmit);
 
-    // 自動唸題目（首次顯示時），略延遲讓畫面先 render
-    setTimeout(() => speak(w.en), 200);
+    // 自動唸：先拼字母 → 再唸整字
+    setTimeout(() => speakSpellThenWord(w.en), 200);
   }
 
-  render();
+  function handleSubmit() {
+    if (state.answered || state.selected === null) return;
+    state.answered = true;
+    const w = state.currentWord;
+    const isCorrect = state.selected === w.zh;
+    if (isCorrect) state.correct++;
+
+    // 標出對錯
+    root.querySelectorAll('.choice').forEach(b => {
+      b.classList.remove('selected');
+      if (b.dataset.choice === w.zh) b.classList.add('correct');
+      if (b.dataset.choice === state.selected && !isCorrect) b.classList.add('wrong');
+      b.disabled = true;
+    });
+
+    // 換掉送出按鈕為下一題
+    const submitBtn = root.querySelector('#submit');
+    submitBtn.outerHTML = `<button id="next">${state.idx === round.length - 1 ? '看結果' : '下一題 →'}</button>`;
+    root.querySelector('#next').addEventListener('click', () => {
+      state.idx++;
+      renderQuestion();
+    });
+
+    // 答對唸一次正字、答錯也唸一次（強化記憶）
+    speak(w.en);
+  }
+
+  renderQuestion();
 }
 
 function shuffle(arr) {

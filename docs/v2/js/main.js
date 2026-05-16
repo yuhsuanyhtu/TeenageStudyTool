@@ -12,6 +12,7 @@ import { loadAll } from './data-loader.js';
 import { startMatchMode } from './modes/match.js';
 import { startEn2ZhMode } from './modes/en2zh.js';
 import { startZh2EnMode } from './modes/zh2en.js';
+import { startReviewMode } from './modes/review.js';
 import { logEvent } from './logger.js';
 import { renderRules } from './rules.js';
 
@@ -101,13 +102,17 @@ function renderModePicker() {
     <h1>${escapeHtml(currentUnit)}</h1>
     <p class="muted">${words.length} 個單字</p>
 
+    <button class="mode-card" data-mode="review">
+      <div class="mode-title">📖 從頭複習</div>
+      <div class="mode-desc">本課單字一張一張看過，每張會拼字母 + 唸發音。走完一輪自動領基本獎金。</div>
+    </button>
     <button class="mode-card" data-mode="match">
       <div class="mode-title">🔗 連連看</div>
       <div class="mode-desc">英中配對 6 組，輕鬆暖身。多個英文對到同個中文不會誤判。</div>
     </button>
     <button class="mode-card" data-mode="en2zh">
       <div class="mode-title">🇬🇧 → 🇹🇼 英翻中</div>
-      <div class="mode-desc">看英文選中文（4 選 1），自動唸發音。</div>
+      <div class="mode-desc">看英文選中文（4 選 1）。系統會先拼字母（A-P-P-L-E）再唸 apple。</div>
     </button>
     <button class="mode-card" data-mode="zh2en">
       <div class="mode-title">🇹🇼 → 🇬🇧 中翻英</div>
@@ -130,6 +135,8 @@ function startMode(mode) {
     startEn2ZhMode({ root, words, onComplete, allWords: words });
   } else if (mode === 'zh2en') {
     startZh2EnMode({ root, words, onComplete });
+  } else if (mode === 'review') {
+    startReviewMode({ root, words, onComplete });
   }
 }
 
@@ -137,28 +144,41 @@ function handleComplete(mode, result) {
   const today = state.today();
   const sessionCorrect = result.sessionCorrect || 0;
   const totalQuestions = result.totalQuestions || 0;
+  const isReview = mode === 'review';
 
-  // 達門檻才算「今日完成」並更新連勝
-  const reachedThreshold = sessionCorrect >= reward.REWARD_CONFIG.minCorrectForBase;
+  // 達「今日完成」門檻 → 更新連勝
+  //   - 一般測驗：要答對 ≥ minCorrectForBase
+  //   - 複習模式：完整走完整輪也算（mom 說「轉過一次就有基本$」）
+  const reachedThreshold = isReview
+    ? !!result.completed
+    : sessionCorrect >= reward.REWARD_CONFIG.minCorrectForBase;
   let streakChanged = false;
   if (!result.aborted && reachedThreshold && s.lastDate !== today) {
     s = reward.updateStreakOnComplete(s, today);
     streakChanged = true;
   }
 
-  // 計算本回合獎金（中途離開不給獎金）
+  // 計算獎金（中途離開不給；複習用 calcReviewReward；其他用 calcSessionReward）
   let calc;
   if (result.aborted) {
     calc = {
       sessionPre: 0, sessionFinal: 0, multiplier: 1.0, base: 0, perWord: 0,
       breakdown: '中途離開沒有獎金，下次做完整一回再來！',
     };
+  } else if (isReview) {
+    calc = reward.calcReviewReward({
+      streak: s.streak || 0,
+      todayPreEarned: s.todayPreEarned || 0,
+    });
   } else {
     calc = reward.calcSessionReward({
       sessionCorrect,
       streak: s.streak || 0,
       todayPreEarned: s.todayPreEarned || 0,
     });
+  }
+
+  if (!result.aborted) {
     s.todayPreEarned = (s.todayPreEarned || 0) + calc.sessionPre;
     s.todayEarned = (s.todayEarned || 0) + calc.sessionFinal;
     s.todayCorrect = (s.todayCorrect || 0) + sessionCorrect;
@@ -167,7 +187,9 @@ function handleComplete(mode, result) {
   }
 
   // 寫一筆到 Google Sheet
-  const modeLabel = { match: '連連看', en2zh: '英翻中', zh2en: '中翻英' }[mode] || mode;
+  const modeLabel = {
+    match: '連連看', en2zh: '英翻中', zh2en: '中翻英', review: '從頭複習',
+  }[mode] || mode;
   logEvent({
     event: result.aborted ? `v2_${mode}_abandoned` : `v2_${mode}_done`,
     unit: currentUnit,
@@ -175,7 +197,7 @@ function handleComplete(mode, result) {
     correct: sessionCorrect,
     amount: calc.sessionFinal,
     note: result.aborted
-      ? `v2 ${modeLabel} 中途離開（做到 ${sessionCorrect}/${totalQuestions} 題對）`
+      ? `v2 ${modeLabel} 中途離開（做到 ${sessionCorrect}/${totalQuestions}）`
       : `v2 ${modeLabel}`,
   }, s);
 
