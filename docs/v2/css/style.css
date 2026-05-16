@@ -96,8 +96,23 @@ button.back:hover { background: transparent; text-decoration: underline; }
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 4px;
 }
 .unit-btn:hover { background: #f5f0e8; border-color: #6b9080; }
+
+/* 單元進度條：顯示「今天練了幾字」 */
+.unit-progress-bar {
+  height: 4px;
+  background: #e8e4de;
+  border-radius: 2px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.unit-progress-fill {
+  height: 100%;
+  background: #6b9080;
+  transition: width 0.3s;
+}
 
 .mode-card {
   background: white;
@@ -149,16 +164,12 @@ button.back:hover { background: transparent; text-decoration: underline; }
   pointer-events: none;
   visibility: hidden;
 }
+/* 連連看錯配對：靜默 deselect，不抖、不紅，避免觸發焦慮逃避 */
+/* （保留 class 以防未來 debug，但不給視覺效果） */
 .match-card.wrong {
-  background: #fde2e2;
-  border-color: #d98585;
-  color: #b34747;
-  animation: shake 0.4s;
-}
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-6px); }
-  75% { transform: translateX(6px); }
+  background: white;
+  border-color: #d6cdc0;
+  color: #2d2d2d;
 }
 .match-progress { text-align: center; font-weight: 500; }
 
@@ -202,10 +213,11 @@ button.back:hover { background: transparent; text-decoration: underline; }
   color: #2d5a3d;
   font-weight: 600;
 }
+/* 答錯：暖色而非紅色，不觸發焦慮 */
 .choice.wrong {
-  background: #fde2e2;
-  border-color: #d98585;
-  color: #b34747;
+  background: #fef3e0;
+  border-color: #d4a85a;
+  color: #8a5a1a;
 }
 .choice:disabled { cursor: default; }
 
@@ -309,9 +321,9 @@ button.back:hover { background: transparent; text-decoration: underline; }
 }
 .zh2en-userinput.correct { color: #2d5a3d; }
 .zh2en-userinput.wrong {
-  color: #b34747;
+  color: #8a5a1a;
   text-decoration: line-through;
-  text-decoration-color: rgba(179, 71, 71, 0.5);
+  text-decoration-color: rgba(138, 90, 26, 0.4);
 }
 .zh2en-answers {
   font-size: 22px;
@@ -321,7 +333,8 @@ button.back:hover { background: transparent; text-decoration: underline; }
   word-break: break-word;
 }
 .feedback-correct { color: #2d5a3d; }
-.feedback-wrong { color: #b34747; }
+.feedback-wrong { color: #b34747; }      /* 已不用，保留向下相容 */
+.feedback-soft { color: #8a5a1a; }       /* 軟化錯誤回饋：暖橘色，傳達「學習中」而非「失敗」 */
 .feedback-skip { color: #888; }
 
 /* ===== Review (從頭複習) ===== */

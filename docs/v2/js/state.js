@@ -13,6 +13,7 @@ const DEFAULTS = {
   totalEarned: 0,        // 累積總額
   freezeAvailable: 3,    // 本月可用保護卡
   freezeMonth: null,     // 保護卡所屬月份 YYYY-MM
+  todaySeenEns: {},      // 今日已練過的字 { 單元名: [en, en, ...] }（每日重置）
 };
 
 export function load() {
@@ -52,6 +53,7 @@ export function refreshDailyState(state) {
     state.todayPreEarned = 0;
     state.todayEarned = 0;
     state.todayCorrect = 0;
+    state.todaySeenEns = {};  // 每天重置「今天練過的字」
     changed = true;
   }
   if (state.freezeMonth !== m) {
@@ -65,6 +67,21 @@ export function refreshDailyState(state) {
 // 完全清空（除錯用）
 export function reset() {
   localStorage.removeItem(KEY);
+}
+
+// ===== 今日單字覆蓋追蹤 =====
+// 讓抽題能優先挑「今天還沒練過」的字，避免重複看到前幾個
+
+export function getSeenEns(s, unit) {
+  return new Set(s.todaySeenEns?.[unit] || []);
+}
+
+export function markSeenEns(s, unit, ens) {
+  if (!s.todaySeenEns) s.todaySeenEns = {};
+  if (!s.todaySeenEns[unit]) s.todaySeenEns[unit] = [];
+  const set = new Set(s.todaySeenEns[unit]);
+  for (const en of ens) if (en) set.add(en);
+  s.todaySeenEns[unit] = [...set];
 }
 
 // ===== 裝置名（每台瀏覽器自己取，寫到 Google Sheet 的「裝置」欄） =====

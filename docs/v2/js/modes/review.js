@@ -18,6 +18,7 @@ export function startReviewMode({ root, words, onComplete }) {
       totalQuestions: 0,
       message: '單字不足',
       mode: 'review',
+      usedWords: [],
     });
     return;
   }
@@ -58,6 +59,7 @@ export function startReviewMode({ root, words, onComplete }) {
         message: '中途離開',
         aborted: true,
         mode: 'review',
+        usedWords: list.slice(0, state.idx + 1),  // 已翻過的部分算練過
       });
     });
     root.querySelector('#speak').addEventListener('click', e => {
@@ -76,6 +78,7 @@ export function startReviewMode({ root, words, onComplete }) {
           message: `🎉 ${list.length} 個單字複習完了！`,
           mode: 'review',
           completed: true,
+          usedWords: list,
         });
       } else {
         state.idx++;

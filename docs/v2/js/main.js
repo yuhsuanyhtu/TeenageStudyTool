@@ -112,12 +112,18 @@ function renderHome() {
     <h2>選一個單元</h2>
     ${unitNames.length === 0
       ? '<p class="muted">目前沒有單字資料</p>'
-      : unitNames.map(u => `
-          <button class="unit-btn" data-unit="${escapeHtml(u)}">
-            <span>${escapeHtml(u)}</span>
-            <span class="muted small">${appData.units[u].length} 字</span>
-          </button>
-        `).join('')
+      : unitNames.map(u => {
+          const total = appData.units[u].length;
+          const seen = state.getSeenEns(s, u).size;
+          const pct = total > 0 ? (seen / total) * 100 : 0;
+          return `
+            <button class="unit-btn" data-unit="${escapeHtml(u)}">
+              <span>${escapeHtml(u)}</span>
+              <span class="muted small">${total} 字 · 今天 ${seen}/${total}</span>
+            </button>
+            <div class="unit-progress-bar"><div class="unit-progress-fill" style="width:${pct}%"></div></div>
+          `;
+        }).join('')
     }
 
     <p class="muted small center" style="margin-top:24px">
@@ -177,6 +183,7 @@ let currentModeMeta = null;
 
 function startMode(mode) {
   const words = appData.units[currentUnit];
+  const seenSet = state.getSeenEns(s, currentUnit);
   root.innerHTML = '';
   currentModeMeta = { mode, unit: currentUnit, totalQuestions: words.length, startedAt: Date.now() };
   const onComplete = (result) => {
@@ -184,11 +191,11 @@ function startMode(mode) {
     handleComplete(mode, result);
   };
   if (mode === 'match') {
-    startMatchMode({ root, words, onComplete });
+    startMatchMode({ root, words, seenSet, onComplete });
   } else if (mode === 'en2zh') {
-    startEn2ZhMode({ root, words, onComplete, allWords: words });
+    startEn2ZhMode({ root, words, seenSet, onComplete, allWords: words });
   } else if (mode === 'zh2en') {
-    startZh2EnMode({ root, words, onComplete });
+    startZh2EnMode({ root, words, seenSet, onComplete });
   } else if (mode === 'review') {
     startReviewMode({ root, words, onComplete });
   }
@@ -253,6 +260,10 @@ function handleComplete(mode, result) {
     s.todayEarned = (s.todayEarned || 0) + calc.sessionFinal;
     s.todayCorrect = (s.todayCorrect || 0) + sessionCorrect;
     s.totalEarned = (s.totalEarned || 0) + calc.sessionFinal;
+    // 標記這回合練過的字（給「今天 X/Y」覆蓋追蹤用）
+    if (Array.isArray(result.usedWords) && result.usedWords.length) {
+      state.markSeenEns(s, currentUnit, result.usedWords.map(w => w.en));
+    }
     state.save(s);
   }
 

@@ -12,18 +12,20 @@ import { speak, speakSpellThenWord } from '../tts.js';
 const QUESTIONS_PER_ROUND = 8;
 const MIN_DISTRACTORS_NEEDED = 4;  // 1 正解 + 3 干擾
 
-export function startEn2ZhMode({ root, words, onComplete, allWords }) {
+export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
   const usable = words.filter(w => w.en && w.zh);
   if (usable.length < MIN_DISTRACTORS_NEEDED) {
     onComplete({
       sessionCorrect: 0,
       totalQuestions: 0,
       message: '單字不足，無法出題',
+      usedWords: [],
     });
     return;
   }
 
-  const round = shuffle(usable).slice(0, Math.min(QUESTIONS_PER_ROUND, usable.length));
+  // 優先挑「今天還沒練過」的字
+  const round = pickPreferUnseen(usable, Math.min(QUESTIONS_PER_ROUND, usable.length), seenSet || new Set());
   const distractorPool = (allWords && allWords.length >= MIN_DISTRACTORS_NEEDED)
     ? allWords.filter(w => w.en && w.zh)
     : usable;
@@ -41,6 +43,7 @@ export function startEn2ZhMode({ root, words, onComplete, allWords }) {
         sessionCorrect: state.correct,
         totalQuestions: round.length,
         message: `${round.length} 題答對 ${state.correct} 題`,
+        usedWords: round,
       });
       return;
     }
@@ -71,6 +74,7 @@ export function startEn2ZhMode({ root, words, onComplete, allWords }) {
         totalQuestions: round.length,
         message: '中途離開',
         aborted: true,
+        usedWords: round,
       });
     });
     root.querySelector('#speak').addEventListener('click', () => speakSpellThenWord(w.en));
@@ -121,6 +125,12 @@ export function startEn2ZhMode({ root, words, onComplete, allWords }) {
   }
 
   renderQuestion();
+}
+
+function pickPreferUnseen(items, n, seenSet) {
+  const unseen = items.filter(w => !seenSet.has(w.en));
+  const seen = items.filter(w => seenSet.has(w.en));
+  return [...shuffle(unseen), ...shuffle(seen)].slice(0, n);
 }
 
 function shuffle(arr) {

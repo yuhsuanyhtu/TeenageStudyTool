@@ -16,7 +16,7 @@ import { speak } from '../tts.js';
 
 const QUESTIONS_PER_ROUND = 8;
 
-export function startZh2EnMode({ root, words, onComplete }) {
+export function startZh2EnMode({ root, words, onComplete, seenSet }) {
   // 建反向 map: zh → 所有對應的 word
   const zhToWords = new Map();
   for (const w of words) {
@@ -26,11 +26,16 @@ export function startZh2EnMode({ root, words, onComplete }) {
   }
   const uniqueZh = Array.from(zhToWords.keys());
   if (uniqueZh.length < 1) {
-    onComplete({ sessionCorrect: 0, totalQuestions: 0, message: '單字不足' });
+    onComplete({ sessionCorrect: 0, totalQuestions: 0, message: '單字不足', usedWords: [] });
     return;
   }
 
-  const round = shuffle(uniqueZh).slice(0, Math.min(QUESTIONS_PER_ROUND, uniqueZh.length));
+  // 一個 zh 算「練過」的條件：它對應的 en 通通都已練過
+  const seen = seenSet || new Set();
+  const isZhSeen = zh => zhToWords.get(zh).every(w => seen.has(w.en));
+  const round = pickPreferUnseen(uniqueZh, Math.min(QUESTIONS_PER_ROUND, uniqueZh.length), isZhSeen);
+  // 算這回合用到的單字（所有 zh 對應的所有 en）
+  const usedWords = round.flatMap(zh => zhToWords.get(zh));
   const state = { idx: 0, correct: 0 };
 
   function renderQuestion() {
@@ -39,6 +44,7 @@ export function startZh2EnMode({ root, words, onComplete }) {
         sessionCorrect: state.correct,
         totalQuestions: round.length,
         message: `${round.length} 題答對 ${state.correct} 題`,
+        usedWords,
       });
       return;
     }
@@ -69,6 +75,7 @@ export function startZh2EnMode({ root, words, onComplete }) {
         totalQuestions: round.length,
         message: '中途離開',
         aborted: true,
+        usedWords,
       });
     });
   }
@@ -92,8 +99,9 @@ export function startZh2EnMode({ root, words, onComplete }) {
     const allEn = wordsForZh.map(w => w.en);
     speak(allEn[0]);  // 不論對錯都唸第一個，讓孩子聽到正確發音
 
-    const headerCls = isCorrect ? 'feedback-correct' : (skip ? 'feedback-skip' : 'feedback-wrong');
-    const headerText = isCorrect ? '✅ 答對了！' : (skip ? '🆗 答案是' : '❌ 再記一次');
+    // 軟化錯誤回饋：不用 ❌、不用「再記一次」這類羞辱性字眼
+    const headerCls = isCorrect ? 'feedback-correct' : (skip ? 'feedback-skip' : 'feedback-soft');
+    const headerText = isCorrect ? '✅ 答對了！' : (skip ? '🆗 答案是' : '🌱 下次抓到');
 
     root.innerHTML = `
       <h2 class="${headerCls}">${headerText}</h2>
@@ -149,6 +157,12 @@ function acceptedAnswersOf(word) {
     for (const a of word.alts) add(a);
   }
   return set;
+}
+
+function pickPreferUnseen(items, n, isSeenFn) {
+  const unseen = items.filter(x => !isSeenFn(x));
+  const seen = items.filter(x => isSeenFn(x));
+  return [...shuffle(unseen), ...shuffle(seen)].slice(0, n);
 }
 
 function shuffle(arr) {
