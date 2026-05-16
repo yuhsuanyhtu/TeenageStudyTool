@@ -229,11 +229,21 @@ button.back:hover { background: transparent; text-decoration: underline; }
   padding: 6px 12px;
   border-radius: 8px;
   font-size: 14px;
-  margin-top: 12px;
+  margin-top: 0;
   width: auto;
   cursor: pointer;
 }
 .speak-btn:hover { background: #f0f5f2; }
+
+/* 兩個 speak 按鈕並排：🔊 唸字 + 🔤 聽拼字 */
+.speak-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.speak-row .speak-btn { margin-top: 0; }
 
 /* ===== Result ===== */
 .result-bigword {
@@ -383,6 +393,13 @@ button.back:hover { background: transparent; text-decoration: underline; }
   background: #6b9080;
   transition: width 0.3s;
 }
+
+/* ===== Sync indicator ===== */
+.sync-row { margin-top: 4px; }
+.sync-indicator { display: inline; font-size: 12px; }
+.sync-indicator.sync-syncing { color: #888; }
+.sync-indicator.sync-done { color: #6b9080; }
+.sync-indicator.sync-failed { color: #b88a4a; }
 
 /* ===== Tablet & up ===== */
 @media (min-width: 700px) {

@@ -15,26 +15,30 @@ import { startZh2EnMode } from './modes/zh2en.js';
 import { startReviewMode } from './modes/review.js';
 import { logEvent, logEventBeacon } from './logger.js';
 import { renderRules } from './rules.js';
+import { fetchV2Events, recomputeFromEvents } from './sync.js';
 
 const root = document.getElementById('app');
 let s = state.load();
 let appData = null;
 let currentUnit = null;
 
+// 同步狀態：給 home 畫面顯示「同步中／已同步／離線」
+let syncStatus = 'idle';  // idle | syncing | done | failed
+let syncMessage = '';
+
 (async function init() {
   try {
     appData = await loadAll();
-    // 第一次開：先讓使用者命名這台裝置（不然 Google Sheet 的「裝置」欄會混在一起）
+    // 第一次開：先讓使用者命名這台裝置
     if (!state.getDeviceName()) {
       renderNameDevice();
       return;
     }
-    // 開啟時記一筆 session_start，媽媽在 Sheet 看得到誰幾點打開
-    logEvent({
-      event: 'v2_session_start',
-      note: 'v2 開啟',
-    }, s);
+    // 開啟時記一筆 session_start
+    logEvent({ event: 'v2_session_start', note: 'v2 開啟' }, s);
     refreshAndRenderHome();
+    // 背景跨裝置同步（不阻塞 UI，完成後 refresh 主畫面數字）
+    syncInBackground();
   } catch (e) {
     root.innerHTML = `
       <h1>載入失敗</h1>
@@ -43,6 +47,45 @@ let currentUnit = null;
     `;
   }
 })();
+
+async function syncInBackground() {
+  syncStatus = 'syncing';
+  syncMessage = '';
+  updateSyncIndicator();
+  const result = await fetchV2Events();
+  if (!result.ok) {
+    syncStatus = 'failed';
+    syncMessage = result.error || '無法連線';
+    updateSyncIndicator();
+    return;
+  }
+  const computed = recomputeFromEvents(result.events, state.today());
+  // 用 Sheet 的數字覆蓋本地（Sheet 是真相）
+  s.totalEarned = computed.totalEarned;
+  s.todayEarned = computed.todayEarned;
+  s.streak = computed.streak;
+  state.save(s);
+  syncStatus = 'done';
+  syncMessage = `${computed.eventCount} 筆事件、${computed.completedDayCount} 天打卡`;
+  updateSyncIndicator();
+  // 若還在 home，重 render 反映新數字
+  if (document.querySelector('.unit-btn')) {
+    renderHome();
+  }
+}
+
+function updateSyncIndicator() {
+  const el = document.getElementById('sync-indicator');
+  if (!el) return;
+  const labels = {
+    idle: '',
+    syncing: '🔄 同步中…',
+    done: `✓ 已同步（${syncMessage}）`,
+    failed: `⚠ 離線（${syncMessage}）`,
+  };
+  el.textContent = labels[syncStatus] || '';
+  el.className = `sync-indicator sync-${syncStatus}`;
+}
 
 function renderNameDevice() {
   const suggest = state.guessDeviceName();
@@ -130,11 +173,19 @@ function renderHome() {
       v2 · ${state.today()} · 本機名：<b>${escapeHtml(state.getDeviceName() || '(未命名)')}</b>
       <a href="#" id="rename" style="margin-left:8px; color:#888;">改名</a>
     </p>
+    <p class="muted small center sync-row">
+      <span id="sync-indicator" class="sync-indicator sync-${syncStatus}">${syncStatus === 'done' ? `✓ 已同步（${escapeHtml(syncMessage)}）` : syncStatus === 'failed' ? `⚠ 離線（${escapeHtml(syncMessage)}）` : syncStatus === 'syncing' ? '🔄 同步中…' : ''}</span>
+      <a href="#" id="resync" style="margin-left:8px;">重新同步</a>
+    </p>
   `;
   root.querySelector('#rename').addEventListener('click', e => {
     e.preventDefault();
     state.setDeviceName('');  // 清空就會觸發命名頁
     renderNameDevice();
+  });
+  root.querySelector('#resync').addEventListener('click', e => {
+    e.preventDefault();
+    syncInBackground();
   });
   root.querySelector('#rules-btn').addEventListener('click', () => {
     renderRules(root, refreshAndRenderHome);

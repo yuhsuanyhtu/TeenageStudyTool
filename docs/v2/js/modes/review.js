@@ -8,7 +8,7 @@
 //
 // 完成回呼帶 mode:'review' → main.handleComplete 會 dispatch 到 calcReviewReward
 
-import { speakSpellThenWord } from '../tts.js';
+import { speakEnThenZh, speakSpell } from '../tts.js';
 
 export function startReviewMode({ root, words, onComplete }) {
   const list = (words || []).filter(w => w.en && w.zh);
@@ -39,7 +39,10 @@ export function startReviewMode({ root, words, onComplete }) {
       <div class="review-card" id="card">
         <div class="review-en">${escapeHtml(w.en)}</div>
         <div class="review-zh">${escapeHtml(w.zh)}</div>
-        <button class="speak-btn" id="speak">🔊 拼字 + 發音</button>
+        <div class="speak-row">
+          <button class="speak-btn" id="speak">🔊 唸給我聽</button>
+          <button class="speak-btn" id="spell">🔤 聽拼字</button>
+        </div>
       </div>
 
       <div class="review-controls">
@@ -64,9 +67,9 @@ export function startReviewMode({ root, words, onComplete }) {
     });
     root.querySelector('#speak').addEventListener('click', e => {
       e.stopPropagation();
-      speakSpellThenWord(w.en);
+      speakEnThenZh(w.en, w.zh);
     });
-    root.querySelector('#card').addEventListener('click', () => speakSpellThenWord(w.en));
+    root.querySelector('#card').addEventListener('click', () => speakEnThenZh(w.en, w.zh));
     root.querySelector('#prev').addEventListener('click', () => {
       if (state.idx > 0) { state.idx--; render(); }
     });
@@ -87,7 +90,7 @@ export function startReviewMode({ root, words, onComplete }) {
     });
 
     // 自動唸這張卡
-    setTimeout(() => speakSpellThenWord(w.en), 150);
+    setTimeout(() => speakEnThenZh(w.en, w.zh), 150);
   }
 
   render();

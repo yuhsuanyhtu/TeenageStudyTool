@@ -3,10 +3,14 @@
 //   - 多個英文可能對到同一個中文（every / each / all → 每一）
 //   - 我們在每一回合先去重 zh，避免同一個中文出現兩次造成誤判
 //   - 配對邏輯：(en, zh) 兩張卡屬於同一個 word 即正確
+//
+// 設計決策：match 模式「全靜默」、不唸發音
+//   - 謙恩 2026-05-15 回報：點英文卡會唸出答案，等於洩答案
+//   - 聽力 / 發音練習由其他模式負責（英翻中自動拼字+唸字、複習有 🔊 按鈕、中翻英在送出後唸）
+//   - match 純視覺測驗，孩子要靠眼睛判斷
+//
 // 完成回呼：
-//   onComplete({ sessionCorrect, totalQuestions, wrongAttempts, message })
-
-import { speak } from '../tts.js';
+//   onComplete({ sessionCorrect, totalQuestions, wrongAttempts, message, usedWords })
 
 const PAIRS_PER_ROUND = 6;
 
@@ -89,8 +93,7 @@ export function startMatchMode({ root, words, onComplete, seenSet }) {
 
     if (side === 'en') {
       state.selectedEn = (state.selectedEn === idx) ? null : idx;
-      // 點選英文時順便唸出來，建立發音記憶
-      if (state.selectedEn === idx) speak(cards[idx].en);
+      // 不唸發音 — match 是純視覺配對，唸出來等於洩答案（謙恩 2026-05-15 回報）
     } else {
       state.selectedZh = (state.selectedZh === idx) ? null : idx;
     }
@@ -105,7 +108,7 @@ export function startMatchMode({ root, words, onComplete, seenSet }) {
         state.matchedCount++;
         state.selectedEn = null;
         state.selectedZh = null;
-        speak(enWord.en);  // 配對成功再唸一次強化
+        // 配對成功也不唸 — match 全靜默
         render();
         if (state.matchedCount === round.length) {
           setTimeout(() => onComplete({

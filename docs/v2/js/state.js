@@ -34,12 +34,20 @@ export function save(state) {
   }
 }
 
+// 用本地時間（台灣）算今天，避免 UTC vs Asia/Taipei 差一天的 bug
 export function today() {
-  return new Date().toISOString().slice(0, 10);
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
 }
 
 export function thisMonth() {
-  return new Date().toISOString().slice(0, 7);
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  return `${y}-${m}`;
 }
 
 // 跨日 / 跨月時自動重置今日累計與保護卡

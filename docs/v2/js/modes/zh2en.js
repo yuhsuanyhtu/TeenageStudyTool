@@ -12,7 +12,7 @@
 //   - 帶括號的單字（如 "pencil case (= pencil box)"）允許括號內外兩種寫法
 //   - "year(s) old" 允許 year old / years old
 
-import { speak } from '../tts.js';
+import { speak, speakZh, speakEnThenZh, speakSpell } from '../tts.js';
 
 const QUESTIONS_PER_ROUND = 8;
 
@@ -78,6 +78,9 @@ export function startZh2EnMode({ root, words, onComplete, seenSet }) {
         usedWords,
       });
     });
+
+    // 自動唸中文提示（讓孩子用聽覺輔助理解題目）
+    setTimeout(() => speakZh(zh), 200);
   }
 
   function handleSubmit(skip) {
@@ -97,7 +100,8 @@ export function startZh2EnMode({ root, words, onComplete, seenSet }) {
 
     // 顯示所有可接受的英文寫法（人類友好版本，不是 normalize 後的）
     const allEn = wordsForZh.map(w => w.en);
-    speak(allEn[0]);  // 不論對錯都唸第一個，讓孩子聽到正確發音
+    // 不論對錯都唸：英文（拼字+整字）→ 中文，雙語強化
+    speakEnThenZh(allEn[0], zh);
 
     // 軟化錯誤回饋：不用 ❌、不用「再記一次」這類羞辱性字眼
     const headerCls = isCorrect ? 'feedback-correct' : (skip ? 'feedback-skip' : 'feedback-soft');
@@ -115,11 +119,15 @@ export function startZh2EnMode({ root, words, onComplete, seenSet }) {
           ${isCorrect && allEn.length === 1 ? '正解：' : (isCorrect ? '正解（這個中文也接受其他寫法）：' : '正確答案：')}
         </p>
         <p class="zh2en-answers">${allEn.map(escapeHtml).join('　／　')}</p>
-        <button class="speak-btn" id="speak">🔊 再聽一次</button>
+        <div class="speak-row">
+          <button class="speak-btn" id="speak">🔊 再聽一次</button>
+          <button class="speak-btn" id="spell">🔤 聽拼字</button>
+        </div>
       </div>
       <button id="next">${state.idx === round.length - 1 ? '看結果' : '下一題 →'}</button>
     `;
-    root.querySelector('#speak').addEventListener('click', () => speak(allEn[0]));
+    root.querySelector('#speak').addEventListener('click', () => speakEnThenZh(allEn[0], zh));
+    root.querySelector('#spell').addEventListener('click', () => speakSpell(allEn[0]));
     root.querySelector('#next').addEventListener('click', () => {
       state.idx++;
       renderQuestion();

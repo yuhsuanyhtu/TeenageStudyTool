@@ -139,6 +139,42 @@ function doPost(e) {
 }
 
 function doGet(e) {
+  // === v2 跨裝置事件清單 ===
+  // ?action=v2_events → 回傳所有 v2_* 事件（不分裝置），含 device 欄位讓 v2 自己過濾 [測試]
+  // 給 v2 startup 同步用：跨裝置加總 totalEarned / todayEarned / streak
+  if (e && e.parameter && e.parameter.action === "v2_events") {
+    try {
+      const ws = getLogSheet_();
+      const vals = ws.getDataRange().getValues();
+      const events = [];
+      for (let i = 1; i < vals.length; i++) {
+        const row = vals[i];
+        const eventName = (row[1] || "").toString();
+        if (!eventName.startsWith("v2_")) continue;
+        const tsRaw = row[0];
+        const tsStr = (tsRaw instanceof Date)
+          ? Utilities.formatDate(tsRaw, "Asia/Taipei", "yyyy-MM-dd HH:mm:ss")
+          : String(tsRaw);
+        events.push({
+          timestamp: tsStr,
+          event: eventName,
+          unit: row[2] === "" ? null : String(row[2]),
+          quizSize: row[3] === "" ? null : Number(row[3]),
+          correct: row[4] === "" ? null : Number(row[4]),
+          amount: row[6] === "" ? null : Number(row[6]),
+          note: row[10] === "" ? "" : String(row[10]),
+          device: (row[11] || "").toString(),
+        });
+      }
+      events.sort(function (a, b) {
+        return a.timestamp < b.timestamp ? -1 : a.timestamp > b.timestamp ? 1 : 0;
+      });
+      return jsonOut({ ok: true, count: events.length, events: events });
+    } catch (err) {
+      return jsonOut({ ok: false, error: String(err) });
+    }
+  }
+
   // 事件清單端點：給前端重算狀態用
   // ?action=events&user=XXX → 回傳該使用者所有學習紀錄事件（由舊到新）
   if (e && e.parameter && e.parameter.action === "events") {

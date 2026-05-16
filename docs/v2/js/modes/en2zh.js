@@ -7,7 +7,7 @@
 //   - 用 allWords 當干擾選項池，避免單字數少時抽不出 3 個
 //   - 完全避開舊版「中翻英只接受唯一答案」的設計缺陷
 
-import { speak, speakSpellThenWord } from '../tts.js';
+import { speak, speakEnThenZh, speakSpell } from '../tts.js';
 
 const QUESTIONS_PER_ROUND = 8;
 const MIN_DISTRACTORS_NEEDED = 4;  // 1 正解 + 3 干擾
@@ -60,7 +60,10 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
       <p class="muted">第 ${state.idx + 1} / ${round.length} 題</p>
       <div class="en2zh-word">
         <div>${escapeHtml(w.en)}</div>
-        <button class="speak-btn" id="speak">🔊 再聽一次</button>
+        <div class="speak-row">
+          <button class="speak-btn" id="speak">🔊 再聽一次</button>
+          <button class="speak-btn" id="spell">🔤 聽拼字</button>
+        </div>
       </div>
       <div class="en2zh-choices">
         ${choices.map(c => `<button class="choice" data-choice="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}
@@ -77,7 +80,8 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
         usedWords: round,
       });
     });
-    root.querySelector('#speak').addEventListener('click', () => speakSpellThenWord(w.en));
+    root.querySelector('#speak').addEventListener('click', () => speak(w.en));
+    root.querySelector('#spell').addEventListener('click', () => speakSpell(w.en));
 
     const submitBtn = root.querySelector('#submit');
     root.querySelectorAll('.choice').forEach(el => {
@@ -93,8 +97,8 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
     });
     submitBtn.addEventListener('click', handleSubmit);
 
-    // 自動唸：先拼字母 → 再唸整字
-    setTimeout(() => speakSpellThenWord(w.en), 200);
+    // 自動唸：只唸整字（拼字按 🔤 按鈕觸發，v2.8 起 default 不拼字）
+    setTimeout(() => speak(w.en), 200);
   }
 
   function handleSubmit() {
@@ -120,8 +124,8 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
       renderQuestion();
     });
 
-    // 答對唸一次正字、答錯也唸一次（強化記憶）
-    speak(w.en);
+    // 答對／答錯都唸一次「英→中」雙語，強化記憶
+    speakEnThenZh(w.en, w.zh);
   }
 
   renderQuestion();
