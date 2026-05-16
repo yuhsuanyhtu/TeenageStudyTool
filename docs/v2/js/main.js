@@ -304,6 +304,7 @@ function handleComplete(mode, result) {
       sessionCorrect,
       streak: s.streak || 0,
       todayPreEarned: s.todayPreEarned || 0,
+      baseGivenToday: !!s.baseGivenToday,   // v2.13：傳今天是否已給過基礎獎金
     });
   }
 
@@ -312,6 +313,8 @@ function handleComplete(mode, result) {
     s.todayEarned = (s.todayEarned || 0) + calc.sessionFinal;
     s.todayCorrect = (s.todayCorrect || 0) + sessionCorrect;
     s.totalEarned = (s.totalEarned || 0) + calc.sessionFinal;
+    // v2.13：本回合實際給了基礎獎金 → 設旗標，避免之後再給
+    if (calc.gaveBaseThisSession) s.baseGivenToday = true;
     // 標記這回合練過的字（給「今天 X/Y」覆蓋追蹤用）
     if (Array.isArray(result.usedWords) && result.usedWords.length) {
       state.markSeenEns(s, currentUnit, result.usedWords.map(w => w.en));

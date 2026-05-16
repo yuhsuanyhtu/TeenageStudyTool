@@ -107,23 +107,49 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
     const w = state.currentWord;
     const isCorrect = state.selected === w.zh;
     if (isCorrect) state.correct++;
+    // v2.13：用全 re-render（而非 outerHTML patch），避免「下一題要按兩次才動」bug
+    renderResult(w, isCorrect);
+  }
 
-    // 標出對錯
-    root.querySelectorAll('.choice').forEach(b => {
-      b.classList.remove('selected');
-      if (b.dataset.choice === w.zh) b.classList.add('correct');
-      if (b.dataset.choice === state.selected && !isCorrect) b.classList.add('wrong');
-      b.disabled = true;
+  // v2.13：答案揭曉頁，全 re-render 而非局部 patch
+  function renderResult(w, isCorrect) {
+    const picked = state.selected;
+    root.innerHTML = `
+      <button class="back" id="back">← 中途離開</button>
+      <h2>🇬🇧 → 🇹🇼 英翻中</h2>
+      <p class="muted">第 ${state.idx + 1} / ${round.length} 題　·　${isCorrect ? '答對了' : '看答案'}</p>
+      <div class="en2zh-word">
+        <div>${escapeHtml(w.en)}</div>
+        <div class="speak-row">
+          <button class="speak-btn" id="speak">🔊 再聽一次</button>
+          <button class="speak-btn" id="spell">🔤 聽拼字</button>
+        </div>
+      </div>
+      <div class="en2zh-choices">
+        ${state.choices.map(c => {
+          const cls = ['choice'];
+          if (c === w.zh) cls.push('correct');
+          else if (c === picked && !isCorrect) cls.push('wrong');
+          return `<button class="${cls.join(' ')}" disabled>${escapeHtml(c)}</button>`;
+        }).join('')}
+      </div>
+      <button id="next">${state.idx === round.length - 1 ? '看結果' : '下一題 →'}</button>
+    `;
+    root.querySelector('#back').addEventListener('click', () => {
+      onComplete({
+        sessionCorrect: state.correct,
+        totalQuestions: round.length,
+        message: '中途離開',
+        aborted: true,
+        usedWords: round,
+      });
     });
-
-    // 換掉送出按鈕為下一題
-    const submitBtn = root.querySelector('#submit');
-    submitBtn.outerHTML = `<button id="next">${state.idx === round.length - 1 ? '看結果' : '下一題 →'}</button>`;
+    root.querySelector('#speak').addEventListener('click', () => speak(w.en));
+    root.querySelector('#spell').addEventListener('click', () => speakSpell(w.en));
     root.querySelector('#next').addEventListener('click', () => {
       state.idx++;
       renderQuestion();
     });
-
     // 答對／答錯都唸一次「英→中」雙語，強化記憶
     speakEnThenZh(w.en, w.zh);
   }

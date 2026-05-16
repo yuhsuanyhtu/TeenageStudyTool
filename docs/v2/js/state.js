@@ -14,6 +14,7 @@ const DEFAULTS = {
   freezeAvailable: 3,    // 本月可用保護卡
   freezeMonth: null,     // 保護卡所屬月份 YYYY-MM
   todaySeenEns: {},      // 今日已練過的字 { 單元名: [en, en, ...] }（每日重置）
+  baseGivenToday: false, // 今日基礎獎金 $10 是否已發過（每日重置）
 };
 
 export function load() {
@@ -62,6 +63,7 @@ export function refreshDailyState(state) {
     state.todayEarned = 0;
     state.todayCorrect = 0;
     state.todaySeenEns = {};  // 每天重置「今天練過的字」
+    state.baseGivenToday = false;  // 每天重置「基礎獎金已給」
     changed = true;
   }
   if (state.freezeMonth !== m) {

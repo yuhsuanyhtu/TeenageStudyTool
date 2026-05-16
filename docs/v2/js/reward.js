@@ -31,13 +31,17 @@ export function streakMultiplier(streak) {
 }
 
 // 計算這一回合可得獎金（純函式，無副作用）
-// input:  { sessionCorrect, streak, todayPreEarned }
-// output: { sessionPre, sessionFinal, multiplier, base, perWord, breakdown }
-export function calcSessionReward({ sessionCorrect, streak, todayPreEarned }) {
+// input:  { sessionCorrect, streak, todayPreEarned, baseGivenToday }
+// output: { sessionPre, sessionFinal, multiplier, base, perWord, breakdown, gaveBaseThisSession }
+//
+// v2.13：基礎獎金一天只給一次（baseGivenToday flag），不再每 session 都給
+export function calcSessionReward({ sessionCorrect, streak, todayPreEarned, baseGivenToday }) {
   const cfg = REWARD_CONFIG;
 
   // 本回合 pre-multiplier 應得
-  const eligibleBase = sessionCorrect >= cfg.minCorrectForBase ? cfg.base : 0;
+  //   - 基礎獎金：今天還沒給過 + 本回合答對 ≥ 5 → 給 $10
+  //   - 已經給過 → 0（避免一天多次練習重複拿基礎獎金）
+  const eligibleBase = (!baseGivenToday && sessionCorrect >= cfg.minCorrectForBase) ? cfg.base : 0;
   const perWord = sessionCorrect * cfg.perCorrect;
   const sessionRawPre = eligibleBase + perWord;
 
@@ -68,6 +72,8 @@ export function calcSessionReward({ sessionCorrect, streak, todayPreEarned }) {
     base: eligibleBase,
     perWord,
     breakdown,
+    // 本回合是否實際給了基礎獎金（給了 → main.js 設定 baseGivenToday=true，下次不再給）
+    gaveBaseThisSession: eligibleBase > 0 && sessionPre > 0,
   };
 }
 

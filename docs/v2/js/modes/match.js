@@ -4,13 +4,15 @@
 //   - 我們在每一回合先去重 zh，避免同一個中文出現兩次造成誤判
 //   - 配對邏輯：(en, zh) 兩張卡屬於同一個 word 即正確
 //
-// 設計決策：match 模式「全靜默」、不唸發音
-//   - 謙恩 2026-05-15 回報：點英文卡會唸出答案，等於洩答案
-//   - 聽力 / 發音練習由其他模式負責（英翻中自動拼字+唸字、複習有 🔊 按鈕、中翻英在送出後唸）
-//   - match 純視覺測驗，孩子要靠眼睛判斷
+// 設計決策：v2.12 起，點英文唸英文、點中文唸中文
+//   - 之前 v2.6 全靜默是為了「不洩答案」，但家長重新評估後認為發音輔助更重要
+//   - 點中文唸中文不會洩答案（中文孩子都認得）
+//   - 點英文唸英文等於聽發音練習，雖然會幫到配對但這是學習一部分
 //
 // 完成回呼：
 //   onComplete({ sessionCorrect, totalQuestions, wrongAttempts, message, usedWords })
+
+import { speak, speakZh } from '../tts.js';
 
 const PAIRS_PER_ROUND = 6;
 
@@ -92,10 +94,15 @@ export function startMatchMode({ root, words, onComplete, seenSet }) {
     if (cards[idx].matched) return;
 
     if (side === 'en') {
-      state.selectedEn = (state.selectedEn === idx) ? null : idx;
-      // 不唸發音 — match 是純視覺配對，唸出來等於洩答案（謙恩 2026-05-15 回報）
+      const wasSelected = state.selectedEn === idx;
+      state.selectedEn = wasSelected ? null : idx;
+      // v2.12：點英文 → 唸英文發音（學習）
+      if (!wasSelected) speak(cards[idx].en);
     } else {
-      state.selectedZh = (state.selectedZh === idx) ? null : idx;
+      const wasSelected = state.selectedZh === idx;
+      state.selectedZh = wasSelected ? null : idx;
+      // v2.12：點中文 → 唸中文發音（確認選擇）
+      if (!wasSelected) speakZh(cards[idx].zh);
     }
 
     if (state.selectedEn !== null && state.selectedZh !== null) {
