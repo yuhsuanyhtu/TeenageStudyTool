@@ -15,7 +15,17 @@ import { getDeviceName } from './state.js';
 
 const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
 
+// Meta（系統管理）事件：跟學習/獎金無關，不該寫 money/streak 欄
+// 否則 Sheet 上會看起來像「一命名裝置就有 $52」造成誤導
+const META_EVENTS = new Set([
+  'v2_device_named',
+  'v2_session_start',
+  'v2_settings_changed',
+  'v2_voice_changed',
+]);
+
 function buildPayload(data, s) {
+  const isMeta = META_EVENTS.has(data.event);
   return {
     event: data.event || '',
     unit: data.unit || '',
@@ -24,9 +34,9 @@ function buildPayload(data, s) {
     prediction: '',                   // v2 沒有預測機制
     amount: data.amount ?? '',
     note: data.note || '',
-    money: s.totalEarned ?? 0,
-    totalPaid: 0,
-    streak: s.streak ?? 0,
+    money: isMeta ? '' : (s.totalEarned ?? 0),
+    totalPaid: '',
+    streak: isMeta ? '' : (s.streak ?? 0),
     user: getDeviceName() || '(未命名)',  // 「user」這欄到 Sheet 是「裝置」欄
   };
 }
