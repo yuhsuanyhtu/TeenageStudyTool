@@ -1,7 +1,7 @@
 // modes/zh2en.js — 中翻英拼字
 //
 // 解決舊版「中翻英只接受唯一答案」的核心痛點：
-//   先建反向 map: zh → [所有對應的 word object]
+//   先建反向 map: cleanZh → [所有對應的 word object]
 //   送出時，只要使用者輸入的字串符合「該 zh 對應到的任一 en」就算對。
 //   例如 every / each 都是「每一」→ 兩個都接受。
 //
@@ -11,18 +11,34 @@
 //   - 結尾標點 .!? 忽略
 //   - 帶括號的單字（如 "pencil case (= pencil box)"）允許括號內外兩種寫法
 //   - "year(s) old" 允許 year old / years old
+//   - v2.18：zh 含「(= 英文)」註記時，顯示去掉、判答時把英文當 alternative
+//     例：zh="給你。 (= Here you go.)" → 顯示「給你。」，Here you are / Here you go 都接受
 
 import { speak, speakSpell } from '../tts.js';
 
 const QUESTIONS_PER_ROUND = 8;
 
+// v2.18：去掉 zh 裡的「(= 英文)」/「（= 英文）」註記（半形+全形都認），純中文題目顯示用
+function cleanZhForDisplay(zh) {
+  return String(zh || '').replace(/\s*[(（]=\s*[^)）]+[)）]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+// v2.18：抽出 zh 裡的「(= xxx)」內的英文（半形+全形都認），當作可接受的替代答案
+function extractZhAlts(zh) {
+  const matches = [...String(zh || '').matchAll(/[(（]=\s*([^)）]+)[)）]/g)];
+  return matches.map(m => m[1].trim()).filter(Boolean);
+}
+
 export function startZh2EnMode({ root, words, onComplete, seenSet }) {
-  // 建反向 map: zh → 所有對應的 word
+  // 建反向 map: cleanZh（去除「(= xxx)」註記後）→ 所有對應的 word
+  // 這樣不同的 zh「給你。」「給你。 (= Here you go.)」會合併到同一題
   const zhToWords = new Map();
   for (const w of words) {
     if (!w.zh || !w.en) continue;
-    if (!zhToWords.has(w.zh)) zhToWords.set(w.zh, []);
-    zhToWords.get(w.zh).push(w);
+    const clean = cleanZhForDisplay(w.zh);
+    if (!clean) continue;
+    if (!zhToWords.has(clean)) zhToWords.set(clean, []);
+    zhToWords.get(clean).push(w);
   }
   const uniqueZh = Array.from(zhToWords.keys());
   if (uniqueZh.length < 1) {
@@ -98,7 +114,13 @@ export function startZh2EnMode({ root, words, onComplete, seenSet }) {
     if (isCorrect) state.correct++;
 
     // 顯示所有可接受的英文寫法（人類友好版本，不是 normalize 後的）
-    const allEn = wordsForZh.map(w => w.en);
+    // v2.18：把 zh 內的「(= xxx)」alt 也算進可接受答案列表
+    const allEnSet = new Set();
+    for (const w of wordsForZh) {
+      allEnSet.add(w.en);
+      for (const alt of extractZhAlts(w.zh)) allEnSet.add(alt);
+    }
+    const allEn = [...allEnSet];
     // 不論對錯都唸英文（中文不唸 — 媽媽 2026-05-16 要求）
     speak(allEn[0]);
 
@@ -145,7 +167,7 @@ function acceptedAnswersOf(word) {
   const add = s => { if (s) set.add(normalize(s)); };
   add(word.en);
 
-  // 模式 1：「(= xxx)」同義替代格式
+  // 模式 1：en 含「(= xxx)」同義替代格式
   //   例：pencil case (= pencil box) → 接受 "pencil case" 與 "pencil box"
   //       the USA (= the United States of America) → 接受兩種寫法
   const eqMatch = word.en.match(/\(=\s*([^)]+)\)/);
@@ -157,6 +179,12 @@ function acceptedAnswersOf(word) {
     //   例：year(s) old → 接受 "year old" 與 "years old"
     add(word.en.replace(/\([^)]*\)/g, '').replace(/\s+/g, ' '));
     add(word.en.replace(/\(([^)]*)\)/g, '$1'));
+  }
+
+  // v2.18：zh 含「(= 英文)」也算可接受答案
+  //   例：zh="給你。 (= Here you go.)" → "Here you go" 也算對
+  for (const alt of extractZhAlts(word.zh)) {
+    add(alt);
   }
 
   // 顯式備援：word.alts = ["alt1", "alt2"]
