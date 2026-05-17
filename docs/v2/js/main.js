@@ -16,6 +16,7 @@ import { startReviewMode } from './modes/review.js';
 import { logEvent, logEventBeacon } from './logger.js';
 import { renderRules } from './rules.js';
 import { fetchV2Events, recomputeFromEvents } from './sync.js';
+import { startPayoutMode } from './modes/payout.js';
 
 const root = document.getElementById('app');
 let s = state.load();
@@ -62,6 +63,8 @@ async function syncInBackground() {
   const computed = recomputeFromEvents(result.events, state.today(), state.getDeviceName());
   // 用 Sheet 的數字覆蓋本地（Sheet 是真相）
   s.totalEarned = computed.totalEarned;
+  s.totalWithdrawn = computed.totalWithdrawn;          // v2.16
+  s.availableToWithdraw = computed.availableToWithdraw;// v2.16
   s.todayEarned = computed.todayEarned;
   s.todayPreEarned = computed.todayPreEarned;   // v2.10：同步 cap 後的 pre，讓本地 cap 檢查正確
   s.streak = computed.streak;
@@ -131,25 +134,28 @@ function renderHome() {
   root.innerHTML = `
     <div class="header-row">
       <h1>謙恩的英文</h1>
-      <button class="rules-link" id="rules-btn">📋 規則</button>
+      <div>
+        <button class="rules-link" id="rules-btn">📋 規則</button>
+        <button class="rules-link" id="payout-btn">🏦 家長提領</button>
+      </div>
     </div>
 
     <div class="stats">
-      <div class="stat">
-        <div class="stat-num">${s.streak || 0}</div>
-        <div class="stat-label">連勝 ${mulTxt}</div>
-      </div>
       <div class="stat">
         <div class="stat-num">$${s.todayEarned || 0}</div>
         <div class="stat-label">今日獎金</div>
       </div>
       <div class="stat">
-        <div class="stat-num">$${s.totalEarned || 0}</div>
-        <div class="stat-label">累積總額</div>
+        <div class="stat-num">$${s.availableToWithdraw || 0}</div>
+        <div class="stat-label">可提領</div>
       </div>
       <div class="stat">
-        <div class="stat-num">${s.freezeAvailable ?? 0}</div>
-        <div class="stat-label">本月保護卡</div>
+        <div class="stat-num">$${s.totalWithdrawn || 0}</div>
+        <div class="stat-label">已提領</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">${s.streak || 0}</div>
+        <div class="stat-label">連勝 ${mulTxt}</div>
       </div>
     </div>
 
@@ -190,6 +196,10 @@ function renderHome() {
   });
   root.querySelector('#rules-btn').addEventListener('click', () => {
     renderRules(root, refreshAndRenderHome);
+  });
+  const payoutBtn = root.querySelector('#payout-btn');
+  if (payoutBtn) payoutBtn.addEventListener('click', () => {
+    startPayoutMode({ root, onBack: refreshAndRenderHome });
   });
   root.querySelectorAll('.unit-btn').forEach(btn => {
     btn.addEventListener('click', () => {

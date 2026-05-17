@@ -347,6 +347,46 @@ button.back:hover { background: transparent; text-decoration: underline; }
 .feedback-soft { color: #8a5a1a; }       /* 軟化錯誤回饋：暖橘色，傳達「學習中」而非「失敗」 */
 .feedback-skip { color: #888; }
 
+/* ===== Payout (家長提領) ===== */
+.payout-card { padding: 16px; }
+.payout-dev {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2d2d2d;
+  margin-bottom: 10px;
+}
+.payout-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 14px;
+  color: #555;
+}
+.payout-row b { color: #2d2d2d; font-weight: 600; }
+.payout-row.payout-avail {
+  border-top: 1px solid #e8e4de;
+  margin-top: 6px;
+  padding-top: 8px;
+  font-size: 15px;
+}
+.payout-row.payout-avail b { color: #6b9080; font-size: 18px; }
+.payout-btn {
+  margin-top: 10px;
+  background: #6b9080;
+  color: white;
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+.payout-btn:disabled {
+  background: #d6cdc0;
+  color: #888;
+  cursor: not-allowed;
+}
+
 /* ===== Review (從頭複習) ===== */
 .review-card {
   background: white;

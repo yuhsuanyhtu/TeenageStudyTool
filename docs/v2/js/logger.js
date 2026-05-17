@@ -22,6 +22,7 @@ const META_EVENTS = new Set([
   'v2_session_start',
   'v2_settings_changed',
   'v2_voice_changed',
+  // 注意：v2_payout 不算 meta — 它有 amount 要影響統計
 ]);
 
 function buildPayload(data, s) {

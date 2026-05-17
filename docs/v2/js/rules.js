@@ -49,8 +49,14 @@ export function renderRules(root, onBack) {
 
     <div class="card">
       <h3>📊 紀錄怎麼看</h3>
-      <p class="muted small">主畫面顯示：連勝天數、今日獎金、累積總額、保護卡剩幾張。</p>
+      <p class="muted small">主畫面顯示：今日獎金、可提領、已提領、連勝天數。</p>
       <p class="muted small">媽媽那邊有 Google Sheet 看得到每次練習的詳細紀錄（時間、答對幾題、賺了多少）。</p>
+    </div>
+
+    <div class="card">
+      <h3>🏦 提領零用金</h3>
+      <p>媽媽按主畫面的「🏦 家長提領」進去，每次以 <b>$${cfg.payoutUnit}</b> 為單位。</p>
+      <p class="muted small">提領後「可提領」會減少、「已提領」會增加。Google Sheet 也會留紀錄。</p>
     </div>
 
     <button id="start">開始練習</button>

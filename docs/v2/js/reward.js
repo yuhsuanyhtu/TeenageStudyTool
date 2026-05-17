@@ -16,6 +16,7 @@ export const REWARD_CONFIG = {
   minCorrectForBase: 5,
   reviewBase: 20,                 // 從頭複習一輪固定獎金（pre-multiplier）— v2.10 起 10→20 對齊舊版直覺
   matchReward: 5,                 // 連連看一輪固定獎金 — v2.15 起防 brute force 刷錢（孩子愛刷當練習，但賺不到大錢）
+  payoutUnit: 100,                // v2.16：每筆提領以 100 元為單位
   streakTiers: [
     { days: 7,  multiplier: 1.2 },
     { days: 14, multiplier: 1.4 },

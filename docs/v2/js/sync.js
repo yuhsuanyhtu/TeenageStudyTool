@@ -49,43 +49,74 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
   );
 
   let totalEarned = 0;
+  let totalWithdrawn = 0;
   let todayEarned = 0;
   const completedDays = new Set();
 
   for (const ev of real) {
     const event = String(ev.event || '');
-    if (!event.endsWith('_done')) continue;
-
     const amount = Number(ev.amount) || 0;
     const correct = Number(ev.correct) || 0;
     const date = formatDate(ev.timestamp);
 
-    if (amount > 0) {
-      totalEarned += amount;
-      if (date === todayStr) todayEarned += amount;
+    if (event.endsWith('_done')) {
+      if (amount > 0) {
+        totalEarned += amount;
+        if (date === todayStr) todayEarned += amount;
+      }
+      const isReview = event === 'v2_review_done';
+      const qualifies = isReview || correct >= 5;
+      if (qualifies && date) completedDays.add(date);
+    } else if (event === 'v2_payout') {
+      // v2.16：提領事件 — amount 是負值，取絕對值累加 totalWithdrawn
+      totalWithdrawn += Math.abs(amount);
     }
-
-    const isReview = event === 'v2_review_done';
-    const qualifies = isReview || correct >= 5;
-    if (qualifies && date) completedDays.add(date);
   }
 
   const streak = computeStreak(completedDays, todayStr);
 
-  // v2.10：套用日上限。歷史事件因之前同步亂寫，sum 可能超過 cap，這裡壓回去
+  // v2.10：套用日上限
   const rawTodayEarned = todayEarned;
   const cap = REWARD_CONFIG.dailyCapPreMultiplier;
   if (todayEarned > cap) todayEarned = cap;
 
+  // v2.16：可提領 = 累計賺 - 已提領，不能小於 0
+  const availableToWithdraw = Math.max(0, totalEarned - totalWithdrawn);
+
   return {
     totalEarned,
+    totalWithdrawn,
+    availableToWithdraw,
     todayEarned,
-    todayPreEarned: todayEarned,   // 用同值（無 streak 時 pre=final）讓本地 cap 檢查正確
+    todayPreEarned: todayEarned,
     streak,
     eventCount: real.length,
     completedDayCount: completedDays.size,
-    rawTodayEarned,                // 給 debug 用，看歷史 sum 跟 cap 後差多少
+    rawTodayEarned,
   };
+}
+
+// v2.16：給家長提領頁用 — 算所有裝置的累計、已提領、可提領
+// 回傳 Map<deviceName, { totalEarned, totalWithdrawn, availableToWithdraw }>
+export function computeAllDevices(events) {
+  const map = new Map();
+  for (const ev of events || []) {
+    const dev = String(ev.device || '').trim();
+    if (!dev) continue;
+    if (!map.has(dev)) map.set(dev, { totalEarned: 0, totalWithdrawn: 0 });
+    const m = map.get(dev);
+    const event = String(ev.event || '');
+    const amount = Number(ev.amount) || 0;
+    if (event.endsWith('_done') && amount > 0) {
+      m.totalEarned += amount;
+    } else if (event === 'v2_payout') {
+      m.totalWithdrawn += Math.abs(amount);
+    }
+  }
+  for (const [, m] of map) {
+    m.availableToWithdraw = Math.max(0, m.totalEarned - m.totalWithdrawn);
+  }
+  return map;
 }
 
 function formatDate(ts) {
