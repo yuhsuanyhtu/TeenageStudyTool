@@ -36,6 +36,18 @@ let syncMessage = '';
       return;
     }
     // v2.9 起不再 log session_start（雜訊太多，每次刷新都會記一筆）
+    // v2.17：URL 帶 #payout 直接進家長提領頁（隱藏入口，孩子在主畫面看不到按鈕）
+    if (window.location.hash === '#payout') {
+      startPayoutMode({
+        root,
+        onBack: () => {
+          history.replaceState(null, '', window.location.pathname);
+          refreshAndRenderHome();
+          syncInBackground();
+        },
+      });
+      return;
+    }
     refreshAndRenderHome();
     // 背景跨裝置同步（不阻塞 UI，完成後 refresh 主畫面數字）
     syncInBackground();
@@ -134,10 +146,7 @@ function renderHome() {
   root.innerHTML = `
     <div class="header-row">
       <h1>謙恩的英文</h1>
-      <div>
-        <button class="rules-link" id="rules-btn">📋 規則</button>
-        <button class="rules-link" id="payout-btn">🏦 家長提領</button>
-      </div>
+      <button class="rules-link" id="rules-btn">📋 規則</button>
     </div>
 
     <div class="stats">
@@ -196,10 +205,6 @@ function renderHome() {
   });
   root.querySelector('#rules-btn').addEventListener('click', () => {
     renderRules(root, refreshAndRenderHome);
-  });
-  const payoutBtn = root.querySelector('#payout-btn');
-  if (payoutBtn) payoutBtn.addEventListener('click', () => {
-    startPayoutMode({ root, onBack: refreshAndRenderHome });
   });
   root.querySelectorAll('.unit-btn').forEach(btn => {
     btn.addEventListener('click', () => {
