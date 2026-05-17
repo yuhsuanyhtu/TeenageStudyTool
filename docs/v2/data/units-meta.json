@@ -1,7 +1,17 @@
 {
-  "version": 1,
-  "files": [
-    "textbook-y1-fall.json",
-    "textbook-y1-spring.json"
+  "version": 2,
+  "categories": [
+    {
+      "id": "y1-fall",
+      "name": "一上",
+      "icon": "📘",
+      "files": ["textbook-y1-fall.json"]
+    },
+    {
+      "id": "y1-spring",
+      "name": "一下",
+      "icon": "📗",
+      "files": ["textbook-y1-spring.json"]
+    }
   ]
 }

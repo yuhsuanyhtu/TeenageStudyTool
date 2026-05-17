@@ -17,6 +17,7 @@ const DEFAULTS = {
   baseGivenToday: false, // 今日基礎獎金 $10 是否已發過（每日重置）
   totalWithdrawn: 0,     // 累計已提領（v2.16）— 從 sync 同步
   availableToWithdraw: 0,// 可提領金額 = totalEarned - totalWithdrawn（從 sync 同步）
+  lastCategoryId: null,  // v2.19：上次展開／選擇的分類，下次預設展開它
 };
 
 export function load() {

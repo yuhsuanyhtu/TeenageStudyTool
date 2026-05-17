@@ -169,20 +169,41 @@ function renderHome() {
     </div>
 
     <h2>選一個單元</h2>
-    ${unitNames.length === 0
-      ? '<p class="muted">目前沒有單字資料</p>'
-      : unitNames.map(u => {
-          const total = appData.units[u].length;
-          const seen = state.getSeenEns(s, u).size;
-          const pct = total > 0 ? (seen / total) * 100 : 0;
+    ${appData.categories && appData.categories.length > 0
+      ? appData.categories.map(cat => {
+          const catUnitNames = Object.keys(cat.units);
+          if (catUnitNames.length === 0) return '';
+          // 該分類今天總共練了幾字
+          let catSeen = 0, catTotal = 0;
+          for (const u of catUnitNames) {
+            catTotal += cat.units[u].length;
+            catSeen += state.getSeenEns(s, u).size;
+          }
+          const isOpen = s.lastCategoryId === cat.id || (!s.lastCategoryId && cat === appData.categories[0]);
           return `
-            <button class="unit-btn" data-unit="${escapeHtml(u)}">
-              <span>${escapeHtml(u)}</span>
-              <span class="muted small">${total} 字 · 今天 ${seen}/${total}</span>
-            </button>
-            <div class="unit-progress-bar"><div class="unit-progress-fill" style="width:${pct}%"></div></div>
+            <details class="cat-section" data-cat-id="${escapeHtml(cat.id)}" ${isOpen ? 'open' : ''}>
+              <summary class="cat-header">
+                <span class="cat-title">${cat.icon} ${escapeHtml(cat.name)}</span>
+                <span class="muted small">${catUnitNames.length} 單元 · 今天 ${catSeen}/${catTotal} 字</span>
+              </summary>
+              <div class="cat-units">
+                ${catUnitNames.map(u => {
+                  const total = cat.units[u].length;
+                  const seen = state.getSeenEns(s, u).size;
+                  const pct = total > 0 ? (seen / total) * 100 : 0;
+                  return `
+                    <button class="unit-btn" data-unit="${escapeHtml(u)}">
+                      <span>${escapeHtml(u)}</span>
+                      <span class="muted small">${total} 字 · 今天 ${seen}/${total}</span>
+                    </button>
+                    <div class="unit-progress-bar"><div class="unit-progress-fill" style="width:${pct}%"></div></div>
+                  `;
+                }).join('')}
+              </div>
+            </details>
           `;
         }).join('')
+      : '<p class="muted">目前沒有單字資料</p>'
     }
 
     <p class="muted small center" style="margin-top:24px">
@@ -209,7 +230,22 @@ function renderHome() {
   root.querySelectorAll('.unit-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       currentUnit = btn.dataset.unit;
+      // 記錄這個 unit 所屬分類，下次預設展開
+      const catEl = btn.closest('.cat-section');
+      if (catEl && catEl.dataset.catId) {
+        s.lastCategoryId = catEl.dataset.catId;
+        state.save(s);
+      }
       renderModePicker();
+    });
+  });
+  // 展開分類時也記下來（即使沒選 unit）
+  root.querySelectorAll('.cat-section').forEach(el => {
+    el.addEventListener('toggle', () => {
+      if (el.open) {
+        s.lastCategoryId = el.dataset.catId;
+        state.save(s);
+      }
     });
   });
 }

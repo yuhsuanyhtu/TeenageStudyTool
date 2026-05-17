@@ -100,6 +100,38 @@ button.back:hover { background: transparent; text-decoration: underline; }
 }
 .unit-btn:hover { background: #f5f0e8; border-color: #6b9080; }
 
+/* v2.19：折疊分類區塊 */
+.cat-section {
+  margin-bottom: 12px;
+}
+.cat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: white;
+  border: 1px solid #e8e4de;
+  border-radius: 12px;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 500;
+  user-select: none;
+}
+.cat-header::-webkit-details-marker { display: none; }
+.cat-header::before {
+  content: '▶';
+  margin-right: 8px;
+  color: #6b9080;
+  font-size: 12px;
+  transition: transform 0.15s;
+}
+.cat-section[open] .cat-header::before { transform: rotate(90deg); }
+.cat-header:hover { background: #f5f0e8; border-color: #6b9080; }
+.cat-title { font-size: 16px; flex: 1; }
+.cat-units {
+  padding: 12px 8px 4px;
+}
+
 /* 單元進度條：顯示「今天練了幾字」 */
 .unit-progress-bar {
   height: 4px;
