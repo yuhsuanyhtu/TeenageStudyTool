@@ -40,7 +40,7 @@ export function renderRules(root, onBack) {
     <div class="card">
       <h3>🎯 四種題型怎麼選</h3>
       <p style="margin-bottom:6px;">📖 <b>從頭複習</b> — 整課單字一張張看過，會幫你拼字母、唸發音。走完整輪 +$${cfg.reviewBase}</p>
-      <p style="margin-bottom:6px;">🔗 <b>連連看</b> — 暖身、最輕鬆，認識新單字第一次選這個</p>
+      <p style="margin-bottom:6px;">🔗 <b>連連看</b> — 暖身用，每輪固定 +$${cfg.matchReward}（很簡單可以刷，但獎金少）</p>
       <p style="margin-bottom:6px;">🇬🇧 → 🇹🇼 <b>英翻中</b> — 看英文選中文，4 選 1，會先拼字母再唸整字</p>
       <p style="margin-bottom:6px;">🇹🇼 → 🇬🇧 <b>中翻英</b> — 要拼出英文，難度最高，但學最深</p>
       <p class="muted small" style="margin-top:8px;">建議流程：先「從頭複習」過一輪 → 連連看暖身 → 英翻中認熟 → 中翻英拼字打底。</p>

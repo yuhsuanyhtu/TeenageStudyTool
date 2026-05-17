@@ -299,6 +299,11 @@ function handleComplete(mode, result) {
       streak: s.streak || 0,
       todayPreEarned: s.todayPreEarned || 0,
     });
+  } else if (mode === 'match') {
+    // v2.15：連連看固定 $5，不依 sessionCorrect 計算（防 brute force 刷錢）
+    calc = reward.calcMatchReward({
+      todayPreEarned: s.todayPreEarned || 0,
+    });
   } else {
     calc = reward.calcSessionReward({
       sessionCorrect,

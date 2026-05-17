@@ -15,6 +15,7 @@ export const REWARD_CONFIG = {
   dailyCapPreMultiplier: 100,     // 每日「基礎+按字數」封頂（連勝倍率不算在內）
   minCorrectForBase: 5,
   reviewBase: 20,                 // 從頭複習一輪固定獎金（pre-multiplier）— v2.10 起 10→20 對齊舊版直覺
+  matchReward: 5,                 // 連連看一輪固定獎金 — v2.15 起防 brute force 刷錢（孩子愛刷當練習，但賺不到大錢）
   streakTiers: [
     { days: 7,  multiplier: 1.2 },
     { days: 14, multiplier: 1.4 },
@@ -74,6 +75,33 @@ export function calcSessionReward({ sessionCorrect, streak, todayPreEarned, base
     breakdown,
     // 本回合是否實際給了基礎獎金（給了 → main.js 設定 baseGivenToday=true，下次不再給）
     gaveBaseThisSession: eligibleBase > 0 && sessionPre > 0,
+  };
+}
+
+// 連連看一輪的獎金（固定 matchReward 元，受日上限但不受連勝倍率影響）
+// 設計：連連看可 brute force 刷對，所以不依賴 sessionCorrect，固定獎金防漏洞
+// 不影響 baseGivenToday flag（base 留給其他真正考能力的模式）
+export function calcMatchReward({ todayPreEarned }) {
+  const cfg = REWARD_CONFIG;
+  const remainingCap = Math.max(0, cfg.dailyCapPreMultiplier - todayPreEarned);
+  const sessionPre = Math.min(cfg.matchReward, remainingCap);
+  // 不乘 streak 倍率（金額小，乘了也沒意義；保持簡單）
+  const sessionFinal = sessionPre;
+
+  let breakdown;
+  if (sessionPre === 0) {
+    breakdown = `今天獎金已達上限（${cfg.dailyCapPreMultiplier} 元封頂）。連連看仍可練習，明天再來領！`;
+  } else {
+    breakdown = `連連看一輪 +$${sessionPre}（連連看可刷，獎金固定 $${cfg.matchReward}）`;
+  }
+  return {
+    sessionPre,
+    sessionFinal,
+    multiplier: 1,
+    base: 0,
+    perWord: 0,
+    breakdown,
+    gaveBaseThisSession: false,
   };
 }
 
