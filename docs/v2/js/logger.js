@@ -27,6 +27,10 @@ const META_EVENTS = new Set([
 
 function buildPayload(data, s) {
   const isMeta = META_EVENTS.has(data.event);
+  // v2.20 Bug A 修正：「待領零用錢」欄要寫真正的「可提領」（availableToWithdraw），
+  // 不是「累計賺取」（totalEarned）。之前寫錯，導致看 Sheet 永遠看不到提領被扣的效果。
+  // availableToWithdraw 未定義時退回 totalEarned（舊資料、第一次使用尚未 sync 時）。
+  const available = s.availableToWithdraw ?? s.totalEarned ?? 0;
   return {
     event: data.event || '',
     unit: data.unit || '',
@@ -35,7 +39,7 @@ function buildPayload(data, s) {
     prediction: '',                   // v2 沒有預測機制
     amount: data.amount ?? '',
     note: data.note || '',
-    money: isMeta ? '' : (s.totalEarned ?? 0),
+    money: isMeta ? '' : available,   // 「待領零用錢」欄 = availableToWithdraw
     totalPaid: '',
     streak: isMeta ? '' : (s.streak ?? 0),
     user: getDeviceName() || '(未命名)',  // 「user」這欄到 Sheet 是「裝置」欄

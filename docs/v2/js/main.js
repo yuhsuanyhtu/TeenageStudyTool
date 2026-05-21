@@ -60,7 +60,12 @@ let syncMessage = '';
   }
 })();
 
+// v2.20：節流——每次 sync 開始時記時間，太短間隔不重跑
+let lastSyncAt = 0;
+const MIN_RESYNC_INTERVAL_MS = 60 * 1000;  // 60 秒內不重 sync
+
 async function syncInBackground() {
+  lastSyncAt = Date.now();
   syncStatus = 'syncing';
   syncMessage = '';
   updateSyncIndicator();
@@ -73,13 +78,18 @@ async function syncInBackground() {
   }
   // v2.9：每台裝置只算自己的紀錄
   const computed = recomputeFromEvents(result.events, state.today(), state.getDeviceName());
-  // 用 Sheet 的數字覆蓋本地（Sheet 是真相）
-  s.totalEarned = computed.totalEarned;
-  s.totalWithdrawn = computed.totalWithdrawn;          // v2.16
-  s.availableToWithdraw = computed.availableToWithdraw;// v2.16
-  s.todayEarned = computed.todayEarned;
-  s.todayPreEarned = computed.todayPreEarned;   // v2.10：同步 cap 後的 pre，讓本地 cap 檢查正確
-  s.streak = computed.streak;
+  // v2.20 Bug C 修正：MAX 語意而不是覆蓋
+  //   - 累計類欄位（totalEarned、todayEarned、streak）：取 max(local, server)
+  //     原因：本地剛跑完的 session POST 出去到 Sheet 寫好之間有延遲，
+  //     這段空窗如果 sync 跑了會把剛賺的錢覆蓋掉。
+  //   - totalWithdrawn：信任 server（只有家長提領頁能寫，本地不會自己增加）
+  //   - availableToWithdraw：永遠用 totalEarned - totalWithdrawn 重算（保證一致）
+  s.totalEarned = Math.max(s.totalEarned || 0, computed.totalEarned);
+  s.totalWithdrawn = computed.totalWithdrawn;          // 信任 server
+  s.availableToWithdraw = Math.max(0, s.totalEarned - s.totalWithdrawn);
+  s.todayEarned = Math.max(s.todayEarned || 0, computed.todayEarned);
+  s.todayPreEarned = Math.max(s.todayPreEarned || 0, computed.todayPreEarned);
+  s.streak = Math.max(s.streak || 0, computed.streak);
   state.save(s);
   syncStatus = 'done';
   syncMessage = `本機 ${computed.eventCount} 筆、${computed.completedDayCount} 天`;
@@ -88,6 +98,17 @@ async function syncInBackground() {
   if (document.querySelector('.unit-btn')) {
     renderHome();
   }
+}
+
+// v2.20 Bug C 修正：tab 重新被看到時自動 re-sync（節流 60 秒）
+// 場景：媽媽在另一台機器提領 $100，謙恩 iPad 上的 tab 一直開著，
+// 切回 tab 時自動同步，畫面數字立刻反映提領。
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible') return;
+    if (Date.now() - lastSyncAt < MIN_RESYNC_INTERVAL_MS) return;
+    syncInBackground();
+  });
 }
 
 function updateSyncIndicator() {
@@ -369,6 +390,9 @@ function handleComplete(mode, result) {
     s.todayEarned = (s.todayEarned || 0) + calc.sessionFinal;
     s.todayCorrect = (s.todayCorrect || 0) + sessionCorrect;
     s.totalEarned = (s.totalEarned || 0) + calc.sessionFinal;
+    // v2.20 Bug B 修正：availableToWithdraw 也要跟著漲，不然主畫面「可提領」
+    // 要等下次 sync 才更新，孩子賺到錢看不到數字漲。
+    s.availableToWithdraw = Math.max(0, (s.totalEarned || 0) - (s.totalWithdrawn || 0));
     // v2.13：本回合實際給了基礎獎金 → 設旗標，避免之後再給
     if (calc.gaveBaseThisSession) s.baseGivenToday = true;
     // 標記這回合練過的字（給「今天 X/Y」覆蓋追蹤用）
