@@ -1,0 +1,1298 @@
+{
+  "A1 Unit 1": [
+    {
+      "en": "one",
+      "zh": "一(個)"
+    },
+    {
+      "en": "time",
+      "zh": "時間"
+    },
+    {
+      "en": "there",
+      "zh": "在那裡"
+    },
+    {
+      "en": "year",
+      "zh": "年"
+    },
+    {
+      "en": "so",
+      "zh": "如此"
+    },
+    {
+      "en": "think",
+      "zh": "想"
+    },
+    {
+      "en": "people",
+      "zh": "人"
+    },
+    {
+      "en": "take",
+      "zh": "拿"
+    },
+    {
+      "en": "out",
+      "zh": "外面的"
+    },
+    {
+      "en": "just",
+      "zh": "正直的"
+    },
+    {
+      "en": "see",
+      "zh": "看見"
+    },
+    {
+      "en": "come",
+      "zh": "過來"
+    },
+    {
+      "en": "now",
+      "zh": "現在"
+    },
+    {
+      "en": "like",
+      "zh": "相似的"
+    },
+    {
+      "en": "other",
+      "zh": "其他的"
+    },
+    {
+      "en": "how",
+      "zh": "如何"
+    },
+    {
+      "en": "then",
+      "zh": "然後"
+    },
+    {
+      "en": "two",
+      "zh": "二"
+    },
+    {
+      "en": "more",
+      "zh": "更多"
+    },
+    {
+      "en": "want",
+      "zh": "需要的東西"
+    },
+    {
+      "en": "way",
+      "zh": "路"
+    },
+    {
+      "en": "look",
+      "zh": "一看"
+    },
+    {
+      "en": "first",
+      "zh": "首先"
+    },
+    {
+      "en": "also",
+      "zh": "也"
+    },
+    {
+      "en": "new",
+      "zh": "新的"
+    },
+    {
+      "en": "day",
+      "zh": "天"
+    },
+    {
+      "en": "use",
+      "zh": "使用"
+    },
+    {
+      "en": "no",
+      "zh": "不"
+    },
+    {
+      "en": "man",
+      "zh": "男人"
+    },
+    {
+      "en": "find",
+      "zh": "發現"
+    },
+    {
+      "en": "here",
+      "zh": "在這裡"
+    },
+    {
+      "en": "thing",
+      "zh": "事物"
+    },
+    {
+      "en": "give",
+      "zh": "彈性"
+    },
+    {
+      "en": "many",
+      "zh": "多數"
+    },
+    {
+      "en": "well",
+      "zh": "井"
+    },
+    {
+      "en": "only",
+      "zh": "唯一的"
+    },
+    {
+      "en": "tell",
+      "zh": "告訴"
+    },
+    {
+      "en": "very",
+      "zh": "真正的"
+    },
+    {
+      "en": "even",
+      "zh": "平坦的"
+    },
+    {
+      "en": "back",
+      "zh": "後面的"
+    }
+  ],
+  "A1 Unit 2": [
+    {
+      "en": "any",
+      "zh": "任何的"
+    },
+    {
+      "en": "good",
+      "zh": "善行"
+    },
+    {
+      "en": "woman",
+      "zh": "女人"
+    },
+    {
+      "en": "through",
+      "zh": "穿越"
+    },
+    {
+      "en": "life",
+      "zh": "生活"
+    },
+    {
+      "en": "child",
+      "zh": "孩子"
+    },
+    {
+      "en": "work",
+      "zh": "工作"
+    },
+    {
+      "en": "down",
+      "zh": "向下的"
+    },
+    {
+      "en": "may",
+      "zh": "五月"
+    },
+    {
+      "en": "call",
+      "zh": "呼叫"
+    },
+    {
+      "en": "world",
+      "zh": "世界"
+    },
+    {
+      "en": "over",
+      "zh": "結束"
+    },
+    {
+      "en": "school",
+      "zh": "學校"
+    },
+    {
+      "en": "still",
+      "zh": "蒸餾室"
+    },
+    {
+      "en": "try",
+      "zh": "嘗試"
+    },
+    {
+      "en": "ask",
+      "zh": "問"
+    },
+    {
+      "en": "need",
+      "zh": "需要"
+    },
+    {
+      "en": "too",
+      "zh": "也"
+    },
+    {
+      "en": "feel",
+      "zh": "感覺"
+    },
+    {
+      "en": "three",
+      "zh": "三"
+    },
+    {
+      "en": "state",
+      "zh": "州"
+    },
+    {
+      "en": "never",
+      "zh": "從不"
+    },
+    {
+      "en": "become",
+      "zh": "變成"
+    },
+    {
+      "en": "high",
+      "zh": "高度"
+    },
+    {
+      "en": "really",
+      "zh": "實際上"
+    },
+    {
+      "en": "most",
+      "zh": "最多"
+    },
+    {
+      "en": "another",
+      "zh": "另外的"
+    },
+    {
+      "en": "much",
+      "zh": "大量"
+    },
+    {
+      "en": "family",
+      "zh": "家庭"
+    },
+    {
+      "en": "own",
+      "zh": "自己的"
+    },
+    {
+      "en": "leave",
+      "zh": "許可"
+    },
+    {
+      "en": "put",
+      "zh": "放"
+    },
+    {
+      "en": "old",
+      "zh": "以前"
+    },
+    {
+      "en": "while",
+      "zh": "一會兒"
+    },
+    {
+      "en": "mean",
+      "zh": "低劣的"
+    },
+    {
+      "en": "keep",
+      "zh": "生計"
+    },
+    {
+      "en": "student",
+      "zh": "學生"
+    },
+    {
+      "en": "why",
+      "zh": "為什麼"
+    },
+    {
+      "en": "let",
+      "zh": "讓"
+    },
+    {
+      "en": "great",
+      "zh": "大的"
+    }
+  ],
+  "A1 Unit 3": [
+    {
+      "en": "same",
+      "zh": "相同的"
+    },
+    {
+      "en": "big",
+      "zh": "大的"
+    },
+    {
+      "en": "group",
+      "zh": "團體"
+    },
+    {
+      "en": "begin",
+      "zh": "開始"
+    },
+    {
+      "en": "seem",
+      "zh": "象是"
+    },
+    {
+      "en": "country",
+      "zh": "國家"
+    },
+    {
+      "en": "help",
+      "zh": "幫忙"
+    },
+    {
+      "en": "talk",
+      "zh": "談話"
+    },
+    {
+      "en": "where",
+      "zh": "在哪裡"
+    },
+    {
+      "en": "turn",
+      "zh": "轉彎"
+    },
+    {
+      "en": "problem",
+      "zh": "問題"
+    },
+    {
+      "en": "every",
+      "zh": "每一"
+    },
+    {
+      "en": "start",
+      "zh": "驚起"
+    },
+    {
+      "en": "hand",
+      "zh": "手"
+    },
+    {
+      "en": "might",
+      "zh": "力量"
+    },
+    {
+      "en": "american",
+      "zh": "美國人"
+    },
+    {
+      "en": "show",
+      "zh": "顯示"
+    },
+    {
+      "en": "part",
+      "zh": "部分"
+    },
+    {
+      "en": "place",
+      "zh": "地方"
+    },
+    {
+      "en": "such",
+      "zh": "如此的"
+    },
+    {
+      "en": "again",
+      "zh": "再一次"
+    },
+    {
+      "en": "few",
+      "zh": "很少的"
+    },
+    {
+      "en": "week",
+      "zh": "星期"
+    },
+    {
+      "en": "company",
+      "zh": "公司"
+    },
+    {
+      "en": "each",
+      "zh": "每個"
+    },
+    {
+      "en": "right",
+      "zh": "權利"
+    },
+    {
+      "en": "hear",
+      "zh": "聽到"
+    },
+    {
+      "en": "question",
+      "zh": "問題"
+    },
+    {
+      "en": "play",
+      "zh": "遊戲"
+    },
+    {
+      "en": "government",
+      "zh": "政府"
+    },
+    {
+      "en": "run",
+      "zh": "跑"
+    },
+    {
+      "en": "small",
+      "zh": "小的"
+    },
+    {
+      "en": "number",
+      "zh": "數"
+    },
+    {
+      "en": "off",
+      "zh": "關著的"
+    },
+    {
+      "en": "always",
+      "zh": "總是"
+    },
+    {
+      "en": "move",
+      "zh": "移動"
+    },
+    {
+      "en": "night",
+      "zh": "夜"
+    },
+    {
+      "en": "live",
+      "zh": "活的"
+    },
+    {
+      "en": "point",
+      "zh": "點"
+    },
+    {
+      "en": "believe",
+      "zh": "相信"
+    }
+  ],
+  "A1 Unit 4": [
+    {
+      "en": "hold",
+      "zh": "把握"
+    },
+    {
+      "en": "today",
+      "zh": "今天"
+    },
+    {
+      "en": "bring",
+      "zh": "帶來"
+    },
+    {
+      "en": "happen",
+      "zh": "發生"
+    },
+    {
+      "en": "next",
+      "zh": "下一個"
+    },
+    {
+      "en": "large",
+      "zh": "大的"
+    },
+    {
+      "en": "must",
+      "zh": "必須"
+    },
+    {
+      "en": "home",
+      "zh": "家"
+    },
+    {
+      "en": "water",
+      "zh": "水"
+    },
+    {
+      "en": "room",
+      "zh": "房間"
+    },
+    {
+      "en": "write",
+      "zh": "書寫"
+    },
+    {
+      "en": "mother",
+      "zh": "母親"
+    },
+    {
+      "en": "area",
+      "zh": "區域"
+    },
+    {
+      "en": "national",
+      "zh": "國家的"
+    },
+    {
+      "en": "money",
+      "zh": "金錢"
+    },
+    {
+      "en": "story",
+      "zh": "故事"
+    },
+    {
+      "en": "young",
+      "zh": "年輕的"
+    },
+    {
+      "en": "fact",
+      "zh": "事實"
+    },
+    {
+      "en": "month",
+      "zh": "月"
+    },
+    {
+      "en": "different",
+      "zh": "不同的"
+    },
+    {
+      "en": "lot",
+      "zh": "運氣"
+    },
+    {
+      "en": "study",
+      "zh": "學習"
+    },
+    {
+      "en": "book",
+      "zh": "書"
+    },
+    {
+      "en": "eye",
+      "zh": "眼睛"
+    },
+    {
+      "en": "job",
+      "zh": "工作"
+    },
+    {
+      "en": "word",
+      "zh": "話"
+    },
+    {
+      "en": "though",
+      "zh": "然而"
+    },
+    {
+      "en": "business",
+      "zh": "生意"
+    },
+    {
+      "en": "four",
+      "zh": "四"
+    },
+    {
+      "en": "side",
+      "zh": "旁邊"
+    },
+    {
+      "en": "kind",
+      "zh": "種類"
+    },
+    {
+      "en": "head",
+      "zh": "頭"
+    },
+    {
+      "en": "far",
+      "zh": "遠的"
+    },
+    {
+      "en": "black",
+      "zh": "黑色"
+    },
+    {
+      "en": "long",
+      "zh": "長的"
+    },
+    {
+      "en": "both",
+      "zh": "兩者的"
+    },
+    {
+      "en": "little",
+      "zh": "一點點"
+    },
+    {
+      "en": "house",
+      "zh": "房子"
+    },
+    {
+      "en": "yes",
+      "zh": "是"
+    },
+    {
+      "en": "provide",
+      "zh": "提供"
+    }
+  ],
+  "A1 Unit 5": [
+    {
+      "en": "service",
+      "zh": "服務"
+    },
+    {
+      "en": "friend",
+      "zh": "朋友"
+    },
+    {
+      "en": "important",
+      "zh": "重要的"
+    },
+    {
+      "en": "father",
+      "zh": "父親"
+    },
+    {
+      "en": "sit",
+      "zh": "坐"
+    },
+    {
+      "en": "away",
+      "zh": "離去"
+    },
+    {
+      "en": "hour",
+      "zh": "小時"
+    },
+    {
+      "en": "game",
+      "zh": "比賽"
+    },
+    {
+      "en": "often",
+      "zh": "時常"
+    },
+    {
+      "en": "yet",
+      "zh": "還"
+    },
+    {
+      "en": "line",
+      "zh": "列"
+    },
+    {
+      "en": "end",
+      "zh": "結束"
+    },
+    {
+      "en": "ever",
+      "zh": "曾經"
+    },
+    {
+      "en": "stand",
+      "zh": "站立"
+    },
+    {
+      "en": "bad",
+      "zh": "壞的"
+    },
+    {
+      "en": "lose",
+      "zh": "遺失"
+    },
+    {
+      "en": "however",
+      "zh": "然而"
+    },
+    {
+      "en": "member",
+      "zh": "成員"
+    },
+    {
+      "en": "pay",
+      "zh": "薪資"
+    },
+    {
+      "en": "law",
+      "zh": "法律"
+    },
+    {
+      "en": "meet",
+      "zh": "會"
+    },
+    {
+      "en": "car",
+      "zh": "汽車"
+    },
+    {
+      "en": "city",
+      "zh": "城市"
+    },
+    {
+      "en": "almost",
+      "zh": "幾乎"
+    },
+    {
+      "en": "include",
+      "zh": "包括"
+    },
+    {
+      "en": "continue",
+      "zh": "繼續"
+    },
+    {
+      "en": "set",
+      "zh": "日落"
+    },
+    {
+      "en": "name",
+      "zh": "名字"
+    },
+    {
+      "en": "five",
+      "zh": "五"
+    },
+    {
+      "en": "once",
+      "zh": "一次"
+    },
+    {
+      "en": "white",
+      "zh": "白色"
+    },
+    {
+      "en": "least",
+      "zh": "最少"
+    },
+    {
+      "en": "president",
+      "zh": "總統"
+    },
+    {
+      "en": "learn",
+      "zh": "學習"
+    },
+    {
+      "en": "real",
+      "zh": "真的"
+    },
+    {
+      "en": "change",
+      "zh": "變化"
+    },
+    {
+      "en": "team",
+      "zh": "隊"
+    },
+    {
+      "en": "minute",
+      "zh": "分"
+    },
+    {
+      "en": "several",
+      "zh": "幾個的"
+    },
+    {
+      "en": "idea",
+      "zh": "主意"
+    }
+  ],
+  "A1 Unit 6": [
+    {
+      "en": "kid",
+      "zh": "小山羊"
+    },
+    {
+      "en": "body",
+      "zh": "身體"
+    },
+    {
+      "en": "information",
+      "zh": "訊息"
+    },
+    {
+      "en": "nothing",
+      "zh": "無"
+    },
+    {
+      "en": "ago",
+      "zh": "以前"
+    },
+    {
+      "en": "lead",
+      "zh": "鉛"
+    },
+    {
+      "en": "social",
+      "zh": "社會的"
+    },
+    {
+      "en": "understand",
+      "zh": "理解"
+    },
+    {
+      "en": "watch",
+      "zh": "觀察"
+    },
+    {
+      "en": "together",
+      "zh": "一起"
+    },
+    {
+      "en": "follow",
+      "zh": "跟隨"
+    },
+    {
+      "en": "parent",
+      "zh": "父母"
+    },
+    {
+      "en": "stop",
+      "zh": "停止"
+    },
+    {
+      "en": "face",
+      "zh": "臉"
+    },
+    {
+      "en": "create",
+      "zh": "創造"
+    },
+    {
+      "en": "public",
+      "zh": "公眾"
+    },
+    {
+      "en": "already",
+      "zh": "已經"
+    },
+    {
+      "en": "speak",
+      "zh": "說"
+    },
+    {
+      "en": "read",
+      "zh": "讀"
+    },
+    {
+      "en": "level",
+      "zh": "水平"
+    },
+    {
+      "en": "allow",
+      "zh": "允許"
+    },
+    {
+      "en": "add",
+      "zh": "增加"
+    },
+    {
+      "en": "office",
+      "zh": "辦公室"
+    },
+    {
+      "en": "spend",
+      "zh": "花費"
+    },
+    {
+      "en": "door",
+      "zh": "門"
+    },
+    {
+      "en": "health",
+      "zh": "健康"
+    },
+    {
+      "en": "person",
+      "zh": "人"
+    },
+    {
+      "en": "art",
+      "zh": "藝術"
+    },
+    {
+      "en": "sure",
+      "zh": "確信"
+    },
+    {
+      "en": "war",
+      "zh": "戰爭"
+    },
+    {
+      "en": "history",
+      "zh": "歷史"
+    },
+    {
+      "en": "party",
+      "zh": "宴會"
+    },
+    {
+      "en": "grow",
+      "zh": "種植"
+    },
+    {
+      "en": "result",
+      "zh": "結果"
+    },
+    {
+      "en": "open",
+      "zh": "公開"
+    },
+    {
+      "en": "morning",
+      "zh": "早晨"
+    },
+    {
+      "en": "walk",
+      "zh": "走"
+    },
+    {
+      "en": "reason",
+      "zh": "理由"
+    },
+    {
+      "en": "low",
+      "zh": "低點"
+    },
+    {
+      "en": "win",
+      "zh": "贏得"
+    }
+  ],
+  "A1 Unit 7": [
+    {
+      "en": "research",
+      "zh": "研究"
+    },
+    {
+      "en": "girl",
+      "zh": "女孩"
+    },
+    {
+      "en": "early",
+      "zh": "早的"
+    },
+    {
+      "en": "food",
+      "zh": "食物"
+    },
+    {
+      "en": "moment",
+      "zh": "片刻"
+    },
+    {
+      "en": "air",
+      "zh": "空氣"
+    },
+    {
+      "en": "teacher",
+      "zh": "教師"
+    },
+    {
+      "en": "force",
+      "zh": "力量"
+    },
+    {
+      "en": "offer",
+      "zh": "給予(物)"
+    },
+    {
+      "en": "enough",
+      "zh": "充足"
+    },
+    {
+      "en": "education",
+      "zh": "教育"
+    },
+    {
+      "en": "remember",
+      "zh": "記得"
+    },
+    {
+      "en": "foot",
+      "zh": "腳"
+    },
+    {
+      "en": "second",
+      "zh": "秒"
+    },
+    {
+      "en": "boy",
+      "zh": "男孩"
+    },
+    {
+      "en": "maybe",
+      "zh": "也許"
+    },
+    {
+      "en": "able",
+      "zh": "能幹的"
+    },
+    {
+      "en": "age",
+      "zh": "年齡"
+    },
+    {
+      "en": "policy",
+      "zh": "政策"
+    },
+    {
+      "en": "love",
+      "zh": "愛"
+    },
+    {
+      "en": "music",
+      "zh": "音樂"
+    },
+    {
+      "en": "consider",
+      "zh": "考慮"
+    },
+    {
+      "en": "appear",
+      "zh": "出現"
+    },
+    {
+      "en": "buy",
+      "zh": "買"
+    },
+    {
+      "en": "probably",
+      "zh": "大概"
+    },
+    {
+      "en": "human",
+      "zh": "人"
+    },
+    {
+      "en": "wait",
+      "zh": "等待"
+    },
+    {
+      "en": "serve",
+      "zh": "可作...用"
+    },
+    {
+      "en": "market",
+      "zh": "市場"
+    },
+    {
+      "en": "die",
+      "zh": "死亡"
+    },
+    {
+      "en": "send",
+      "zh": "傳送"
+    },
+    {
+      "en": "expect",
+      "zh": "預期"
+    },
+    {
+      "en": "sense",
+      "zh": "感應"
+    },
+    {
+      "en": "build",
+      "zh": "建立"
+    },
+    {
+      "en": "stay",
+      "zh": "停留"
+    },
+    {
+      "en": "fall",
+      "zh": "落下"
+    },
+    {
+      "en": "plan",
+      "zh": "計劃"
+    },
+    {
+      "en": "cut",
+      "zh": "切口"
+    },
+    {
+      "en": "college",
+      "zh": "學院"
+    },
+    {
+      "en": "interest",
+      "zh": "興趣"
+    }
+  ],
+  "A1 Unit 8": [
+    {
+      "en": "death",
+      "zh": "死亡"
+    },
+    {
+      "en": "course",
+      "zh": "課程"
+    },
+    {
+      "en": "experience",
+      "zh": "經歷"
+    },
+    {
+      "en": "behind",
+      "zh": "在後地"
+    },
+    {
+      "en": "reach",
+      "zh": "伸出"
+    },
+    {
+      "en": "six",
+      "zh": "六"
+    },
+    {
+      "en": "kill",
+      "zh": "殺"
+    },
+    {
+      "en": "remain",
+      "zh": "保持"
+    },
+    {
+      "en": "suggest",
+      "zh": "提議"
+    },
+    {
+      "en": "class",
+      "zh": "班級"
+    },
+    {
+      "en": "control",
+      "zh": "控制"
+    },
+    {
+      "en": "raise",
+      "zh": "上升"
+    },
+    {
+      "en": "care",
+      "zh": "小心"
+    },
+    {
+      "en": "perhaps",
+      "zh": "也許"
+    },
+    {
+      "en": "late",
+      "zh": "遲的"
+    },
+    {
+      "en": "hard",
+      "zh": "堅硬的"
+    },
+    {
+      "en": "field",
+      "zh": "領域"
+    },
+    {
+      "en": "else",
+      "zh": "別的"
+    },
+    {
+      "en": "pass",
+      "zh": "經過"
+    },
+    {
+      "en": "sell",
+      "zh": "賣"
+    },
+    {
+      "en": "sometimes",
+      "zh": "有時"
+    },
+    {
+      "en": "require",
+      "zh": "需要"
+    },
+    {
+      "en": "along",
+      "zh": "平行地"
+    },
+    {
+      "en": "development",
+      "zh": "發展"
+    },
+    {
+      "en": "report",
+      "zh": "報告"
+    },
+    {
+      "en": "role",
+      "zh": "角色"
+    },
+    {
+      "en": "effort",
+      "zh": "努力"
+    },
+    {
+      "en": "decide",
+      "zh": "決定"
+    },
+    {
+      "en": "strong",
+      "zh": "強壯的"
+    },
+    {
+      "en": "possible",
+      "zh": "可能的"
+    },
+    {
+      "en": "heart",
+      "zh": "心"
+    },
+    {
+      "en": "drug",
+      "zh": "藥"
+    },
+    {
+      "en": "leader",
+      "zh": "領導者"
+    },
+    {
+      "en": "light",
+      "zh": "光"
+    },
+    {
+      "en": "voice",
+      "zh": "聲音"
+    },
+    {
+      "en": "wife",
+      "zh": "妻子"
+    },
+    {
+      "en": "whole",
+      "zh": "全部"
+    },
+    {
+      "en": "police",
+      "zh": "警察"
+    },
+    {
+      "en": "mind",
+      "zh": "思想"
+    },
+    {
+      "en": "pull",
+      "zh": "拉"
+    }
+  ]
+}

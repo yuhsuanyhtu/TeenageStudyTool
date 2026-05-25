@@ -200,7 +200,12 @@ function renderHome() {
             catTotal += cat.units[u].length;
             catSeen += state.getSeenEns(s, u).size;
           }
-          const isOpen = s.lastCategoryId === cat.id || (!s.lastCategoryId && cat === appData.categories[0]);
+          // v2.21：預設展開 units-meta.json 裡標 `"current": true` 的分類（謙恩當期）。
+          // 找不到 → 退回最後一個分類（最新的）。
+          // 不再用 lastCategoryId，避免「某次手滑點到 A1 就永遠卡在 A1」。
+          const defaultCat = appData.categories.find(c => c.current)
+            || appData.categories[appData.categories.length - 1];
+          const isOpen = cat.id === (defaultCat ? defaultCat.id : null);
           return `
             <details class="cat-section" data-cat-id="${escapeHtml(cat.id)}" ${isOpen ? 'open' : ''}>
               <summary class="cat-header">
@@ -251,24 +256,11 @@ function renderHome() {
   root.querySelectorAll('.unit-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       currentUnit = btn.dataset.unit;
-      // 記錄這個 unit 所屬分類，下次預設展開
-      const catEl = btn.closest('.cat-section');
-      if (catEl && catEl.dataset.catId) {
-        s.lastCategoryId = catEl.dataset.catId;
-        state.save(s);
-      }
       renderModePicker();
     });
   });
-  // 展開分類時也記下來（即使沒選 unit）
-  root.querySelectorAll('.cat-section').forEach(el => {
-    el.addEventListener('toggle', () => {
-      if (el.open) {
-        s.lastCategoryId = el.dataset.catId;
-        state.save(s);
-      }
-    });
-  });
+  // v2.21：拿掉 lastCategoryId 追蹤 — 改用 units-meta.json 的 `current: true` flag
+  //         所見即所得：永遠展開當期分類，不會被「某次手滑點到」綁架
 }
 
 function renderModePicker() {

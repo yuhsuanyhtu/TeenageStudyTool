@@ -11,7 +11,32 @@
       "id": "y1-spring",
       "name": "一下",
       "icon": "📗",
-      "files": ["textbook-y1-spring.json"]
+      "files": ["textbook-y1-spring.json"],
+      "current": true
+    },
+    {
+      "id": "cefr-a1",
+      "name": "A1 入門",
+      "icon": "🌱",
+      "files": ["cefr-a1.json"]
+    },
+    {
+      "id": "cefr-a2",
+      "name": "A2 基礎",
+      "icon": "🌿",
+      "files": ["cefr-a2.json"]
+    },
+    {
+      "id": "cefr-b1",
+      "name": "B1 進階",
+      "icon": "🌳",
+      "files": ["cefr-b1.json"]
+    },
+    {
+      "id": "cefr-b2",
+      "name": "B2 中高級",
+      "icon": "🎯",
+      "files": ["cefr-b2.json"]
     }
   ]
 }

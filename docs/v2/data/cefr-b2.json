@@ -1,0 +1,1298 @@
+{
+  "B2 Unit 1": [
+    {
+      "en": "environmental",
+      "zh": "周圍的"
+    },
+    {
+      "en": "attorney",
+      "zh": "代理人"
+    },
+    {
+      "en": "participant",
+      "zh": "參加者"
+    },
+    {
+      "en": "client",
+      "zh": "客戶"
+    },
+    {
+      "en": "context",
+      "zh": "上下文"
+    },
+    {
+      "en": "grab",
+      "zh": "抓握"
+    },
+    {
+      "en": "corporate",
+      "zh": "社團的"
+    },
+    {
+      "en": "analyst",
+      "zh": "分析者"
+    },
+    {
+      "en": "currently",
+      "zh": "現在"
+    },
+    {
+      "en": "ethnic",
+      "zh": "人種的"
+    },
+    {
+      "en": "rating",
+      "zh": "等級"
+    },
+    {
+      "en": "landscape",
+      "zh": "風景"
+    },
+    {
+      "en": "producer",
+      "zh": "生產者"
+    },
+    {
+      "en": "regime",
+      "zh": "政權"
+    },
+    {
+      "en": "perception",
+      "zh": "知覺"
+    },
+    {
+      "en": "intervention",
+      "zh": "插入"
+    },
+    {
+      "en": "cite",
+      "zh": "引用"
+    },
+    {
+      "en": "specifically",
+      "zh": "特定地"
+    },
+    {
+      "en": "sector",
+      "zh": "扇形"
+    },
+    {
+      "en": "asset",
+      "zh": "資產"
+    },
+    {
+      "en": "therapy",
+      "zh": "治療"
+    },
+    {
+      "en": "chip",
+      "zh": "屑片"
+    },
+    {
+      "en": "transition",
+      "zh": "轉變"
+    },
+    {
+      "en": "coalition",
+      "zh": "結合體"
+    },
+    {
+      "en": "negotiation",
+      "zh": "談判"
+    },
+    {
+      "en": "suicide",
+      "zh": "自殺"
+    },
+    {
+      "en": "evaluation",
+      "zh": "評估"
+    },
+    {
+      "en": "deficit",
+      "zh": "赤字"
+    },
+    {
+      "en": "ally",
+      "zh": "同盟者"
+    },
+    {
+      "en": "confront",
+      "zh": "使面對"
+    },
+    {
+      "en": "peer",
+      "zh": "同等的人"
+    },
+    {
+      "en": "retirement",
+      "zh": "退休"
+    },
+    {
+      "en": "literally",
+      "zh": "逐字地"
+    },
+    {
+      "en": "historic",
+      "zh": "歷史上著名的"
+    },
+    {
+      "en": "historian",
+      "zh": "歷史學家"
+    },
+    {
+      "en": "criteria",
+      "zh": "pl. 標準"
+    },
+    {
+      "en": "dealer",
+      "zh": "經銷商"
+    },
+    {
+      "en": "clinical",
+      "zh": "臨床的"
+    },
+    {
+      "en": "fiber",
+      "zh": "纖維"
+    },
+    {
+      "en": "refugee",
+      "zh": "難民"
+    }
+  ],
+  "B2 Unit 2": [
+    {
+      "en": "incorporate",
+      "zh": "合併的"
+    },
+    {
+      "en": "hip",
+      "zh": "臀部"
+    },
+    {
+      "en": "lawsuit",
+      "zh": "訴訟"
+    },
+    {
+      "en": "testimony",
+      "zh": "證言"
+    },
+    {
+      "en": "profile",
+      "zh": "側面"
+    },
+    {
+      "en": "mechanism",
+      "zh": "機械"
+    },
+    {
+      "en": "penalty",
+      "zh": "處罰"
+    },
+    {
+      "en": "initially",
+      "zh": "最初"
+    },
+    {
+      "en": "spokesman",
+      "zh": "發言人"
+    },
+    {
+      "en": "incentive",
+      "zh": "動機"
+    },
+    {
+      "en": "elite",
+      "zh": "精華"
+    },
+    {
+      "en": "senator",
+      "zh": "參議員"
+    },
+    {
+      "en": "testify",
+      "zh": "證明"
+    },
+    {
+      "en": "terrorist",
+      "zh": "恐怖分子"
+    },
+    {
+      "en": "assault",
+      "zh": "攻擊"
+    },
+    {
+      "en": "violation",
+      "zh": "違反"
+    },
+    {
+      "en": "controversy",
+      "zh": "論爭"
+    },
+    {
+      "en": "constitute",
+      "zh": "構成"
+    },
+    {
+      "en": "representation",
+      "zh": "表示法"
+    },
+    {
+      "en": "emission",
+      "zh": "發射"
+    },
+    {
+      "en": "earnings",
+      "zh": "所賺的錢"
+    },
+    {
+      "en": "vulnerable",
+      "zh": "易受傷害的"
+    },
+    {
+      "en": "capability",
+      "zh": "能力"
+    },
+    {
+      "en": "galaxy",
+      "zh": "銀河"
+    },
+    {
+      "en": "incredible",
+      "zh": "難以置信的"
+    },
+    {
+      "en": "mall",
+      "zh": "林蔭路"
+    },
+    {
+      "en": "privacy",
+      "zh": "隱私"
+    },
+    {
+      "en": "conviction",
+      "zh": "定罪"
+    },
+    {
+      "en": "myth",
+      "zh": "神話"
+    },
+    {
+      "en": "membership",
+      "zh": "會員的資格"
+    },
+    {
+      "en": "islam",
+      "zh": "伊斯蘭教"
+    },
+    {
+      "en": "narrative",
+      "zh": "敘述"
+    },
+    {
+      "en": "sue",
+      "zh": "控告"
+    },
+    {
+      "en": "assert",
+      "zh": "主張"
+    },
+    {
+      "en": "offensive",
+      "zh": "令人不快的"
+    },
+    {
+      "en": "dominant",
+      "zh": "佔優勢的"
+    },
+    {
+      "en": "heritage",
+      "zh": "遺產"
+    },
+    {
+      "en": "legacy",
+      "zh": "祖先傳下來之物"
+    },
+    {
+      "en": "legitimate",
+      "zh": "合法的"
+    },
+    {
+      "en": "orientation",
+      "zh": "定方位"
+    }
+  ],
+  "B2 Unit 3": [
+    {
+      "en": "inflation",
+      "zh": "脹大"
+    },
+    {
+      "en": "cluster",
+      "zh": "串"
+    },
+    {
+      "en": "depict",
+      "zh": "描述"
+    },
+    {
+      "en": "instructor",
+      "zh": "教員"
+    },
+    {
+      "en": "mortgage",
+      "zh": "抵押"
+    },
+    {
+      "en": "sanction",
+      "zh": "核准"
+    },
+    {
+      "en": "ethics",
+      "zh": "道德規範"
+    },
+    {
+      "en": "physically",
+      "zh": "按自然規律"
+    },
+    {
+      "en": "discourse",
+      "zh": "談話"
+    },
+    {
+      "en": "portray",
+      "zh": "描繪"
+    },
+    {
+      "en": "script",
+      "zh": "手跡"
+    },
+    {
+      "en": "colonial",
+      "zh": "殖民的"
+    },
+    {
+      "en": "pregnancy",
+      "zh": "懷孕"
+    },
+    {
+      "en": "cognitive",
+      "zh": "認知的"
+    },
+    {
+      "en": "defendant",
+      "zh": "被告"
+    },
+    {
+      "en": "fitness",
+      "zh": "適合"
+    },
+    {
+      "en": "makeup",
+      "zh": "組成"
+    },
+    {
+      "en": "couch",
+      "zh": "長沙發"
+    },
+    {
+      "en": "alliance",
+      "zh": "聯盟"
+    },
+    {
+      "en": "hypothesis",
+      "zh": "假設"
+    },
+    {
+      "en": "norm",
+      "zh": "基準"
+    },
+    {
+      "en": "counseling",
+      "zh": "諮詢服務"
+    },
+    {
+      "en": "ritual",
+      "zh": "儀式"
+    },
+    {
+      "en": "salmon",
+      "zh": "鮭魚"
+    },
+    {
+      "en": "combat",
+      "zh": "爭鬥"
+    },
+    {
+      "en": "counsel",
+      "zh": "商議"
+    },
+    {
+      "en": "presidency",
+      "zh": "總統職權"
+    },
+    {
+      "en": "subtle",
+      "zh": "敏銳的"
+    },
+    {
+      "en": "ethical",
+      "zh": "倫理的"
+    },
+    {
+      "en": "integrity",
+      "zh": "正直"
+    },
+    {
+      "en": "essence",
+      "zh": "實質"
+    },
+    {
+      "en": "closet",
+      "zh": "壁櫥"
+    },
+    {
+      "en": "humanity",
+      "zh": "人性"
+    },
+    {
+      "en": "correlation",
+      "zh": "相互關係"
+    },
+    {
+      "en": "allegation",
+      "zh": "斷言"
+    },
+    {
+      "en": "initiate",
+      "zh": "入會"
+    },
+    {
+      "en": "plead",
+      "zh": "辯護"
+    },
+    {
+      "en": "seemingly",
+      "zh": "看來似乎"
+    },
+    {
+      "en": "inspector",
+      "zh": "檢查員"
+    },
+    {
+      "en": "fraud",
+      "zh": "欺騙"
+    }
+  ],
+  "B2 Unit 4": [
+    {
+      "en": "contend",
+      "zh": "奮鬥"
+    },
+    {
+      "en": "array",
+      "zh": "排列"
+    },
+    {
+      "en": "monster",
+      "zh": "怪物"
+    },
+    {
+      "en": "facilitate",
+      "zh": "使容易"
+    },
+    {
+      "en": "overwhelming",
+      "zh": "壓倒性的"
+    },
+    {
+      "en": "rip",
+      "zh": "裂痕"
+    },
+    {
+      "en": "recession",
+      "zh": "後退"
+    },
+    {
+      "en": "nightmare",
+      "zh": "夢魘"
+    },
+    {
+      "en": "consistently",
+      "zh": "堅固"
+    },
+    {
+      "en": "prediction",
+      "zh": "預言"
+    },
+    {
+      "en": "infrastructure",
+      "zh": "基礎結構"
+    },
+    {
+      "en": "domain",
+      "zh": "領域"
+    },
+    {
+      "en": "guilt",
+      "zh": "罪行"
+    },
+    {
+      "en": "ideology",
+      "zh": "思想體系"
+    },
+    {
+      "en": "chronic",
+      "zh": "慢性的"
+    },
+    {
+      "en": "replacement",
+      "zh": "歸還"
+    },
+    {
+      "en": "innovation",
+      "zh": "改革"
+    },
+    {
+      "en": "simultaneously",
+      "zh": "同時發生"
+    },
+    {
+      "en": "trigger",
+      "zh": "觸發器"
+    },
+    {
+      "en": "adoption",
+      "zh": "採用"
+    },
+    {
+      "en": "convict",
+      "zh": "囚犯"
+    },
+    {
+      "en": "undermine",
+      "zh": "在...下面挖"
+    },
+    {
+      "en": "ballot",
+      "zh": "投票"
+    },
+    {
+      "en": "profound",
+      "zh": "極深的"
+    },
+    {
+      "en": "lobby",
+      "zh": "大廳"
+    },
+    {
+      "en": "trait",
+      "zh": "特徵"
+    },
+    {
+      "en": "doctrine",
+      "zh": "教條"
+    },
+    {
+      "en": "complexity",
+      "zh": "複雜"
+    },
+    {
+      "en": "meaningful",
+      "zh": "意味深長的"
+    },
+    {
+      "en": "spouse",
+      "zh": "配偶"
+    },
+    {
+      "en": "sodium",
+      "zh": "鈉"
+    },
+    {
+      "en": "promotion",
+      "zh": "晉級"
+    },
+    {
+      "en": "compensation",
+      "zh": "補償"
+    },
+    {
+      "en": "dedicate",
+      "zh": "獻出"
+    },
+    {
+      "en": "engagement",
+      "zh": "諾言"
+    },
+    {
+      "en": "transaction",
+      "zh": "交易"
+    },
+    {
+      "en": "counterpart",
+      "zh": "副本"
+    },
+    {
+      "en": "residential",
+      "zh": "住宅的"
+    },
+    {
+      "en": "diagnose",
+      "zh": "診斷"
+    },
+    {
+      "en": "exploration",
+      "zh": "探險"
+    }
+  ],
+  "B2 Unit 5": [
+    {
+      "en": "spectrum",
+      "zh": "光譜"
+    },
+    {
+      "en": "expertise",
+      "zh": "專家意見"
+    },
+    {
+      "en": "recipient",
+      "zh": "領受的"
+    },
+    {
+      "en": "bias",
+      "zh": "偏見"
+    },
+    {
+      "en": "entity",
+      "zh": "實體"
+    },
+    {
+      "en": "diplomatic",
+      "zh": "外交的"
+    },
+    {
+      "en": "minimize",
+      "zh": "將...減到最少"
+    },
+    {
+      "en": "diminish",
+      "zh": "(使)減少"
+    },
+    {
+      "en": "prevention",
+      "zh": "阻止"
+    },
+    {
+      "en": "intent",
+      "zh": "意圖"
+    },
+    {
+      "en": "inventory",
+      "zh": "詳細目錄"
+    },
+    {
+      "en": "magnitude",
+      "zh": "巨大"
+    },
+    {
+      "en": "hostage",
+      "zh": "人質"
+    },
+    {
+      "en": "popularity",
+      "zh": "名聲"
+    },
+    {
+      "en": "alien",
+      "zh": "外國人"
+    },
+    {
+      "en": "photography",
+      "zh": "攝影"
+    },
+    {
+      "en": "realistic",
+      "zh": "現實的"
+    },
+    {
+      "en": "gathering",
+      "zh": "聚集"
+    },
+    {
+      "en": "romance",
+      "zh": "冒險故事"
+    },
+    {
+      "en": "kit",
+      "zh": "裝備"
+    },
+    {
+      "en": "annually",
+      "zh": "一年一次"
+    },
+    {
+      "en": "ranch",
+      "zh": "大牧場"
+    },
+    {
+      "en": "verbal",
+      "zh": "用言辭的"
+    },
+    {
+      "en": "coastal",
+      "zh": "海岸的"
+    },
+    {
+      "en": "sentiment",
+      "zh": "感情"
+    },
+    {
+      "en": "divine",
+      "zh": "神的"
+    },
+    {
+      "en": "inspiration",
+      "zh": "靈感"
+    },
+    {
+      "en": "quest",
+      "zh": "探索"
+    },
+    {
+      "en": "slap",
+      "zh": "摑"
+    },
+    {
+      "en": "toxic",
+      "zh": "有毒的"
+    },
+    {
+      "en": "grief",
+      "zh": "傷心"
+    },
+    {
+      "en": "donate",
+      "zh": "捐贈"
+    },
+    {
+      "en": "tackle",
+      "zh": "工具"
+    },
+    {
+      "en": "tightly",
+      "zh": "緊緊地"
+    },
+    {
+      "en": "liability",
+      "zh": "責任"
+    },
+    {
+      "en": "thoroughly",
+      "zh": "徹底地"
+    },
+    {
+      "en": "shrimp",
+      "zh": "蝦"
+    },
+    {
+      "en": "costume",
+      "zh": "裝束"
+    },
+    {
+      "en": "grin",
+      "zh": "露齒笑"
+    },
+    {
+      "en": "productivity",
+      "zh": "生產力"
+    }
+  ],
+  "B2 Unit 6": [
+    {
+      "en": "bug",
+      "zh": "錯誤"
+    },
+    {
+      "en": "conceive",
+      "zh": "構思"
+    },
+    {
+      "en": "bankruptcy",
+      "zh": "破產者"
+    },
+    {
+      "en": "collaboration",
+      "zh": "合作"
+    },
+    {
+      "en": "patrol",
+      "zh": "巡邏"
+    },
+    {
+      "en": "revelation",
+      "zh": "揭露"
+    },
+    {
+      "en": "haul",
+      "zh": "用力拖拉"
+    },
+    {
+      "en": "concede",
+      "zh": "承認"
+    },
+    {
+      "en": "spectacular",
+      "zh": "公開展示的"
+    },
+    {
+      "en": "sheer",
+      "zh": "絕對的"
+    },
+    {
+      "en": "immune",
+      "zh": "免疫的"
+    },
+    {
+      "en": "ass",
+      "zh": "驢"
+    },
+    {
+      "en": "fascinating",
+      "zh": "迷人的"
+    },
+    {
+      "en": "exotic",
+      "zh": "異國的"
+    },
+    {
+      "en": "clip",
+      "zh": "修剪"
+    },
+    {
+      "en": "thigh",
+      "zh": "大腿"
+    },
+    {
+      "en": "documentary",
+      "zh": "記錄片"
+    },
+    {
+      "en": "casualty",
+      "zh": "意外事故"
+    },
+    {
+      "en": "execution",
+      "zh": "實行"
+    },
+    {
+      "en": "verdict",
+      "zh": "裁決"
+    },
+    {
+      "en": "manipulate",
+      "zh": "操縱"
+    },
+    {
+      "en": "cooperative",
+      "zh": "合作的"
+    },
+    {
+      "en": "edit",
+      "zh": "編輯"
+    },
+    {
+      "en": "tragic",
+      "zh": "悲慘的"
+    },
+    {
+      "en": "underlying",
+      "zh": "在下面的"
+    },
+    {
+      "en": "entrepreneur",
+      "zh": "企業家"
+    },
+    {
+      "en": "ambitious",
+      "zh": "有野心的"
+    },
+    {
+      "en": "metropolitan",
+      "zh": "大都市居民"
+    },
+    {
+      "en": "aesthetic",
+      "zh": "美學的"
+    },
+    {
+      "en": "accomplishment",
+      "zh": "成就"
+    },
+    {
+      "en": "minimal",
+      "zh": "最小的"
+    },
+    {
+      "en": "anonymous",
+      "zh": "姓氏不詳的"
+    },
+    {
+      "en": "scramble",
+      "zh": "攀緣"
+    },
+    {
+      "en": "momentum",
+      "zh": "動力"
+    },
+    {
+      "en": "irony",
+      "zh": "反語"
+    },
+    {
+      "en": "interact",
+      "zh": "互相影響"
+    },
+    {
+      "en": "foster",
+      "zh": "收養的"
+    },
+    {
+      "en": "correctly",
+      "zh": "對"
+    },
+    {
+      "en": "sensation",
+      "zh": "感覺"
+    },
+    {
+      "en": "shove",
+      "zh": "推"
+    }
+  ],
+  "B2 Unit 7": [
+    {
+      "en": "charter",
+      "zh": "特許狀"
+    },
+    {
+      "en": "unprecedented",
+      "zh": "空前的"
+    },
+    {
+      "en": "texture",
+      "zh": "(織物的)密度"
+    },
+    {
+      "en": "damn",
+      "zh": "一點"
+    },
+    {
+      "en": "banker",
+      "zh": "銀行家"
+    },
+    {
+      "en": "oak",
+      "zh": "橡樹"
+    },
+    {
+      "en": "attendance",
+      "zh": "出席"
+    },
+    {
+      "en": "desperately",
+      "zh": "拼命地"
+    },
+    {
+      "en": "sensitivity",
+      "zh": "敏感"
+    },
+    {
+      "en": "hike",
+      "zh": "徒步旅行"
+    },
+    {
+      "en": "confrontation",
+      "zh": "對抗"
+    },
+    {
+      "en": "thanksgiving",
+      "zh": "感謝"
+    },
+    {
+      "en": "vocal",
+      "zh": "嗓音的"
+    },
+    {
+      "en": "terrain",
+      "zh": "地帶"
+    },
+    {
+      "en": "deploy",
+      "zh": "展開"
+    },
+    {
+      "en": "distract",
+      "zh": "轉移"
+    },
+    {
+      "en": "stimulus",
+      "zh": "刺激"
+    },
+    {
+      "en": "ecosystem",
+      "zh": "生態系統"
+    },
+    {
+      "en": "tighten",
+      "zh": "勒緊"
+    },
+    {
+      "en": "publicity",
+      "zh": "名聲"
+    },
+    {
+      "en": "validity",
+      "zh": "有效性"
+    },
+    {
+      "en": "deem",
+      "zh": "認為"
+    },
+    {
+      "en": "premise",
+      "zh": "前提"
+    },
+    {
+      "en": "sneak",
+      "zh": "鬼鬼祟祟做事"
+    },
+    {
+      "en": "commodity",
+      "zh": "農產品"
+    },
+    {
+      "en": "striking",
+      "zh": "醒目的"
+    },
+    {
+      "en": "rim",
+      "zh": "邊"
+    },
+    {
+      "en": "cling",
+      "zh": "粘緊"
+    },
+    {
+      "en": "blink",
+      "zh": "眨眼"
+    },
+    {
+      "en": "eligible",
+      "zh": "有資格當選的"
+    },
+    {
+      "en": "rally",
+      "zh": "重振旗鼓"
+    },
+    {
+      "en": "intact",
+      "zh": "尚未被人碰過的"
+    },
+    {
+      "en": "conception",
+      "zh": "觀念"
+    },
+    {
+      "en": "comply",
+      "zh": "順從"
+    },
+    {
+      "en": "constraint",
+      "zh": "強制"
+    },
+    {
+      "en": "inevitably",
+      "zh": "不可避免地"
+    },
+    {
+      "en": "expedition",
+      "zh": "遠征"
+    },
+    {
+      "en": "similarity",
+      "zh": "類似"
+    },
+    {
+      "en": "butt",
+      "zh": "粗大的一頭"
+    },
+    {
+      "en": "patron",
+      "zh": "贊助人"
+    }
+  ],
+  "B2 Unit 8": [
+    {
+      "en": "municipal",
+      "zh": "市政的"
+    },
+    {
+      "en": "cruise",
+      "zh": "巡航"
+    },
+    {
+      "en": "formerly",
+      "zh": "從前"
+    },
+    {
+      "en": "impulse",
+      "zh": "衝動"
+    },
+    {
+      "en": "brutal",
+      "zh": "殘忍的"
+    },
+    {
+      "en": "forum",
+      "zh": "論壇"
+    },
+    {
+      "en": "soar",
+      "zh": "高揚"
+    },
+    {
+      "en": "distinctive",
+      "zh": "有特色的"
+    },
+    {
+      "en": "threshold",
+      "zh": "門檻"
+    },
+    {
+      "en": "denial",
+      "zh": "否認"
+    },
+    {
+      "en": "mansion",
+      "zh": "大廈"
+    },
+    {
+      "en": "charm",
+      "zh": "吸引力"
+    },
+    {
+      "en": "ego",
+      "zh": "自我"
+    },
+    {
+      "en": "availability",
+      "zh": "有效性"
+    },
+    {
+      "en": "premium",
+      "zh": "額外補貼"
+    },
+    {
+      "en": "contemplate",
+      "zh": "注視"
+    },
+    {
+      "en": "update",
+      "zh": "更新"
+    },
+    {
+      "en": "overwhelm",
+      "zh": "淹沒"
+    },
+    {
+      "en": "ironically",
+      "zh": "冷嘲地"
+    },
+    {
+      "en": "speculate",
+      "zh": "深思"
+    },
+    {
+      "en": "preach",
+      "zh": "傳道"
+    },
+    {
+      "en": "substantially",
+      "zh": "實質上"
+    },
+    {
+      "en": "blond",
+      "zh": "金髮的"
+    },
+    {
+      "en": "provoke",
+      "zh": "激怒"
+    },
+    {
+      "en": "slot",
+      "zh": "水溝"
+    },
+    {
+      "en": "consecutive",
+      "zh": "連續的"
+    },
+    {
+      "en": "riot",
+      "zh": "暴動"
+    },
+    {
+      "en": "nutrient",
+      "zh": "營養的"
+    },
+    {
+      "en": "transit",
+      "zh": "經過"
+    },
+    {
+      "en": "articulate",
+      "zh": "發音清晰的"
+    },
+    {
+      "en": "soften",
+      "zh": "(使)變柔軟"
+    },
+    {
+      "en": "straighten",
+      "zh": "弄直"
+    },
+    {
+      "en": "tile",
+      "zh": "磚瓦"
+    },
+    {
+      "en": "economically",
+      "zh": "節約地"
+    },
+    {
+      "en": "plea",
+      "zh": "懇求"
+    },
+    {
+      "en": "missionary",
+      "zh": "傳教士"
+    },
+    {
+      "en": "epidemic",
+      "zh": "傳染病"
+    },
+    {
+      "en": "inherent",
+      "zh": "固有的"
+    },
+    {
+      "en": "sensor",
+      "zh": "感測器"
+    },
+    {
+      "en": "stereotype",
+      "zh": "鉛版"
+    }
+  ]
+}
