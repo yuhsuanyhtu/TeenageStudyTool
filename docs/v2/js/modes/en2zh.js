@@ -20,7 +20,7 @@ import { pickPreferLearning } from '../srs.js';
 const QUESTIONS_PER_ROUND = 8;
 const MIN_DISTRACTORS_NEEDED = 4;
 
-export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wordStats }) {
+export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wordStats, roundSize }) {
   const usable = words.filter(w => w.en && w.zh);
   if (usable.length < MIN_DISTRACTORS_NEEDED) {
     onComplete({
@@ -29,12 +29,12 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wor
     });
     return;
   }
+  roundSize = roundSize || QUESTIONS_PER_ROUND;
 
-  // v2.24：用 SRS 策略挑題（答錯過 > 沒見過 > 學習中 > 已會回測）
-  //        wordStats 沒給或空 → 退回沒見過優先（行為等同 v2.23 之前）
+  // v2.24：用 SRS 策略挑題（v2.26 修：cap wrong 到 1/3 避免被弱點卡死）
   const round = (wordStats && Object.keys(wordStats).length > 0)
-    ? pickPreferLearning(usable, Math.min(QUESTIONS_PER_ROUND, usable.length), wordStats)
-    : pickPreferUnseen(usable, Math.min(QUESTIONS_PER_ROUND, usable.length), seenSet || new Set());
+    ? pickPreferLearning(usable, Math.min(roundSize, usable.length), wordStats)
+    : pickPreferUnseen(usable, Math.min(roundSize, usable.length), seenSet || new Set());
 
   // 累積每題對錯結果，最後 onComplete 傳回去讓 main.js 寫進 SRS
   const wordResults = [];

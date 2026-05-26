@@ -276,12 +276,35 @@ function renderHome() {
   //         所見即所得：永遠展開當期分類，不會被「某次手滑點到」綁架
 }
 
+// v2.26：題數選項（給 en2zh / zh2en 用，match 用 6 對固定，review 一律全部）
+//   - 預設 8 題：快練、暖身
+//   - 半套：考前複習中量
+//   - 全套：考前完整複習
+const QUIZ_SIZE_LABELS = [
+  { id: 'small', label: '8 題（快練）', calc: total => Math.min(8, total) },
+  { id: 'half', label: '半套', calc: total => Math.max(8, Math.ceil(total / 2)) },
+  { id: 'all', label: '全套', calc: total => total },
+];
+let selectedQuizSizeId = 'small';
+
 function renderModePicker() {
   const words = appData.units[currentUnit];
+  // 算每個 size 對應幾題（顯示給孩子看）
+  const sizeButtons = QUIZ_SIZE_LABELS.map(s => {
+    const n = s.calc(words.length);
+    const label = s.id === 'small' ? s.label : `${s.label}（${n} 題）`;
+    return `<button class="quiz-size-btn ${s.id === selectedQuizSizeId ? 'active' : ''}" data-size="${s.id}">${escapeHtml(label)}</button>`;
+  }).join('');
+
   root.innerHTML = `
     <button class="back" id="back">← 回主畫面</button>
     <h1>${escapeHtml(currentUnit)}</h1>
     <p class="muted">${words.length} 個單字</p>
+
+    <div class="quiz-size-row">
+      <span class="quiz-size-label">英翻中／中翻英 題數：</span>
+      ${sizeButtons}
+    </div>
 
     <button class="mode-card" data-mode="review">
       <div class="mode-title">📖 從頭複習</div>
@@ -301,6 +324,13 @@ function renderModePicker() {
     </button>
   `;
   root.querySelector('#back').addEventListener('click', refreshAndRenderHome);
+  root.querySelectorAll('.quiz-size-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      selectedQuizSizeId = b.dataset.size;
+      // 重 render 讓 active 狀態更新
+      renderModePicker();
+    });
+  });
   root.querySelectorAll('.mode-card').forEach(b => {
     b.addEventListener('click', () => startMode(b.dataset.mode));
   });
@@ -409,8 +439,10 @@ let currentModeMeta = null;
 function startMode(mode) {
   const words = appData.units[currentUnit];
   const seenSet = state.getSeenEns(s, currentUnit);
-  // v2.24：把 wordStats 餵給模式，讓出題策略可以避開「已會」、優先「答錯過 / 沒見過」
   const wordStats = s.wordStats || {};
+  // v2.26：依使用者選的題數規模計算 roundSize（en2zh / zh2en 才用得到）
+  const sizeSpec = QUIZ_SIZE_LABELS.find(x => x.id === selectedQuizSizeId) || QUIZ_SIZE_LABELS[0];
+  const roundSize = sizeSpec.calc(words.length);
   root.innerHTML = '';
   currentModeMeta = { mode, unit: currentUnit, totalQuestions: words.length, startedAt: Date.now() };
   const onComplete = (result) => {
@@ -420,9 +452,9 @@ function startMode(mode) {
   if (mode === 'match') {
     startMatchMode({ root, words, seenSet, onComplete, wordStats });
   } else if (mode === 'en2zh') {
-    startEn2ZhMode({ root, words, seenSet, onComplete, allWords: words, wordStats });
+    startEn2ZhMode({ root, words, seenSet, onComplete, allWords: words, wordStats, roundSize });
   } else if (mode === 'zh2en') {
-    startZh2EnMode({ root, words, seenSet, onComplete, wordStats });
+    startZh2EnMode({ root, words, seenSet, onComplete, wordStats, roundSize });
   } else if (mode === 'review') {
     startReviewMode({ root, words, onComplete });
   }

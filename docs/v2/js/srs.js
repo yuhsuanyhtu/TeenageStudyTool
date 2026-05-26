@@ -73,10 +73,18 @@ export function countMasteredIn(words, wordStats) {
 // 取代舊的 pickPreferUnseen — 加上「答錯過」、「已會」分桶
 //
 // 桶位：
-//   wrong:    上次答錯（streak === 0 且 w > 0）→ 最優先（剛踩雷的字要趕快補）
+//   wrong:    上次答錯（streak === 0 且 w > 0）
 //   unseen:   完全沒見過
 //   learning: 練過但還沒會（streak 1..2）
-//   mastered: 已會（streak >= 3）→ 只在前三桶不夠時加入
+//   mastered: 已會（streak >= 3）
+//
+// v2.26 修正：之前用「wrong > unseen > learning > mastered」嚴格順序，
+//   結果孩子答錯過的字一直被卡在 round 開頭，永遠看不到新字（謙恩抱怨「永遠出現同樣題目」）。
+//   改成有上限的混抽：
+//     - wrong 最多吃 1/3 round（避免被自己的弱點卡住）
+//     - 其餘從 unseen + learning **混合** shuffle 抽（有變化）
+//     - 不夠才補剩下的 wrong / mastered
+//     - 最後再 shuffle 一次讓題目順序不固定
 export function pickPreferLearning(words, n, wordStats) {
   if (!Array.isArray(words) || words.length === 0) return [];
   wordStats = wordStats || {};
@@ -91,22 +99,38 @@ export function pickPreferLearning(words, n, wordStats) {
     if (stat.k < MASTERY_STREAK) { learning.push(w); continue; }
     mastered.push(w);
   }
+
+  const maxWrong = Math.max(1, Math.ceil(n / 3));  // 1/3 上限，至少留 1 個位置給弱點補救
   const result = [];
-  for (const bucket of [shuffle(wrong), shuffle(unseen), shuffle(learning)]) {
-    for (const w of bucket) {
-      if (result.length >= n) break;
-      result.push(w);
-    }
+  const used = new Set();
+  const tryAdd = (w) => {
+    if (result.length >= n) return false;
+    const key = (w.en || '').toLowerCase();
+    if (used.has(key)) return false;
+    used.add(key);
+    result.push(w);
+    return true;
+  };
+
+  // 步驟 1：抽 wrong 但有上限
+  for (const w of shuffle(wrong)) {
+    if (result.length >= maxWrong) break;
+    tryAdd(w);
+  }
+  // 步驟 2：unseen + learning **混合**抽，保證新字會出現
+  for (const w of shuffle([...unseen, ...learning])) {
+    tryAdd(w);
     if (result.length >= n) break;
   }
-  // 不夠就加 mastered 回測（避免遺忘）
+  // 步驟 3：不夠 → 補剩餘的 wrong
   if (result.length < n) {
-    for (const w of shuffle(mastered)) {
-      if (result.length >= n) break;
-      result.push(w);
-    }
+    for (const w of shuffle(wrong)) tryAdd(w);
   }
-  return result;
+  // 步驟 4：再不夠 → 補 mastered（回測）
+  if (result.length < n) {
+    for (const w of shuffle(mastered)) tryAdd(w);
+  }
+  return shuffle(result);  // 最後再 shuffle 讓題目順序也是隨機
 }
 
 function shuffle(arr) {

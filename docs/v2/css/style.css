@@ -341,6 +341,38 @@ button.back:hover { background: transparent; text-decoration: underline; }
 }
 .read-link-btn:hover { background: #f5edd9; border-color: #d4a85e; }
 
+/* v2.26：mode picker 上方的「本回合題數」選擇 */
+.quiz-size-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  background: #faf6ed;
+  border: 1px solid #ebe2cc;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+.quiz-size-label { color: #555; margin-right: 4px; }
+.quiz-size-btn {
+  background: white;
+  border: 1px solid #d8d0c0;
+  color: #555;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+}
+.quiz-size-btn:hover { background: #f5edd9; }
+.quiz-size-btn.active {
+  background: #6b9080;
+  border-color: #6b9080;
+  color: white;
+  font-weight: 500;
+}
+
 /* 單元進度條：顯示「今天練了幾字」 */
 .unit-progress-bar {
   height: 4px;

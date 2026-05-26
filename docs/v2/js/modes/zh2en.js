@@ -30,7 +30,8 @@ function extractZhAlts(zh) {
   return matches.map(m => m[1].trim()).filter(Boolean);
 }
 
-export function startZh2EnMode({ root, words, onComplete, seenSet, wordStats }) {
+export function startZh2EnMode({ root, words, onComplete, seenSet, wordStats, roundSize }) {
+  roundSize = roundSize || QUESTIONS_PER_ROUND;
   // 建反向 map: cleanZh（去除「(= xxx)」註記後）→ 所有對應的 word
   // 這樣不同的 zh「給你。」「給你。 (= Here you go.)」會合併到同一題
   const zhToWords = new Map();
@@ -47,16 +48,16 @@ export function startZh2EnMode({ root, words, onComplete, seenSet, wordStats }) 
     return;
   }
 
-  // v2.24：用 SRS 排出題優先順序
-  //        - 一個 zh 的「mastery」= 它對應所有 en 的 mastery 取最低（最弱的那個拖累整題）
-  //        - 優先：有 wrong 過 > 沒見過 > 學習中 > 已會
+  // v2.24/v2.26：用 SRS 排出題順序（修「永遠同題」bug，cap wrong 到 1/3）
+  //   - 一個 zh 的「mastery」= 它對應所有 en 的 mastery 取最低（最弱的那個拖累整題）
+  //   - wrong 限 1/3 round，剩下混抽 unseen + learning，避免被弱點卡住
   const hasStats = wordStats && Object.keys(wordStats).length > 0;
+  const target = Math.min(roundSize, uniqueZh.length);
   let round;
   if (hasStats) {
     const zhBuckets = { wrong: [], unseen: [], learning: [], mastered: [] };
     for (const zh of uniqueZh) {
       const ens = zhToWords.get(zh);
-      // 取最弱的 en 來分桶
       let minLv = 3, anyWrong = false;
       for (const w of ens) {
         const stat = wordStats[(w.en || '').toLowerCase()];
@@ -69,25 +70,30 @@ export function startZh2EnMode({ root, words, onComplete, seenSet, wordStats }) 
       else if (minLv < 3) zhBuckets.learning.push(zh);
       else zhBuckets.mastered.push(zh);
     }
+
     round = [];
-    const target = Math.min(QUESTIONS_PER_ROUND, uniqueZh.length);
-    for (const bucket of [shuffle(zhBuckets.wrong), shuffle(zhBuckets.unseen), shuffle(zhBuckets.learning)]) {
-      for (const zh of bucket) {
-        if (round.length >= target) break;
-        round.push(zh);
-      }
-      if (round.length >= target) break;
+    const used = new Set();
+    const tryAdd = (zh) => {
+      if (round.length >= target || used.has(zh)) return;
+      used.add(zh); round.push(zh);
+    };
+    const maxWrong = Math.max(1, Math.ceil(target / 3));
+    // 1. wrong 限額
+    for (const zh of shuffle(zhBuckets.wrong)) {
+      if (round.length >= maxWrong) break;
+      tryAdd(zh);
     }
-    if (round.length < target) {
-      for (const zh of shuffle(zhBuckets.mastered)) {
-        if (round.length >= target) break;
-        round.push(zh);
-      }
-    }
+    // 2. unseen + learning 混抽
+    for (const zh of shuffle([...zhBuckets.unseen, ...zhBuckets.learning])) tryAdd(zh);
+    // 3. 還不夠 → 補 wrong 剩餘
+    if (round.length < target) for (const zh of shuffle(zhBuckets.wrong)) tryAdd(zh);
+    // 4. 還不夠 → 補 mastered 回測
+    if (round.length < target) for (const zh of shuffle(zhBuckets.mastered)) tryAdd(zh);
+    round = shuffle(round);
   } else {
     const seen = seenSet || new Set();
     const isZhSeen = zh => zhToWords.get(zh).every(w => seen.has(w.en));
-    round = pickPreferUnseen(uniqueZh, Math.min(QUESTIONS_PER_ROUND, uniqueZh.length), isZhSeen);
+    round = pickPreferUnseen(uniqueZh, target, isZhSeen);
   }
   const usedWords = round.flatMap(zh => zhToWords.get(zh));
   const state = { idx: 0, correct: 0 };
