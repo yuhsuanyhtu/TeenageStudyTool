@@ -2,1297 +2,4229 @@
   "A2 Unit 1": [
     {
       "en": "last",
-      "zh": "最後的"
+      "zh": "最後的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "最後的"
+        },
+        {
+          "pos": "vi",
+          "zh": "持續"
+        },
+        {
+          "pos": "vt",
+          "zh": "使維持"
+        },
+        {
+          "pos": "adv",
+          "zh": "最後"
+        },
+        {
+          "pos": "n",
+          "zh": "最後"
+        }
+      ]
     },
     {
       "en": "case",
-      "zh": "情形"
+      "zh": "裝箱",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "情形"
+        },
+        {
+          "pos": "vt",
+          "zh": "裝箱"
+        }
+      ]
     },
     {
       "en": "system",
-      "zh": "系統"
+      "zh": "系統",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "系統"
+        }
+      ]
     },
     {
       "en": "million",
-      "zh": "百萬"
+      "zh": "百萬",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "百萬"
+        },
+        {
+          "pos": "num",
+          "zh": "百萬"
+        }
+      ]
     },
     {
       "en": "power",
-      "zh": "力"
+      "zh": "使...有力量",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "力"
+        },
+        {
+          "pos": "vt",
+          "zh": "使...有力量"
+        }
+      ]
     },
     {
       "en": "political",
-      "zh": "政治的"
+      "zh": "政治的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "政治的"
+        }
+      ]
     },
     {
       "en": "later",
-      "zh": "以後"
+      "zh": "以後",
+      "meanings": [
+        {
+          "pos": "adv",
+          "zh": "以後"
+        }
+      ]
     },
     {
       "en": "within",
-      "zh": "內部"
+      "zh": "在內部",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "內部"
+        },
+        {
+          "pos": "adv",
+          "zh": "在內部"
+        },
+        {
+          "pos": "prep",
+          "zh": "在...之內"
+        }
+      ]
     },
     {
       "en": "process",
-      "zh": "程式"
+      "zh": "經加工的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "程式"
+        },
+        {
+          "pos": "vt",
+          "zh": "加工"
+        },
+        {
+          "pos": "adj",
+          "zh": "經加工的"
+        }
+      ]
     },
     {
       "en": "nation",
-      "zh": "國家"
+      "zh": "國家",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "國家"
+        }
+      ]
     },
     {
       "en": "local",
-      "zh": "地方性的"
+      "zh": "地方性的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "地方性的"
+        },
+        {
+          "pos": "n",
+          "zh": "當地居民"
+        }
+      ]
     },
     {
       "en": "effect",
-      "zh": "結果"
+      "zh": "實行",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "結果"
+        },
+        {
+          "pos": "vt",
+          "zh": "實行"
+        }
+      ]
     },
     {
       "en": "former",
-      "zh": "從前的"
+      "zh": "從前的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "從前的"
+        },
+        {
+          "pos": "n",
+          "zh": "起形成作用的人(或物)"
+        }
+      ]
     },
     {
       "en": "major",
-      "zh": "主修課"
+      "zh": "主要的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "主修課"
+        },
+        {
+          "pos": "adj",
+          "zh": "主要的"
+        },
+        {
+          "pos": "vi",
+          "zh": "主修"
+        }
+      ]
     },
     {
       "en": "better",
-      "zh": "較好的"
+      "zh": "較好的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "較好的"
+        },
+        {
+          "pos": "adv",
+          "zh": "比較好"
+        }
+      ]
     },
     {
       "en": "rate",
-      "zh": "比率"
+      "zh": "估價",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "比率"
+        },
+        {
+          "pos": "vt",
+          "zh": "估價"
+        },
+        {
+          "pos": "vi",
+          "zh": "被評價"
+        }
+      ]
     },
     {
       "en": "less",
-      "zh": "較少"
+      "zh": "少的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "較少"
+        },
+        {
+          "pos": "adj",
+          "zh": "少的"
+        },
+        {
+          "pos": "adv",
+          "zh": "較少"
+        }
+      ]
     },
     {
       "en": "view",
-      "zh": "視野"
+      "zh": "看",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "視野"
+        },
+        {
+          "pos": "vt",
+          "zh": "看"
+        }
+      ]
     },
     {
       "en": "relationship",
-      "zh": "關係"
+      "zh": "關係",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "關係"
+        }
+      ]
     },
     {
       "en": "tax",
-      "zh": "稅"
+      "zh": "課以稅",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "稅"
+        },
+        {
+          "pos": "vt",
+          "zh": "課以稅"
+        }
+      ]
     },
     {
       "en": "player",
-      "zh": "競賽者"
+      "zh": "競賽者",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "競賽者"
+        }
+      ]
     },
     {
       "en": "support",
-      "zh": "支援"
+      "zh": "支援",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "支援"
+        },
+        {
+          "pos": "vt",
+          "zh": "支援"
+        }
+      ]
     },
     {
       "en": "event",
-      "zh": "事件"
+      "zh": "事件",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "事件"
+        }
+      ]
     },
     {
       "en": "official",
-      "zh": "官員"
+      "zh": "公務的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "官員"
+        },
+        {
+          "pos": "adj",
+          "zh": "公務的"
+        }
+      ]
     },
     {
       "en": "matter",
-      "zh": "事件"
+      "zh": "有關係",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "事件"
+        },
+        {
+          "pos": "vi",
+          "zh": "有關係"
+        }
+      ]
     },
     {
       "en": "project",
-      "zh": "計劃"
+      "zh": "計劃",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "計劃"
+        },
+        {
+          "pos": "vt",
+          "zh": "計劃"
+        },
+        {
+          "pos": "vi",
+          "zh": "凸出"
+        }
+      ]
     },
     {
       "en": "base",
-      "zh": "底部"
+      "zh": "卑鄙的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "底部"
+        },
+        {
+          "pos": "vt",
+          "zh": "以...作基礎"
+        },
+        {
+          "pos": "adj",
+          "zh": "卑鄙的"
+        }
+      ]
     },
     {
       "en": "court",
-      "zh": "法院"
+      "zh": "獻殷勤",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "法院"
+        },
+        {
+          "pos": "vt",
+          "zh": "獻殷勤"
+        },
+        {
+          "pos": "vi",
+          "zh": "求愛"
+        }
+      ]
     },
     {
       "en": "figure",
-      "zh": "數字"
-    },
-    {
-      "en": "data",
-      "zh": "pl. 資料"
+      "zh": "描繪",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "數字"
+        },
+        {
+          "pos": "vt",
+          "zh": "描繪"
+        },
+        {
+          "pos": "vi",
+          "zh": "計算"
+        }
+      ]
     },
     {
       "en": "product",
-      "zh": "產品"
+      "zh": "產品",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "產品"
+        }
+      ]
     },
     {
       "en": "simply",
-      "zh": "簡單地"
+      "zh": "簡單地",
+      "meanings": [
+        {
+          "pos": "adv",
+          "zh": "簡單地"
+        }
+      ]
     },
     {
       "en": "type",
-      "zh": "型別"
+      "zh": "作為代表",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "型別"
+        },
+        {
+          "pos": "vi",
+          "zh": "打字"
+        },
+        {
+          "pos": "vt",
+          "zh": "作為代表"
+        }
+      ]
     },
     {
       "en": "organization",
-      "zh": "組織"
+      "zh": "組織",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "組織"
+        }
+      ]
     },
     {
       "en": "evidence",
-      "zh": "根據"
+      "zh": "根據",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "根據"
+        }
+      ]
     },
     {
       "en": "billion",
-      "zh": "十億"
+      "zh": "十億",
+      "meanings": [
+        {
+          "pos": "num",
+          "zh": "十億"
+        }
+      ]
     },
     {
       "en": "likely",
-      "zh": "有可能的"
+      "zh": "有可能的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "有可能的"
+        },
+        {
+          "pos": "adv",
+          "zh": "或許"
+        }
+      ]
     },
     {
       "en": "administration",
-      "zh": "行政"
+      "zh": "行政",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "行政"
+        }
+      ]
     },
     {
       "en": "campaign",
-      "zh": "戰役"
+      "zh": "參加運動",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "戰役"
+        },
+        {
+          "pos": "vi",
+          "zh": "參加運動"
+        }
+      ]
     },
     {
       "en": "material",
-      "zh": "材料"
+      "zh": "物質的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "材料"
+        },
+        {
+          "pos": "adj",
+          "zh": "物質的"
+        }
+      ]
+    },
+    {
+      "en": "security",
+      "zh": "安全",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "安全"
+        }
+      ]
     }
   ],
   "A2 Unit 2": [
     {
-      "en": "security",
-      "zh": "安全"
-    },
-    {
       "en": "certainly",
-      "zh": "確定地"
+      "zh": "確定地",
+      "meanings": [
+        {
+          "pos": "adv",
+          "zh": "確定地"
+        }
+      ]
     },
     {
       "en": "seek",
-      "zh": "尋求"
+      "zh": "尋求",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "尋求"
+        },
+        {
+          "pos": "vi",
+          "zh": "尋找"
+        }
+      ]
+    },
+    {
+      "en": "per",
+      "zh": "每一",
+      "meanings": [
+        {
+          "pos": "prep",
+          "zh": "每一"
+        }
+      ]
     },
     {
       "en": "subject",
-      "zh": "科目"
+      "zh": "服從的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "科目"
+        },
+        {
+          "pos": "adj",
+          "zh": "服從的"
+        },
+        {
+          "pos": "adv",
+          "zh": "在...條件下"
+        },
+        {
+          "pos": "vt",
+          "zh": "使隸屬"
+        }
+      ]
     },
     {
       "en": "performance",
-      "zh": "施行"
+      "zh": "施行",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "施行"
+        }
+      ]
     },
     {
       "en": "goal",
-      "zh": "目標"
+      "zh": "攻門",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "目標"
+        },
+        {
+          "pos": "vi",
+          "zh": "攻門"
+        }
+      ]
     },
     {
       "en": "author",
-      "zh": "作家"
+      "zh": "作家",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "作家"
+        }
+      ]
     },
     {
       "en": "represent",
-      "zh": "表現"
+      "zh": "表現",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "表現"
+        },
+        {
+          "pos": "vi",
+          "zh": "提出異議"
+        }
+      ]
     },
     {
       "en": "focus",
-      "zh": "焦點"
+      "zh": "使聚焦",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "焦點"
+        },
+        {
+          "pos": "vi",
+          "zh": "聚焦"
+        },
+        {
+          "pos": "vt",
+          "zh": "使聚焦"
+        }
+      ]
     },
     {
       "en": "agency",
-      "zh": "代理機構"
+      "zh": "代理機構",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "代理機構"
+        }
+      ]
     },
     {
       "en": "reduce",
-      "zh": "減少"
+      "zh": "減少",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "減少"
+        },
+        {
+          "pos": "vi",
+          "zh": "減少"
+        }
+      ]
     },
     {
       "en": "movement",
-      "zh": "運動"
+      "zh": "運動",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "運動"
+        }
+      ]
     },
     {
       "en": "concern",
-      "zh": "關心"
+      "zh": "與...有關",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "關心"
+        },
+        {
+          "pos": "vt",
+          "zh": "與...有關"
+        }
+      ]
     },
     {
       "en": "usually",
-      "zh": "通常"
+      "zh": "通常",
+      "meanings": [
+        {
+          "pos": "adv",
+          "zh": "通常"
+        }
+      ]
     },
     {
       "en": "decade",
-      "zh": "十年"
+      "zh": "十年",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "十年"
+        }
+      ]
     },
     {
       "en": "shoot",
-      "zh": "射擊"
+      "zh": "射擊",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "射擊"
+        },
+        {
+          "pos": "vt",
+          "zh": "射擊"
+        },
+        {
+          "pos": "vi",
+          "zh": "射出"
+        }
+      ]
     },
     {
       "en": "artist",
-      "zh": "藝術家"
+      "zh": "藝術家",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "藝術家"
+        }
+      ]
     },
     {
       "en": "scene",
-      "zh": "場"
+      "zh": "場",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "場"
+        }
+      ]
     },
     {
       "en": "central",
-      "zh": "中央的"
+      "zh": "中央的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "中央的"
+        }
+      ]
     },
     {
       "en": "thus",
-      "zh": "如此"
+      "zh": "如此",
+      "meanings": [
+        {
+          "pos": "adv",
+          "zh": "如此"
+        }
+      ]
     },
     {
       "en": "exactly",
-      "zh": "確切地"
+      "zh": "確切地",
+      "meanings": [
+        {
+          "pos": "adv",
+          "zh": "確切地"
+        }
+      ]
     },
     {
       "en": "approach",
-      "zh": "接近"
+      "zh": "接近",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "接近"
+        },
+        {
+          "pos": "vt",
+          "zh": "接近"
+        },
+        {
+          "pos": "vi",
+          "zh": "靠近"
+        }
+      ]
     },
     {
       "en": "occur",
-      "zh": "發生"
+      "zh": "發生",
+      "meanings": [
+        {
+          "pos": "vi",
+          "zh": "發生"
+        }
+      ]
     },
     {
       "en": "media",
-      "zh": "媒體"
+      "zh": "媒體",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "媒體"
+        }
+      ]
     },
     {
       "en": "sign",
-      "zh": "符號"
+      "zh": "簽名",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "符號"
+        },
+        {
+          "pos": "vt",
+          "zh": "簽名"
+        },
+        {
+          "pos": "vi",
+          "zh": "簽名"
+        }
+      ]
     },
     {
       "en": "quality",
-      "zh": "品質"
+      "zh": "優質的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "品質"
+        },
+        {
+          "pos": "adj",
+          "zh": "優質的"
+        }
+      ]
     },
     {
       "en": "pressure",
-      "zh": "壓"
+      "zh": "迫使",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "壓"
+        },
+        {
+          "pos": "vt",
+          "zh": "迫使"
+        }
+      ]
     },
     {
       "en": "determine",
-      "zh": "決定"
+      "zh": "決定",
+      "meanings": [
+        {
+          "pos": "v",
+          "zh": "決定"
+        }
+      ]
     },
     {
       "en": "argue",
-      "zh": "提出理由"
+      "zh": "主張",
+      "meanings": [
+        {
+          "pos": "vi",
+          "zh": "提出理由"
+        },
+        {
+          "pos": "vt",
+          "zh": "主張"
+        }
+      ]
     },
     {
       "en": "amount",
-      "zh": "總數"
+      "zh": "總計",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "總數"
+        },
+        {
+          "pos": "vi",
+          "zh": "總計"
+        }
+      ]
     },
     {
       "en": "staff",
-      "zh": "全體人員"
+      "zh": "職員的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "全體人員"
+        },
+        {
+          "pos": "adj",
+          "zh": "職員的"
+        },
+        {
+          "pos": "vt",
+          "zh": "為...配備人員"
+        }
+      ]
     },
     {
       "en": "indicate",
-      "zh": "顯示"
+      "zh": "顯示",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "顯示"
+        }
+      ]
     },
     {
       "en": "character",
-      "zh": "個性"
+      "zh": "個性",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "個性"
+        }
+      ]
     },
     {
       "en": "growth",
-      "zh": "生長"
+      "zh": "生長",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "生長"
+        }
+      ]
     },
     {
       "en": "loss",
-      "zh": "損失"
+      "zh": "損失",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "損失"
+        }
+      ]
     },
     {
       "en": "attack",
-      "zh": "攻擊"
+      "zh": "攻擊",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "攻擊"
+        },
+        {
+          "pos": "vt",
+          "zh": "攻擊"
+        },
+        {
+          "pos": "vi",
+          "zh": "攻擊"
+        }
+      ]
     },
     {
       "en": "physical",
-      "zh": "身體的"
+      "zh": "身體的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "身體的"
+        },
+        {
+          "pos": "n",
+          "zh": "體格檢查"
+        }
+      ]
     },
     {
       "en": "analysis",
-      "zh": "分析"
+      "zh": "分析",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "分析"
+        }
+      ]
     },
     {
       "en": "benefit",
-      "zh": "利益"
+      "zh": "有益於",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "利益"
+        },
+        {
+          "pos": "vt",
+          "zh": "有益於"
+        },
+        {
+          "pos": "vi",
+          "zh": "受益"
+        }
+      ]
     },
     {
       "en": "sex",
-      "zh": "性別"
+      "zh": "區別...的性別",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "性別"
+        },
+        {
+          "pos": "vt",
+          "zh": "區別...的性別"
+        }
+      ]
     }
   ],
   "A2 Unit 3": [
     {
       "en": "lawyer",
-      "zh": "律師"
+      "zh": "律師",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "律師"
+        }
+      ]
     },
     {
       "en": "section",
-      "zh": "區段"
+      "zh": "把...分段",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "區段"
+        },
+        {
+          "pos": "vt",
+          "zh": "把...分段"
+        },
+        {
+          "pos": "vi",
+          "zh": "被切成片"
+        }
+      ]
     },
     {
       "en": "professor",
-      "zh": "教授"
+      "zh": "教授",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "教授"
+        }
+      ]
     },
     {
       "en": "crime",
-      "zh": "犯罪"
+      "zh": "犯罪",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "犯罪"
+        }
+      ]
     },
     {
       "en": "stage",
-      "zh": "階段"
+      "zh": "上演",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "階段"
+        },
+        {
+          "pos": "vt",
+          "zh": "上演"
+        },
+        {
+          "pos": "vi",
+          "zh": "適於上演"
+        }
+      ]
     },
     {
       "en": "authority",
-      "zh": "權力"
+      "zh": "權力",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "權力"
+        }
+      ]
     },
     {
       "en": "design",
-      "zh": "設計"
+      "zh": "設計",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "設計"
+        },
+        {
+          "pos": "v",
+          "zh": "設計"
+        }
+      ]
     },
     {
       "en": "blue",
-      "zh": "藍色"
+      "zh": "藍色的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "藍色"
+        },
+        {
+          "pos": "adj",
+          "zh": "藍色的"
+        },
+        {
+          "pos": "vt",
+          "zh": "染成藍色"
+        },
+        {
+          "pos": "vi",
+          "zh": "變藍"
+        }
+      ]
     },
     {
       "en": "clearly",
-      "zh": "清楚地"
+      "zh": "清楚地",
+      "meanings": [
+        {
+          "pos": "adv",
+          "zh": "清楚地"
+        }
+      ]
     },
     {
       "en": "indeed",
-      "zh": "的確"
+      "zh": "的確",
+      "meanings": [
+        {
+          "pos": "adv",
+          "zh": "的確"
+        }
+      ]
     },
     {
       "en": "various",
-      "zh": "不同的"
+      "zh": "不同的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "不同的"
+        }
+      ]
     },
     {
       "en": "entire",
-      "zh": "整個"
+      "zh": "全體的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "整個"
+        },
+        {
+          "pos": "adj",
+          "zh": "全體的"
+        }
+      ]
     },
     {
       "en": "remove",
-      "zh": "移動"
+      "zh": "移動",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "移動"
+        },
+        {
+          "pos": "vi",
+          "zh": "遷移"
+        },
+        {
+          "pos": "n",
+          "zh": "班級"
+        }
+      ]
     },
     {
       "en": "network",
-      "zh": "網路"
+      "zh": "網路",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "網路"
+        }
+      ]
     },
     {
       "en": "legal",
-      "zh": "法律的"
+      "zh": "法律的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "法律的"
+        }
+      ]
     },
     {
       "en": "religious",
-      "zh": "宗教性的"
+      "zh": "宗教性的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "宗教性的"
+        },
+        {
+          "pos": "n",
+          "zh": "修道士"
+        }
+      ]
     },
     {
       "en": "cell",
-      "zh": "單元"
+      "zh": "單元",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "單元"
+        }
+      ]
     },
     {
       "en": "trial",
-      "zh": "審判"
+      "zh": "審訊的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "審判"
+        },
+        {
+          "pos": "adj",
+          "zh": "審訊的"
+        }
+      ]
     },
     {
       "en": "expert",
-      "zh": "專家"
+      "zh": "老練的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "專家"
+        },
+        {
+          "pos": "adj",
+          "zh": "老練的"
+        }
+      ]
     },
     {
       "en": "firm",
-      "zh": "公司"
+      "zh": "堅定的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "公司"
+        },
+        {
+          "pos": "adj",
+          "zh": "堅定的"
+        },
+        {
+          "pos": "vt",
+          "zh": "使牢固"
+        },
+        {
+          "pos": "vi",
+          "zh": "變穩固"
+        },
+        {
+          "pos": "adv",
+          "zh": "穩固地"
+        }
+      ]
     },
     {
       "en": "theory",
-      "zh": "理論"
+      "zh": "理論",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "理論"
+        }
+      ]
     },
     {
       "en": "respond",
-      "zh": "以...回答"
+      "zh": "以...回答",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "以...回答"
+        },
+        {
+          "pos": "vi",
+          "zh": "回答"
+        }
+      ]
     },
     {
       "en": "statement",
-      "zh": "陳述"
+      "zh": "陳述",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "陳述"
+        }
+      ]
     },
     {
       "en": "charge",
-      "zh": "指控"
+      "zh": "控訴",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "指控"
+        },
+        {
+          "pos": "vt",
+          "zh": "控訴"
+        },
+        {
+          "pos": "vi",
+          "zh": "衝鋒"
+        }
+      ]
+    },
+    {
+      "en": "onto",
+      "zh": "在...之上",
+      "meanings": [
+        {
+          "pos": "prep",
+          "zh": "在...之上"
+        }
+      ]
     },
     {
       "en": "contain",
-      "zh": "包含"
+      "zh": "包含",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "包含"
+        },
+        {
+          "pos": "vi",
+          "zh": "自制"
+        }
+      ]
     },
     {
       "en": "pain",
-      "zh": "痛苦"
+      "zh": "使痛苦",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "痛苦"
+        },
+        {
+          "pos": "vt",
+          "zh": "使痛苦"
+        },
+        {
+          "pos": "vi",
+          "zh": "作痛"
+        }
+      ]
     },
     {
       "en": "apply",
-      "zh": "塗"
+      "zh": "塗",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "塗"
+        },
+        {
+          "pos": "vi",
+          "zh": "申請"
+        }
+      ]
     },
     {
       "en": "measure",
-      "zh": "尺寸"
+      "zh": "測量",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "尺寸"
+        },
+        {
+          "pos": "vt",
+          "zh": "測量"
+        },
+        {
+          "pos": "vi",
+          "zh": "度量"
+        }
+      ]
     },
     {
       "en": "particular",
-      "zh": "一項(或條、點)"
+      "zh": "特別的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "一項(或條、點)"
+        },
+        {
+          "pos": "adj",
+          "zh": "特別的"
+        }
+      ]
     },
     {
       "en": "politics",
-      "zh": "政治"
+      "zh": "政治",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "政治"
+        }
+      ]
     },
     {
       "en": "perform",
-      "zh": "進行"
+      "zh": "進行",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "進行"
+        },
+        {
+          "pos": "vi",
+          "zh": "行動"
+        }
+      ]
     },
     {
       "en": "candidate",
-      "zh": "候選人"
+      "zh": "候選人",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "候選人"
+        }
+      ]
     },
     {
       "en": "production",
-      "zh": "製造"
+      "zh": "製造",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "製造"
+        }
+      ]
     },
     {
       "en": "treat",
-      "zh": "宴請"
+      "zh": "視為",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "宴請"
+        },
+        {
+          "pos": "vt",
+          "zh": "視為"
+        },
+        {
+          "pos": "vi",
+          "zh": "討論"
+        }
+      ]
     },
     {
       "en": "affect",
-      "zh": "影響"
+      "zh": "影響",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "影響"
+        },
+        {
+          "pos": "n",
+          "zh": "自覺感情"
+        }
+      ]
     },
     {
       "en": "style",
-      "zh": "風格"
+      "zh": "稱呼",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "風格"
+        },
+        {
+          "pos": "vt",
+          "zh": "稱呼"
+        },
+        {
+          "pos": "n",
+          "zh": "風格"
+        }
+      ]
     },
     {
       "en": "adult",
-      "zh": "成人"
+      "zh": "成年的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "成人"
+        },
+        {
+          "pos": "adj",
+          "zh": "成年的"
+        }
+      ]
     },
     {
       "en": "range",
-      "zh": "排"
+      "zh": "排列",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "排"
+        },
+        {
+          "pos": "vt",
+          "zh": "排列"
+        },
+        {
+          "pos": "vi",
+          "zh": "平行"
+        }
+      ]
     },
     {
       "en": "specific",
-      "zh": "特效藥"
-    },
-    {
-      "en": "throughout",
-      "zh": "到處"
+      "zh": "特殊的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "特效藥"
+        },
+        {
+          "pos": "adj",
+          "zh": "特殊的"
+        }
+      ]
     }
   ],
   "A2 Unit 4": [
     {
+      "en": "throughout",
+      "zh": "到處",
+      "meanings": [
+        {
+          "pos": "adv",
+          "zh": "到處"
+        },
+        {
+          "pos": "prep",
+          "zh": "遍及"
+        }
+      ]
+    },
+    {
       "en": "challenge",
-      "zh": "挑戰"
+      "zh": "向...挑戰",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "挑戰"
+        },
+        {
+          "pos": "vt",
+          "zh": "向...挑戰"
+        },
+        {
+          "pos": "vi",
+          "zh": "挑戰"
+        }
+      ]
     },
     {
       "en": "institution",
-      "zh": "機構"
+      "zh": "機構",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "機構"
+        }
+      ]
     },
     {
       "en": "bar",
-      "zh": "條"
+      "zh": "禁止",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "條"
+        },
+        {
+          "pos": "vt",
+          "zh": "禁止"
+        }
+      ]
     },
     {
       "en": "reflect",
-      "zh": "反射"
+      "zh": "反射",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "反射"
+        },
+        {
+          "pos": "vi",
+          "zh": "被反射"
+        }
+      ]
     },
     {
       "en": "tough",
-      "zh": "惡棍"
+      "zh": "強硬的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "惡棍"
+        },
+        {
+          "pos": "adj",
+          "zh": "強硬的"
+        }
+      ]
     },
     {
       "en": "exist",
-      "zh": "存在"
+      "zh": "存在",
+      "meanings": [
+        {
+          "pos": "vi",
+          "zh": "存在"
+        }
+      ]
     },
     {
       "en": "pattern",
-      "zh": "模範"
+      "zh": "模仿",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "模範"
+        },
+        {
+          "pos": "vt",
+          "zh": "模仿"
+        },
+        {
+          "pos": "vi",
+          "zh": "形成圖案"
+        }
+      ]
     },
     {
       "en": "skin",
-      "zh": "皮膚"
+      "zh": "剝皮",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "皮膚"
+        },
+        {
+          "pos": "vt",
+          "zh": "剝皮"
+        },
+        {
+          "pos": "vi",
+          "zh": "長皮"
+        }
+      ]
     },
     {
       "en": "agent",
-      "zh": "代理商"
+      "zh": "代理商",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "代理商"
+        }
+      ]
     },
     {
       "en": "gas",
-      "zh": "氣體"
+      "zh": "氣體",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "氣體"
+        }
+      ]
     },
     {
       "en": "ahead",
-      "zh": "領先的"
+      "zh": "領先的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "領先的"
+        },
+        {
+          "pos": "adv",
+          "zh": "領先"
+        }
+      ]
     },
     {
       "en": "generation",
-      "zh": "一代"
+      "zh": "一代",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "一代"
+        }
+      ]
     },
     {
       "en": "reality",
-      "zh": "實在"
+      "zh": "實在",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "實在"
+        }
+      ]
     },
     {
       "en": "violence",
-      "zh": "猛烈"
+      "zh": "猛烈",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "猛烈"
+        }
+      ]
     },
     {
       "en": "tend",
-      "zh": "走向"
+      "zh": "照料",
+      "meanings": [
+        {
+          "pos": "vi",
+          "zh": "走向"
+        },
+        {
+          "pos": "vt",
+          "zh": "照料"
+        }
+      ]
     },
     {
       "en": "collection",
-      "zh": "收集"
+      "zh": "收集",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "收集"
+        }
+      ]
     },
     {
       "en": "partner",
-      "zh": "合夥人"
+      "zh": "與...合夥",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "合夥人"
+        },
+        {
+          "pos": "vt",
+          "zh": "與...合夥"
+        },
+        {
+          "pos": "vi",
+          "zh": "做夥伴"
+        }
+      ]
     },
     {
       "en": "civil",
-      "zh": "市民的"
+      "zh": "市民的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "市民的"
+        }
+      ]
     },
     {
       "en": "shot",
-      "zh": "發射"
+      "zh": "雜色的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "發射"
+        },
+        {
+          "pos": "vt",
+          "zh": "裝彈"
+        },
+        {
+          "pos": "adj",
+          "zh": "雜色的"
+        }
+      ]
     },
     {
       "en": "budget",
-      "zh": "預算"
+      "zh": "廉價的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "預算"
+        },
+        {
+          "pos": "vi",
+          "zh": "編預算"
+        },
+        {
+          "pos": "vt",
+          "zh": "編入預算"
+        },
+        {
+          "pos": "adj",
+          "zh": "廉價的"
+        }
+      ]
     },
     {
       "en": "painting",
-      "zh": "畫"
+      "zh": "畫",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "畫"
+        }
+      ]
     },
     {
       "en": "victim",
-      "zh": "受害人"
+      "zh": "受害人",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "受害人"
+        }
+      ]
     },
     {
       "en": "responsibility",
-      "zh": "責任"
+      "zh": "責任",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "責任"
+        }
+      ]
     },
     {
       "en": "account",
-      "zh": "報告"
+      "zh": "認為",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "報告"
+        },
+        {
+          "pos": "vi",
+          "zh": "報帳"
+        },
+        {
+          "pos": "vt",
+          "zh": "認為"
+        }
+      ]
     },
     {
       "en": "audience",
-      "zh": "聽眾"
+      "zh": "聽眾",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "聽眾"
+        }
+      ]
     },
     {
       "en": "vote",
-      "zh": "投票"
+      "zh": "投票選舉",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "投票"
+        },
+        {
+          "pos": "vi",
+          "zh": "投票"
+        },
+        {
+          "pos": "vt",
+          "zh": "投票選舉"
+        }
+      ]
     },
     {
       "en": "relate",
-      "zh": "講"
+      "zh": "講",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "講"
+        },
+        {
+          "pos": "vi",
+          "zh": "有關"
+        }
+      ]
     },
     {
       "en": "debate",
-      "zh": "辯論"
+      "zh": "爭論",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "辯論"
+        },
+        {
+          "pos": "v",
+          "zh": "爭論"
+        }
+      ]
     },
     {
       "en": "citizen",
-      "zh": "市民"
+      "zh": "市民",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "市民"
+        }
+      ]
     },
     {
       "en": "majority",
-      "zh": "多數"
+      "zh": "多數",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "多數"
+        }
+      ]
     },
     {
       "en": "admit",
-      "zh": "承認"
+      "zh": "承認",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "承認"
+        },
+        {
+          "pos": "vi",
+          "zh": "開向"
+        }
+      ]
     },
     {
       "en": "senior",
-      "zh": "年長者"
+      "zh": "年長的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "年長者"
+        },
+        {
+          "pos": "adj",
+          "zh": "年長的"
+        }
+      ]
     },
     {
       "en": "assume",
-      "zh": "假定"
+      "zh": "假定",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "假定"
+        },
+        {
+          "pos": "vi",
+          "zh": "裝腔作勢"
+        }
+      ]
     },
     {
       "en": "customer",
-      "zh": "消費者"
+      "zh": "消費者",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "消費者"
+        }
+      ]
     },
     {
       "en": "suffer",
-      "zh": "遭受"
+      "zh": "遭受",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "遭受"
+        },
+        {
+          "pos": "vi",
+          "zh": "受痛苦"
+        }
+      ]
     },
     {
       "en": "eventually",
-      "zh": "最後"
+      "zh": "最後",
+      "meanings": [
+        {
+          "pos": "adv",
+          "zh": "最後"
+        }
+      ]
     },
     {
       "en": "reform",
-      "zh": "改革"
+      "zh": "改革",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "改革"
+        },
+        {
+          "pos": "vt",
+          "zh": "改革"
+        },
+        {
+          "pos": "vi",
+          "zh": "革新"
+        }
+      ]
     },
     {
       "en": "access",
-      "zh": "通路"
+      "zh": "訪問",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "通路"
+        },
+        {
+          "pos": "vt",
+          "zh": "訪問"
+        }
+      ]
     },
     {
       "en": "judge",
-      "zh": "法官"
-    },
-    {
-      "en": "publish",
-      "zh": "出版"
+      "zh": "審理",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "法官"
+        },
+        {
+          "pos": "vt",
+          "zh": "審理"
+        },
+        {
+          "pos": "vi",
+          "zh": "下判斷"
+        }
+      ]
     }
   ],
   "A2 Unit 5": [
     {
+      "en": "publish",
+      "zh": "出版",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "出版"
+        },
+        {
+          "pos": "vi",
+          "zh": "出版"
+        }
+      ]
+    },
+    {
       "en": "opinion",
-      "zh": "意見"
+      "zh": "意見",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "意見"
+        }
+      ]
     },
     {
       "en": "credit",
-      "zh": "信用"
+      "zh": "歸功於",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "信用"
+        },
+        {
+          "pos": "vt",
+          "zh": "歸功於"
+        }
+      ]
     },
     {
       "en": "version",
-      "zh": "一種描述"
+      "zh": "一種描述",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "一種描述"
+        }
+      ]
     },
     {
       "en": "stare",
-      "zh": "注視"
+      "zh": "盯",
+      "meanings": [
+        {
+          "pos": "vi",
+          "zh": "注視"
+        },
+        {
+          "pos": "vt",
+          "zh": "盯"
+        },
+        {
+          "pos": "n",
+          "zh": "凝視"
+        }
+      ]
     },
     {
       "en": "troop",
-      "zh": "軍隊"
+      "zh": "群集",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "軍隊"
+        },
+        {
+          "pos": "vi",
+          "zh": "群集"
+        }
+      ]
     },
     {
       "en": "income",
-      "zh": "收入"
+      "zh": "收入",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "收入"
+        }
+      ]
     },
     {
       "en": "track",
-      "zh": "軌跡"
+      "zh": "循路而行",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "軌跡"
+        },
+        {
+          "pos": "vt",
+          "zh": "循路而行"
+        },
+        {
+          "pos": "vi",
+          "zh": "追蹤"
+        }
+      ]
     },
     {
       "en": "strike",
-      "zh": "罷工"
+      "zh": "打",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "罷工"
+        },
+        {
+          "pos": "vt",
+          "zh": "打"
+        },
+        {
+          "pos": "vi",
+          "zh": "打"
+        }
+      ]
     },
     {
       "en": "freedom",
-      "zh": "自由"
+      "zh": "自由",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "自由"
+        }
+      ]
     },
     {
       "en": "attitude",
-      "zh": "態度"
+      "zh": "態度",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "態度"
+        }
+      ]
     },
     {
       "en": "refer",
-      "zh": "提交"
+      "zh": "提交",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "提交"
+        },
+        {
+          "pos": "vi",
+          "zh": "提到"
+        }
+      ]
     },
     {
       "en": "concept",
-      "zh": "觀念"
+      "zh": "觀念",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "觀念"
+        }
+      ]
     },
     {
       "en": "powerful",
-      "zh": "有力的"
+      "zh": "有力的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "有力的"
+        }
+      ]
     },
     {
       "en": "therefore",
-      "zh": "因此"
+      "zh": "因此",
+      "meanings": [
+        {
+          "pos": "adv",
+          "zh": "因此"
+        }
+      ]
     },
     {
       "en": "conduct",
-      "zh": "行為"
+      "zh": "為人",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "行為"
+        },
+        {
+          "pos": "vt",
+          "zh": "為人"
+        },
+        {
+          "pos": "vi",
+          "zh": "領導"
+        }
+      ]
     },
     {
       "en": "announce",
-      "zh": "宣佈"
+      "zh": "宣佈",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "宣佈"
+        },
+        {
+          "pos": "vi",
+          "zh": "當報幕員"
+        }
+      ]
     },
     {
       "en": "attend",
-      "zh": "參加"
+      "zh": "參加",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "參加"
+        },
+        {
+          "pos": "vi",
+          "zh": "專心於"
+        }
+      ]
     },
     {
       "en": "variety",
-      "zh": "多樣"
+      "zh": "多樣",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "多樣"
+        }
+      ]
     },
     {
       "en": "nuclear",
-      "zh": "核子的"
+      "zh": "核子的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "核子的"
+        }
+      ]
     },
     {
       "en": "press",
-      "zh": "壓"
+      "zh": "壓",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "壓"
+        },
+        {
+          "pos": "vt",
+          "zh": "壓"
+        },
+        {
+          "pos": "vi",
+          "zh": "壓"
+        }
+      ]
     },
     {
       "en": "conflict",
-      "zh": "戰鬥"
+      "zh": "爭執",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "戰鬥"
+        },
+        {
+          "pos": "vi",
+          "zh": "爭執"
+        }
+      ]
     },
     {
       "en": "replace",
-      "zh": "代替"
+      "zh": "代替",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "代替"
+        }
+      ]
     },
     {
       "en": "british",
-      "zh": "英國的"
+      "zh": "英國的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "英國的"
+        },
+        {
+          "pos": "n",
+          "zh": "英國人"
+        }
+      ]
     },
     {
       "en": "argument",
-      "zh": "爭論"
-    },
-    {
-      "en": "am",
-      "zh": "be的單數第一人稱"
+      "zh": "爭論",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "爭論"
+        }
+      ]
     },
     {
       "en": "possibility",
-      "zh": "可能性"
+      "zh": "可能性",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "可能性"
+        }
+      ]
     },
     {
       "en": "insurance",
-      "zh": "保險"
+      "zh": "保險",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "保險"
+        }
+      ]
     },
     {
       "en": "department",
-      "zh": "部門"
+      "zh": "部門",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "部門"
+        }
+      ]
     },
     {
       "en": "battle",
-      "zh": "戰役"
+      "zh": "戰鬥",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "戰役"
+        },
+        {
+          "pos": "v",
+          "zh": "戰鬥"
+        }
+      ]
     },
     {
       "en": "beginning",
-      "zh": "開始"
+      "zh": "開始",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "開始"
+        }
+      ]
     },
     {
       "en": "african",
-      "zh": "非洲人"
+      "zh": "非洲的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "非洲人"
+        },
+        {
+          "pos": "adj",
+          "zh": "非洲的"
+        }
+      ]
     },
     {
       "en": "easily",
-      "zh": "容易地"
+      "zh": "容易地",
+      "meanings": [
+        {
+          "pos": "adv",
+          "zh": "容易地"
+        }
+      ]
     },
     {
       "en": "status",
-      "zh": "狀態"
+      "zh": "狀態",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "狀態"
+        }
+      ]
     },
     {
       "en": "attempt",
-      "zh": "嘗試"
+      "zh": "嘗試",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "嘗試"
+        },
+        {
+          "pos": "vt",
+          "zh": "嘗試"
+        }
+      ]
     },
     {
       "en": "spot",
-      "zh": "汙點"
+      "zh": "當場的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "汙點"
+        },
+        {
+          "pos": "adj",
+          "zh": "當場的"
+        },
+        {
+          "pos": "vt",
+          "zh": "點綴"
+        },
+        {
+          "pos": "vi",
+          "zh": "玷汙"
+        }
+      ]
     },
     {
       "en": "lack",
-      "zh": "缺乏"
+      "zh": "缺乏",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "缺乏"
+        },
+        {
+          "pos": "vt",
+          "zh": "缺乏"
+        },
+        {
+          "pos": "vi",
+          "zh": "缺乏"
+        }
+      ]
     },
     {
       "en": "distance",
-      "zh": "距離"
+      "zh": "距離",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "距離"
+        }
+      ]
     },
     {
       "en": "handle",
-      "zh": "柄"
+      "zh": "觸控",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "柄"
+        },
+        {
+          "pos": "vt",
+          "zh": "觸控"
+        },
+        {
+          "pos": "vi",
+          "zh": "搬運"
+        },
+        {
+          "pos": "n",
+          "zh": "控制代碼"
+        }
+      ]
     },
     {
       "en": "tradition",
-      "zh": "傳說"
+      "zh": "傳說",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "傳說"
+        }
+      ]
     },
     {
       "en": "roll",
-      "zh": "卷"
+      "zh": "使滾動",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "卷"
+        },
+        {
+          "pos": "vi",
+          "zh": "滾"
+        },
+        {
+          "pos": "vt",
+          "zh": "使滾動"
+        }
+      ]
     }
   ],
   "A2 Unit 6": [
     {
       "en": "gain",
-      "zh": "增益"
+      "zh": "得到",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "增益"
+        },
+        {
+          "pos": "vt",
+          "zh": "得到"
+        },
+        {
+          "pos": "vi",
+          "zh": "獲利"
+        }
+      ]
     },
     {
       "en": "potential",
-      "zh": "潛在性"
+      "zh": "有潛力的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "潛在性"
+        },
+        {
+          "pos": "adj",
+          "zh": "有潛力的"
+        }
+      ]
     },
     {
       "en": "independent",
-      "zh": "獨立自主者"
+      "zh": "獨立的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "獨立自主者"
+        },
+        {
+          "pos": "adj",
+          "zh": "獨立的"
+        }
+      ]
     },
     {
       "en": "district",
-      "zh": "區域"
+      "zh": "區域",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "區域"
+        }
+      ]
     },
     {
       "en": "crowd",
-      "zh": "群眾"
+      "zh": "擁擠",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "群眾"
+        },
+        {
+          "pos": "vt",
+          "zh": "擁擠"
+        }
+      ]
     },
     {
       "en": "christian",
-      "zh": "基督徒"
+      "zh": "基督的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "基督徒"
+        },
+        {
+          "pos": "adj",
+          "zh": "基督的"
+        }
+      ]
     },
     {
       "en": "apartment",
-      "zh": "房間"
+      "zh": "房間",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "房間"
+        }
+      ]
     },
     {
       "en": "willing",
-      "zh": "樂意的"
+      "zh": "樂意的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "樂意的"
+        }
+      ]
     },
     {
       "en": "strength",
-      "zh": "力量"
+      "zh": "力量",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "力量"
+        }
+      ]
     },
     {
       "en": "band",
-      "zh": "帶子"
+      "zh": "聯合",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "帶子"
+        },
+        {
+          "pos": "v",
+          "zh": "聯合"
+        }
+      ]
     },
     {
       "en": "target",
-      "zh": "目標"
+      "zh": "對準",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "目標"
+        },
+        {
+          "pos": "vt",
+          "zh": "對準"
+        }
+      ]
     },
     {
       "en": "reporter",
-      "zh": "記者"
+      "zh": "記者",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "記者"
+        }
+      ]
     },
     {
       "en": "demand",
-      "zh": "要求"
+      "zh": "要求",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "要求"
+        },
+        {
+          "pos": "v",
+          "zh": "要求"
+        }
+      ]
     },
     {
       "en": "deliver",
-      "zh": "遞送"
+      "zh": "遞送",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "遞送"
+        }
+      ]
     },
     {
       "en": "wild",
-      "zh": "荒野"
+      "zh": "野性的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "荒野"
+        },
+        {
+          "pos": "adj",
+          "zh": "野性的"
+        },
+        {
+          "pos": "adv",
+          "zh": "狂暴地"
+        }
+      ]
     },
     {
       "en": "observe",
-      "zh": "覺察到"
+      "zh": "覺察到",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "覺察到"
+        },
+        {
+          "pos": "vi",
+          "zh": "注意"
+        }
+      ]
     },
     {
       "en": "flight",
-      "zh": "飛行"
+      "zh": "射擊(飛禽)",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "飛行"
+        },
+        {
+          "pos": "vi",
+          "zh": "遷徙"
+        },
+        {
+          "pos": "vt",
+          "zh": "射擊(飛禽)"
+        }
+      ]
     },
     {
       "en": "understanding",
-      "zh": "理解"
+      "zh": "理解",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "理解"
+        }
+      ]
     },
     {
       "en": "average",
-      "zh": "平均"
+      "zh": "平均的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "平均"
+        },
+        {
+          "pos": "adj",
+          "zh": "平均的"
+        },
+        {
+          "pos": "vt",
+          "zh": "算出...平均數"
+        },
+        {
+          "pos": "vi",
+          "zh": "平均為"
+        }
+      ]
     },
     {
       "en": "earn",
-      "zh": "賺得"
+      "zh": "賺得",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "賺得"
+        }
+      ]
     },
     {
       "en": "basis",
-      "zh": "基礎"
+      "zh": "基礎",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "基礎"
+        }
+      ]
     },
     {
       "en": "operate",
-      "zh": "操作"
+      "zh": "操作",
+      "meanings": [
+        {
+          "pos": "v",
+          "zh": "操作"
+        }
+      ]
     },
     {
       "en": "contribute",
-      "zh": "有助於"
+      "zh": "有助於",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "有助於"
+        },
+        {
+          "pos": "vi",
+          "zh": "出力"
+        }
+      ]
     },
     {
       "en": "block",
-      "zh": "街區"
+      "zh": "阻塞",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "街區"
+        },
+        {
+          "pos": "vt",
+          "zh": "阻塞"
+        }
+      ]
     },
     {
       "en": "protection",
-      "zh": "保護"
+      "zh": "保護",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "保護"
+        }
+      ]
     },
     {
       "en": "settle",
-      "zh": "有背長椅"
+      "zh": "決定",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "有背長椅"
+        },
+        {
+          "pos": "vt",
+          "zh": "決定"
+        },
+        {
+          "pos": "vi",
+          "zh": "停留"
+        }
+      ]
     },
     {
       "en": "identity",
-      "zh": "身份"
+      "zh": "身份",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "身份"
+        }
+      ]
     },
     {
       "en": "title",
-      "zh": "頭銜"
+      "zh": "授予頭銜",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "頭銜"
+        },
+        {
+          "pos": "vt",
+          "zh": "授予頭銜"
+        }
+      ]
     },
     {
       "en": "faith",
-      "zh": "信心"
+      "zh": "信心",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "信心"
+        }
+      ]
     },
     {
       "en": "promote",
-      "zh": "促進"
+      "zh": "促進",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "促進"
+        }
+      ]
     },
     {
       "en": "living",
-      "zh": "生活"
+      "zh": "活的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "生活"
+        },
+        {
+          "pos": "adj",
+          "zh": "活的"
+        }
+      ]
     },
     {
       "en": "technique",
-      "zh": "技巧"
+      "zh": "技巧",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "技巧"
+        }
+      ]
     },
     {
       "en": "folk",
-      "zh": "人們"
+      "zh": "民間的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "人們"
+        },
+        {
+          "pos": "adj",
+          "zh": "民間的"
+        }
+      ]
     },
     {
       "en": "principle",
-      "zh": "原則"
+      "zh": "原則",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "原則"
+        }
+      ]
     },
     {
       "en": "survive",
-      "zh": "比...活得長"
+      "zh": "比...活得長",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "比...活得長"
+        },
+        {
+          "pos": "vi",
+          "zh": "活下來"
+        }
+      ]
     },
     {
       "en": "border",
-      "zh": "邊緣"
+      "zh": "在...上鑲邊",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "邊緣"
+        },
+        {
+          "pos": "vt",
+          "zh": "在...上鑲邊"
+        },
+        {
+          "pos": "vi",
+          "zh": "接界"
+        }
+      ]
     },
     {
       "en": "gather",
-      "zh": "集合"
+      "zh": "使聚集",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "集合"
+        },
+        {
+          "pos": "vi",
+          "zh": "聚集"
+        },
+        {
+          "pos": "vt",
+          "zh": "使聚集"
+        }
+      ]
     },
     {
       "en": "limit",
-      "zh": "界限"
+      "zh": "限制",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "界限"
+        },
+        {
+          "pos": "vt",
+          "zh": "限制"
+        }
+      ]
     },
     {
       "en": "equipment",
-      "zh": "裝備"
+      "zh": "裝備",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "裝備"
+        }
+      ]
     },
     {
       "en": "associate",
-      "zh": "同伴"
+      "zh": "使聯合",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "同伴"
+        },
+        {
+          "pos": "vt",
+          "zh": "使聯合"
+        },
+        {
+          "pos": "vi",
+          "zh": "交往"
+        }
+      ]
     }
   ],
   "A2 Unit 7": [
     {
       "en": "aspect",
-      "zh": "外觀"
+      "zh": "外觀",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "外觀"
+        }
+      ]
     },
     {
       "en": "failure",
-      "zh": "失敗"
+      "zh": "失敗",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "失敗"
+        }
+      ]
     },
     {
       "en": "annual",
-      "zh": "年刊"
+      "zh": "每年的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "年刊"
+        },
+        {
+          "pos": "adj",
+          "zh": "每年的"
+        }
+      ]
     },
     {
       "en": "french",
-      "zh": "法國人"
+      "zh": "法國的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "法國人"
+        },
+        {
+          "pos": "adj",
+          "zh": "法國的"
+        }
+      ]
     },
     {
       "en": "comment",
-      "zh": "註解"
+      "zh": "評論",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "註解"
+        },
+        {
+          "pos": "vi",
+          "zh": "評論"
+        }
+      ]
     },
     {
       "en": "affair",
-      "zh": "事件"
+      "zh": "事件",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "事件"
+        }
+      ]
     },
     {
       "en": "procedure",
-      "zh": "程式"
+      "zh": "程式",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "程式"
+        }
+      ]
     },
     {
       "en": "regular",
-      "zh": "規則的"
+      "zh": "規則的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "規則的"
+        },
+        {
+          "pos": "n",
+          "zh": "正規軍"
+        },
+        {
+          "pos": "adv",
+          "zh": "經常地"
+        },
+        {
+          "pos": "n",
+          "zh": "正常體"
+        }
+      ]
     },
     {
       "en": "ignore",
-      "zh": "不理睬"
+      "zh": "不理睬",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "不理睬"
+        }
+      ]
     },
     {
       "en": "belief",
-      "zh": "信念"
+      "zh": "信念",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "信念"
+        }
+      ]
     },
     {
       "en": "religion",
-      "zh": "宗教"
+      "zh": "宗教",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "宗教"
+        }
+      ]
     },
     {
       "en": "editor",
-      "zh": "編者"
+      "zh": "編者",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "編者"
+        }
+      ]
     },
     {
       "en": "document",
-      "zh": "檔案"
+      "zh": "證明",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "檔案"
+        },
+        {
+          "pos": "vt",
+          "zh": "證明"
+        }
+      ]
     },
     {
       "en": "commit",
-      "zh": "委託(託付)"
+      "zh": "委託(託付)",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "委託(託付)"
+        }
+      ]
     },
     {
       "en": "female",
-      "zh": "女性"
+      "zh": "女性的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "女性"
+        },
+        {
+          "pos": "adj",
+          "zh": "女性的"
+        }
+      ]
     },
     {
       "en": "youth",
-      "zh": "年輕"
+      "zh": "年輕",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "年輕"
+        }
+      ]
     },
     {
       "en": "wave",
-      "zh": "波"
+      "zh": "使波動",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "波"
+        },
+        {
+          "pos": "vi",
+          "zh": "波動"
+        },
+        {
+          "pos": "vt",
+          "zh": "使波動"
+        }
+      ]
     },
     {
       "en": "native",
-      "zh": "本地人"
+      "zh": "本國的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "本地人"
+        },
+        {
+          "pos": "adj",
+          "zh": "本國的"
+        }
+      ]
     },
     {
       "en": "broad",
-      "zh": "寬廣的"
+      "zh": "寬廣的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "寬廣的"
+        },
+        {
+          "pos": "adv",
+          "zh": "寬闊地"
+        },
+        {
+          "pos": "n",
+          "zh": "寬闊部分"
+        }
+      ]
     },
     {
       "en": "suit",
-      "zh": "套裝"
+      "zh": "適合",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "套裝"
+        },
+        {
+          "pos": "vt",
+          "zh": "適合"
+        },
+        {
+          "pos": "vi",
+          "zh": "合適"
+        }
+      ]
     },
     {
       "en": "construction",
-      "zh": "建築"
+      "zh": "建築",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "建築"
+        }
+      ]
     },
     {
       "en": "intelligence",
-      "zh": "智力"
+      "zh": "智力",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "智力"
+        }
+      ]
     },
     {
       "en": "destroy",
-      "zh": "破壞"
+      "zh": "破壞",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "破壞"
+        }
+      ]
     },
     {
       "en": "connection",
-      "zh": "連線"
+      "zh": "連線",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "連線"
+        }
+      ]
     },
     {
       "en": "committee",
-      "zh": "委員會"
+      "zh": "委員會",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "委員會"
+        }
+      ]
     },
     {
       "en": "hey",
-      "zh": "interj. 嗨"
+      "zh": "嗨",
+      "meanings": [
+        {
+          "pos": "interj",
+          "zh": "嗨"
+        }
+      ]
     },
     {
       "en": "aware",
-      "zh": "知道的"
+      "zh": "知道的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "知道的"
+        }
+      ]
     },
     {
       "en": "function",
-      "zh": "官能"
+      "zh": "活動",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "官能"
+        },
+        {
+          "pos": "vi",
+          "zh": "活動"
+        }
+      ]
     },
     {
       "en": "bone",
-      "zh": "骨頭"
+      "zh": "剔骨",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "骨頭"
+        },
+        {
+          "pos": "vt",
+          "zh": "剔骨"
+        },
+        {
+          "pos": "vi",
+          "zh": "專心致志"
+        }
+      ]
     },
     {
       "en": "chief",
-      "zh": "領袖"
+      "zh": "主要的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "領袖"
+        },
+        {
+          "pos": "adj",
+          "zh": "主要的"
+        }
+      ]
     },
     {
       "en": "combine",
-      "zh": "(使)聯合"
+      "zh": "(使)聯合",
+      "meanings": [
+        {
+          "pos": "v",
+          "zh": "(使)聯合"
+        },
+        {
+          "pos": "n",
+          "zh": "(企業的)聯合"
+        }
+      ]
     },
     {
       "en": "remind",
-      "zh": "提醒"
+      "zh": "提醒",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "提醒"
+        }
+      ]
     },
     {
       "en": "moral",
-      "zh": "道德"
+      "zh": "道德的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "道德"
+        },
+        {
+          "pos": "adj",
+          "zh": "道德的"
+        }
+      ]
     },
     {
       "en": "category",
-      "zh": "種類"
+      "zh": "種類",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "種類"
+        }
+      ]
     },
     {
       "en": "academic",
-      "zh": "學院的"
+      "zh": "學院的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "學院的"
+        },
+        {
+          "pos": "n",
+          "zh": "大學生"
+        }
+      ]
     },
     {
       "en": "following",
-      "zh": "下列各項"
+      "zh": "下列的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "下列各項"
+        },
+        {
+          "pos": "adj",
+          "zh": "下列的"
+        }
+      ]
     },
     {
       "en": "justice",
-      "zh": "正義"
+      "zh": "正義",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "正義"
+        }
+      ]
     },
     {
       "en": "participate",
-      "zh": "參加"
+      "zh": "分享",
+      "meanings": [
+        {
+          "pos": "vi",
+          "zh": "參加"
+        },
+        {
+          "pos": "vt",
+          "zh": "分享"
+        }
+      ]
     },
     {
       "en": "hire",
-      "zh": "租金"
+      "zh": "僱請",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "租金"
+        },
+        {
+          "pos": "vt",
+          "zh": "僱請"
+        },
+        {
+          "pos": "vi",
+          "zh": "受僱"
+        }
+      ]
     },
     {
       "en": "familiar",
-      "zh": "熟悉的"
+      "zh": "熟悉的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "熟悉的"
+        },
+        {
+          "pos": "n",
+          "zh": "熟友"
+        }
+      ]
     }
   ],
   "A2 Unit 8": [
     {
       "en": "appropriate",
-      "zh": "適當的"
+      "zh": "適當的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "適當的"
+        }
+      ]
     },
     {
       "en": "actor",
-      "zh": "男演員"
+      "zh": "男演員",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "男演員"
+        }
+      ]
     },
     {
       "en": "eastern",
-      "zh": "東方人"
+      "zh": "東方的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "東方人"
+        },
+        {
+          "pos": "adj",
+          "zh": "東方的"
+        }
+      ]
     },
     {
       "en": "exchange",
-      "zh": "交換"
+      "zh": "交換",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "交換"
+        },
+        {
+          "pos": "v",
+          "zh": "交換"
+        }
+      ]
     },
     {
       "en": "studio",
-      "zh": "工作室"
+      "zh": "工作室",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "工作室"
+        }
+      ]
     },
     {
       "en": "colleague",
-      "zh": "同事"
+      "zh": "同事",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "同事"
+        }
+      ]
     },
     {
       "en": "application",
-      "zh": "應用"
+      "zh": "應用",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "應用"
+        }
+      ]
     },
     {
       "en": "damage",
-      "zh": "損害"
+      "zh": "損害",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "損害"
+        },
+        {
+          "pos": "v",
+          "zh": "損害"
+        }
+      ]
     },
     {
       "en": "otherwise",
-      "zh": "否則"
+      "zh": "否則",
+      "meanings": [
+        {
+          "pos": "adv",
+          "zh": "否則"
+        }
+      ]
     },
     {
       "en": "writing",
-      "zh": "書寫"
+      "zh": "書寫",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "書寫"
+        }
+      ]
     },
     {
       "en": "male",
-      "zh": "男人"
+      "zh": "男性的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "男人"
+        },
+        {
+          "pos": "adj",
+          "zh": "男性的"
+        }
+      ]
     },
     {
       "en": "expression",
-      "zh": "表達"
+      "zh": "表達",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "表達"
+        }
+      ]
     },
     {
       "en": "intend",
-      "zh": "計劃"
+      "zh": "計劃",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "計劃"
+        }
+      ]
     },
     {
       "en": "abuse",
-      "zh": "濫用"
+      "zh": "濫用",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "濫用"
+        },
+        {
+          "pos": "vt",
+          "zh": "濫用"
+        }
+      ]
     },
     {
       "en": "extra",
-      "zh": "額外的事物"
+      "zh": "額外的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "額外的事物"
+        },
+        {
+          "pos": "adj",
+          "zh": "額外的"
+        },
+        {
+          "pos": "adv",
+          "zh": "額外地"
+        }
+      ]
     },
     {
       "en": "session",
-      "zh": "期間"
+      "zh": "期間",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "期間"
+        }
+      ]
     },
     {
       "en": "literature",
-      "zh": "文學"
+      "zh": "文學",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "文學"
+        }
+      ]
     },
     {
       "en": "desire",
-      "zh": "慾望"
+      "zh": "想要",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "慾望"
+        },
+        {
+          "pos": "vt",
+          "zh": "想要"
+        },
+        {
+          "pos": "vi",
+          "zh": "渴望"
+        }
+      ]
     },
     {
       "en": "assessment",
-      "zh": "評估"
+      "zh": "評估",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "評估"
+        }
+      ]
     },
     {
       "en": "injury",
-      "zh": "傷害"
+      "zh": "傷害",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "傷害"
+        }
+      ]
     },
     {
       "en": "respect",
-      "zh": "尊敬"
+      "zh": "尊敬",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "尊敬"
+        },
+        {
+          "pos": "vt",
+          "zh": "尊敬"
+        }
+      ]
     },
     {
       "en": "fuel",
-      "zh": "燃料"
+      "zh": "加燃料",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "燃料"
+        },
+        {
+          "pos": "vt",
+          "zh": "加燃料"
+        },
+        {
+          "pos": "vi",
+          "zh": "得到燃料"
+        }
+      ]
     },
     {
       "en": "engine",
-      "zh": "引擎"
+      "zh": "安裝發動機於",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "引擎"
+        },
+        {
+          "pos": "vt",
+          "zh": "安裝發動機於"
+        }
+      ]
     },
     {
       "en": "expand",
-      "zh": "使膨脹"
+      "zh": "使膨脹",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "使膨脹"
+        },
+        {
+          "pos": "vi",
+          "zh": "張開"
+        },
+        {
+          "pos": "vt",
+          "zh": "展開"
+        },
+        {
+          "pos": "vi",
+          "zh": "展開"
+        }
+      ]
     },
     {
       "en": "importance",
-      "zh": "重要"
+      "zh": "重要",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "重要"
+        }
+      ]
     },
     {
       "en": "software",
-      "zh": "軟體"
+      "zh": "軟體",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "軟體"
+        }
+      ]
     },
     {
       "en": "disappear",
-      "zh": "消失"
+      "zh": "消失",
+      "meanings": [
+        {
+          "pos": "vi",
+          "zh": "消失"
+        }
+      ]
     },
     {
       "en": "reading",
-      "zh": "閱讀"
+      "zh": "閱讀的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "閱讀"
+        },
+        {
+          "pos": "adj",
+          "zh": "閱讀的"
+        }
+      ]
     },
     {
       "en": "lip",
-      "zh": "唇"
+      "zh": "口頭上的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "唇"
+        },
+        {
+          "pos": "vt",
+          "zh": "以嘴唇碰"
+        },
+        {
+          "pos": "adj",
+          "zh": "口頭上的"
+        }
+      ]
     },
     {
       "en": "urban",
-      "zh": "都市的"
+      "zh": "都市的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "都市的"
+        }
+      ]
     },
     {
       "en": "mental",
-      "zh": "心智的"
+      "zh": "心智的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "心智的"
+        },
+        {
+          "pos": "n",
+          "zh": "精神病患者"
+        }
+      ]
     },
     {
       "en": "explore",
-      "zh": "探險"
+      "zh": "探險",
+      "meanings": [
+        {
+          "pos": "v",
+          "zh": "探險"
+        }
+      ]
     },
     {
       "en": "obtain",
-      "zh": "獲得"
+      "zh": "獲得",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "獲得"
+        },
+        {
+          "pos": "vi",
+          "zh": "流行"
+        }
+      ]
     },
     {
       "en": "complex",
-      "zh": "綜合體"
+      "zh": "複雜的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "綜合體"
+        },
+        {
+          "pos": "adj",
+          "zh": "複雜的"
+        }
+      ]
     },
     {
       "en": "surround",
-      "zh": "包圍"
+      "zh": "包圍",
+      "meanings": [
+        {
+          "pos": "vt",
+          "zh": "包圍"
+        },
+        {
+          "pos": "n",
+          "zh": "圍繞物"
+        }
+      ]
     },
     {
       "en": "athlete",
-      "zh": "運動員"
+      "zh": "運動員",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "運動員"
+        }
+      ]
     },
     {
       "en": "soul",
-      "zh": "靈魂"
+      "zh": "黑人的",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "靈魂"
+        },
+        {
+          "pos": "adj",
+          "zh": "黑人的"
+        }
+      ]
     },
     {
       "en": "scientific",
-      "zh": "科學的"
+      "zh": "科學的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "科學的"
+        }
+      ]
     },
     {
       "en": "married",
-      "zh": "已婚的"
+      "zh": "已婚的",
+      "meanings": [
+        {
+          "pos": "adj",
+          "zh": "已婚的"
+        }
+      ]
     },
     {
       "en": "instrument",
-      "zh": "工具"
+      "zh": "工具",
+      "meanings": [
+        {
+          "pos": "n",
+          "zh": "工具"
+        }
+      ]
     }
   ]
 }
