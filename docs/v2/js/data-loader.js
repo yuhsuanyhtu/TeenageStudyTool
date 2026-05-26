@@ -22,6 +22,15 @@ export async function loadAll() {
   const meta = await loadJson('units-meta.json');
   const units = {};                       // 扁平 { 單元名: [...words] }（向下相容）
   const categories = [];                  // v2.19：分類結構，主畫面用
+  let stories = [];                       // v2.25：閱讀練習短文（與字庫獨立）
+
+  // v2.25：嘗試載 stories.json（沒有就算了，向下相容）
+  try {
+    const sdata = await loadJson('stories.json');
+    stories = Array.isArray(sdata.stories) ? sdata.stories : [];
+  } catch (e) {
+    // 無 stories.json → 閱讀功能不顯示，其他照常
+  }
 
   // v2 schema（含 categories）：以 categories 為主
   if (meta.version === 2 && Array.isArray(meta.categories)) {
@@ -58,5 +67,5 @@ export async function loadAll() {
     categories.push({ id: 'all', name: '單字', icon: '📚', units: catUnits });
   }
 
-  return { meta, units, categories };
+  return { meta, units, categories, stories };
 }

@@ -13,6 +13,7 @@ import { startMatchMode } from './modes/match.js';
 import { startEn2ZhMode } from './modes/en2zh.js';
 import { startZh2EnMode } from './modes/zh2en.js';
 import { startReviewMode } from './modes/review.js';
+import { startReadingMode } from './modes/reading.js';
 import { logEvent, logEventBeacon } from './logger.js';
 import { renderRules } from './rules.js';
 import { fetchV2Events, recomputeFromEvents } from './sync.js';
@@ -237,6 +238,10 @@ function renderHome() {
       : '<p class="muted">目前沒有單字資料</p>'
     }
 
+    ${appData.stories && appData.stories.length > 0 ? `
+      <button class="read-link-btn" id="bookshelf-btn">📚 閱讀練習（${appData.stories.length} 篇短文）</button>
+    ` : ''}
+
     <p class="muted small center" style="margin-top:24px">
       v2 · ${state.today()} · 本機名：<b>${escapeHtml(state.getDeviceName() || '(未命名)')}</b>
       <a href="#" id="rename" style="margin-left:8px; color:#888;">改名</a>
@@ -258,6 +263,9 @@ function renderHome() {
   root.querySelector('#rules-btn').addEventListener('click', () => {
     renderRules(root, refreshAndRenderHome);
   });
+  // v2.25：開啟書架
+  const bsBtn = root.querySelector('#bookshelf-btn');
+  if (bsBtn) bsBtn.addEventListener('click', renderBookshelf);
   root.querySelectorAll('.unit-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       currentUnit = btn.dataset.unit;
@@ -296,6 +304,102 @@ function renderModePicker() {
   root.querySelectorAll('.mode-card').forEach(b => {
     b.addEventListener('click', () => startMode(b.dataset.mode));
   });
+}
+
+// v2.25：書架（閱讀練習列表）
+function renderBookshelf() {
+  const stories = appData.stories || [];
+  root.innerHTML = `
+    <button class="back" id="back">← 回主畫面</button>
+    <h1>📚 閱讀練習</h1>
+    <p class="muted">點任何單字 → 看中文意思。讀完還可以練習剛剛查過的生字。</p>
+    <div class="bookshelf">
+      ${stories.map(st => `
+        <button class="book-card" data-id="${escapeHtml(st.id)}">
+          <span class="book-title">${escapeHtml(st.title)}</span>
+          <span class="book-meta">${escapeHtml(st.level)} · ${countWords(st.text)} 字</span>
+        </button>
+      `).join('')}
+    </div>
+  `;
+  root.querySelector('#back').addEventListener('click', refreshAndRenderHome);
+  root.querySelectorAll('.book-card').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      const story = stories.find(s => s.id === id);
+      if (story) startReading(story);
+    });
+  });
+}
+
+function countWords(text) {
+  return (String(text || '').match(/[A-Za-z][A-Za-z']*/g) || []).length;
+}
+
+function startReading(story) {
+  root.innerHTML = '';
+  startReadingMode({
+    root, story,
+    onComplete: (result) => handleReadingComplete(result),
+  });
+}
+
+function handleReadingComplete(result) {
+  const today = state.today();
+  const looked = Array.isArray(result.lookedUp) ? result.lookedUp : [];
+  // 查過的字記為「看過」（不算對錯，但會出現在 SRS）
+  if (looked.length > 0) {
+    srs.recordSeenBatch(s, looked, today);
+    state.save(s);
+  }
+  // 寫 Sheet 留紀錄
+  logEvent({
+    event: result.aborted ? 'v2_reading_abandoned' : 'v2_reading_done',
+    unit: result.story?.id || '',
+    note: `v2 閱讀「${result.story?.title || ''}」查了 ${looked.length} 字`,
+  }, s);
+
+  // 顯示結束頁
+  const story = result.story || {};
+  // 把查過的字轉成有 zh 的 word objects（從 story.vocab 撈）
+  const vocab = story.vocab || {};
+  const practiceWords = looked
+    .map(en => ({ en, zh: vocab[en] }))
+    .filter(w => w.zh);  // 只練有 zh 的（沒 zh 的字進不了 en2zh）
+
+  root.innerHTML = `
+    <h1>${result.aborted ? '中途離開' : '✓ 讀完了！'}</h1>
+    <p class="muted">「${escapeHtml(story.title || '')}」</p>
+    <div class="card">
+      <p>你讀了 <b>${countWords(story.text || '')}</b> 個字</p>
+      <p>查了 <b>${looked.length}</b> 個生字</p>
+      ${practiceWords.length >= 4 ? `
+        <p class="muted small">這 ${practiceWords.length} 個有翻譯的可以練：${practiceWords.map(w => escapeHtml(w.en)).join('、')}</p>
+      ` : looked.length > 0 ? `
+        <p class="muted small">${looked.length < 4 ? '生字少於 4 個，沒辦法湊一回練習' : '查過但本篇沒附翻譯的字目前不能練'}</p>
+      ` : ''}
+    </div>
+    ${practiceWords.length >= 4 ? `<button id="practice">📝 練習剛剛的生字（英翻中）</button>` : ''}
+    <button class="secondary" id="another">📖 換一篇</button>
+    <button class="secondary" id="home">← 回主畫面</button>
+  `;
+  const pBtn = root.querySelector('#practice');
+  if (pBtn) {
+    pBtn.addEventListener('click', () => {
+      // 用查過的生字當 en2zh 題目，題目來自當篇 vocab，distractor 也用同篇
+      root.innerHTML = '';
+      startEn2ZhMode({
+        root,
+        words: practiceWords,
+        allWords: practiceWords,
+        seenSet: new Set(),
+        wordStats: s.wordStats || {},
+        onComplete: (qResult) => handleComplete('en2zh', { ...qResult, _fromReading: true }),
+      });
+    });
+  }
+  root.querySelector('#another').addEventListener('click', renderBookshelf);
+  root.querySelector('#home').addEventListener('click', refreshAndRenderHome);
 }
 
 // 追蹤目前進行中的 mode，給 pagehide listener 用

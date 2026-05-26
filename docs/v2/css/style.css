@@ -243,6 +243,104 @@ button.back:hover { background: transparent; text-decoration: underline; }
   font-size: 14px;
 }
 
+/* v2.25：閱讀練習模式 */
+.read-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.read-level {
+  background: #6b9080;
+  color: white;
+  font-size: 13px;
+  padding: 2px 10px;
+  border-radius: 6px;
+}
+.read-text {
+  background: white;
+  border: 1px solid #e8e4de;
+  border-radius: 12px;
+  padding: 18px 22px;
+  font-size: 18px;
+  line-height: 1.9;
+  color: #333;
+}
+.read-para { margin: 0 0 14px; }
+.read-para:last-child { margin-bottom: 0; }
+.read-word {
+  cursor: pointer;
+  padding: 1px 2px;
+  border-radius: 3px;
+  transition: background 0.1s;
+}
+.read-word:hover { background: #fff3e0; }
+.read-word.looked-up {
+  background: #fff3e0;
+  border-bottom: 2px solid #d4a85e;
+  font-weight: 500;
+}
+.read-lookup {
+  margin: 12px 0;
+  min-height: 48px;
+}
+.lookup-card {
+  background: #faf6ed;
+  border: 1px solid #ebe2cc;
+  border-radius: 10px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  animation: lookup-in 0.15s ease-out;
+}
+@keyframes lookup-in { from { opacity: 0; transform: translateY(-4px); } }
+.lookup-word { font-weight: 700; font-size: 18px; color: #6b9080; }
+.lookup-zh { font-size: 17px; color: #333; }
+.lookup-en { flex: 1; }
+.lookup-loading { font-style: italic; color: #aaa; font-size: 14px; justify-content: center; }
+.lookup-empty .lookup-word { color: #aaa; font-weight: normal; }
+.read-hint { text-align: center; margin: 8px 0; }
+
+/* 書架（故事列表） */
+.bookshelf { margin-top: 16px; }
+.book-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: white;
+  border: 1px solid #e8e4de;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  font-size: 16px;
+  color: #333;
+  transition: background 0.1s, border-color 0.1s;
+}
+.book-card:hover { background: #f5f0e8; border-color: #6b9080; }
+.book-title { flex: 1; }
+.book-meta { color: #888; font-size: 13px; }
+.read-link-btn {
+  display: block;
+  width: 100%;
+  background: #faf6ed;
+  border: 1px solid #ebe2cc;
+  color: #6b9080;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-family: inherit;
+  cursor: pointer;
+  margin-top: 16px;
+  text-align: center;
+  font-weight: 500;
+}
+.read-link-btn:hover { background: #f5edd9; border-color: #d4a85e; }
+
 /* 單元進度條：顯示「今天練了幾字」 */
 .unit-progress-bar {
   height: 4px;

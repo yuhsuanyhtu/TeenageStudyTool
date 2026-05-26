@@ -1,0 +1,102 @@
+{
+  "_note": "Aesop's Fables 改編，公有領域。每篇控制在 60-120 字，A1-A2 難度。vocab 用 ECDICT 等級的中翻，內含本篇可能對謙恩有點挑戰的字。",
+  "stories": [
+    {
+      "id": "lion-mouse",
+      "title": "The Lion and the Mouse",
+      "level": "A2",
+      "text": "A small mouse ran across a sleeping lion. The lion woke up and grabbed the mouse. \"Please let me go!\" cried the mouse. \"I will help you one day.\" The lion laughed but let the mouse go.\n\nA week later, the lion was caught in a hunter's net. He roared loudly. The little mouse heard him. She came quickly and chewed the ropes. The lion was free!\n\n\"Thank you, little friend,\" said the lion. \"Small friends can be great friends.\"",
+      "vocab": {
+        "across": "穿過",
+        "sleeping": "睡著的",
+        "grabbed": "抓住",
+        "cried": "哭著說",
+        "laughed": "大笑",
+        "caught": "被抓住",
+        "hunter": "獵人",
+        "net": "網子",
+        "roared": "怒吼",
+        "loudly": "大聲地",
+        "chewed": "咀嚼／咬",
+        "ropes": "繩子",
+        "free": "自由的"
+      }
+    },
+    {
+      "id": "tortoise-hare",
+      "title": "The Tortoise and the Hare",
+      "level": "A1",
+      "text": "A hare laughed at a slow tortoise. \"You are so slow! I am much faster than you,\" he said. The tortoise said, \"Let's have a race.\"\n\nThe race began. The hare ran very fast and got far ahead. \"That tortoise is so slow. I have time to take a nap,\" he thought. He lay down under a tree and fell asleep.\n\nThe tortoise kept walking, step by step. He never stopped. When the hare woke up, the tortoise was already at the finish line.\n\nSlow and steady wins the race.",
+      "vocab": {
+        "hare": "野兔",
+        "tortoise": "烏龜",
+        "slow": "慢的",
+        "faster": "更快的",
+        "race": "賽跑",
+        "ahead": "在前面",
+        "nap": "小睡",
+        "asleep": "睡著的",
+        "step": "腳步",
+        "finish": "終點",
+        "steady": "穩定的",
+        "wins": "贏得"
+      }
+    },
+    {
+      "id": "fox-grapes",
+      "title": "The Fox and the Grapes",
+      "level": "A2",
+      "text": "One hot day, a hungry fox saw some grapes hanging high on a tree. They looked sweet and juicy.\n\n\"I want those grapes!\" said the fox. He jumped up high, but he could not reach them. He tried again and again. He jumped and jumped, but the grapes were too high.\n\nFinally, the fox gave up. He walked away and said, \"Those grapes are probably sour anyway. I didn't really want them.\"\n\nWhen we cannot get what we want, we often pretend we never wanted it.",
+      "vocab": {
+        "hungry": "飢餓的",
+        "grapes": "葡萄",
+        "hanging": "懸掛著",
+        "sweet": "甜的",
+        "juicy": "多汁的",
+        "reach": "到達／搆到",
+        "finally": "最後",
+        "probably": "可能",
+        "sour": "酸的",
+        "anyway": "反正",
+        "pretend": "假裝"
+      }
+    },
+    {
+      "id": "wolf-boy",
+      "title": "The Boy Who Cried Wolf",
+      "level": "A2",
+      "text": "A young boy watched sheep on a hill. He was bored, so he shouted, \"Wolf! Wolf! A wolf is eating the sheep!\"\n\nThe villagers ran up the hill to help. But there was no wolf. The boy laughed at them.\n\nA few days later, he did it again. \"Wolf! Wolf!\" The villagers came running, but again, no wolf. They were angry.\n\nThen one day, a real wolf came. The boy shouted, \"Wolf! Wolf! Help me!\" But this time, nobody believed him. Nobody came. The wolf ate all the sheep.\n\nIf you lie too often, no one will believe you when you tell the truth.",
+      "vocab": {
+        "watched": "看守",
+        "sheep": "綿羊",
+        "hill": "小山",
+        "bored": "無聊",
+        "shouted": "大喊",
+        "wolf": "狼",
+        "villagers": "村民",
+        "angry": "生氣的",
+        "believed": "相信",
+        "nobody": "沒有人",
+        "lie": "說謊",
+        "truth": "真相"
+      }
+    },
+    {
+      "id": "ant-grasshopper",
+      "title": "The Ant and the Grasshopper",
+      "level": "A2",
+      "text": "In summer, a grasshopper sang and danced all day. An ant walked by, carrying food on his back.\n\n\"Why do you work so hard?\" asked the grasshopper. \"Come sing with me!\"\n\n\"I am storing food for winter,\" said the ant. \"You should do the same.\"\n\nThe grasshopper laughed. \"Winter is far away. There is plenty of time.\"\n\nSoon, winter came. The grasshopper had no food. He was cold and hungry. He went to the ant's house.\n\n\"Please, can you give me some food?\" he asked.\n\nThe ant said, \"You sang all summer. Now you can dance all winter.\"",
+      "vocab": {
+        "summer": "夏天",
+        "grasshopper": "蚱蜢",
+        "danced": "跳舞",
+        "ant": "螞蟻",
+        "carrying": "搬運／拿著",
+        "storing": "儲存",
+        "winter": "冬天",
+        "plenty": "充足",
+        "cold": "冷的"
+      }
+    }
+  ]
+}
