@@ -17,6 +17,7 @@ import { logEvent, logEventBeacon } from './logger.js';
 import { renderRules } from './rules.js';
 import { fetchV2Events, recomputeFromEvents } from './sync.js';
 import { startPayoutMode } from './modes/payout.js';
+import * as srs from './srs.js';
 
 const root = document.getElementById('app');
 let s = state.load();
@@ -194,11 +195,13 @@ function renderHome() {
       ? appData.categories.map(cat => {
           const catUnitNames = Object.keys(cat.units);
           if (catUnitNames.length === 0) return '';
-          // 該分類今天總共練了幾字
-          let catSeen = 0, catTotal = 0;
+          // 該分類今天總共練了幾字 + 累計已會
+          let catSeen = 0, catTotal = 0, catMastered = 0;
           for (const u of catUnitNames) {
-            catTotal += cat.units[u].length;
+            const words = cat.units[u];
+            catTotal += words.length;
             catSeen += state.getSeenEns(s, u).size;
+            catMastered += srs.countMasteredIn(words, s.wordStats);
           }
           // v2.21：預設展開 units-meta.json 裡標 `"current": true` 的分類（謙恩當期）。
           // 找不到 → 退回最後一個分類（最新的）。
@@ -210,17 +213,19 @@ function renderHome() {
             <details class="cat-section" data-cat-id="${escapeHtml(cat.id)}" ${isOpen ? 'open' : ''}>
               <summary class="cat-header">
                 <span class="cat-title">${cat.icon} ${escapeHtml(cat.name)}</span>
-                <span class="muted small">${catUnitNames.length} 單元 · 今天 ${catSeen}/${catTotal} 字</span>
+                <span class="muted small">${catUnitNames.length} 單元 · 今天 ${catSeen}/${catTotal} 字 · 🌳 已會 ${catMastered}</span>
               </summary>
               <div class="cat-units">
                 ${catUnitNames.map(u => {
-                  const total = cat.units[u].length;
+                  const words = cat.units[u];
+                  const total = words.length;
                   const seen = state.getSeenEns(s, u).size;
-                  const pct = total > 0 ? (seen / total) * 100 : 0;
+                  const mastered = srs.countMasteredIn(words, s.wordStats);
+                  const pct = total > 0 ? (mastered / total) * 100 : 0;  // v2.24：進度條改用「已會」比例（更有成就感）
                   return `
                     <button class="unit-btn" data-unit="${escapeHtml(u)}">
                       <span>${escapeHtml(u)}</span>
-                      <span class="muted small">${total} 字 · 今天 ${seen}/${total}</span>
+                      <span class="muted small">🌳 ${mastered}／${total} 已會 · 今天 ${seen}/${total}</span>
                     </button>
                     <div class="unit-progress-bar"><div class="unit-progress-fill" style="width:${pct}%"></div></div>
                   `;
@@ -300,18 +305,20 @@ let currentModeMeta = null;
 function startMode(mode) {
   const words = appData.units[currentUnit];
   const seenSet = state.getSeenEns(s, currentUnit);
+  // v2.24：把 wordStats 餵給模式，讓出題策略可以避開「已會」、優先「答錯過 / 沒見過」
+  const wordStats = s.wordStats || {};
   root.innerHTML = '';
   currentModeMeta = { mode, unit: currentUnit, totalQuestions: words.length, startedAt: Date.now() };
   const onComplete = (result) => {
-    currentModeMeta = null;  // 正常結束不需 pagehide log
+    currentModeMeta = null;
     handleComplete(mode, result);
   };
   if (mode === 'match') {
-    startMatchMode({ root, words, seenSet, onComplete });
+    startMatchMode({ root, words, seenSet, onComplete, wordStats });
   } else if (mode === 'en2zh') {
-    startEn2ZhMode({ root, words, seenSet, onComplete, allWords: words });
+    startEn2ZhMode({ root, words, seenSet, onComplete, allWords: words, wordStats });
   } else if (mode === 'zh2en') {
-    startZh2EnMode({ root, words, seenSet, onComplete });
+    startZh2EnMode({ root, words, seenSet, onComplete, wordStats });
   } else if (mode === 'review') {
     startReviewMode({ root, words, onComplete });
   }
@@ -390,6 +397,13 @@ function handleComplete(mode, result) {
     // 標記這回合練過的字（給「今天 X/Y」覆蓋追蹤用）
     if (Array.isArray(result.usedWords) && result.usedWords.length) {
       state.markSeenEns(s, currentUnit, result.usedWords.map(w => w.en));
+    }
+    // v2.24：寫 SRS 記憶。en2zh / zh2en 有 wordResults（含對錯），照 result 寫；
+    //        match / review 只有 usedWords（沒測對錯）→ 全部當「看過」記
+    if (Array.isArray(result.wordResults) && result.wordResults.length > 0) {
+      for (const r of result.wordResults) srs.recordResult(s, r.en, r.correct, today);
+    } else if (Array.isArray(result.usedWords) && result.usedWords.length > 0) {
+      srs.recordSeenBatch(s, result.usedWords.map(w => w.en), today);
     }
     state.save(s);
   }

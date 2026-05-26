@@ -15,6 +15,7 @@
 //     例：zh="給你。 (= Here you go.)" → 顯示「給你。」，Here you are / Here you go 都接受
 
 import { speak, speakSpell } from '../tts.js';
+import { masteryLevel } from '../srs.js';
 
 const QUESTIONS_PER_ROUND = 8;
 
@@ -29,7 +30,7 @@ function extractZhAlts(zh) {
   return matches.map(m => m[1].trim()).filter(Boolean);
 }
 
-export function startZh2EnMode({ root, words, onComplete, seenSet }) {
+export function startZh2EnMode({ root, words, onComplete, seenSet, wordStats }) {
   // 建反向 map: cleanZh（去除「(= xxx)」註記後）→ 所有對應的 word
   // 這樣不同的 zh「給你。」「給你。 (= Here you go.)」會合併到同一題
   const zhToWords = new Map();
@@ -46,13 +47,52 @@ export function startZh2EnMode({ root, words, onComplete, seenSet }) {
     return;
   }
 
-  // 一個 zh 算「練過」的條件：它對應的 en 通通都已練過
-  const seen = seenSet || new Set();
-  const isZhSeen = zh => zhToWords.get(zh).every(w => seen.has(w.en));
-  const round = pickPreferUnseen(uniqueZh, Math.min(QUESTIONS_PER_ROUND, uniqueZh.length), isZhSeen);
-  // 算這回合用到的單字（所有 zh 對應的所有 en）
+  // v2.24：用 SRS 排出題優先順序
+  //        - 一個 zh 的「mastery」= 它對應所有 en 的 mastery 取最低（最弱的那個拖累整題）
+  //        - 優先：有 wrong 過 > 沒見過 > 學習中 > 已會
+  const hasStats = wordStats && Object.keys(wordStats).length > 0;
+  let round;
+  if (hasStats) {
+    const zhBuckets = { wrong: [], unseen: [], learning: [], mastered: [] };
+    for (const zh of uniqueZh) {
+      const ens = zhToWords.get(zh);
+      // 取最弱的 en 來分桶
+      let minLv = 3, anyWrong = false;
+      for (const w of ens) {
+        const stat = wordStats[(w.en || '').toLowerCase()];
+        const lv = masteryLevel(stat);
+        if (lv < minLv) minLv = lv;
+        if (stat && stat.k === 0 && stat.w > 0) anyWrong = true;
+      }
+      if (anyWrong) zhBuckets.wrong.push(zh);
+      else if (minLv === 0) zhBuckets.unseen.push(zh);
+      else if (minLv < 3) zhBuckets.learning.push(zh);
+      else zhBuckets.mastered.push(zh);
+    }
+    round = [];
+    const target = Math.min(QUESTIONS_PER_ROUND, uniqueZh.length);
+    for (const bucket of [shuffle(zhBuckets.wrong), shuffle(zhBuckets.unseen), shuffle(zhBuckets.learning)]) {
+      for (const zh of bucket) {
+        if (round.length >= target) break;
+        round.push(zh);
+      }
+      if (round.length >= target) break;
+    }
+    if (round.length < target) {
+      for (const zh of shuffle(zhBuckets.mastered)) {
+        if (round.length >= target) break;
+        round.push(zh);
+      }
+    }
+  } else {
+    const seen = seenSet || new Set();
+    const isZhSeen = zh => zhToWords.get(zh).every(w => seen.has(w.en));
+    round = pickPreferUnseen(uniqueZh, Math.min(QUESTIONS_PER_ROUND, uniqueZh.length), isZhSeen);
+  }
   const usedWords = round.flatMap(zh => zhToWords.get(zh));
   const state = { idx: 0, correct: 0 };
+  // v2.24：累積每題對錯，最後 onComplete 傳回去寫 SRS
+  const wordResults = [];
 
   function renderQuestion() {
     if (state.idx >= round.length) {
@@ -61,6 +101,7 @@ export function startZh2EnMode({ root, words, onComplete, seenSet }) {
         totalQuestions: round.length,
         message: `${round.length} 題答對 ${state.correct} 題`,
         usedWords,
+        wordResults,                  // v2.24
       });
       return;
     }
@@ -92,6 +133,7 @@ export function startZh2EnMode({ root, words, onComplete, seenSet }) {
         message: '中途離開',
         aborted: true,
         usedWords,
+        wordResults,                  // v2.24
       });
     });
 
@@ -112,6 +154,11 @@ export function startZh2EnMode({ root, words, onComplete, seenSet }) {
     const userInput = skip ? '' : (input ? input.value : '');
     const isCorrect = !skip && accepted.has(normalize(userInput));
     if (isCorrect) state.correct++;
+    // v2.24：每題結果寫進 wordResults。一個 zh 對應多個 en（如 every/each = 每一），
+    //        全部都用同樣的對錯記錄 — 妥協做法，假設 kid 看到「每一」想到 every 或 each 都算會。
+    for (const w of wordsForZh) {
+      wordResults.push({ en: w.en, correct: isCorrect });
+    }
 
     // 顯示所有可接受的英文寫法（人類友好版本，不是 normalize 後的）
     // v2.18：把 zh 內的「(= xxx)」alt 也算進可接受答案列表

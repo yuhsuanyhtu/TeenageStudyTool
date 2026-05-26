@@ -17,7 +17,8 @@ const DEFAULTS = {
   baseGivenToday: false, // 今日基礎獎金 $10 是否已發過（每日重置）
   totalWithdrawn: 0,     // 累計已提領（v2.16）— 從 sync 同步
   availableToWithdraw: 0,// 可提領金額 = totalEarned - totalWithdrawn（從 sync 同步）
-  lastCategoryId: null,  // v2.19：上次展開／選擇的分類，下次預設展開它
+  lastCategoryId: null,  // v2.19：上次展開／選擇的分類；v2.21 起改用 units-meta `current` flag，保留欄位向下相容
+  wordStats: {},         // v2.24：每字記憶追蹤（SRS Lite）。schema 與函式定義在 srs.js
 };
 
 export function load() {

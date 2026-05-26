@@ -15,11 +15,12 @@
 
 import { speak, speakSpell } from '../tts.js';
 import { fetchDictionary, highlightWord, ecdictPosToApi } from '../dictionary.js';
+import { pickPreferLearning } from '../srs.js';
 
 const QUESTIONS_PER_ROUND = 8;
 const MIN_DISTRACTORS_NEEDED = 4;
 
-export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
+export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wordStats }) {
   const usable = words.filter(w => w.en && w.zh);
   if (usable.length < MIN_DISTRACTORS_NEEDED) {
     onComplete({
@@ -29,7 +30,14 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
     return;
   }
 
-  const round = pickPreferUnseen(usable, Math.min(QUESTIONS_PER_ROUND, usable.length), seenSet || new Set());
+  // v2.24：用 SRS 策略挑題（答錯過 > 沒見過 > 學習中 > 已會回測）
+  //        wordStats 沒給或空 → 退回沒見過優先（行為等同 v2.23 之前）
+  const round = (wordStats && Object.keys(wordStats).length > 0)
+    ? pickPreferLearning(usable, Math.min(QUESTIONS_PER_ROUND, usable.length), wordStats)
+    : pickPreferUnseen(usable, Math.min(QUESTIONS_PER_ROUND, usable.length), seenSet || new Set());
+
+  // 累積每題對錯結果，最後 onComplete 傳回去讓 main.js 寫進 SRS
+  const wordResults = [];
   const distractorPool = (allWords && allWords.length >= MIN_DISTRACTORS_NEEDED)
     ? allWords.filter(w => w.en && w.zh)
     : usable;
@@ -82,6 +90,7 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
         totalQuestions: round.length,
         message: `${round.length} 題答對 ${state.correct} 題`,
         usedWords: round,
+        wordResults,                 // v2.24：傳給 main.js 寫 SRS
       });
       return;
     }
@@ -150,7 +159,6 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
   }
 
   function abortRound() {
-    // 把 idx 推超過 round 長度，避免 await 後又繼續 render
     const idx = state.idx;
     state.idx = round.length;
     onComplete({
@@ -159,6 +167,7 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
       message: '中途離開',
       aborted: true,
       usedWords: round.slice(0, idx + 1),
+      wordResults,                   // v2.24：中途離開也要寫已答的結果到 SRS
     });
   }
 
@@ -168,6 +177,8 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
     const w = state.currentWord;
     const isCorrect = state.selected === state.correctZh;
     if (isCorrect) state.correct++;
+    // v2.24：記錄每題結果讓 SRS 學習
+    wordResults.push({ en: w.en, correct: isCorrect });
     renderResult(w, isCorrect);
   }
 
