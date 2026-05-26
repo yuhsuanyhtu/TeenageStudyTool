@@ -15,6 +15,8 @@ const DEFAULTS = {
   freezeMonth: null,     // 保護卡所屬月份 YYYY-MM
   todaySeenEns: {},      // 今日已練過的字 { 單元名: [en, en, ...] }（每日重置）
   baseGivenToday: false, // 今日基礎獎金 $10 是否已發過（每日重置）
+  reviewEarnedToday: 0,        // v2.28：今日從頭複習已賺的錢（cap 在 reviewDailyCap，每日重置）
+  readingDoneToday: [],        // v2.28：今日已領獎金的故事 id（同篇一天只能領一次，每日重置）
   totalWithdrawn: 0,     // 累計已提領（v2.16）— 從 sync 同步
   availableToWithdraw: 0,// 可提領金額 = totalEarned - totalWithdrawn（從 sync 同步）
   lastCategoryId: null,  // v2.19：上次展開／選擇的分類；v2.21 起改用 units-meta `current` flag，保留欄位向下相容
@@ -68,6 +70,8 @@ export function refreshDailyState(state) {
     state.todayCorrect = 0;
     state.todaySeenEns = {};  // 每天重置「今天練過的字」
     state.baseGivenToday = false;  // 每天重置「基礎獎金已給」
+    state.reviewEarnedToday = 0;   // v2.28：每天重置「複習已賺額度」
+    state.readingDoneToday = [];   // v2.28：每天重置「已領獎金的故事」
     changed = true;
   }
   if (state.freezeMonth !== m) {

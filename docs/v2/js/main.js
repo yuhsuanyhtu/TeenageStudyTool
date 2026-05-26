@@ -377,25 +377,44 @@ function startReading(story) {
 function handleReadingComplete(result) {
   const today = state.today();
   const looked = Array.isArray(result.lookedUp) ? result.lookedUp : [];
+  const story = result.story || {};
+
   // 查過的字記為「看過」（不算對錯，但會出現在 SRS）
-  if (looked.length > 0) {
-    srs.recordSeenBatch(s, looked, today);
-    state.save(s);
+  if (looked.length > 0) srs.recordSeenBatch(s, looked, today);
+
+  // v2.28：算閱讀獎金（讀完才給；中途離開不給；同篇一天只能領一次）
+  let readingCalc = { sessionPre: 0, sessionFinal: 0, breakdown: '' };
+  if (!result.aborted && story.id) {
+    readingCalc = reward.calcReadingReward({
+      streak: s.streak || 0,
+      todayPreEarned: s.todayPreEarned || 0,
+      storyId: story.id,
+      readingDoneToday: s.readingDoneToday || [],
+    });
+    if (readingCalc.sessionPre > 0) {
+      s.todayPreEarned = (s.todayPreEarned || 0) + readingCalc.sessionPre;
+      s.todayEarned = (s.todayEarned || 0) + readingCalc.sessionFinal;
+      s.totalEarned = (s.totalEarned || 0) + readingCalc.sessionFinal;
+      s.availableToWithdraw = Math.max(0, (s.totalEarned || 0) - (s.totalWithdrawn || 0));
+      if (!s.readingDoneToday) s.readingDoneToday = [];
+      s.readingDoneToday.push(story.id);
+    }
   }
+  state.save(s);
+
   // 寫 Sheet 留紀錄
   logEvent({
     event: result.aborted ? 'v2_reading_abandoned' : 'v2_reading_done',
-    unit: result.story?.id || '',
-    note: `v2 閱讀「${result.story?.title || ''}」查了 ${looked.length} 字`,
+    unit: story.id || '',
+    amount: readingCalc.sessionFinal || '',
+    note: `v2 閱讀「${story.title || ''}」查了 ${looked.length} 字${readingCalc.sessionFinal ? `（+$${readingCalc.sessionFinal}）` : ''}`,
   }, s);
 
-  // 顯示結束頁
-  const story = result.story || {};
   // 把查過的字轉成有 zh 的 word objects（從 story.vocab 撈）
   const vocab = story.vocab || {};
   const practiceWords = looked
     .map(en => ({ en, zh: vocab[en] }))
-    .filter(w => w.zh);  // 只練有 zh 的（沒 zh 的字進不了 en2zh）
+    .filter(w => w.zh);
 
   root.innerHTML = `
     <h1>${result.aborted ? '中途離開' : '✓ 讀完了！'}</h1>
@@ -403,6 +422,8 @@ function handleReadingComplete(result) {
     <div class="card">
       <p>你讀了 <b>${countWords(story.text || '')}</b> 個字</p>
       <p>查了 <b>${looked.length}</b> 個生字</p>
+      ${readingCalc.sessionFinal > 0 ? `<p style="color:#6b9080;font-weight:600;">獎金 +$${readingCalc.sessionFinal}</p>` : ''}
+      ${readingCalc.breakdown ? `<p class="muted small">${escapeHtml(readingCalc.breakdown)}</p>` : ''}
       ${practiceWords.length >= 4 ? `
         <p class="muted small">這 ${practiceWords.length} 個有翻譯的可以練：${practiceWords.map(w => escapeHtml(w.en)).join('、')}</p>
       ` : looked.length > 0 ? `
@@ -505,6 +526,7 @@ function handleComplete(mode, result) {
     calc = reward.calcReviewReward({
       streak: s.streak || 0,
       todayPreEarned: s.todayPreEarned || 0,
+      reviewEarnedToday: s.reviewEarnedToday || 0,   // v2.28：傳今日已賺複習額度做 cap
     });
   } else if (mode === 'match') {
     // v2.15：連連看固定 $5，不依 sessionCorrect 計算（防 brute force 刷錢）
@@ -530,6 +552,10 @@ function handleComplete(mode, result) {
     s.availableToWithdraw = Math.max(0, (s.totalEarned || 0) - (s.totalWithdrawn || 0));
     // v2.13：本回合實際給了基礎獎金 → 設旗標，避免之後再給
     if (calc.gaveBaseThisSession) s.baseGivenToday = true;
+    // v2.28：從頭複習領到錢 → 累加 reviewEarnedToday 做 cap
+    if (isReview && calc.sessionPre > 0) {
+      s.reviewEarnedToday = (s.reviewEarnedToday || 0) + calc.sessionPre;
+    }
     // 標記這回合練過的字（給「今天 X/Y」覆蓋追蹤用）
     if (Array.isArray(result.usedWords) && result.usedWords.length) {
       state.markSeenEns(s, currentUnit, result.usedWords.map(w => w.en));
