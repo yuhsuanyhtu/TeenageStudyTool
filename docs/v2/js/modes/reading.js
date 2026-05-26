@@ -60,11 +60,28 @@ export function startReadingMode({ root, story, onComplete }) {
   }
 
   function renderParagraph(para) {
-    // 把英文字（含內部 ' 如 don't）包成 span，標點和空白保留原樣
-    return escapeHtml(para).replace(
-      /([A-Za-z][A-Za-z']*)/g,
-      (m) => `<span class="read-word" data-word="${m.toLowerCase()}">${m}</span>`
-    );
+    // 把英文字（含內部 ' 如 don't）包成 span，標點和空白保留原樣。
+    //
+    // ⚠ Bug 修正（v2.25 hotfix）：原本先 escapeHtml 再 regex，但 regex `[A-Za-z]+` 會
+    // 把 `&quot;` 裡的 `quot` 也當成「字」包進 span，結果變成 `&<span>quot</span>;`，
+    // 瀏覽器看到 `&` 後面不是有效 entity 就當文字顯示 → 螢幕跑出 `&quot;` 原文。
+    // 正解：規範化用 token-by-token，word 跟非 word 分開 escape，最後拼起來。
+    let result = '';
+    let lastIdx = 0;
+    const regex = /([A-Za-z][A-Za-z']*)/g;
+    let m;
+    while ((m = regex.exec(para)) !== null) {
+      if (m.index > lastIdx) {
+        result += escapeHtml(para.slice(lastIdx, m.index));
+      }
+      const word = m[0];
+      result += `<span class="read-word" data-word="${escapeHtml(word.toLowerCase())}">${escapeHtml(word)}</span>`;
+      lastIdx = regex.lastIndex;
+    }
+    if (lastIdx < para.length) {
+      result += escapeHtml(para.slice(lastIdx));
+    }
+    return result;
   }
 
   async function showLookup(word, clickedEl) {
@@ -90,15 +107,19 @@ export function startReadingMode({ root, story, onComplete }) {
       return;
     }
 
-    // 2. 沒人工翻譯 → fallback API 英文定義
+    // 2. 沒人工翻譯 → fallback API 英文「定義」（definition），不是例句（example）
+    //    v2.25 hotfix：原本顯示 example，但 API 給的 example 常是冷僻用法
+    //    （如 mouse 給「Captain Higgins moused the hook with...」航海動詞用法）
+    //    定義比較像「這個字是什麼意思」，對學習者比較有幫助
     box.innerHTML = `<div class="lookup-card lookup-loading">查字典中…</div>`;
-    const dict = await fetchDictionary(word).catch(() => ({ examples: [], synonyms: [], antonyms: [] }));
+    const dict = await fetchDictionary(word).catch(() => EMPTY_DICT);
     if (!box.isConnected) return;
-    if (dict.examples.length > 0) {
+    if (dict.definitions && dict.definitions.length > 0) {
+      const d = dict.definitions[0];
       box.innerHTML = `
         <div class="lookup-card">
           <div class="lookup-word">${escapeHtml(word)}</div>
-          <div class="lookup-en muted small">${escapeHtml(dict.examples[0].text)}</div>
+          <div class="lookup-en muted small"><i>${escapeHtml(d.pos || '')}</i> ${escapeHtml(d.text)}</div>
         </div>
       `;
     } else {
@@ -110,6 +131,8 @@ export function startReadingMode({ root, story, onComplete }) {
       `;
     }
   }
+
+  const EMPTY_DICT = { examples: [], definitions: [], synonyms: [], antonyms: [] };
 
   render();
 }

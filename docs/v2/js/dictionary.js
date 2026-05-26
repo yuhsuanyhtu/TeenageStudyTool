@@ -13,13 +13,14 @@
 // 回傳結構：
 //   {
 //     examples: [{ pos: 'noun'|'verb'|'adjective'|..., text: '...' }, ...],
+//     definitions: [{ pos: '...', text: '...' }, ...],   // v2.25：給閱讀模式 fallback 用
 //     synonyms: ['fine', 'healthy', ...],
 //     antonyms: ['sick', 'ill', ...]
 //   }
 
 const API_BASE = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
 const CACHE_PREFIX = 'sv2.dict.';
-const EMPTY = { examples: [], synonyms: [], antonyms: [] };
+const EMPTY = { examples: [], definitions: [], synonyms: [], antonyms: [] };
 
 export async function fetchDictionary(word) {
   if (!word) return EMPTY;
@@ -59,23 +60,28 @@ function writeCache(key, data) {
 }
 
 function extractDictionaryData(apiData, word) {
-  const result = { examples: [], synonyms: [], antonyms: [] };
+  const result = { examples: [], definitions: [], synonyms: [], antonyms: [] };
   if (!Array.isArray(apiData)) return result;
   const wordLower = word.toLowerCase();
   const seenEx = new Set();
+  const seenDef = new Set();
   const synSet = new Set();
   const antSet = new Set();
 
   for (const entry of apiData) {
     for (const m of (entry.meanings || [])) {
       const pos = m.partOfSpeech || '';
-      // 蒐集 meaning 層級的同／反義字
       for (const s of (m.synonyms || [])) synSet.add(s);
       for (const a of (m.antonyms || [])) antSet.add(a);
       for (const d of (m.definitions || [])) {
-        // 蒐集 definition 層級的同／反義字
         for (const s of (d.synonyms || [])) synSet.add(s);
         for (const a of (d.antonyms || [])) antSet.add(a);
+        // v2.25：蒐集定義（每個 POS 第一個）
+        const def = (d.definition || '').trim();
+        if (def && !seenDef.has(pos + ':' + def)) {
+          seenDef.add(pos + ':' + def);
+          result.definitions.push({ pos, text: def });
+        }
         // 蒐集含目標字的例句
         const ex = (d.example || '').trim();
         if (!ex || seenEx.has(ex)) continue;
