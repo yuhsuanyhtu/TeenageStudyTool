@@ -8,6 +8,7 @@
 //   - 完全避開舊版「中翻英只接受唯一答案」的設計缺陷
 
 import { speak, speakSpell } from '../tts.js';
+import { fetchExample, highlightWord } from '../dictionary.js';
 
 const QUESTIONS_PER_ROUND = 8;
 const MIN_DISTRACTORS_NEEDED = 4;  // 1 正解 + 3 干擾
@@ -58,6 +59,7 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
       <button class="back" id="back">← 中途離開</button>
       <h2>🇬🇧 → 🇹🇼 英翻中</h2>
       <p class="muted">第 ${state.idx + 1} / ${round.length} 題</p>
+      <div id="sentence-card" class="sentence-card loading">查例句中…</div>
       <div class="en2zh-word">
         <div>${escapeHtml(w.en)}</div>
         <div class="speak-row">
@@ -70,6 +72,11 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
       </div>
       <button id="submit">送出答案</button>
     `;
+    // v2.22：非同步抓例句，不擋題目顯示。抓到才更新 sentence-card 內容。
+    loadSentenceInto('sentence-card', w.en);
+    // 預抓下一題的例句，下次切換就秒開
+    const nextWord = round[state.idx + 1];
+    if (nextWord && nextWord.en) fetchExample(nextWord.en);
     // v2.13 後續修：不再 disable 送出按鈕（部分瀏覽器對「剛 enable 的按鈕」第一次點擊會吃掉）
     // 改成永遠可按，handleSubmit 內已檢查 state.selected===null 會直接 return
 
@@ -118,6 +125,7 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
       <button class="back" id="back">← 中途離開</button>
       <h2>🇬🇧 → 🇹🇼 英翻中</h2>
       <p class="muted">第 ${state.idx + 1} / ${round.length} 題　·　${isCorrect ? '答對了' : '看答案'}</p>
+      <div id="sentence-card" class="sentence-card loading">查例句中…</div>
       <div class="en2zh-word">
         <div>${escapeHtml(w.en)}</div>
         <div class="speak-row">
@@ -135,6 +143,8 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
       </div>
       <button id="next">${state.idx === round.length - 1 ? '看結果' : '下一題 →'}</button>
     `;
+    // v2.22：結果頁也顯示例句（cache hit，秒開）
+    loadSentenceInto('sentence-card', w.en);
     root.querySelector('#back').addEventListener('click', () => {
       onComplete({
         sessionCorrect: state.correct,
@@ -155,6 +165,30 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet }) {
   }
 
   renderQuestion();
+}
+
+// v2.22：非同步把例句塞進指定 id 的 sentence card。
+// 設計重點：fetch 拿到時 DOM 可能已被換掉（user 按了「送出」或「下一題」），
+// 用 isConnected 檢查避免把內容寫到孤兒節點，並用 data-target-word 標記
+// 確保是「同一題」的例句才更新（避免快速切題時舊例句蓋掉新例句）。
+function loadSentenceInto(elId, word) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.dataset.targetWord = word.toLowerCase();
+  fetchExample(word).then(example => {
+    const live = document.getElementById(elId);
+    // 元素還在 DOM 嗎？是不是還是同一題？
+    if (!live || !live.isConnected) return;
+    if (live.dataset.targetWord !== word.toLowerCase()) return;
+    if (example) {
+      live.innerHTML = highlightWord(example, word);
+      live.className = 'sentence-card';
+    } else {
+      // 沒例句 → 隱藏 card（CSS 控制）
+      live.className = 'sentence-card empty';
+      live.textContent = '';
+    }
+  });
 }
 
 function pickPreferUnseen(items, n, seenSet) {

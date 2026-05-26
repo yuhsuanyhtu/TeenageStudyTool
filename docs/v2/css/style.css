@@ -132,6 +132,37 @@ button.back:hover { background: transparent; text-decoration: underline; }
   padding: 12px 8px 4px;
 }
 
+/* v2.22：英翻中題目上方的例句卡片（Free Dictionary API 抓的） */
+.sentence-card {
+  background: #f7f3ec;
+  border: 1px solid #e8e0d0;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin: 12px 0 16px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #444;
+  min-height: 52px;            /* 避免抓例句時題目位置跳動 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.sentence-card.loading {
+  color: #aaa;
+  font-style: italic;
+  font-size: 14px;
+}
+.sentence-card.empty {
+  display: none;               /* 沒例句就完全隱藏（連空白都不留）*/
+}
+.sentence-target {
+  font-weight: 700;
+  color: #6b9080;
+  border-bottom: 2px solid #6b9080;
+  padding: 0 2px;
+}
+
 /* 單元進度條：顯示「今天練了幾字」 */
 .unit-progress-bar {
   height: 4px;
