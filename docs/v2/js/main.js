@@ -14,6 +14,7 @@ import { startEn2ZhMode } from './modes/en2zh.js';
 import { startZh2EnMode } from './modes/zh2en.js';
 import { startReviewMode } from './modes/review.js';
 import { startReadingMode } from './modes/reading.js';
+import { startDexbook } from './dexbook.js';
 import { logEvent, logEventBeacon } from './logger.js';
 import { renderRules } from './rules.js';
 import { fetchV2Events, recomputeFromEvents } from './sync.js';
@@ -241,6 +242,7 @@ function renderHome() {
     ${appData.stories && appData.stories.length > 0 ? `
       <button class="read-link-btn" id="bookshelf-btn">📚 閱讀練習（${appData.stories.length} 篇短文）</button>
     ` : ''}
+    <button class="read-link-btn" id="dexbook-btn">🏆 我的字典（看自己學會了哪些字）</button>
 
     <p class="muted small center" style="margin-top:24px">
       v2 · ${state.today()} · 本機名：<b>${escapeHtml(state.getDeviceName() || '(未命名)')}</b>
@@ -266,6 +268,16 @@ function renderHome() {
   // v2.25：開啟書架
   const bsBtn = root.querySelector('#bookshelf-btn');
   if (bsBtn) bsBtn.addEventListener('click', renderBookshelf);
+  // v2.31：開啟單字圖鑑
+  const dexBtn = root.querySelector('#dexbook-btn');
+  if (dexBtn) dexBtn.addEventListener('click', () => {
+    root.innerHTML = '';
+    startDexbook({
+      root, appData,
+      wordStats: s.wordStats || {},
+      onBack: refreshAndRenderHome,
+    });
+  });
   root.querySelectorAll('.unit-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       currentUnit = btn.dataset.unit;

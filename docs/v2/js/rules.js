@@ -69,6 +69,7 @@ export function renderRules(root, onBack) {
       <p style="margin-bottom:6px;">🌳 <b>已會</b> — 連續答對 3 次</p>
       <p class="muted small" style="margin-top:6px;">出題會優先抽：沒見過 + 學習中（變化多）、加上一點點答錯過的（讓你補弱點）。<b>已會的字不會再考</b>，省力。全部會了之後才會回頭測一次防忘記。</p>
       <p class="muted small">主畫面每個單元旁邊會顯示「🌳 N／總 已會」+ 進度條，看得到自己進步。</p>
+      <p class="muted small">主畫面下方「🏆 我的字典」可以看自己學會了哪些字，每 50 字解鎖一個徽章（🥉 → 🥈 → 🥇 → 💎 → 👑）。</p>
     </div>
 
     <div class="card">
