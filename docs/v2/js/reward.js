@@ -17,7 +17,9 @@ export const REWARD_CONFIG = {
   reviewBase: 25,                 // v2.28：20→25（投入產出比合理化）
   reviewDailyCap: 25,             // v2.28：從頭複習一天上限，防刷
   matchReward: 5,                 // 連連看一輪固定獎金 — v2.15 防 brute force
-  readingReward: 15,              // v2.28：閱讀完一篇 $15（每篇一天只能領一次）
+  readingPerCorrect: 5,           // v2.30：理解測驗答對 1 題 +$5（每篇 3 題 = 最多 $15）
+  // readingReward (v2.28): 已被 readingPerCorrect 取代，先留變數防舊資料報錯
+  readingReward: 15,
   payoutUnit: 100,
   streakTiers: [
     { days: 7,  multiplier: 1.2 },
@@ -142,14 +144,17 @@ export function calcReviewReward({ streak, todayPreEarned, reviewEarnedToday }) 
   };
 }
 
-// v2.28：閱讀完一篇的獎金
-//   - 固定 $15/篇，每篇一天只能領一次（同篇重讀 = $0 但仍可讀）
+// v2.30：閱讀獎金 = 理解測驗答對題數 × readingPerCorrect
+//   - 答對 1 題 +$5（最多 3 題 = $15/篇）
+//   - 同篇一天只能領一次（重讀不再領）
+//   - 答錯不扣（焦慮型設計）
 //   - 受 dailyCapPreMultiplier 全日上限影響
-//   - 仍乘 streak 倍率（讀東西也算「今日有完成」的部分）
-export function calcReadingReward({ streak, todayPreEarned, storyId, readingDoneToday }) {
+//   - 仍乘 streak 倍率
+export function calcReadingReward({ streak, todayPreEarned, storyId, readingDoneToday, comprehensionCorrect }) {
   const cfg = REWARD_CONFIG;
   readingDoneToday = readingDoneToday || [];
-  // 同篇今天已領過 → 0
+  comprehensionCorrect = comprehensionCorrect || 0;
+
   if (storyId && readingDoneToday.includes(storyId)) {
     return {
       sessionPre: 0, sessionFinal: 0,
@@ -157,8 +162,17 @@ export function calcReadingReward({ streak, todayPreEarned, storyId, readingDone
       breakdown: `這篇今天已經讀過了，再讀沒獎金（但多讀幾次有助於熟悉）。`,
     };
   }
+  if (comprehensionCorrect === 0) {
+    return {
+      sessionPre: 0, sessionFinal: 0,
+      multiplier: 1, base: 0, perWord: 0,
+      breakdown: `理解測驗都沒答對，這次沒獎金。下次再仔細讀！`,
+    };
+  }
+
+  const rawPre = comprehensionCorrect * cfg.readingPerCorrect;
   const globalRemaining = Math.max(0, cfg.dailyCapPreMultiplier - todayPreEarned);
-  const sessionPre = Math.min(cfg.readingReward, globalRemaining);
+  const sessionPre = Math.min(rawPre, globalRemaining);
   const mul = streakMultiplier(streak);
   const sessionFinal = Math.round(sessionPre * mul);
 
@@ -167,7 +181,8 @@ export function calcReadingReward({ streak, todayPreEarned, storyId, readingDone
     breakdown = `今天獎金已達總上限（${cfg.dailyCapPreMultiplier} 元）。閱讀仍有用，明天再讀新篇可以領！`;
   } else {
     const mulTxt = mul > 1 ? `　×${mul.toFixed(1)}（連勝 ${streak} 天）` : '';
-    breakdown = `讀完一篇 +$${sessionPre}${mulTxt} = $${sessionFinal} 元`;
+    const capNote = sessionPre < rawPre ? `（受日上限影響，採計 ${sessionPre}）` : '';
+    breakdown = `理解測驗答對 ${comprehensionCorrect} 題 × $${cfg.readingPerCorrect} = $${rawPre}${capNote}${mulTxt} = $${sessionFinal}`;
   }
   return {
     sessionPre,

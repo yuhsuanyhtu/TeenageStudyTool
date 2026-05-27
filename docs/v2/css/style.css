@@ -373,6 +373,30 @@ button.back:hover { background: transparent; text-decoration: underline; }
   font-weight: 500;
 }
 
+/* v2.30：閱讀理解測驗 */
+.comp-q {
+  background: #faf6ed;
+  border: 1px solid #ebe2cc;
+  border-radius: 12px;
+  padding: 16px 20px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #333;
+  margin: 16px 0;
+}
+.comp-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.comp-choices .choice {
+  text-align: left;
+  padding: 14px 18px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
 /* 單元進度條：顯示「今天練了幾字」 */
 .unit-progress-bar {
   height: 4px;

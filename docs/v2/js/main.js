@@ -378,11 +378,15 @@ function handleReadingComplete(result) {
   const today = state.today();
   const looked = Array.isArray(result.lookedUp) ? result.lookedUp : [];
   const story = result.story || {};
+  const compResults = Array.isArray(result.comprehensionResults) ? result.comprehensionResults : [];
+  const compCorrect = compResults.filter(r => r.correct).length;
+  const compTotal = (story.comprehension && story.comprehension.length) || 0;
 
   // 查過的字記為「看過」（不算對錯，但會出現在 SRS）
   if (looked.length > 0) srs.recordSeenBatch(s, looked, today);
 
-  // v2.28：算閱讀獎金（讀完才給；中途離開不給；同篇一天只能領一次）
+  // v2.30：閱讀獎金 = 理解測驗答對題數 × $5
+  //         中途離開、同篇已領、答對 0 題 → 都 $0
   let readingCalc = { sessionPre: 0, sessionFinal: 0, breakdown: '' };
   if (!result.aborted && story.id) {
     readingCalc = reward.calcReadingReward({
@@ -390,6 +394,7 @@ function handleReadingComplete(result) {
       todayPreEarned: s.todayPreEarned || 0,
       storyId: story.id,
       readingDoneToday: s.readingDoneToday || [],
+      comprehensionCorrect: compCorrect,
     });
     if (readingCalc.sessionPre > 0) {
       s.todayPreEarned = (s.todayPreEarned || 0) + readingCalc.sessionPre;
@@ -406,8 +411,10 @@ function handleReadingComplete(result) {
   logEvent({
     event: result.aborted ? 'v2_reading_abandoned' : 'v2_reading_done',
     unit: story.id || '',
+    quizSize: compTotal,
+    correct: compCorrect,
     amount: readingCalc.sessionFinal || '',
-    note: `v2 閱讀「${story.title || ''}」查了 ${looked.length} 字${readingCalc.sessionFinal ? `（+$${readingCalc.sessionFinal}）` : ''}`,
+    note: `v2 閱讀「${story.title || ''}」理解測驗 ${compCorrect}/${compTotal} 對、查 ${looked.length} 字${readingCalc.sessionFinal ? `（+$${readingCalc.sessionFinal}）` : ''}`,
   }, s);
 
   // 把查過的字轉成有 zh 的 word objects（從 story.vocab 撈）
@@ -422,6 +429,7 @@ function handleReadingComplete(result) {
     <div class="card">
       <p>你讀了 <b>${countWords(story.text || '')}</b> 個字</p>
       <p>查了 <b>${looked.length}</b> 個生字</p>
+      ${compTotal > 0 ? `<p>理解測驗：<b>${compCorrect} / ${compTotal} 題對</b></p>` : ''}
       ${readingCalc.sessionFinal > 0 ? `<p style="color:#6b9080;font-weight:600;">獎金 +$${readingCalc.sessionFinal}</p>` : ''}
       ${readingCalc.breakdown ? `<p class="muted small">${escapeHtml(readingCalc.breakdown)}</p>` : ''}
       ${practiceWords.length >= 4 ? `

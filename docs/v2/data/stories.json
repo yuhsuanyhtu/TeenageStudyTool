@@ -29,7 +29,39 @@
         "free": "自由的",
         "friend": "朋友",
         "great": "很棒的"
-      }
+      },
+      "comprehension": [
+        {
+          "q": "Why did the lion let the mouse go at first?",
+          "choices": [
+            "The mouse promised to help him one day",
+            "The mouse was too small to eat",
+            "The mouse ran away too fast",
+            "The lion was not hungry"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "What was the lion caught in?",
+          "choices": [
+            "Another lion's trap",
+            "A hunter's net",
+            "A big hole",
+            "A snake"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What does this story teach us?",
+          "choices": [
+            "Lions are scary animals",
+            "Never trust a small mouse",
+            "Small friends can help in big ways",
+            "Don't go into the forest"
+          ],
+          "answer": 2
+        }
+      ]
     },
     {
       "id": "tortoise-hare",
@@ -56,7 +88,39 @@
         "line": "線",
         "steady": "穩定的",
         "wins": "贏得"
-      }
+      },
+      "comprehension": [
+        {
+          "q": "Why did the hare take a nap?",
+          "choices": [
+            "He was very tired",
+            "It started raining",
+            "He thought the tortoise was too slow",
+            "He was sick"
+          ],
+          "answer": 2
+        },
+        {
+          "q": "Who won the race?",
+          "choices": [
+            "The hare",
+            "The tortoise",
+            "They both finished together",
+            "No one finished"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What is the lesson of this story?",
+          "choices": [
+            "Hares are not smart",
+            "Slow and steady wins the race",
+            "Don't sleep during a race",
+            "Tortoises are very lucky"
+          ],
+          "answer": 1
+        }
+      ]
     },
     {
       "id": "fox-grapes",
@@ -81,7 +145,39 @@
         "anyway": "反正",
         "pretend": "假裝",
         "wanted": "想要"
-      }
+      },
+      "comprehension": [
+        {
+          "q": "Why did the fox want the grapes?",
+          "choices": [
+            "He was hungry",
+            "He liked the color green",
+            "A friend told him to",
+            "He wanted to take them home"
+          ],
+          "answer": 0
+        },
+        {
+          "q": "Why couldn't the fox get the grapes?",
+          "choices": [
+            "Another animal took them first",
+            "The tree fell down",
+            "The grapes were too high to reach",
+            "He changed his mind"
+          ],
+          "answer": 2
+        },
+        {
+          "q": "What did the fox say when he walked away?",
+          "choices": [
+            "\"I'll come back tomorrow\"",
+            "\"Those grapes are probably sour\"",
+            "\"I don't like grapes\"",
+            "\"I'll bring my friends\""
+          ],
+          "answer": 1
+        }
+      ]
     },
     {
       "id": "wolf-boy",
@@ -107,7 +203,39 @@
         "lie": "說謊",
         "often": "經常",
         "truth": "真相"
-      }
+      },
+      "comprehension": [
+        {
+          "q": "Why did the boy shout \"Wolf!\" the first time?",
+          "choices": [
+            "He really saw a wolf",
+            "He was bored and wanted some fun",
+            "He was scared of the dark",
+            "His mom asked him to"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What happened when a real wolf came?",
+          "choices": [
+            "Everyone ran to help him",
+            "Nobody believed him, and the sheep were eaten",
+            "The boy fought the wolf alone",
+            "The wolf ran away by itself"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What is the lesson of this story?",
+          "choices": [
+            "Don't go near wolves",
+            "Sheep are very important",
+            "If you lie too often, no one will believe the truth",
+            "Don't sleep on hills"
+          ],
+          "answer": 2
+        }
+      ]
     },
     {
       "id": "ant-grasshopper",
@@ -127,7 +255,39 @@
         "plenty": "充足",
         "soon": "很快地",
         "cold": "冷的"
-      }
+      },
+      "comprehension": [
+        {
+          "q": "What was the grasshopper doing in summer?",
+          "choices": [
+            "Sleeping all day",
+            "Working hard with the ant",
+            "Singing and dancing",
+            "Looking for food"
+          ],
+          "answer": 2
+        },
+        {
+          "q": "Why didn't the grasshopper store food for winter?",
+          "choices": [
+            "He had no food to store",
+            "He thought winter was far away",
+            "The ant wouldn't let him",
+            "He was too tired"
+          ],
+          "answer": 1
+        },
+        {
+          "q": "What did the ant say to the grasshopper in winter?",
+          "choices": [
+            "\"Come in and eat with me\"",
+            "\"Let's dance together\"",
+            "\"You sang all summer, now dance all winter\"",
+            "\"Come work with me tomorrow\""
+          ],
+          "answer": 2
+        }
+      ]
     }
   ]
 }

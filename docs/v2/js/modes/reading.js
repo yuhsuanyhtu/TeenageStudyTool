@@ -21,6 +21,8 @@ import { fetchDictionary } from '../dictionary.js';
 export function startReadingMode({ root, story, onComplete }) {
   const lookedUp = new Set();       // 查過的字（lowercased en）
   let started = Date.now();
+  // v2.30：理解測驗結果（一篇有幾題就有幾筆 {answer:N, correct:bool}）
+  const comprehensionResults = [];
 
   function render() {
     // 把文章內的每個英文字包成 .read-word span 讓使用者點
@@ -44,19 +46,107 @@ export function startReadingMode({ root, story, onComplete }) {
       onComplete({
         story, lookedUp: [...lookedUp],
         aborted: true,
+        comprehensionResults,
         durationMs: Date.now() - started,
       });
     });
     root.querySelector('#finish').addEventListener('click', () => {
-      onComplete({
-        story, lookedUp: [...lookedUp],
-        completed: true,
-        durationMs: Date.now() - started,
-      });
+      // v2.30：讀完按鈕 → 如果故事有理解測驗，先做題；沒有就直接收尾
+      if (Array.isArray(story.comprehension) && story.comprehension.length > 0) {
+        startComprehension();
+      } else {
+        finalize();
+      }
     });
     root.querySelectorAll('.read-word').forEach(el => {
       el.addEventListener('click', () => showLookup(el.dataset.word, el));
     });
+  }
+
+  // v2.30：理解測驗階段
+  function startComprehension() {
+    let idx = 0;
+    const qs = story.comprehension;
+    renderQuestion();
+
+    function renderQuestion() {
+      if (idx >= qs.length) { finalize(); return; }
+      const q = qs[idx];
+      // shuffle choices 但記住原本正確答案的位置
+      const indexed = q.choices.map((c, i) => ({ text: c, isCorrect: i === q.answer }));
+      const shuffled = shuffle(indexed);
+      let selected = null;
+      let answered = false;
+
+      function render() {
+        root.innerHTML = `
+          <button class="back" id="back">← 中途離開</button>
+          <h2>📖 ${escapeHtml(story.title)}</h2>
+          <p class="muted">理解測驗 ${idx + 1} / ${qs.length}　·　答對 1 題 +$5</p>
+          <div class="comp-q">${escapeHtml(q.q)}</div>
+          <div class="comp-choices">
+            ${shuffled.map((c, i) => {
+              let cls = 'choice';
+              if (answered) {
+                if (c.isCorrect) cls += ' correct';
+                else if (i === selected && !c.isCorrect) cls += ' wrong';
+              } else if (i === selected) cls += ' selected';
+              return `<button class="${cls}" data-i="${i}" ${answered ? 'disabled' : ''}>${escapeHtml(c.text)}</button>`;
+            }).join('')}
+          </div>
+          ${answered
+            ? `<button id="next">${idx === qs.length - 1 ? '看分數' : '下一題 →'}</button>`
+            : `<button id="submit">送出答案</button>`}
+        `;
+        root.querySelector('#back').addEventListener('click', () => {
+          onComplete({
+            story, lookedUp: [...lookedUp],
+            aborted: true,
+            comprehensionResults,
+            durationMs: Date.now() - started,
+          });
+        });
+        if (!answered) {
+          root.querySelectorAll('.choice').forEach(b => {
+            b.addEventListener('click', () => {
+              selected = +b.dataset.i;
+              render();
+            });
+          });
+          root.querySelector('#submit').addEventListener('click', () => {
+            if (selected === null) return;
+            answered = true;
+            const isCorrect = shuffled[selected].isCorrect;
+            comprehensionResults.push({ correct: isCorrect });
+            render();
+          });
+        } else {
+          root.querySelector('#next').addEventListener('click', () => {
+            idx++;
+            renderQuestion();
+          });
+        }
+      }
+      render();
+    }
+  }
+
+  function finalize() {
+    onComplete({
+      story, lookedUp: [...lookedUp],
+      completed: true,
+      comprehensionResults,
+      durationMs: Date.now() - started,
+    });
+  }
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
   }
 
   function renderParagraph(para) {
