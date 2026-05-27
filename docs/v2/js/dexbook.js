@@ -77,7 +77,13 @@ export function startDexbook({ root, appData, wordStats, onBack }) {
         : `<p class="dex-next">🎉 所有徽章都集滿了，太強了！</p>`}
 
       ${totalMastered === 0
-        ? `<div class="card dex-empty"><p>還沒學會任何字。連續答對 3 次就會出現在這裡。</p><p class="muted small">去主畫面挑一個 unit 開始練吧！</p></div>`
+        ? `<div class="card dex-empty">
+            <p><b>還沒學會任何字</b></p>
+            <p>要進這個字典，要做到：</p>
+            <p>① 用<b>英翻中</b>或<b>中翻英</b>練該字</p>
+            <p>② <b>連續答對 3 次</b>（中間答錯歸 0 要重來）</p>
+            <p class="muted small" style="margin-top:10px;">🔗 連連看、📖 從頭複習、📚 閱讀只算「練過」，不算字典 streak —— 因為它們不能證明你真的考得過。先用那些模式認識字，再用英翻中/中翻英測自己。</p>
+          </div>`
         : catStats.map(cat => renderCategory(cat)).join('')}
     `;
 

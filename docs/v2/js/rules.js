@@ -67,7 +67,18 @@ export function renderRules(root, onBack) {
       <p style="margin-bottom:6px;">🌱 <b>沒見過</b> — 還沒練到</p>
       <p style="margin-bottom:6px;">🌿 <b>學習中</b> — 練過但還在記</p>
       <p style="margin-bottom:6px;">🌳 <b>已會</b> — 連續答對 3 次</p>
-      <p class="muted small" style="margin-top:6px;">出題會優先抽：沒見過 + 學習中（變化多）、加上一點點答錯過的（讓你補弱點）。<b>已會的字不會再考</b>，省力。全部會了之後才會回頭測一次防忘記。</p>
+
+      <p style="margin-top:14px;"><b>怎麼累積 streak（連對次數）？</b></p>
+      <table class="rules-table">
+        <tr><td>🇬🇧 → 🇹🇼 英翻中</td><td>✅ 答對 +1、答錯歸 0</td></tr>
+        <tr><td>🇹🇼 → 🇬🇧 中翻英</td><td>✅ 答對 +1、答錯歸 0</td></tr>
+        <tr><td>🔗 連連看</td><td>❌ 只算「看過」，不算 streak</td></tr>
+        <tr><td>📖 從頭複習</td><td>❌ 同上（沒考試怎麼算對）</td></tr>
+        <tr><td>📚 閱讀練習</td><td>❌ 只記查過的字</td></tr>
+      </table>
+      <p class="muted small" style="margin-top:6px;"><b>為什麼這樣設計</b>：只有真考試（會錯）才證明「真會」。連連看可亂點、複習只是翻看、閱讀只是查字。所以**字典裡的字保證考得過**。</p>
+
+      <p class="muted small" style="margin-top:10px;">出題會優先抽：沒見過 + 學習中（變化多）、加上一點點答錯過的（讓你補弱點）。<b>已會的字不會再考</b>，省力。全部會了之後才會回頭測一次防忘記。</p>
       <p class="muted small">主畫面每個單元旁邊會顯示「🌳 N／總 已會」+ 進度條，看得到自己進步。</p>
       <p class="muted small">主畫面下方「🏆 我的字典」可以看自己學會了哪些字，每 50 字解鎖一個徽章（🥉 → 🥈 → 🥇 → 💎 → 👑）。</p>
     </div>

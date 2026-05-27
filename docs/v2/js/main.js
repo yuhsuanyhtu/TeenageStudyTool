@@ -183,13 +183,10 @@ function renderHome() {
         <div class="stat-label">可提領</div>
       </div>
       <div class="stat">
-        <div class="stat-num">$${s.totalWithdrawn || 0}</div>
-        <div class="stat-label">已提領</div>
-      </div>
-      <div class="stat">
         <div class="stat-num">${s.streak || 0}</div>
         <div class="stat-label">連勝 ${mulTxt}</div>
       </div>
+      <!-- v2.32：「已提領」拿掉（謙恩說不用顯示）。家長提領頁仍可看 -->
     </div>
 
     <h2>選一個單元</h2>
