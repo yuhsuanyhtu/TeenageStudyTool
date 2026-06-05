@@ -822,6 +822,49 @@ button.back:hover { background: transparent; text-decoration: underline; }
   cursor: not-allowed;
 }
 
+/* ===== 生活習慣扣款（家長頁，v2.34） ===== */
+.penalty-card { padding: 16px; }
+.penalty-field {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #555;
+}
+.penalty-field span {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+  color: #2d2d2d;
+}
+.penalty-field input,
+.penalty-field select {
+  width: 100%;
+  padding: 9px 10px;
+  font-size: 15px;
+  border: 1px solid #d6cdc0;
+  border-radius: 8px;
+  background: #fff;
+  box-sizing: border-box;
+}
+.penalty-btn {
+  margin-top: 4px;
+  /* 暖橘而非紅色，沿用本專案焦慮緩衝色系（只是家長頁，仍保持不刺激） */
+  background: #c98a5e;
+  color: white;
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+.penalty-btn:disabled {
+  background: #d6cdc0;
+  color: #888;
+  cursor: not-allowed;
+}
+#pen-msg { margin-top: 8px; color: #c98a5e; }
+
 /* ===== Review (從頭複習) ===== */
 .review-card {
   background: white;

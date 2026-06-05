@@ -50,6 +50,7 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
 
   let totalEarned = 0;
   let totalWithdrawn = 0;
+  let totalPenalty = 0;
   let todayEarned = 0;
   const completedDays = new Set();
 
@@ -70,6 +71,11 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
     } else if (event === 'v2_payout') {
       // v2.16：提領事件 — amount 是負值，取絕對值累加 totalWithdrawn
       totalWithdrawn += Math.abs(amount);
+    } else if (event === 'v2_penalty') {
+      // v2.34：生活習慣扣款 — amount 是負值，取絕對值累加 totalPenalty。
+      //   只減「可提領」，不動 totalEarned（學習成就總額不縮水）、不動 todayEarned、
+      //   不影響打卡天數/連勝（扣的是生活責任，不是學習表現）。
+      totalPenalty += Math.abs(amount);
     }
   }
 
@@ -80,12 +86,15 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
   const cap = REWARD_CONFIG.dailyCapPreMultiplier;
   if (todayEarned > cap) todayEarned = cap;
 
-  // v2.16：可提領 = 累計賺 - 已提領，不能小於 0
-  const availableToWithdraw = Math.max(0, totalEarned - totalWithdrawn);
+  // v2.16：可提領 = 累計賺 - 已提領；v2.34：再扣掉生活習慣扣款。不能小於 0。
+  //   註：totalPenalty 是累計值，就算一時超過餘額（顯示壓回 0），日後再賺錢時
+  //   仍會被扣回來（debt 自然遞延），但畫面永遠不會出現負數（焦慮型設計）。
+  const availableToWithdraw = Math.max(0, totalEarned - totalWithdrawn - totalPenalty);
 
   return {
     totalEarned,
     totalWithdrawn,
+    totalPenalty,
     availableToWithdraw,
     todayEarned,
     todayPreEarned: todayEarned,
@@ -103,7 +112,7 @@ export function computeAllDevices(events) {
   for (const ev of events || []) {
     const dev = String(ev.device || '').trim();
     if (!dev) continue;
-    if (!map.has(dev)) map.set(dev, { totalEarned: 0, totalWithdrawn: 0 });
+    if (!map.has(dev)) map.set(dev, { totalEarned: 0, totalWithdrawn: 0, totalPenalty: 0 });
     const m = map.get(dev);
     const event = String(ev.event || '');
     const amount = Number(ev.amount) || 0;
@@ -111,10 +120,12 @@ export function computeAllDevices(events) {
       m.totalEarned += amount;
     } else if (event === 'v2_payout') {
       m.totalWithdrawn += Math.abs(amount);
+    } else if (event === 'v2_penalty') {
+      m.totalPenalty += Math.abs(amount);  // v2.34：生活習慣扣款
     }
   }
   for (const [, m] of map) {
-    m.availableToWithdraw = Math.max(0, m.totalEarned - m.totalWithdrawn);
+    m.availableToWithdraw = Math.max(0, m.totalEarned - m.totalWithdrawn - m.totalPenalty);
   }
   return map;
 }

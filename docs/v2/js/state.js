@@ -18,7 +18,8 @@ const DEFAULTS = {
   reviewEarnedToday: 0,        // v2.28：今日從頭複習已賺的錢（cap 在 reviewDailyCap，每日重置）
   readingDoneToday: [],        // v2.28：今日已領獎金的故事 id（同篇一天只能領一次，每日重置）
   totalWithdrawn: 0,     // 累計已提領（v2.16）— 從 sync 同步
-  availableToWithdraw: 0,// 可提領金額 = totalEarned - totalWithdrawn（從 sync 同步）
+  totalPenalty: 0,       // v2.34：累計生活習慣扣款 — 從 sync 同步（只有家長頁能寫）
+  availableToWithdraw: 0,// 可提領金額 = totalEarned - totalWithdrawn - totalPenalty（從 sync 同步）
   lastCategoryId: null,  // v2.19：上次展開／選擇的分類；v2.21 起改用 units-meta `current` flag，保留欄位向下相容
   wordStats: {},         // v2.24：每字記憶追蹤（SRS Lite）。schema 與函式定義在 srs.js
 };

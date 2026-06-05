@@ -89,7 +89,8 @@ async function syncInBackground() {
   //   - availableToWithdraw：永遠用 totalEarned - totalWithdrawn 重算（保證一致）
   s.totalEarned = Math.max(s.totalEarned || 0, computed.totalEarned);
   s.totalWithdrawn = computed.totalWithdrawn;          // 信任 server
-  s.availableToWithdraw = Math.max(0, s.totalEarned - s.totalWithdrawn);
+  s.totalPenalty = computed.totalPenalty || 0;         // v2.34：信任 server（只有家長頁能寫扣款）
+  s.availableToWithdraw = Math.max(0, s.totalEarned - s.totalWithdrawn - (s.totalPenalty || 0));
   s.todayEarned = Math.max(s.todayEarned || 0, computed.todayEarned);
   s.todayPreEarned = Math.max(s.todayPreEarned || 0, computed.todayPreEarned);
   s.streak = Math.max(s.streak || 0, computed.streak);
@@ -409,7 +410,7 @@ function handleReadingComplete(result) {
       s.todayPreEarned = (s.todayPreEarned || 0) + readingCalc.sessionPre;
       s.todayEarned = (s.todayEarned || 0) + readingCalc.sessionFinal;
       s.totalEarned = (s.totalEarned || 0) + readingCalc.sessionFinal;
-      s.availableToWithdraw = Math.max(0, (s.totalEarned || 0) - (s.totalWithdrawn || 0));
+      s.availableToWithdraw = Math.max(0, (s.totalEarned || 0) - (s.totalWithdrawn || 0) - (s.totalPenalty || 0));
       if (!s.readingDoneToday) s.readingDoneToday = [];
       s.readingDoneToday.push(story.id);
     }
@@ -566,7 +567,7 @@ function handleComplete(mode, result) {
     s.totalEarned = (s.totalEarned || 0) + calc.sessionFinal;
     // v2.20 Bug B 修正：availableToWithdraw 也要跟著漲，不然主畫面「可提領」
     // 要等下次 sync 才更新，孩子賺到錢看不到數字漲。
-    s.availableToWithdraw = Math.max(0, (s.totalEarned || 0) - (s.totalWithdrawn || 0));
+    s.availableToWithdraw = Math.max(0, (s.totalEarned || 0) - (s.totalWithdrawn || 0) - (s.totalPenalty || 0));
     // v2.13：本回合實際給了基礎獎金 → 設旗標，避免之後再給
     if (calc.gaveBaseThisSession) s.baseGivenToday = true;
     // v2.28：從頭複習領到錢 → 累加 reviewEarnedToday 做 cap

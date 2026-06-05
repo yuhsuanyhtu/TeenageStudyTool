@@ -13,6 +13,9 @@ import { REWARD_CONFIG } from '../reward.js';
 import { fetchV2Events, computeAllDevices } from '../sync.js';
 import { logEvent } from '../logger.js';
 
+// v2.34：生活習慣扣款預設金額（媽媽跟謙恩約定：提醒過仍沒做到一次扣 $10）
+const DEFAULT_PENALTY = 10;
+
 export function startPayoutMode({ root, onBack }) {
   let busy = false;
 
@@ -61,6 +64,12 @@ export function startPayoutMode({ root, onBack }) {
       totalWithdrawnAll += m.totalWithdrawn;
     }
 
+    // v2.34：生活習慣扣款用的裝置選單（沿用提領頁已抓到的裝置清單）
+    const deviceNames = devices.map(([dev]) => dev);
+    const penaltyDeviceOptions = deviceNames.length
+      ? deviceNames.map(d => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join('')
+      : '<option value="">（尚無裝置紀錄）</option>';
+
     root.innerHTML = `
       <button class="back" id="back">← 回主畫面</button>
       <h1>🏦 家長提領</h1>
@@ -92,6 +101,10 @@ export function startPayoutMode({ root, onBack }) {
             <div class="payout-row">
               <span>已提領</span><b>$${m.totalWithdrawn}</b>
             </div>
+            ${m.totalPenalty ? `
+            <div class="payout-row">
+              <span>習慣扣款</span><b>−$${m.totalPenalty}</b>
+            </div>` : ''}
             <div class="payout-row payout-avail">
               <span>可提領</span><b>$${m.availableToWithdraw}</b>
             </div>
@@ -106,11 +119,58 @@ export function startPayoutMode({ root, onBack }) {
       <p class="muted small" style="margin-top:16px;">
         ⚠ 提領前會自動同步 Sheet，避免兩台裝置同時提領造成超領
       </p>
+
+      <h2 style="margin-top:28px;">➖ 生活習慣扣款</h2>
+      <div class="card penalty-card">
+        <p class="muted small" style="margin-top:0;">
+          約定好、提醒過仍沒做到的事，一次 $${DEFAULT_PENALTY}。
+          只會減少「可提領」，不會動到他的學習累計與連勝。
+          扣款原因會記到 Google Sheet 的「備註」欄。
+        </p>
+        <label class="penalty-field">
+          <span>裝置</span>
+          <select id="pen-dev">${penaltyDeviceOptions}</select>
+        </label>
+        <label class="penalty-field">
+          <span>原因（必填）</span>
+          <input id="pen-reason" type="text" maxlength="60"
+            placeholder="例如：提醒了還是沒把碗放進水槽" />
+        </label>
+        <label class="penalty-field">
+          <span>金額</span>
+          <input id="pen-amount" type="number" value="${DEFAULT_PENALTY}" min="1" step="1" />
+        </label>
+        <button id="pen-btn" class="penalty-btn" ${deviceNames.length ? '' : 'disabled'}>扣款</button>
+        <p class="muted small" id="pen-msg" style="margin-bottom:0;"></p>
+      </div>
     `;
     root.querySelector('#back').addEventListener('click', onBack);
     root.querySelectorAll('.payout-btn').forEach(btn => {
       btn.addEventListener('click', () => handlePayout(btn.dataset.dev, +btn.dataset.avail));
     });
+    const penBtn = root.querySelector('#pen-btn');
+    if (penBtn) penBtn.addEventListener('click', handlePenalty);
+  }
+
+  async function handlePenalty() {
+    if (busy) return;
+    const dev = (root.querySelector('#pen-dev')?.value || '').trim();
+    const reason = (root.querySelector('#pen-reason')?.value || '').trim();
+    const amount = Math.floor(Number(root.querySelector('#pen-amount')?.value));
+    const msg = root.querySelector('#pen-msg');
+    const showMsg = (t) => { if (msg) msg.textContent = t; };
+
+    if (!dev) { showMsg('請先選擇裝置'); return; }
+    if (!reason) { showMsg('請填寫扣款原因（會記到 Google Sheet）'); return; }
+    if (!amount || amount <= 0) { showMsg('金額要大於 0'); return; }
+    if (!confirm(`確定要從「${dev}」扣 $${amount}？\n\n原因：${reason}\n\n（會減少他的「可提領」，並記到 Google Sheet）`)) return;
+
+    busy = true;
+    showMsg('扣款中…');
+    await postPenalty(dev, amount, reason);
+    busy = false;
+    // 重新載入（會 re-sync，數字立刻反映）
+    load();
   }
 
   async function handlePayout(deviceName, available) {
@@ -166,6 +226,39 @@ async function postPayout(targetDevice, amount) {
     console.warn('payout post failed', e);
   }
   // Apps Script POST 是 fire-and-forget；等 1.5 秒讓 Sheet 寫入完成再 re-fetch
+  await new Promise(r => setTimeout(r, 1500));
+}
+
+// v2.34：生活習慣扣款 — POST 一個 v2_penalty 事件，amount 為負值，原因寫進 note（→ Sheet 備註欄）
+// 事件名以 v2_ 開頭，Apps Script 的 doPost 會原樣寫入、?action=v2_events 會原樣回傳，
+// 所以後端不用改；sync.js 會把它從「可提領」扣掉。
+async function postPenalty(targetDevice, amount, reason) {
+  const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
+  const payload = {
+    event: 'v2_penalty',
+    unit: '',
+    quizSize: '',
+    correct: '',
+    prediction: '',
+    amount: -Math.abs(amount),           // 負值
+    note: `習慣扣款：${reason}`,          // 原因記到 Sheet「備註」欄
+    money: '',
+    totalPaid: '',
+    streak: '',
+    user: targetDevice,                  // 「裝置」欄寫被扣款的裝置
+  };
+  try {
+    await fetch(LOG_WEBAPP_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      keepalive: true,
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+    });
+  } catch (e) {
+    console.warn('penalty post failed', e);
+  }
+  // 等 1.5 秒讓 Sheet 寫入完成再 re-fetch
   await new Promise(r => setTimeout(r, 1500));
 }
 
