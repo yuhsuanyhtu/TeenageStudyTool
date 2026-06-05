@@ -5,7 +5,10 @@
 
 import { REWARD_CONFIG } from './reward.js';
 
-const RULES_VERSION_DATE = '2026-05-18';
+const RULES_VERSION_DATE = '2026-06-05';
+
+// v2.34：生活習慣扣款金額（跟家長頁 payout.js 的 DEFAULT_PENALTY 一致）
+const HABIT_PENALTY = 10;
 
 export function renderRules(root, onBack) {
   const cfg = REWARD_CONFIG;
@@ -93,6 +96,15 @@ export function renderRules(root, onBack) {
       <h3>🏦 提領零用金</h3>
       <p>媽媽用特殊網址進「家長提領頁」，每次以 <b>$${cfg.payoutUnit}</b> 為單位。</p>
       <p class="muted small">提領後「可提領」會減少、「已提領」會增加。Google Sheet 也會留紀錄，多裝置會自動同步。</p>
+    </div>
+
+    <div class="card">
+      <h3>🤝 生活習慣的約定</h3>
+      <p>這是你跟媽媽一起講好的：<b>約定好、也提醒過的事</b>，如果還是沒做到，會從「可提領」扣 <b>$${HABIT_PENALTY}</b>。</p>
+      <p class="muted small" style="margin-top:8px;">放心，這只會動到「可提領」的零用金：</p>
+      <p class="muted small" style="margin-top:4px;">· <b>不會</b>扣到你學會的字、今日獎金或連勝——你努力學來的成果都還在。</p>
+      <p class="muted small">· 每次扣多少、為什麼扣，媽媽都會寫下來，不會不清不楚。</p>
+      <p class="muted small" style="margin-top:8px;">說好的事做到，就不會被扣。這不是處罰，是我們一起對自己負責的方式。🌱</p>
     </div>
 
     <button id="start">開始練習</button>
