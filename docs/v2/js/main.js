@@ -81,19 +81,39 @@ async function syncInBackground() {
   }
   // v2.9：每台裝置只算自己的紀錄
   const computed = recomputeFromEvents(result.events, state.today(), state.getDeviceName());
-  // v2.20 Bug C 修正：MAX 語意而不是覆蓋
-  //   - 累計類欄位（totalEarned、todayEarned、streak）：取 max(local, server)
-  //     原因：本地剛跑完的 session POST 出去到 Sheet 寫好之間有延遲，
-  //     這段空窗如果 sync 跑了會把剛賺的錢覆蓋掉。
-  //   - totalWithdrawn：信任 server（只有家長提領頁能寫，本地不會自己增加）
-  //   - availableToWithdraw：永遠用 totalEarned - totalWithdrawn 重算（保證一致）
-  s.totalEarned = Math.max(s.totalEarned || 0, computed.totalEarned);
-  s.totalWithdrawn = computed.totalWithdrawn;          // 信任 server
-  s.totalPenalty = computed.totalPenalty || 0;         // v2.34：信任 server（只有家長頁能寫扣款）
+  // v2.35：Sheet 為唯一真相（取代 v2.20 的 MAX 語意）。
+  //
+  // 為什麼改：2026-07-10 的「25 → 489」事件。舊 MAX 語意會讓「清資料前的舊帳」
+  // 「開很久的殭屍分頁記憶體裡的舊 state」永遠壓過 server 重算值；同時 totalWithdrawn
+  // 信任 server，改名後 server 查無新名字的提領紀錄 → 歸 0 → 已提領的錢復活。
+  // 兩者疊加 = 憑空多出幾百塊。
+  //
+  // 新語意：
+  //   - totalEarned = server 重算值 + 「今天本地已賺、但還沒出現在 Sheet 的差額」
+  //     （差額涵蓋 POST 寫入延遲與今天離線練習；v2.20 原本要救的 race 一樣有救到）
+  //   - 跨日的本地舊帳一律不採計：沒寫進 Sheet 的昨天 = 不存在
+  //   - 每日上限狀態（todayPreEarned / reviewEarnedToday / baseGivenToday / readingDoneToday）
+  //     用 server 事件補齊 → 換瀏覽器、清資料、殭屍分頁都繞不過每日上限
+  //   - 殭屍分頁防護：非作答中先重讀 localStorage，丟掉記憶體裡的過期 state
+  if (!currentModeMeta) {
+    s = state.load();
+  }
+  const r0 = state.refreshDailyState(s);
+  s = r0.state;
+  const todayDelta = Math.max(0, (s.todayEarned || 0) - computed.todayEarned);
+  s.totalEarned = computed.totalEarned + todayDelta;
+  s.totalWithdrawn = computed.totalWithdrawn;          // 信任 server（只有家長頁能寫）
+  s.totalPenalty = computed.totalPenalty || 0;         // v2.34：信任 server
   s.availableToWithdraw = Math.max(0, s.totalEarned - s.totalWithdrawn - (s.totalPenalty || 0));
   s.todayEarned = Math.max(s.todayEarned || 0, computed.todayEarned);
   s.todayPreEarned = Math.max(s.todayPreEarned || 0, computed.todayPreEarned);
   s.streak = Math.max(s.streak || 0, computed.streak);
+  s.reviewEarnedToday = Math.max(s.reviewEarnedToday || 0, computed.todayReviewEarned || 0);
+  s.baseGivenToday = !!s.baseGivenToday || !!computed.todayBaseGiven;
+  if (Array.isArray(computed.todayReadingDone) && computed.todayReadingDone.length) {
+    s.readingDoneToday = [...new Set([...(s.readingDoneToday || []), ...computed.todayReadingDone])];
+  }
+  s.dailyCap = computed.dailyCap;                      // v2.35：家長設定的每日上限（null = 預設）
   state.save(s);
   syncStatus = 'done';
   syncMessage = `本機 ${computed.eventCount} 筆、${computed.completedDayCount} 天`;
@@ -405,6 +425,7 @@ function handleReadingComplete(result) {
       storyId: story.id,
       readingDoneToday: s.readingDoneToday || [],
       comprehensionCorrect: compCorrect,
+      dailyCap: s.dailyCap,   // v2.35：家長可調每日上限
     });
     if (readingCalc.sessionPre > 0) {
       s.todayPreEarned = (s.todayPreEarned || 0) + readingCalc.sessionPre;
@@ -545,11 +566,13 @@ function handleComplete(mode, result) {
       streak: s.streak || 0,
       todayPreEarned: s.todayPreEarned || 0,
       reviewEarnedToday: s.reviewEarnedToday || 0,   // v2.28：傳今日已賺複習額度做 cap
+      dailyCap: s.dailyCap,                          // v2.35：家長可調每日上限
     });
   } else if (mode === 'match') {
     // v2.15：連連看固定 $5，不依 sessionCorrect 計算（防 brute force 刷錢）
     calc = reward.calcMatchReward({
       todayPreEarned: s.todayPreEarned || 0,
+      dailyCap: s.dailyCap,
     });
   } else {
     calc = reward.calcSessionReward({
@@ -557,6 +580,7 @@ function handleComplete(mode, result) {
       streak: s.streak || 0,
       todayPreEarned: s.todayPreEarned || 0,
       baseGivenToday: !!s.baseGivenToday,   // v2.13：傳今天是否已給過基礎獎金
+      dailyCap: s.dailyCap,
     });
   }
 

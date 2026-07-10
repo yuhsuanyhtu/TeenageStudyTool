@@ -9,8 +9,8 @@
 //
 // 完成後家長按「回主畫面」即可
 
-import { REWARD_CONFIG } from '../reward.js';
-import { fetchV2Events, computeAllDevices } from '../sync.js';
+import { REWARD_CONFIG, effectiveDailyCap } from '../reward.js';
+import { fetchV2Events, computeAllDevices, extractDailyCap } from '../sync.js';
 import { logEvent } from '../logger.js';
 
 // v2.34：生活習慣扣款預設金額（媽媽跟謙恩約定：提醒過仍沒做到一次扣 $10）
@@ -48,6 +48,9 @@ export function startPayoutMode({ root, onBack }) {
   }
 
   function renderList(events) {
+    // v2.35：目前生效的每日上限（家長設定 or 預設）
+    const customCap = extractDailyCap(events);
+    const currentCap = effectiveDailyCap(customCap);
     const map = computeAllDevices(events);
     // 排序：可提領金額 desc
     const devices = [...map.entries()].sort((a, b) =>
@@ -143,6 +146,20 @@ export function startPayoutMode({ root, onBack }) {
         <button id="pen-btn" class="penalty-btn" ${deviceNames.length ? '' : 'disabled'}>扣款</button>
         <p class="muted small" id="pen-msg" style="margin-bottom:0;"></p>
       </div>
+
+      <h2 style="margin-top:28px;">⚙️ 每日獎金上限</h2>
+      <div class="card penalty-card">
+        <p class="muted small" style="margin-top:0;">
+          目前上限：<b>$${currentCap}</b>${customCap === null ? '（預設）' : '（家長設定）'}。
+          「基礎 + 按字數」一天最多賺這個數，改了會同步到所有裝置，孩子的規則頁也會跟著更新。
+        </p>
+        <label class="penalty-field">
+          <span>新上限</span>
+          <input id="cap-amount" type="number" value="${currentCap}" min="10" max="1000" step="10" />
+        </label>
+        <button id="cap-btn" class="penalty-btn">儲存上限</button>
+        <p class="muted small" id="cap-msg" style="margin-bottom:0;"></p>
+      </div>
     `;
     root.querySelector('#back').addEventListener('click', onBack);
     root.querySelectorAll('.payout-btn').forEach(btn => {
@@ -150,6 +167,26 @@ export function startPayoutMode({ root, onBack }) {
     });
     const penBtn = root.querySelector('#pen-btn');
     if (penBtn) penBtn.addEventListener('click', handlePenalty);
+    const capBtn = root.querySelector('#cap-btn');
+    if (capBtn) capBtn.addEventListener('click', () => handleDailyCap(currentCap));
+  }
+
+  // v2.35：家長調整每日上限 — POST v2_config_daily_cap 事件（amount = 新上限）
+  async function handleDailyCap(currentCap) {
+    if (busy) return;
+    const amount = Math.floor(Number(root.querySelector('#cap-amount')?.value));
+    const msg = root.querySelector('#cap-msg');
+    const showMsg = (t) => { if (msg) msg.textContent = t; };
+
+    if (!amount || amount < 10 || amount > 1000) { showMsg('上限要在 $10 ~ $1000 之間'); return; }
+    if (amount === currentCap) { showMsg('跟目前的上限一樣，不用改'); return; }
+    if (!confirm(`確定把每日獎金上限改成 $${amount}？\n\n（目前 $${currentCap}，會同步到所有裝置，今天就生效）`)) return;
+
+    busy = true;
+    showMsg('儲存中…');
+    await postDailyCap(amount);
+    busy = false;
+    load();
   }
 
   async function handlePenalty() {
@@ -257,6 +294,39 @@ async function postPenalty(targetDevice, amount, reason) {
     });
   } catch (e) {
     console.warn('penalty post failed', e);
+  }
+  // 等 1.5 秒讓 Sheet 寫入完成再 re-fetch
+  await new Promise(r => setTimeout(r, 1500));
+}
+
+// v2.35：家長調整每日上限 — POST 一個 v2_config_daily_cap 事件，amount = 新上限。
+// 事件名以 v2_ 開頭，後端原樣寫入與回傳（零改動）；sync.js 的 extractDailyCap 會
+// 掃全部事件取最後一筆生效，所以「裝置」欄記操作的家長裝置即可（純留紀錄）。
+async function postDailyCap(amount) {
+  const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
+  const payload = {
+    event: 'v2_config_daily_cap',
+    unit: '',
+    quizSize: '',
+    correct: '',
+    prediction: '',
+    amount: Math.abs(amount),
+    note: `家長把每日獎金上限調整為 $${amount}`,
+    money: '',
+    totalPaid: '',
+    streak: '',
+    user: (() => { try { return localStorage.getItem('sv2.deviceName') || '(家長頁)'; } catch (e) { return '(家長頁)'; } })(),
+  };
+  try {
+    await fetch(LOG_WEBAPP_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      keepalive: true,
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+    });
+  } catch (e) {
+    console.warn('daily cap post failed', e);
   }
   // 等 1.5 秒讓 Sheet 寫入完成再 re-fetch
   await new Promise(r => setTimeout(r, 1500));

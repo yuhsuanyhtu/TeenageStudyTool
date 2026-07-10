@@ -22,6 +22,7 @@ const DEFAULTS = {
   availableToWithdraw: 0,// 可提領金額 = totalEarned - totalWithdrawn - totalPenalty（從 sync 同步）
   lastCategoryId: null,  // v2.19：上次展開／選擇的分類；v2.21 起改用 units-meta `current` flag，保留欄位向下相容
   wordStats: {},         // v2.24：每字記憶追蹤（SRS Lite）。schema 與函式定義在 srs.js
+  dailyCap: null,        // v2.35：家長設定的每日上限（null = 用預設 100），從 Sheet 的 v2_config_daily_cap 事件同步
 };
 
 export function load() {

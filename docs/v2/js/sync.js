@@ -40,18 +40,37 @@ export async function fetchV2Events() {
 //   - streak = 從今天往回，連續打卡天數
 //
 // myDevice：當前裝置名（從 state.getDeviceName 傳入）。null/空 → 不算任何事件
-import { REWARD_CONFIG } from './reward.js';
+import { REWARD_CONFIG, effectiveDailyCap } from './reward.js';
+
+// v2.35：從全部事件（不分裝置）找家長最後一次設定的每日上限。
+// v2_config_daily_cap 事件由家長頁寫入，amount = 新上限。events 已按時間排序，最後一筆生效。
+export function extractDailyCap(events) {
+  let cap = null;
+  for (const ev of events || []) {
+    if (String(ev.event || '') === 'v2_config_daily_cap') {
+      const v = Math.floor(Number(ev.amount));
+      if (v >= 10 && v <= 1000) cap = v;
+    }
+  }
+  return cap;  // null = 家長沒調過，用預設
+}
 
 export function recomputeFromEvents(events, todayStr, myDevice) {
   const dev = String(myDevice || '').trim();
   const real = (events || []).filter(ev =>
     dev && String(ev.device || '') === dev
   );
+  const dailyCap = extractDailyCap(events);
 
   let totalEarned = 0;
   let totalWithdrawn = 0;
   let totalPenalty = 0;
   let todayEarned = 0;
+  // v2.35：每日上限相關的「今日狀態」也從事件重算，
+  // 換瀏覽器／清資料／殭屍分頁都繞不過每日上限（2026-07-10 的複習 $25 領兩次 bug）
+  let todayReviewEarned = 0;
+  let todayBaseGiven = false;
+  const todayReadingDone = [];
   const completedDays = new Set();
 
   for (const ev of real) {
@@ -64,6 +83,14 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
       if (amount > 0) {
         totalEarned += amount;
         if (date === todayStr) todayEarned += amount;
+      }
+      if (date === todayStr && amount > 0) {
+        if (event === 'v2_review_done') todayReviewEarned += amount;
+        // 基礎獎金只可能在英翻中／中翻英答對 ≥5 時發出（一天一次）
+        if ((event === 'v2_en2zh_done' || event === 'v2_zh2en_done') && correct >= REWARD_CONFIG.minCorrectForBase) {
+          todayBaseGiven = true;
+        }
+        if (event === 'v2_reading_done' && ev.unit) todayReadingDone.push(String(ev.unit));
       }
       const isReview = event === 'v2_review_done';
       const qualifies = isReview || correct >= 5;
@@ -81,9 +108,9 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
 
   const streak = computeStreak(completedDays, todayStr);
 
-  // v2.10：套用日上限
+  // v2.10：套用日上限（v2.35：改用家長設定的有效上限）
   const rawTodayEarned = todayEarned;
-  const cap = REWARD_CONFIG.dailyCapPreMultiplier;
+  const cap = effectiveDailyCap(dailyCap);
   if (todayEarned > cap) todayEarned = cap;
 
   // v2.16：可提領 = 累計賺 - 已提領；v2.34：再扣掉生活習慣扣款。不能小於 0。
@@ -102,6 +129,11 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
     eventCount: real.length,
     completedDayCount: completedDays.size,
     rawTodayEarned,
+    // v2.35：今日上限狀態（防跨瀏覽器重複領）+ 家長設定的每日上限
+    todayReviewEarned,
+    todayBaseGiven,
+    todayReadingDone,
+    dailyCap,
   };
 }
 

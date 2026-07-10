@@ -3,9 +3,10 @@
 // 規則來源：reward.js 的 REWARD_CONFIG（金額自動跟著走，未來改設定不用改這裡）
 // 改了哪一版本要更新規則時，動 RULES_VERSION_DATE 一個常數就好
 
-import { REWARD_CONFIG } from './reward.js';
+import { REWARD_CONFIG, effectiveDailyCap } from './reward.js';
+import { load as loadState } from './state.js';
 
-const RULES_VERSION_DATE = '2026-06-05';
+const RULES_VERSION_DATE = '2026-07-10';
 
 // v2.34：生活習慣扣款金額（跟家長頁 payout.js 的 DEFAULT_PENALTY 一致）
 const HABIT_PENALTY = 10;
@@ -13,6 +14,8 @@ const HABIT_PENALTY = 10;
 export function renderRules(root, onBack) {
   const cfg = REWARD_CONFIG;
   const tiers = cfg.streakTiers;
+  // v2.35：每日上限家長可調（從 Sheet 同步到 state.dailyCap），規則頁永遠顯示目前生效的數字
+  const dailyCap = effectiveDailyCap(loadState().dailyCap);
 
   root.innerHTML = `
     <button class="back" id="back">← 回主畫面</button>
@@ -27,7 +30,7 @@ export function renderRules(root, onBack) {
       <p class="muted small">當天累積要答對 ${cfg.minCorrectForBase} 個以上才有基礎獎，避免隨便玩兩下也拿錢。一天只給一次（不會每回都拿）。</p>
 
       <p style="margin-top:14px;"><b>② 表現加碼：每答對 1 個 = +$${cfg.perCorrect}</b></p>
-      <p class="muted small">沒有上限——但「基礎 + 加碼」一天最多 $${cfg.dailyCapPreMultiplier}。每天背太多反而吸收不了，分散學比較有效。</p>
+      <p class="muted small">沒有上限——但「基礎 + 加碼」一天最多 $${dailyCap}。每天背太多反而吸收不了，分散學比較有效。（這個數字媽媽可以調整，改了這裡會自動更新）</p>
 
       <p style="margin-top:14px;"><b>③ 連勝加成（最重要）</b></p>
       <table class="rules-table">
@@ -61,7 +64,7 @@ export function renderRules(root, onBack) {
       <p style="margin-bottom:6px;"><b>8 題（快練）</b> — 預設，每天暖身用</p>
       <p style="margin-bottom:6px;"><b>半套</b> — 約一半單元字數，中量複習</p>
       <p style="margin-bottom:6px;"><b>全套</b> — 整個單元一次走完，考前複習用</p>
-      <p class="muted small" style="margin-top:6px;">題數越多越累、但同一回拿的獎金也越多（每答對都 +$${cfg.perCorrect}，封頂 $${cfg.dailyCapPreMultiplier}）。</p>
+      <p class="muted small" style="margin-top:6px;">題數越多越累、但同一回拿的獎金也越多（每答對都 +$${cfg.perCorrect}，封頂 $${dailyCap}）。</p>
     </div>
 
     <div class="card">
