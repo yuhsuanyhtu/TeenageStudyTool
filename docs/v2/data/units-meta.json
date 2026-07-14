@@ -11,7 +11,13 @@
       "id": "y1-spring",
       "name": "一下",
       "icon": "📗",
-      "files": ["textbook-y1-spring.json"],
+      "files": ["textbook-y1-spring.json"]
+    },
+    {
+      "id": "y2-fall",
+      "name": "二上（預習版）",
+      "icon": "📙",
+      "files": ["textbook-y2-fall.json"],
       "current": true
     },
     {
