@@ -82,7 +82,7 @@
     },
     {
       "en": "autumn",
-      "zh": "秋天（=fall）"
+      "zh": "秋天（= fall）"
     },
     {
       "en": "wind",
@@ -1101,6 +1101,48 @@
     {
       "en": "environment",
       "zh": "環境"
+    }
+  ],
+  "二上 Festival": [
+    {
+      "en": "Halloween",
+      "zh": "萬聖夜"
+    },
+    {
+      "en": "children",
+      "zh": "兒童（單數為 child）"
+    },
+    {
+      "en": "pumpkin",
+      "zh": "南瓜"
+    },
+    {
+      "en": "cut out",
+      "zh": "割出；切出"
+    },
+    {
+      "en": "moment",
+      "zh": "時刻"
+    },
+    {
+      "en": "go trick-or-treating",
+      "zh": "不給糖就搗蛋"
+    },
+    {
+      "en": "costume",
+      "zh": "道具服"
+    },
+    {
+      "en": "jack-o'-lantern",
+      "zh": "南瓜燈"
+    },
+    {
+      "en": "haunted house",
+      "zh": "鬼屋"
+    },
+    {
+      "en": "scary",
+      "zh": "嚇人的"
     }
   ]
 }
