@@ -3,7 +3,7 @@
 國中生學習工具：英文單字卡＋測驗＋閱讀練習；國文形音義練習（新）。
 
 ## 使用方式
-- 英文：https://yuhsuanyhtu.github.io/TeenageStudyTool/
+- 英文（v2）：https://yuhsuanyhtu.github.io/TeenageStudyTool/v2/
 - 國文（試用版）：https://yuhsuanyhtu.github.io/TeenageStudyTool/chinese/
 
 ## 功能
