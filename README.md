@@ -1,9 +1,10 @@
-# TeenageStudyTool — 英文練習
+# TeenageStudyTool — 英文＋國文練習
 
-國中生英文單字卡 + 測驗 + 閱讀練習工具。
+國中生學習工具：英文單字卡＋測驗＋閱讀練習；國文形音義練習（新）。
 
 ## 使用方式
-打開 https://yuhsuanyhtu.github.io/TeenageStudyTool/
+- 英文：https://yuhsuanyhtu.github.io/TeenageStudyTool/
+- 國文（試用版）：https://yuhsuanyhtu.github.io/TeenageStudyTool/chinese/
 
 ## 功能
 - 單字卡學習（含發音、中文）
@@ -15,3 +16,8 @@
 - 獎勵規則透明頁
 - 資料匯出 / 匯入備份
 
+
+## 國文（試用版）
+- 選字填空／抓錯字／相似字連連看／詞語配對，全部點選作答
+- 計分：第一次答對 ⭐⭐⭐、第二次 ⭐⭐、之後 ⭐（不倒扣）
+- 目前收錄 2上 L01〈田園之秋選〉，素材取自翰林備課用書（教學使用）

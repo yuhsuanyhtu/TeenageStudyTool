@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>謙恩的國文練習（試用版）</title>
+<style>
+  :root{
+    --bg:#f7f4ee; --card:#ffffff; --ink:#3b3a36; --sub:#8a867c;
+    --green:#4c9a6f; --green-bg:#e8f4ed; --red:#c96f5f; --red-bg:#faeceb;
+    --blue:#5b7fa6; --blue-bg:#eaf1f7; --amber:#c99a3c; --amber-bg:#faf3e3;
+    --radius:18px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0; font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif; background:var(--bg); color:var(--ink); min-height:100vh;}
+  .wrap{max-width:640px; margin:0 auto; padding:20px 16px 60px;}
+  header{ text-align:center; padding:10px 0 4px;}
+  header h1{font-size:22px; margin:0 0 4px;}
+  header .sub{color:var(--sub); font-size:14px;}
+  .menu{display:flex; flex-direction:column; gap:14px; margin-top:24px;}
+  .menu button{
+    font-size:20px; padding:20px; border:none; border-radius:var(--radius);
+    background:var(--card); color:var(--ink); box-shadow:0 2px 8px rgba(0,0,0,.06);
+    cursor:pointer; text-align:left; display:flex; align-items:center; gap:14px;
+  }
+  .menu button .emoji{font-size:28px;}
+  .menu button small{display:block; color:var(--sub); font-size:13px; margin-top:3px; font-weight:normal;}
+  .menu button:active{transform:scale(.98);}
+  .scorenote{margin-top:18px; background:var(--amber-bg); border-radius:14px; padding:12px 14px; font-size:14px; color:#7a5c1e; line-height:1.7;}
+  .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .topbar .back{background:none; border:none; font-size:15px; color:var(--blue); cursor:pointer; padding:6px;}
+  .topbar .prog{font-size:14px; color:var(--sub);}
+  .topbar .stars{font-size:14px; color:var(--amber); font-weight:bold;}
+  .card{background:var(--card); border-radius:var(--radius); padding:22px 18px; box-shadow:0 2px 10px rgba(0,0,0,.06);}
+  .qtext{font-size:22px; line-height:1.9; margin-bottom:18px;}
+  .qtext .blank{display:inline-block; min-width:1.6em; border-bottom:3px solid var(--amber); text-align:center; color:var(--amber); font-weight:bold;}
+  .opts{display:grid; grid-template-columns:repeat(auto-fit,minmax(90px,1fr)); gap:12px;}
+  .opts button{
+    font-size:30px; padding:16px 8px; border:2px solid #e5e1d8; border-radius:14px;
+    background:#fbfaf7; cursor:pointer; transition:all .15s;
+  }
+  .opts button:active{transform:scale(.96);}
+  .opts button.right{background:var(--green-bg); border-color:var(--green); color:var(--green);}
+  .opts button.wrong{background:var(--red-bg); border-color:var(--red); color:var(--red); animation:shake .3s;}
+  .opts button.dim{opacity:.35; pointer-events:none;}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .feedback{margin-top:16px; padding:14px; border-radius:14px; font-size:16px; line-height:1.7; display:none;}
+  .feedback.show{display:block;}
+  .feedback.good{background:var(--green-bg); color:#2f6b4c;}
+  .feedback.info{background:var(--amber-bg); color:#7a5c1e;}
+  .nextbtn{margin-top:16px; width:100%; font-size:18px; padding:14px; border:none; border-radius:14px; background:var(--blue); color:#fff; cursor:pointer; display:none;}
+  .nextbtn.show{display:block;}
+  .spot-sent{font-size:24px; line-height:2; letter-spacing:2px;}
+  .spot-sent .ch{cursor:pointer; padding:2px 1px; border-radius:6px;}
+  .spot-sent .ch:active{background:var(--blue-bg);}
+  .spot-sent .ch.found{background:var(--red-bg); color:var(--red); text-decoration:line-through; font-weight:bold;}
+  .spot-sent .ch.fixed{background:var(--green-bg); color:var(--green); font-weight:bold; text-decoration:none;}
+  .spot-tip{color:var(--sub); font-size:14px; margin-bottom:10px;}
+  .match-cols{display:flex; gap:12px;}
+  .mcol{flex:1; display:flex; flex-direction:column; gap:10px;}
+  .mcol button{
+    font-size:17px; padding:12px 8px; border:2px solid #e5e1d8; border-radius:12px;
+    background:#fbfaf7; cursor:pointer; line-height:1.5; min-height:56px;
+  }
+  .mcol button.charbtn{font-size:32px;}
+  .mcol button.sel{border-color:var(--blue); background:var(--blue-bg);}
+  .mcol button.done{background:var(--green-bg); border-color:var(--green); color:var(--green); pointer-events:none;}
+  .mcol button.err{animation:shake .3s; border-color:var(--red); background:var(--red-bg);}
+  .hinttable{margin-top:18px; font-size:15px; line-height:1.8; background:var(--amber-bg); border-radius:14px; padding:14px; display:none;}
+  .hinttable.show{display:block;}
+  .hinttable b{color:#7a5c1e;}
+  .result{text-align:center; padding:30px 10px;}
+  .result .big{font-size:46px; margin-bottom:10px;}
+  .result h2{margin:6px 0; font-size:24px;}
+  .result p{color:var(--sub); font-size:16px; line-height:1.8;}
+  .result .starline{font-size:22px; color:var(--amber); margin:8px 0;}
+  .zhu{font-size:13px; color:var(--sub);}
+  .starearn{font-weight:bold; color:var(--amber);}
+  .screen{display:none;}
+  .screen.active{display:block;}
+  footer{text-align:center; color:#b6b1a5; font-size:12px; margin-top:40px; line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 主選單 -->
+  <div id="home" class="screen active">
+    <header>
+      <h1>📖 國文練習・第一課〈田園之秋選〉</h1>
+      <div class="sub">試用版｜全部用「點」的，不用打字</div>
+    </header>
+    <div class="menu">
+      <button onclick="startMode('cloze')"><span class="emoji">✏️</span><span>選字填空<small>句子缺一個字，點出正確的那個（14 題）</small></span></button>
+      <button onclick="startMode('spot')"><span class="emoji">🔍</span><span>抓錯字<small>句子裡藏了一個錯字，把它點出來（8 題）</small></span></button>
+      <button onclick="startMode('match')"><span class="emoji">🔗</span><span>相似字連連看<small>長得像的字，配對它的注音和意思（4 組）</small></span></button>
+      <button onclick="startMode('word')"><span class="emoji">🧩</span><span>詞語配對<small>課文詞語連連看意思（12 個詞）</small></span></button>
+    </div>
+    <div class="scorenote">⭐ 計分方式：<b>一次就答對 ⭐⭐⭐</b>｜第二次才對 ⭐⭐｜第三次以上 ⭐<br>用猜的分數會變少，想清楚再點！（答錯不會倒扣，放心試）</div>
+    <footer>素材：翰林 2上備課用書（教學使用）｜目前收錄：第一課〈田園之秋選〉<br>試用版 2026-08-08 v0.2｜之後會陸續加入 L02–L10 與跨課混合複習</footer>
+  </div>
+
+  <!-- 題目畫面 -->
+  <div id="play" class="screen">
+    <div class="topbar">
+      <button class="back" onclick="goHome()">← 回選單</button>
+      <span class="stars" id="starbar">⭐ 0</span>
+      <span class="prog" id="prog"></span>
+    </div>
+    <div class="card" id="qcard"></div>
+  </div>
+
+</div>
+
+<script>
+const DATA = {
+ sets:[
+  {id:"S1",label:"滂・徬・磅",chars:[
+   {c:"滂",z:"ㄆㄤ",m:"滂沱：雨勢盛大的樣子",u:"大雨滂沱",h:"水部（氵）→ 跟「水、雨」有關"},
+   {c:"徬",z:"ㄆㄤˊ",m:"徬徨：徘徊不前",u:"徬徨失措",h:"彳部 → 跟「走路、腳步」有關"},
+   {c:"磅",z:"ㄆㄤˊ",m:"磅礡：廣大無邊際",u:"氣勢磅礡",h:"石部 → 跟「石頭、厚重」有關"}]},
+  {id:"S2",label:"霹・劈・癖・闢",chars:[
+   {c:"霹",z:"ㄆㄧ",m:"霹靂：急而響的雷",u:"晴天霹靂",h:"雨部 → 跟「打雷、下雨」有關"},
+   {c:"劈",z:"ㄆㄧ",m:"剖開；雷擊",u:"劈柴、天打雷劈",h:"刀部 → 跟「用刀砍」有關"},
+   {c:"癖",z:"ㄆㄧˇ",m:"習性、嗜好",u:"潔癖",h:"疒部 → 跟「習性成癮」有關"},
+   {c:"闢",z:"ㄆㄧˋ",m:"開拓；駁斥",u:"開闢、闢謠",h:"門部 → 跟「開門、開路」有關"}]},
+  {id:"S3",label:"懾・囁・躡・聶",chars:[
+   {c:"懾",z:"ㄓㄜˊ",m:"害怕、恐懼",u:"震懾",h:"心部（忄）→ 跟「心裡感受」有關"},
+   {c:"囁",z:"ㄋㄧㄝˋ",m:"囁嚅：想說又不敢說",u:"囁嚅難言",h:"口部 → 跟「說話」有關"},
+   {c:"躡",z:"ㄋㄧㄝˋ",m:"放輕腳步行走",u:"躡手躡腳",h:"足部 → 跟「腳步」有關"},
+   {c:"聶",z:"ㄋㄧㄝˋ",m:"姓氏",u:"聶小倩",h:"三個耳朵 → 當「姓氏」用"}]},
+  {id:"S4",label:"鈞・均・勺・勻",chars:[
+   {c:"鈞",z:"ㄐㄩㄣ",m:"古代重量單位（三十斤）",u:"千鈞一髮",h:"金部 → 跟「金屬、重量」有關"},
+   {c:"均",z:"ㄐㄩㄣ",m:"等同、相等",u:"勢均力敵",h:"土部 → 把土整平＝「平均」"},
+   {c:"勺",z:"ㄕㄠˊ",m:"舀水的器具",u:"勺子舀水",h:"象形字 → 像一支杓子"},
+   {c:"勻",z:"ㄩㄣˊ",m:"平均的",u:"身材勻稱",h:"分得剛剛好 → 「均勻」"}]}
+ ],
+ cloze:[
+  {s:"S1",t:"霎時間雷電交加，大雨（＿）沱，水勢高漲。",a:"滂",w:"滂沱"},
+  {s:"S1",t:"水勢高漲，令人（＿）徨失措，不知如何應變。",a:"徬",w:"徬徨"},
+  {s:"S1",t:"電影中的戰爭場面壯觀，配樂氣勢（＿）礡，帶給觀眾極大的震撼力。",a:"磅",w:"磅礡"},
+  {s:"S2",t:"徐議員主動召開記者會（＿）謠，發誓絕無關說之事。",a:"闢",w:"闢謠"},
+  {s:"S2",t:"他發誓絕無此事，否則願遭天打雷（＿）。",a:"劈",w:"天打雷劈"},
+  {s:"S2",t:"她聽到丈夫在空難中喪生的消息，猶如晴天（＿）靂，忍不住痛哭失聲。",a:"霹",w:"霹靂"},
+  {s:"S2",t:"阿亮有潔（＿），每天將地板擦得晶亮。",a:"癖",w:"潔癖"},
+  {s:"S3",t:"恩熙回家時看到家園付之一炬，震（＿）不已，哽咽難言。",a:"懾",w:"震懾"},
+  {s:"S3",t:"（＿）小倩因火車誤點而晚歸。",a:"聶",w:"聶（姓氏）"},
+  {s:"S3",t:"回家時（＿）手（＿）腳，仍吵醒了父親。",a:"躡",w:"躡手躡腳"},
+  {s:"S3",t:"面對父親詢問，一時間竟（＿）嚅難言。",a:"囁",w:"囁嚅"},
+  {s:"S4",t:"在千（＿）一髮之際，消防員救出了受困的民眾。",a:"鈞",w:"千鈞一髮",o:["鈞","均","勻"]},
+  {s:"S4",t:"這場比賽雙方勢（＿）力敵，勝負難料。",a:"均",w:"勢均力敵",o:["鈞","均","勻"]},
+  {s:"S4",t:"姐姐身材（＿）稱，穿什麼衣服都好看。",a:"勻",w:"勻稱",o:["鈞","均","勻"]}
+ ],
+ spot:[
+  {t:"午後大雨磅沱，馬路瞬間變成了小河。",wr:"磅",co:"滂",w:"滂沱",h:"雨是水 → 要用水部的「滂」"},
+  {t:"爺爺在院子裡霹柴，準備冬天生火取暖。",wr:"霹",co:"劈",w:"劈柴",h:"用刀砍 → 要用刀部的「劈」"},
+  {t:"這個消息有如晴天劈靂，大家都嚇呆了。",wr:"劈",co:"霹",w:"霹靂",h:"打雷 → 要用雨部的「霹」"},
+  {t:"市政府開霹了一條新道路，交通方便許多。",wr:"霹",co:"闢",w:"開闢",h:"開路像開門 → 門部的「闢」"},
+  {t:"妹妹有潔劈，房間永遠一塵不染。",wr:"劈",co:"癖",w:"潔癖",h:"習性、嗜好 → 疒部的「癖」"},
+  {t:"小偷聶手聶腳地溜進屋裡，不敢發出聲音。",wr:"聶",co:"躡",w:"躡手躡腳",h:"放輕腳步 → 足部的「躡」"},
+  {t:"他被眼前的景象震躡得說不出話來。",wr:"躡",co:"懾",w:"震懾",h:"心裡害怕 → 心部的「懾」"},
+  {t:"考前他毫無準備，心裡滂徨不安。",wr:"滂",co:"徬",w:"徬徨",h:"拿不定主意走來走去 → 彳部的「徬」"}
+ ],
+ words:[
+  {w:"滂沱",z:"ㄆㄤ ㄊㄨㄛˊ",m:"雨勢盛大的樣子"},
+  {w:"霹靂",z:"ㄆㄧ ㄌㄧˋ",m:"急而響的雷"},
+  {w:"霎時間",z:"ㄕㄚˋ ㄕˊ ㄐㄧㄢ",m:"極短的時間"},
+  {w:"攫",z:"ㄐㄩㄝˊ",m:"用爪抓取"},
+  {w:"孤伶伶",z:"ㄍㄨ ㄌㄧㄥˊ ㄌㄧㄥˊ",m:"孤單的樣子"},
+  {w:"震懾",z:"ㄓㄣˋ ㄓㄜˊ",m:"震驚恐懼"},
+  {w:"氣脫委頓",z:"ㄑㄧˋ ㄊㄨㄛ ㄨㄟˇ ㄉㄨㄣˋ",m:"失神無力，疲乏困頓"},
+  {w:"匍匐",z:"ㄆㄨˊ ㄈㄨˊ",m:"伏地爬行"},
+  {w:"肆虐",z:"ㄙˋ ㄋㄩㄝˋ",m:"任意作惡為害"},
+  {w:"氣勢萬鈞",z:"ㄑㄧˋ ㄕˋ ㄨㄢˋ ㄐㄩㄣ",m:"形容氣勢雄偉壯盛"},
+  {w:"登時",z:"ㄉㄥ ㄕˊ",m:"立刻"},
+  {w:"咫尺",z:"ㄓˇ ㄔˇ",m:"形容距離很近"}
+ ]
+};
+
+/* ── 計分：一次就對⭐⭐⭐、第二次⭐⭐、之後⭐（不倒扣，杜絕猜猜樂）── */
+let mode=null, idx=0, matchState=null;
+let stars=0, maxStars=0, firstTry=0, itemAttempt=0, totalItems=0;
+const starsFor=n=> n<=1?3 : n===2?2 : 1;
+const starStr=n=>'⭐'.repeat(n);
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a;};
+const setOf=id=>DATA.sets.find(s=>s.id===id);
+const charInfo=(sid,ch)=>setOf(sid).chars.find(x=>x.c===ch);
+let order=[], wordRounds=[];
+
+function startMode(m){
+  mode=m; idx=0; stars=0; firstTry=0; totalItems=0;
+  if(m==='cloze'){ order=shuffle(DATA.cloze); maxStars=order.length*3; }
+  if(m==='spot'){ order=shuffle(DATA.spot); maxStars=order.length*3; }
+  if(m==='match'){ order=DATA.sets.slice(); maxStars=DATA.sets.reduce((s,x)=>s+x.chars.length,0)*3; }
+  if(m==='word'){ order=shuffle(DATA.words); wordRounds=[]; for(let i=0;i<order.length;i+=4) wordRounds.push(order.slice(i,i+4)); maxStars=order.length*3; }
+  $('home').classList.remove('active');
+  $('play').classList.add('active');
+  updStar(); render();
+}
+function goHome(){ $('play').classList.remove('active'); $('home').classList.add('active'); }
+function updStar(){ $('starbar').textContent=`⭐ ${stars}${maxStars?` / ${maxStars}`:''}`; }
+function earn(attempts){ const e=starsFor(attempts); stars+=e; totalItems++; if(attempts<=1)firstTry++; updStar(); return e; }
+
+function render(){
+  if(mode==='cloze'){ if(idx>=order.length) return showResult(order.length,'題'); itemAttempt=0; renderCloze(order[idx]); }
+  if(mode==='spot'){ if(idx>=order.length) return showResult(order.length,'題'); itemAttempt=0; renderSpot(order[idx]); }
+  if(mode==='match'){ if(idx>=order.length) return showResult(order.length,'組'); renderMatch(order[idx]); }
+  if(mode==='word'){ if(idx>=wordRounds.length) return showResult(DATA.words.length,'個詞'); renderWordMatch(wordRounds[idx]); }
+}
+function prog(total,unit){ $('prog').textContent = `${idx+1} / ${total} ${unit||'題'}`; }
+
+/* ---------- 選字填空 ---------- */
+function renderCloze(q){
+  prog(order.length);
+  const opts = shuffle(q.o || setOf(q.s).chars.map(x=>x.c));
+  $('qcard').innerHTML = `
+    <div class="qtext">${q.t.replace(/（＿）/g,'<span class="blank">？</span>')}</div>
+    <div class="opts">${opts.map(c=>`<button onclick="pickCloze(this,'${c}')">${c}</button>`).join('')}</div>
+    <div class="feedback" id="fb"></div>
+    <button class="nextbtn" id="nx" onclick="idx++;render()">下一題 →</button>`;
+}
+function pickCloze(btn,c){
+  const q=order[idx]; itemAttempt++;
+  const info=charInfo(q.s,q.a);
+  if(c===q.a){
+    btn.classList.add('right');
+    document.querySelectorAll('.opts button').forEach(b=>{if(b!==btn)b.classList.add('dim');});
+    const e=earn(itemAttempt);
+    fb('good',`✅ 答對了！本題 <span class="starearn">${starStr(e)}</span>　「${q.w}」 <span class="zhu">${info.z}</span><br>${info.h}`);
+  }else{
+    btn.classList.add('wrong'); btn.classList.add('dim');
+    const wrongInfo=charInfo(q.s,c);
+    fb('info',`「${c}」是：${wrongInfo?wrongInfo.m:''}<br>💡 ${info.h}<br>再試一次！（第一次就對才有 ⭐⭐⭐）`);
+  }
+}
+/* ---------- 抓錯字 ---------- */
+function renderSpot(q){
+  prog(order.length);
+  const chars=[...q.t];
+  $('qcard').innerHTML = `
+    <div class="spot-tip">句子裡有一個字寫錯了（張冠李戴），把它點出來！</div>
+    <div class="spot-sent">${chars.map((ch,i)=>`<span class="ch" data-i="${i}" onclick="pickSpot(this,'${ch===q.wr?'Y':'N'}')">${ch}</span>`).join('')}</div>
+    <div class="feedback" id="fb"></div>
+    <button class="nextbtn" id="nx" onclick="idx++;render()">下一題 →</button>`;
+}
+function pickSpot(el,isWrong){
+  const q=order[idx];
+  if(el.classList.contains('found')||el.classList.contains('fixed'))return;
+  itemAttempt++;
+  if(isWrong==='Y'){
+    el.classList.add('found');
+    setTimeout(()=>{ el.textContent=q.co; el.classList.remove('found'); el.classList.add('fixed'); },700);
+    const e=earn(itemAttempt);
+    fb('good',`✅ 抓到了！本題 <span class="starearn">${starStr(e)}</span>　「${q.wr}」是錯字，正確是「${q.co}」（${q.w}）<br>💡 ${q.h}`);
+  }else{
+    el.style.background='var(--red-bg)'; setTimeout(()=>{el.style.background='';},400);
+    fb('info',`這個字沒有錯喔，再找找看！<br>💡 提示：${q.h}`);
+  }
+}
+/* ---------- 相似字連連看 ---------- */
+function renderMatch(set){
+  prog(order.length,'組');
+  matchState={sel:null, remain:set.chars.length, tries:{}};
+  const rights=shuffle(set.chars.map(x=>({key:x.c, label:`${x.z}<br><span style="font-size:14px">${x.m}</span>`})));
+  $('qcard').innerHTML = `
+    <div class="spot-tip">「${set.label}」長得很像！先點左邊的字，再點右邊它的注音＋意思。</div>
+    <div class="match-cols">
+      <div class="mcol">${set.chars.map(x=>`<button class="charbtn" id="L_${x.c}" onclick="pickLeft('${x.c}')">${x.c}</button>`).join('')}</div>
+      <div class="mcol">${rights.map(r=>`<button id="R_${r.key}" onclick="pickRight('${r.key}')">${r.label}</button>`).join('')}</div>
+    </div>
+    <div class="feedback" id="fb"></div>
+    <div class="hinttable" id="ht"></div>
+    <button class="nextbtn" id="nx" onclick="idx++;render()">下一組 →</button>`;
+}
+function pickLeft(c){
+  if($('L_'+c).classList.contains('done'))return;
+  document.querySelectorAll('.mcol .sel').forEach(b=>b.classList.remove('sel'));
+  matchState.sel=c; $('L_'+c).classList.add('sel');
+}
+function pickRight(key){
+  if(!matchState.sel){ fb('info','先點左邊的一個字，再點右邊的答案喔！'); return; }
+  const R=$('R_'+key), L=$('L_'+matchState.sel);
+  const sel=matchState.sel;
+  matchState.tries[sel]=(matchState.tries[sel]||0)+1;
+  if(key===sel){
+    R.classList.add('done'); L.classList.add('done'); L.classList.remove('sel');
+    matchState.remain--; matchState.sel=null;
+    const e=earn(matchState.tries[sel]);
+    fb('good',`✅ 配對成功 <span class="starearn">${starStr(e)}</span>`);
+    if(matchState.remain===0){
+      const set=order[idx];
+      const ht=$('ht'); ht.classList.add('show');
+      ht.innerHTML='<b>記憶小撇步：</b><br>'+set.chars.map(x=>`「${x.c}」${x.h}（${x.u}）`).join('<br>');
+      $('nx').classList.add('show');
+    }
+  }else{
+    R.classList.add('err'); setTimeout(()=>R.classList.remove('err'),400);
+    const info=order[idx].chars.find(x=>x.c===sel);
+    fb('info',`💡 想想「${sel}」的部首：${info.h}`);
+  }
+}
+/* ---------- 詞語配對（4個一輪） ---------- */
+function renderWordMatch(round){
+  prog(wordRounds.length,'輪');
+  matchState={sel:null, remain:round.length, round:round, tries:{}};
+  const rights=shuffle(round.map(x=>({key:x.w,label:x.m})));
+  $('qcard').innerHTML = `
+    <div class="spot-tip">點左邊的詞語，再點右邊它的意思。</div>
+    <div class="match-cols">
+      <div class="mcol">${round.map(x=>`<button id="L_${x.w}" style="font-size:22px" onclick="pickLeftW('${x.w}')">${x.w}</button>`).join('')}</div>
+      <div class="mcol">${rights.map(r=>`<button id="R_${r.key}" onclick="pickRightW('${r.key}')">${r.label}</button>`).join('')}</div>
+    </div>
+    <div class="feedback" id="fb"></div>
+    <button class="nextbtn" id="nx" onclick="idx++;render()">下一輪 →</button>`;
+}
+function pickLeftW(w){
+  if($('L_'+w).classList.contains('done'))return;
+  document.querySelectorAll('.mcol .sel').forEach(b=>b.classList.remove('sel'));
+  matchState.sel=w; $('L_'+w).classList.add('sel');
+}
+function pickRightW(key){
+  if(!matchState.sel){ fb('info','先點左邊的一個詞語喔！'); return; }
+  const R=$('R_'+key), L=$('L_'+matchState.sel);
+  const sel=matchState.sel;
+  matchState.tries[sel]=(matchState.tries[sel]||0)+1;
+  if(key===sel){
+    const info=matchState.round.find(x=>x.w===key);
+    R.classList.add('done'); L.classList.add('done'); L.classList.remove('sel');
+    matchState.remain--; matchState.sel=null;
+    const e=earn(matchState.tries[sel]);
+    fb('good',`✅ <span class="starearn">${starStr(e)}</span>　「${info.w}」<span class="zhu">${info.z}</span>：${info.m}`);
+    if(matchState.remain===0) $('nx').classList.add('show');
+  }else{
+    R.classList.add('err'); setTimeout(()=>R.classList.remove('err'),400);
+    fb('info','再想想看，沒關係！');
+  }
+}
+/* ---------- 共用 ---------- */
+function fb(type,html){
+  const el=$('fb'); el.className='feedback show '+(type==='good'?'good':'info'); el.innerHTML=html;
+  if(type==='good' && (mode==='cloze'||mode==='spot')) $('nx').classList.add('show');
+}
+function showResult(total,unit){
+  $('prog').textContent='完成！';
+  const pct = maxStars? Math.round(stars/maxStars*100) : 100;
+  let msg = pct>=90?'太強了，幾乎都是一次就對！':pct>=65?'很不錯！有幾個字再看一下小撇步，下次就是滿星了。':'錯的字都看過正解了，明天再玩一次星星會變多！';
+  $('qcard').innerHTML=`
+    <div class="result">
+      <div class="big">${pct>=90?'🏆':pct>=65?'🎉':'💪'}</div>
+      <h2>完成 ${total} ${unit||'題'}</h2>
+      <div class="starline">⭐ ${stars} / ${maxStars}</div>
+      <p>一次就答對：${firstTry} ${unit==='組'?'次':'題'}<br>${msg}</p>
+      <button class="nextbtn show" onclick="goHome()">回選單</button>
+    </div>`;
+}
+</script>
+</body>
+</html>
