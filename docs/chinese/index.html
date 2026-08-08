@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>謙恩的國文練習（2上）</title>
+<title>謙恩的國文練習</title>
 <style>
   :root{
     --bg:#f7f4ee; --card:#ffffff; --ink:#3b3a36; --sub:#8a867c;
@@ -99,11 +99,11 @@
   <div id="home" class="screen active">
     <header>
       <h1>📖 謙恩的國文練習</h1>
-      <div class="sub">2上（翰林）｜全部用「點」的，不用打字</div>
+      <div class="sub">翰林 2上＋3上｜全部用「點」的，不用打字</div>
     </header>
     <div class="grid" id="lessonGrid"></div>
     <div class="scorenote">⭐ 計分：<b>一次就答對 ⭐⭐⭐</b>｜第二次 ⭐⭐｜第三次以上 ⭐（不倒扣，用猜的星星會變少）</div>
-    <footer>生字範圍：翰林 2上 各課習字練功坊（官方完整清單）<br>題目採固定詞組・成語・古典詩文（語言公共財）｜v0.4 2026-08-08</footer>
+    <footer>生字範圍：翰林 2上／3上 各課習字練功坊（官方完整清單）<br>題目採固定詞組・成語・古典詩文（語言公共財）｜v0.5 2026-08-08</footer>
   </div>
 
   <div id="lesson" class="screen">
@@ -295,6 +295,89 @@ const LESSONS=[
   {w:"惺惺相惜",z:"ㄒㄧㄥ ㄒㄧㄥ ㄒㄧㄤ ㄒㄧˊ",b:"惺",o:["猩","腥"],h:"心部（忄）→ 聰明人欣賞聰明人"}]}
 ];
 
+const LESSONS3=[
+{id:"L01",title:"土",author:"吳晟",
+ words:[
+  {w:"赤膊",z:"ㄔˋ ㄅㄛˊ",b:"膊",o:["搏","博"],h:"肉部（月）→ 打赤膊＝光著上身（搏＝手部搏鬥；博＝廣博）"},
+  {w:"吟哦",z:"ㄧㄣˊ ㄜˊ",b:"哦",o:["娥","俄"],h:"口部 → 吟詠詩句（娥＝女部嫦娥）"},
+  {w:"笨拙",z:"ㄅㄣˋ ㄓㄨㄛˊ",b:"拙",o:["絀","茁"],h:"手部（扌）→ 不靈巧（相形見絀＝糸部；茁壯＝艸部）"},
+  {w:"汗漬",z:"ㄏㄢˋ ㄗˋ",b:"漬",o:["積","績"],h:"水部 → 汗水浸出的痕跡（積＝禾部累積；績＝糸部成績）"},
+  {w:"蝕盡",z:"ㄕˊ ㄐㄧㄣˋ",b:"蝕",o:["食","飾"],h:"虫部 → 侵蝕、虧損（飾＝裝飾）"},
+  {w:"虔誠",z:"ㄑㄧㄢˊ ㄔㄥˊ",b:"虔",o:["乾","潛"],h:"虍部（虎字頭）→ 恭敬"}]},
+{id:"L02",title:"詞選",author:"李煜／辛棄疾",
+ words:[
+  {w:"無虞",z:"ㄨˊ ㄩˊ",b:"虞",o:["餘","愚"],h:"虍部 → 憂慮；無虞＝不必擔憂（愚＝愚笨）"},
+  {w:"李煜",z:"ㄌㄧˇ ㄩˋ",b:"煜",o:["昱","鈺"],h:"火部 → 光明照耀；南唐後主的名字"},
+  {w:"雕闌",z:"ㄉㄧㄠ ㄌㄢˊ",b:"闌",o:["欄","瀾"],h:"門部 → 「雕闌玉砌」的欄杆（欄＝木部；瀾＝水部波瀾）"},
+  {w:"難堪",z:"ㄋㄢˊ ㄎㄢ",b:"堪",o:["勘","戡"],h:"土部 → 承受；難堪＝受不了（勘＝勘查）"},
+  {w:"一闋詞",z:"ㄧ ㄑㄩㄝˋ ㄘˊ",b:"闋",o:["閱","闕"],h:"門部 → 量詞，一首詞（閱＝閱讀；闕＝宮闕）"},
+  {w:"叱吒",z:"ㄔˋ ㄓㄚˋ",b:"叱",o:["斥","吃"],h:"口部 → 大聲怒喝；叱吒風雲（斥＝斥責）"}],
+ text:{title:"課文（宋詞・公共財）",parts:[
+  {h:"虞美人（南唐・李煜）",lines:["春花秋月何時了？往事知多少。","小樓昨夜又東風，故國不堪回首月明中。","雕闌玉砌應猶在，只是朱顏改。","問君能有幾多愁？恰似一江春水向東流。"]},
+  {h:"醜奴兒．書博山道中壁（宋・辛棄疾）",lines:["少年不識愁滋味，愛上層樓。","愛上層樓，為賦新詞強說愁。","而今識盡愁滋味，欲說還休。","欲說還休，卻道天涼好個秋。"]}]}},
+{id:"L03",title:"與921說再見",author:"劉光瑩",
+ words:[
+  {w:"倖存",z:"ㄒㄧㄥˋ ㄘㄨㄣˊ",b:"倖",o:["幸","悻"],h:"人部 → 僥倖活下來（悻＝忄悻悻然離去）"},
+  {w:"噩夢",z:"ㄜˋ ㄇㄥˋ",b:"噩",o:["惡","愕"],h:"噩＝凶險不祥的（愕＝忄驚愕）"},
+  {w:"結痂",z:"ㄐㄧㄝ ㄐㄧㄚ",b:"痂",o:["枷","珈"],h:"疒部 → 傷口癒合表面的硬皮（枷＝木部枷鎖）"},
+  {w:"癒合",z:"ㄩˋ ㄏㄜˊ",b:"癒",o:["愈","育"],h:"疒部 → 傷口長好（愈＝更加）"},
+  {w:"天崩地坼",z:"ㄊㄧㄢ ㄅㄥ ㄉㄧˋ ㄔㄜˋ",b:"坼",o:["拆","折"],h:"土部 → 大地裂開（拆＝手部拆開）"},
+  {w:"鉅細靡遺",z:"ㄐㄩˋ ㄒㄧˋ ㄇㄧˇ ㄧˊ",b:"靡",o:["糜","麋"],h:"靡＝無、沒有（糜＝米粥；麋＝麋鹿）"}]},
+{id:"L04",title:"黃州突圍",author:"余秋雨",
+ words:[
+  {w:"草履",z:"ㄘㄠˇ ㄌㄩˇ",b:"履",o:["屢","縷"],h:"尸部 → 草鞋（屢＝屢次；縷＝糸部一縷）"},
+  {w:"庶幾",z:"ㄕㄨˋ ㄐㄧ",b:"庶",o:["蔗","遮"],h:"广部 → 差不多、或許（蔗＝甘蔗；遮＝遮住）"},
+  {w:"冤屈",z:"ㄩㄢ ㄑㄩ",b:"冤",o:["怨","鴛"],h:"冖下一隻兔＝受困 → 冤枉（怨＝心部怨恨）"},
+  {w:"轟然",z:"ㄏㄨㄥ ㄖㄢˊ",b:"轟",o:["烘","哄"],h:"三個「車」→ 巨大聲響（烘＝火部；哄＝口部）"},
+  {w:"縹緲",z:"ㄆㄧㄠ ㄇㄧㄠˇ",b:"緲",o:["渺","秒"],h:"糸部 → 隱隱約約（渺＝水部渺小；秒＝禾部秒數）"},
+  {w:"凜然",z:"ㄌㄧㄣˇ ㄖㄢˊ",b:"凜",o:["稟","懍"],h:"冫部（冰）→ 威嚴令人敬畏（稟＝稟告）"}]},
+{id:"L05",title:"與宋元思書",author:"吳均",
+ words:[
+  {w:"駢文",z:"ㄆㄧㄢˊ ㄨㄣˊ",b:"駢",o:["併","拼"],h:"馬部 → 兩馬並行＝講究對偶的文體"},
+  {w:"庠",z:"ㄒㄧㄤˊ",b:"庠",o:["祥","翔"],h:"广部 → 古代的學校（祥＝示部吉祥；翔＝羽部飛翔）"},
+  {w:"鄣",z:"ㄓㄤ",b:"鄣",o:["障","彰"],h:"右耳旁（邑部）→ 地名用字（障＝阜部障礙）"},
+  {w:"軒邈",z:"ㄒㄩㄢ ㄇㄧㄠˇ",b:"邈",o:["藐","貌"],h:"辵部 → 爭著往高處遠處伸展（藐＝藐視）"},
+  {w:"戾",z:"ㄌㄧˋ",b:"戾",o:["淚","唳"],h:"戶＋犬 → 到達；「鳶飛戾天」（風聲鶴唳＝口部鳥鳴）"},
+  {w:"經綸",z:"ㄐㄧㄥ ㄌㄨㄣˊ",b:"綸",o:["倫","輪"],h:"糸部 → 整理絲線＝治理事務（倫＝人倫；輪＝車輪）"}],
+ text:{title:"課文（文言・公共財）",parts:[
+  {h:"與宋元思書（南朝梁・吳均）",lines:["風煙俱淨，天山共色。從流飄蕩，任意東西。自富陽至桐廬，一百許里，奇山異水，天下獨絕。","水皆縹碧，千丈見底。游魚細石，直視無礙。急湍甚箭，猛浪若奔。","夾岸高山，皆生寒樹。負勢競上，互相軒邈；爭高直指，千百成峰。泉水激石，泠泠作響；好鳥相鳴，嚶嚶成韻。蟬則千轉不窮，猿則百叫無絕。","鳶飛戾天者，望峰息心；經綸世務者，窺谷忘返。橫柯上蔽，在晝猶昏；疏條交映，有時見日。"]}]}},
+{id:"L06",title:"一家手語餐廳的誕生",author:"王壽來",
+ words:[
+  {w:"一竅不通",z:"ㄧ ㄑㄧㄠˋ ㄅㄨˋ ㄊㄨㄥ",b:"竅",o:["翹","竊"],h:"穴部 → 孔竅、訣竅（翹＝羽部翹起；竊＝偷竊）"},
+  {w:"矚目",z:"ㄓㄨˇ ㄇㄨˋ",b:"矚",o:["囑","屬"],h:"目部 → 用眼注視（囑＝口部叮囑）"},
+  {w:"躍躍欲試",z:"ㄩㄝˋ ㄩㄝˋ ㄩˋ ㄕˋ",b:"躍",o:["耀","曜"],h:"足部 → 跳躍（耀＝光部閃耀）"},
+  {w:"不啻",z:"ㄅㄨˋ ㄔˋ",b:"啻",o:["帝","締"],h:"口部 → 不只、如同（帝＝皇帝；締＝糸部締結）"},
+  {w:"福祉",z:"ㄈㄨˊ ㄓˇ",b:"祉",o:["址","趾"],h:"示部（礻）→ 福氣（址＝土部地址；趾＝足部腳趾）"},
+  {w:"味蕾",z:"ㄨㄟˋ ㄌㄟˇ",b:"蕾",o:["壘","累"],h:"艸部 → 花蕾；舌上的味覺器官（壘＝土部堡壘）"}]},
+{id:"L07",title:"我們的饕餮時代",author:"蔡珠兒",
+ words:[
+  {w:"饕餮",z:"ㄊㄠ ㄊㄧㄝˋ",b:"饕",o:["濤","滔"],h:"下面是「食」→ 傳說中貪吃的神獸（滔＝水部滔滔不絕）"},
+  {w:"蒟蒻",z:"ㄐㄩˇ ㄖㄨㄛˋ",b:"蒻",o:["弱","箬"],h:"艸部 → 植物做成的食品（弱＝強弱）"},
+  {w:"囫圇",z:"ㄏㄨˊ ㄌㄨㄣˊ",b:"囫",o:["惚","忽"],h:"囗部（圍起來）→ 整個吞下；囫圇吞棗（忽＝忽略）"},
+  {w:"瞠乎其後",z:"ㄔㄥ ㄏㄨ ㄑㄧˊ ㄏㄡˋ",b:"瞠",o:["膛","堂"],h:"目部 → 瞪大眼睛追不上（膛＝肉部胸膛）"},
+  {w:"解饞",z:"ㄐㄧㄝˇ ㄔㄢˊ",b:"饞",o:["纏","蟬"],h:"食部 → 嘴饞想吃（纏＝糸部糾纏；蟬＝虫部蟬鳴）"},
+  {w:"沆瀣一氣",z:"ㄏㄤˋ ㄒㄧㄝˋ ㄧ ㄑㄧˋ",b:"瀣",o:["懈","榭"],h:"水部 → 夜間水氣；比喻臭味相投（懈＝鬆懈）"}]},
+{id:"L08",title:"生於憂患死於安樂",author:"孟子",
+ words:[
+  {w:"羞赧",z:"ㄒㄧㄡ ㄋㄢˇ",b:"赧",o:["赦","郝"],h:"赤部 → 因害羞而臉紅（赦＝赦免）"},
+  {w:"畎畝",z:"ㄑㄩㄢˇ ㄇㄨˇ",b:"畎",o:["犬","吠"],h:"田部 → 田間水溝；畎畝＝田野（犬＝狗）"},
+  {w:"膠鬲",z:"ㄐㄧㄠ ㄍㄜˊ",b:"鬲",o:["隔","膈"],h:"古代炊具的象形字，這裡是商朝賢臣的名字（隔＝阜部隔開）"},
+  {w:"筋骨",z:"ㄐㄧㄣ ㄍㄨˇ",b:"筋",o:["斤","金"],h:"竹＋月＋力 → 勞其筋骨（斤＝公斤）"},
+  {w:"拂士",z:"ㄅㄧˋ ㄕˋ",b:"拂",o:["彿","弼"],h:"⚠️ 這裡讀ㄅㄧˋ，通「弼」＝輔佐君王的賢士"},
+  {w:"殷憂",z:"ㄧㄣ ㄧㄡ",b:"殷",o:["慇","股"],h:"殷＝深切；殷憂＝深深的憂慮"}],
+ text:{title:"課文（文言・公共財）",parts:[
+  {h:"生於憂患死於安樂（《孟子》）",lines:["舜發於畎畝之中，傅說舉於版築之間，膠鬲舉於魚鹽之中，管夷吾舉於士，孫叔敖舉於海，百里奚舉於市。","故天將降大任於是人也，必先苦其心志，勞其筋骨，餓其體膚，空乏其身，行拂亂其所為，所以動心忍性，曾益其所不能。","人恆過，然後能改；困於心，衡於慮，而後作；徵於色，發於聲，而後喻。","入則無法家拂士，出則無敵國外患者，國恆亡。然後知生於憂患，而死於安樂也。"]}]}},
+{id:"L09",title:"射鵰英雄傳（閱讀）",author:"金庸",
+ words:[
+  {w:"搪塞",z:"ㄊㄤˊ ㄙㄜˋ",b:"搪",o:["糖","塘"],h:"手部（扌）→ 敷衍推託（糖＝米部；塘＝土部池塘）"},
+  {w:"魑魅魍魎",z:"ㄔ ㄇㄟˋ ㄨㄤˇ ㄌㄧㄤˇ",b:"魅",o:["媚","昧"],h:"鬼部 → 害人的鬼怪；比喻壞人（媚＝女部嫵媚；昧＝日部愚昧）"},
+  {w:"作揖",z:"ㄗㄨㄛ ㄧ",b:"揖",o:["緝","輯"],h:"手部（扌）→ 拱手行禮（緝＝糸部通緝；輯＝車部編輯）"},
+  {w:"危殆",z:"ㄨㄟˊ ㄉㄞˋ",b:"殆",o:["怠","迨"],h:"歹部 → 危險（怠＝心部怠惰）"},
+  {w:"牽強附會",z:"ㄑㄧㄢ ㄑㄧㄤˇ ㄈㄨˋ ㄏㄨㄟˋ",b:"強",o:["搶","嗆"],h:"牽強＝勉強硬扯，這裡「強」讀ㄑㄧㄤˇ"}]}
+];
+
+const SEMS=[{name:"2上",list:LESSONS},{name:"3上",list:LESSONS3}];
+
 /* ===== 引擎 ===== */
 let mode=null, curLesson=null, idx=0, matchState=null;
 let stars=0, maxStars=0, firstTry=0, itemAttempt=0;
@@ -308,14 +391,30 @@ function clozeFromWord(w){ return {t:w.w.split(w.b).join('（＿）'), a:w.b, o:
 function clozeItems(L){ return L.words.map(clozeFromWord).concat(L.extra||[]); }
 function spotItems(L){ return L.words.map(w=>({t:w.w.split(w.b).join(w.o[0]), wr:w.o[0], co:w.b, w:w.w, h:w.h})); }
 
+/* 語音：點生字唸出來（瀏覽器內建中文語音） */
+function speak(t){
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(t);
+    u.lang='zh-TW'; u.rate=0.8;
+    const v=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.startsWith('zh-TW'))||speechSynthesis.getVoices().find(v=>v.lang&&v.lang.startsWith('zh'));
+    if(v)u.voice=v;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+if('speechSynthesis' in window) speechSynthesis.getVoices();
+
 /* 首頁 */
 function renderHome(){
   const g=$('lessonGrid');
-  g.innerHTML = LESSONS.map((L,i)=>`<button onclick="openLesson(${i})"><b>${L.id}〈${L.title}〉</b><small>${L.author}｜生字 ${L.words.length} 詞</small></button>`).join('')
-   + `<button class="widebtn" onclick="startMixed()"><b>🎲 跨課混合挑戰</b><small>全學期生字隨機 15 題（會考就是這樣混著考）</small></button>`;
+  g.innerHTML = SEMS.map((S,si)=>
+    `<div class="widebtn" style="background:none;box-shadow:none;padding:6px 2px 0;font-weight:bold;color:var(--sub);grid-column:1/-1">📚 ${S.name}（翰林）</div>`
+    + S.list.map((L,i)=>`<button onclick="openLesson(${si},${i})"><b>${L.id}〈${L.title}〉</b><small>${L.author}｜生字 ${L.words.length} 詞</small></button>`).join('')
+    + `<button class="widebtn" onclick="startMixed(${si})"><b>🎲 ${S.name} 跨課混合挑戰</b><small>整學期生字隨機 15 題（會考就是這樣混著考）</small></button>`
+  ).join('');
 }
-function openLesson(i){
-  curLesson=LESSONS[i];
+function openLesson(si,i){
+  curLesson=SEMS[si].list[i];
   $('ltitle').textContent=`${curLesson.id}〈${curLesson.title}〉`;
   let m=`
    <button onclick="startMode('cloze')"><span class="emoji">✏️</span><span>選字填空<small>${clozeItems(curLesson).length} 題</small></span></button>
@@ -328,9 +427,9 @@ function openLesson(i){
 }
 function backFromPlay(){ if(curLesson) show('lesson'); else show('home'); }
 
-function startMixed(){
+function startMixed(si){
   curLesson=null; mode='cloze';
-  const pool=LESSONS.flatMap(L=>clozeItems(L));
+  const pool=SEMS[si].list.flatMap(L=>clozeItems(L));
   order=shuffle(pool).slice(0,15);
   beginRun(order.length*3); render();
 }
@@ -369,7 +468,7 @@ function pickCloze(btn,c){
     btn.classList.add('right');
     document.querySelectorAll('.opts button').forEach(b=>{if(b!==btn)b.classList.add('dim');});
     const e=earn(itemAttempt);
-    fb('good',`✅ 答對了！本題 <span class="starearn">${starStr(e)}</span>　「${q.w}」${q.z?` <span class="zhu">${q.z}</span>`:''}<br>${q.h}`);
+    fb('good',`✅ 答對了！本題 <span class="starearn">${starStr(e)}</span>　<span style="cursor:pointer" onclick="speak('${q.w}')">🔊「${q.w}」</span>${q.z?` <span class="zhu">${q.z}</span>`:''}<br>${q.h}`);
   }else{
     btn.classList.add('wrong'); btn.classList.add('dim');
     fb('info',`💡 ${q.h}<br>再試一次！（第一次就對才有 ⭐⭐⭐）`);
@@ -447,10 +546,10 @@ function renderRead(){
     T.parts.map(p=>`<h3>${p.h}</h3>`+p.lines.map(l=>`<p>${l}</p>`).join('')).join('')+
     `</div><div class="readnote">古典詩文為文化公共財。白話課文（琦君、梁實秋、席慕蓉等作家作品）仍在著作權期間，請翻課本閱讀。</div>`;
 }
-/* 生字表 */
+/* 生字表（點生字會唸出來） */
 function renderList(){
-  $('qcard').innerHTML=`<table class="wordtable">`+
-    curLesson.words.map(w=>`<tr><td class="w">${w.w}</td><td><div class="z">${w.z}</div><div class="h">${w.h}</div></td></tr>`).join('')+
+  $('qcard').innerHTML=`<div class="spot-tip">🔊 點一下生字，會唸給你聽</div><table class="wordtable">`+
+    curLesson.words.map(w=>`<tr><td class="w" style="cursor:pointer" onclick="speak('${w.w}')">🔊 ${w.w}</td><td><div class="z">${w.z}</div><div class="h">${w.h}</div></td></tr>`).join('')+
     `</table><div class="readnote">來源：本課「習字練功坊」官方習寫字詞清單，一字不漏。</div>`;
 }
 /* 共用 */
