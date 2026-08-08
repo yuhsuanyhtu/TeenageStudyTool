@@ -415,12 +415,43 @@ function tapWord(el){
   speakWord();
 }
 
+/* v2.39.1：自動挑裝置上最好的英文語音。
+   macOS/iOS 下載 Premium / Enhanced 語音後（設定→輔助使用→朗讀內容→管理聲音），
+   重開瀏覽器就會自動被選中，不用任何設定。Siri 語音瀏覽器拿不到（Apple 限制），不列入。 */
+let bestVoice = null, voicesReady = false;
+function pickBestVoice(){
+  try{
+    const vs = speechSynthesis.getVoices().filter(v=>/^en(-|_)/i.test(v.lang));
+    if(!vs.length) return null;
+    const score = v=>{
+      const n = v.name.toLowerCase();
+      if(n.includes('premium')) return 5;
+      if(n.includes('enhanced')) return 4;
+      if(/ava|zoe|evan|joelle/.test(n)) return 3;          // 高品質語音常見名（未標 Premium 時）
+      if(n.includes('google') && v.lang==='en-US') return 2; // Chrome 的 Google 網路語音也不錯
+      if(n.includes('samantha')) return 1;
+      return 0;
+    };
+    return vs.sort((a,b)=>score(b)-score(a))[0];
+  }catch(e){ return null; }
+}
+function refreshVoice(){ bestVoice = pickBestVoice(); voicesReady = true; }
+if('speechSynthesis' in window){
+  refreshVoice();
+  speechSynthesis.onvoiceschanged = refreshVoice;  // 語音清單常是非同步載入
+}
+function makeUtter(text, rate){
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang='en-US'; u.rate=rate;
+  if(!voicesReady) refreshVoice();
+  if(bestVoice) u.voice = bestVoice;
+  return u;
+}
+
 function speakWord(){
   if(!currentWord) return;
   stopSpeech();
-  const u = new SpeechSynthesisUtterance(currentWord);
-  u.lang='en-US'; u.rate=0.8;
-  speechSynthesis.speak(u);
+  speechSynthesis.speak(makeUtter(currentWord, 0.8));
 }
 
 function closeSheet(){
@@ -435,8 +466,7 @@ function toggleReadAloud(){
   if(readingAloud){ stopSpeech(); readingAloud=false; btn.textContent='🔊 聽整篇'; return; }
   const a = ARTICLES.find(x=>x.id===state.artId);
   stopSpeech();
-  const u = new SpeechSynthesisUtterance(a.text.replace(/\n/g,' '));
-  u.lang='en-US'; u.rate=0.85;
+  const u = makeUtter(a.text.replace(/\n/g,' '), 0.85);
   u.onend = ()=>{ readingAloud=false; const b=document.getElementById('btn-listen'); if(b) b.textContent='🔊 聽整篇'; };
   readingAloud = true; btn.textContent='⏹ 停止';
   speechSynthesis.speak(u);
