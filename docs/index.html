@@ -40,6 +40,7 @@
 
     <a class="mod" href="v2/"><span class="emoji">🔤</span><span>英文<small>單字卡・測驗・閱讀</small></span></a>
     <a class="mod" href="chinese/"><span class="emoji">📖</span><span>國文<small>形音義・相似字・詞語（試玩中）</small></span></a>
+    <a class="mod" href="reading/"><span class="emoji">📚</span><span>英語閱讀<small>點字讀故事・挑戰拿點數（純閱讀，不算錢）</small></span></a>
     <footer>TeenageStudyTool</footer>
   </div>
 
@@ -59,12 +60,16 @@ async function loadWallet(){
     const data=await res.json();
     if(!data||!data.ok||!Array.isArray(data.events)) throw new Error('API 未就緒');
     // 合計口徑：所有裝置加總（錢包屬於謙恩本人，不分裝置）
-    let earned=0, withdrawn=0, penalty=0, todayEn=0, todayCn=0;
+    // 每科上限：家長可在提領頁分科設定（v2_config_daily_cap＝英文、v2_config_daily_cap_cn＝國文），
+    // events 按時間排序，最後一筆生效；沒設定用預設 100。
+    let earned=0, withdrawn=0, penalty=0, todayEn=0, todayCn=0, capEn=100, capCn=100;
     const t=todayStr();
     for(const ev of data.events){
       const name=String(ev.event||''); const amt=Number(ev.amount)||0;
       const date=String(ev.timestamp||'').slice(0,10);
-      if(name.startsWith('v2_cn_') && name.endsWith('_paid') && amt>0){
+      if(name==='v2_config_daily_cap'){ const v=Math.floor(amt); if(v>=10&&v<=1000) capEn=v; }
+      else if(name==='v2_config_daily_cap_cn'){ const v=Math.floor(amt); if(v>=10&&v<=1000) capCn=v; }
+      else if(name.startsWith('v2_cn_') && name.endsWith('_paid') && amt>0){
         earned+=amt;                            // 國文獎金（同一個錢包）
         if(date===t) todayCn+=amt;
       }else if(name.endsWith('_done') && amt>0){
@@ -74,10 +79,10 @@ async function loadWallet(){
       else if(name==='v2_penalty'){ penalty+=Math.abs(amt); }
     }
     const avail=Math.max(0, earned-withdrawn-penalty);
-    if(todayEn>100) todayEn=100;  // 各科日上限各 $100，兩科都滿＝$200
-    if(todayCn>100) todayCn=100;
+    if(todayEn>capEn) todayEn=capEn;  // 各科日上限（家長可分科調整）
+    if(todayCn>capCn) todayCn=capCn;
     B.textContent=`$${avail}`;
-    T.innerHTML=`今天：英文 <b>$${todayEn}</b>／100　＋　國文 <b>$${todayCn}</b>／100<br>兩科都完成，一天最多 $200！`;
+    T.innerHTML=`今天：英文 <b>$${todayEn}</b>／${capEn}　＋　國文 <b>$${todayCn}</b>／${capCn}<br>兩科都完成，一天最多 $${capEn+capCn}！`;
     S.textContent=`資料來源：Google Sheet（${new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})} 更新）`;
   }catch(e){
     B.textContent='—';

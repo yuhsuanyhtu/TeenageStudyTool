@@ -55,6 +55,20 @@ export function extractDailyCap(events) {
   return cap;  // null = 家長沒調過，用預設
 }
 
+// v2.39：國文的每科上限（家長頁分科設定）。事件 v2_config_daily_cap_cn，amount = 新上限。
+// 英文的 recomputeFromEvents 不吃這個事件（各科真實獨立套用）；
+// 讀它的人：家長頁（顯示與儲存）、首頁（顯示）、chinese/index.html（結算真實套用）。
+export function extractDailyCapCn(events) {
+  let cap = null;
+  for (const ev of events || []) {
+    if (String(ev.event || '') === 'v2_config_daily_cap_cn') {
+      const v = Math.floor(Number(ev.amount));
+      if (v >= 10 && v <= 1000) cap = v;
+    }
+  }
+  return cap;  // null = 家長沒調過，用預設 100
+}
+
 export function recomputeFromEvents(events, todayStr, myDevice) {
   const dev = String(myDevice || '').trim();
   const real = (events || []).filter(ev =>

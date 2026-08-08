@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>謙恩的英文閱讀角 📚</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family: "PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
+    background:#FBF7EF; color:#3A3226; min-height:100vh;
+  }
+  .wrap { max-width:640px; margin:0 auto; padding:20px 18px 140px; }
+
+  /* ---------- Home ---------- */
+  .home-title { font-size:26px; font-weight:800; margin:8px 0 4px; }
+  .home-sub { color:#8A7D66; font-size:15px; margin-bottom:22px; line-height:1.6; }
+  .cat-label { font-size:14px; font-weight:700; color:#A08C5B; letter-spacing:2px; margin:20px 0 10px; }
+  .card {
+    background:#fff; border:1px solid #EFE6D5; border-radius:16px;
+    padding:16px 18px; margin-bottom:12px; cursor:pointer;
+    box-shadow:0 1px 3px rgba(90,70,30,.06); transition:transform .08s;
+  }
+  .card:active { transform:scale(.985); }
+  .card .en { font-size:18px; font-weight:700; font-family:Georgia,serif; }
+  .card .zh { font-size:14px; color:#8A7D66; margin-top:3px; }
+  .card .meta { font-size:12px; color:#B7A98C; margin-top:6px; }
+  .card .done-mark { float:right; font-size:14px; color:#7BA05B; }
+
+  /* ---------- Reading ---------- */
+  .topbar { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+  .btn-back {
+    background:#fff; border:1px solid #EFE6D5; border-radius:12px;
+    padding:8px 14px; font-size:15px; cursor:pointer; color:#3A3226;
+  }
+  .btn-listen {
+    background:#F3EBDD; border:1px solid #E5D8BF; border-radius:12px;
+    padding:8px 14px; font-size:15px; cursor:pointer; color:#6B5B3E; margin-left:auto;
+  }
+  .art-title { font-family:Georgia,serif; font-size:24px; font-weight:800; margin:6px 0 2px; }
+  .art-zh { color:#8A7D66; font-size:14px; margin-bottom:16px; }
+  .art-body {
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:20px; line-height:2.0; letter-spacing:.2px;
+  }
+  .art-body p { margin-bottom:14px; }
+  .w { cursor:pointer; border-radius:4px; padding:0 1px; }
+  .w:active { background:#F5E9C8; }
+  .w.seen { background:linear-gradient(transparent 70%, #F6E7B2 70%); }
+  .w.current { background:#F1E3AF; }
+  .art-footer { margin-top:26px; text-align:center; }
+  .btn-finish {
+    background:#EAF2E0; border:1px solid #CBDDB6; color:#4F6B35;
+    border-radius:14px; padding:12px 22px; font-size:16px; cursor:pointer;
+  }
+  .finish-msg { margin-top:14px; font-size:15px; color:#4F6B35; line-height:1.8; display:none; }
+  .attribution { margin-top:30px; font-size:11px; color:#C4B899; line-height:1.6; }
+
+  /* ---------- Gloss sheet ---------- */
+  #sheet {
+    position:fixed; left:0; right:0; bottom:0; z-index:50;
+    background:#FFFDF7; border-top:1px solid #EBDFC8;
+    box-shadow:0 -4px 20px rgba(90,70,30,.10);
+    padding:14px 20px 20px; display:none;
+  }
+  #sheet .inner { max-width:640px; margin:0 auto; }
+  #sheet .word { font-family:Georgia,serif; font-size:24px; font-weight:800; }
+  #sheet .pos {
+    display:inline-block; font-size:11px; background:#F3EBDD; color:#8A7355;
+    border-radius:6px; padding:2px 7px; margin-left:8px; vertical-align:middle;
+  }
+  #sheet .gloss { font-size:18px; margin-top:6px; color:#3A3226; }
+  #sheet .row { display:flex; align-items:center; gap:10px; margin-top:10px; }
+  #sheet button {
+    background:#F3EBDD; border:1px solid #E5D8BF; border-radius:10px;
+    padding:7px 13px; font-size:14px; cursor:pointer; color:#6B5B3E;
+  }
+  #sheet .close { margin-left:auto; background:#fff; }
+  .hint-badge { font-size:12px; color:#B7A98C; margin-top:8px; }
+
+  /* ---------- Points pocket ---------- */
+  .pocket {
+    background:#FFF8E6; border:1px solid #F0E2BE; border-radius:14px;
+    padding:12px 16px; margin-bottom:18px; font-size:15px; color:#7A6633;
+  }
+  .pocket .pocket-note { display:block; font-size:12px; color:#B7A98C; margin-top:4px; line-height:1.6; }
+
+  /* ---------- Quiz ---------- */
+  .quiz-q { font-size:19px; font-weight:700; margin:18px 0 16px; line-height:1.7; }
+  .quiz-opt {
+    display:block; width:100%; text-align:left;
+    background:#fff; border:1px solid #EFE6D5; border-radius:14px;
+    padding:14px 16px; margin-bottom:10px; font-size:16px; cursor:pointer; color:#3A3226;
+  }
+  .quiz-opt:active { transform:scale(.985); }
+  .quiz-opt.opt-right { background:#EAF2E0; border-color:#9DBB7E; }
+  .quiz-opt.opt-picked { background:#FFF4D6; border-color:#E5CE8F; }
+  .quiz-fb { font-size:15px; color:#4F6B35; margin-top:6px; min-height:24px; line-height:1.7; }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<div id="sheet">
+  <div class="inner">
+    <span class="word" id="sh-word"></span><span class="pos" id="sh-pos"></span>
+    <div class="gloss" id="sh-gloss"></div>
+    <div class="row">
+      <button onclick="speakWord()">🔊 再聽一次</button>
+      <button class="close" onclick="closeSheet()">收起</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= 文章 ================= */
+const ARTICLES = [
+ {id:'heart', cat:'sci', emoji:'❤️', en:'Your Heart', zh:'你的心臟', src:'原創短文（謙恩專用）',
+  text:`Your heart is a pump. It is about the size of your fist. It sits in your chest, a little to the left.
+Every day, your heart beats about one hundred thousand times. It never takes a rest, even when you sleep. The heart sends blood to every part of your body. Blood carries oxygen and food to your cells.
+When you run, your heart beats faster, because your body needs more oxygen. Put your hand on your chest. Can you feel it? That is your heart, working for you.`},
+ {id:'sleep', cat:'sci', emoji:'😴', en:'Why Do We Sleep?', zh:'我們為什麼要睡覺？', src:'原創短文（謙恩專用）',
+  text:`You spend about one third of your life sleeping. Why? Sleep is not a waste of time.
+When you sleep, your brain is very busy. It cleans itself. It saves the things you learned today, like a computer saving files. Your body also repairs itself during sleep. Muscles grow, and cuts heal faster.
+If you do not sleep enough, you feel tired and angry, and it is hard to remember things. Teenagers need about nine hours of sleep every night. So tonight, going to bed early is not lazy. It is smart.`},
+ {id:'brain', cat:'sci', emoji:'🧠', en:'Your Amazing Brain', zh:'神奇的大腦', src:'原創短文（謙恩專用）',
+  text:`Your brain is the boss of your body. It weighs about one and a half kilograms, and it feels soft, like tofu.
+Your brain uses electricity to send messages. The messages travel very fast, over four hundred kilometers per hour. Your brain never turns off. It controls your breathing and your heart, even when you sleep.
+Here is a fun fact: the brain itself cannot feel pain. And here is another one. Scientists say reading is exercise for your brain. Every time you read, your brain grows stronger. So a person who loves reading has a very strong brain.`},
+ {id:'crow', cat:'story', emoji:'🐦‍⬛', en:'The Crow and the Pitcher', zh:'烏鴉喝水', src:'改寫自伊索寓言（公共財）',
+  text:`A crow was very thirsty. She found a pitcher with a little water at the bottom. But the neck of the pitcher was long, and her beak could not reach the water.
+She pushed the pitcher, but it was too heavy. She was tired and sad.
+Then she had an idea. She picked up a small stone and dropped it into the pitcher. The water rose a little. She dropped in more stones, one by one. The water rose higher and higher.
+At last, the crow could drink the cool water. If you keep trying, you will find a way.`},
+ {id:'wind', cat:'story', emoji:'🌞', en:'The North Wind and the Sun', zh:'北風與太陽', src:'改寫自伊索寓言（公共財）',
+  text:`The North Wind and the Sun had a fight. "I am stronger than you," said the Wind.
+"Let us see," said the Sun. "Look at that man on the road. If you can take off his coat, you are stronger."
+The Wind blew and blew. But the harder he blew, the more the man held his coat. Finally, the Wind gave up.
+Then the Sun came out and shone gently. The man felt warm. He smiled, and he took off his coat by himself.
+Sometimes, being gentle works better than being strong.`},
+ {id:'dragon', cat:'story', emoji:'🐉', en:'The Dragon Who Could Not Fly', zh:'不會飛的龍', src:'原創故事（謙恩專用）',
+  text:`Kiko was a young dragon with a big problem: he could not fly. Every morning, he climbed a hill, jumped, and fell into the grass. The other dragons laughed at him.
+One night, Kiko met an old owl. "Why are you sad?" asked the owl. "My wings do not work," said Kiko.
+The owl looked at his wings. "Your wings are fine. But you jump with your eyes closed, because you are afraid of falling. Tomorrow, keep your eyes open, and look at the sky, not the ground."
+The next morning, Kiko jumped and looked only at the clouds. His wings caught the wind. He was flying! The wind was cold and wonderful.
+Falling was never the problem. Being afraid to look up was.`}
+];
+
+/* ================= 字典（表面形直查）================= */
+const DICT = {
+ // --- 高頻功能詞 ---
+ "a":["一個","冠"],"an":["一個","冠"],"the":["這個、那個（特指）","冠"],
+ "is":["是（be 的現在式）","動"],"are":["是（複數用）","動"],"was":["是（過去式）","動"],"were":["是（過去式複數）","動"],"be":["是；成為","動"],"being":["是、處於（being gentle＝溫柔待人）","動"],
+ "am":["是（I am）","動"],"it":["它","代"],"its":["它的","代"],"itself":["它自己","代"],
+ "you":["你","代"],"your":["你的","代"],"yourself":["你自己","代"],
+ "he":["他","代"],"his":["他的","代"],"him":["他（受詞）","代"],"himself":["他自己","代"],
+ "she":["她","代"],"her":["她的；她","代"],
+ "i":["我","代"],"my":["我的","代"],"me":["我（受詞）","代"],"we":["我們","代"],"us":["我們（受詞）","代"],
+ "they":["他們","代"],"their":["他們的","代"],"them":["他們（受詞）","代"],
+ "who":["誰；（引導子句）…的人","代"],"that":["那個；那","代"],"this":["這個","代"],"these":["這些","代"],
+ "what":["什麼","代"],"why":["為什麼","副"],"how":["如何、怎麼","副"],"when":["當…的時候","連"],
+ "and":["和、然後","連"],"but":["但是","連"],"or":["或者","連"],"so":["所以","連"],"because":["因為","連"],"if":["如果","連"],"like":["像…一樣","介"],
+ "of":["…的","介"],"to":["到；去（不定詞）","介"],"in":["在…裡面","介"],"into":["進入","介"],"on":["在…上面","介"],"at":["在（地點/時間）","介"],
+ "for":["為了；給","介"],"with":["和…一起；用","介"],"by":["被；靠著（by himself＝靠他自己）","介"],"over":["越過；超過","介"],"per":["每","介"],"during":["在…期間","介"],
+ "not":["不、沒有","副"],"no":["不；沒有","副"],"do":["做（助動詞）","動"],"does":["做（第三人稱）","動"],"did":["做（過去式）","動"],
+ "can":["能、可以","助"],"could":["能（過去式）","助"],"cannot":["不能","助"],"will":["將會","助"],"would":["將會（過去式）","助"],
+ "have":["有","動"],"has":["有（第三人稱）","動"],"had":["有（過去式）","動"],
+ "there":["那裡；有（there is）","副"],"here":["這裡","副"],"then":["然後","副"],"now":["現在","副"],
+ "very":["非常","副"],"too":["太；也","副"],"also":["也","副"],"only":["只有","副"],"even":["甚至","副"],"never":["從不","副"],"always":["總是","副"],
+ "every":["每一個","形"],"all":["全部","形"],"some":["一些","形"],"more":["更多","形"],"most":["最多","形"],"another":["另一個","形"],"other":["其他的","形"],"few":["少數幾個（a few＝一些）","形"],
+ "about":["大約；關於","介"],"up":["向上","副"],"out":["出來","副"],"off":["脫掉；關掉","副"],"away":["離開","副"],"again":["再一次","副"],
+ "one":["一","數"],"two":["二","數"],"three":["三","數"],"nine":["九","數"],"hundred":["百","數"],"thousand":["千","數"],"third":["三分之一；第三","數"],"half":["一半","數"],
+ "please":["請","感"],"yes":["是的","感"],"thank":["感謝（Thank you＝謝謝你）","動"],
+ "four":["四","數"],"than":["比…（stronger than you＝比你強）","連"],"took":["拿；脫（take 的過去式）","動"],
+ "kiko":["奇可（小龍的名字）","名"],"big":["大的","形"],
+ "crow":["烏鴉","名"],"thirsty":["口渴的","形"],"found":["找到（find 的過去式）","動"],"pitcher":["水瓶、水壺","名"],
+ "water":["水","名"],"bottom":["底部","名"],"neck":["脖子；瓶頸","名"],"long":["長的","形"],
+ "beak":["鳥嘴","名"],"reach":["碰到、搆到","動"],"pushed":["推（push 的過去式）","動"],"heavy":["重的","形"],
+ "idea":["主意、點子","名"],"picked":["撿起（pick 的過去式；pick up＝撿起）","動"],"stone":["石頭","名"],"stones":["石頭（複數）","名"],
+ "dropped":["丟下（drop 的過去式）","動"],"rose":["上升（rise 的過去式）","動"],"higher":["更高","副"],
+ "last":["最後（at last＝終於）","名"],"drink":["喝","動"],"cool":["涼的","形"],"trying":["嘗試（keep trying＝繼續試）","動"],
+ "find":["找到","動"],"way":["方法；路","名"],
+
+ // --- 身體科普 ---
+ "heart":["心臟","名"],"pump":["幫浦、抽水機","名"],"size":["大小、尺寸","名"],"fist":["拳頭","名"],
+ "sits":["位於；坐（sit 的第三人稱）","動"],"chest":["胸口、胸腔","名"],"little":["小的；一點點","形"],"left":["左邊","名"],
+ "day":["天、日子","名"],"beats":["跳動（beat 的第三人稱）","動"],"beat":["跳動；打","動"],"times":["次數；倍","名"],"time":["時間；次","名"],
+ "takes":["拿取；花費（take 的第三人稱）","動"],"take":["拿；脫（take off＝脫掉）","動"],"rest":["休息","名"],"sleep":["睡覺","動"],"sleeping":["正在睡覺","動"],
+ "sends":["寄送、傳送（send 的第三人稱）","動"],"send":["寄送、傳送","動"],"blood":["血液","名"],"part":["部分","名"],"body":["身體","名"],
+ "carries":["攜帶、運送（carry 的第三人稱）","動"],"oxygen":["氧氣","名"],"food":["食物","名"],"cells":["細胞（複數）","名"],
+ "run":["跑步","動"],"faster":["更快","副"],"fast":["快的","形"],"needs":["需要（need 的第三人稱）","動"],"need":["需要","動"],
+ "put":["放","動"],"hand":["手","名"],"feel":["感覺","動"],"feels":["感覺起來（feel 的第三人稱）","動"],"felt":["感覺（過去式）","動"],
+ "working":["正在工作、運作","動"],"work":["工作；有效","動"],"works":["有效；運作（work 的第三人稱）","動"],
+ "spend":["花費（時間、錢）","動"],"life":["生命、人生","名"],"waste":["浪費","名"],
+ "brain":["大腦","名"],"busy":["忙碌的","形"],"cleans":["清潔（clean 的第三人稱）","動"],
+ "saves":["儲存；拯救（save 的第三人稱）","動"],"saving":["正在儲存","動"],"things":["東西、事情（複數）","名"],
+ "learned":["學到了（learn 的過去式）","動"],"today":["今天","名"],"computer":["電腦","名"],"files":["檔案（複數）","名"],
+ "repairs":["修理（repair 的第三人稱）","動"],"muscles":["肌肉（複數）","名"],"grow":["成長","動"],"grows":["成長（第三人稱）","動"],
+ "cuts":["傷口（複數）；切","名"],"cut":["剪斷、切","動"],"heal":["癒合、痊癒","動"],
+ "enough":["足夠","副"],"tired":["疲倦的","形"],"angry":["生氣的","形"],"hard":["困難的；用力的","形"],"harder":["更用力地","副"],
+ "remember":["記得","動"],"teenagers":["青少年（複數）","名"],"hours":["小時（複數）","名"],"hour":["小時","名"],"night":["夜晚","名"],
+ "tonight":["今晚","名"],"going":["去（go 的進行式）","動"],"bed":["床","名"],"early":["早","副"],"lazy":["懶惰的","形"],"smart":["聰明的","形"],
+ "boss":["老闆、主宰","名"],"weighs":["重達…（weigh 的第三人稱）","動"],"kilograms":["公斤（複數）","名"],
+ "soft":["柔軟的","形"],"tofu":["豆腐","名"],"uses":["使用（use 的第三人稱）","動"],"electricity":["電","名"],
+ "messages":["訊息（複數）","名"],"travel":["移動、旅行","動"],"kilometers":["公里（複數）","名"],
+ "turns":["轉；變成（turn 的第三人稱）","動"],"controls":["控制（control 的第三人稱）","動"],"breathing":["呼吸","名"],
+ "fun":["有趣的","形"],"fact":["事實","名"],"pain":["疼痛","名"],"scientists":["科學家（複數）","名"],"say":["說","動"],
+ "reading":["閱讀","名"],"read":["讀","動"],"exercise":["運動、鍛鍊","名"],"stronger":["更強壯的","形"],"strong":["強壯的","形"],
+ "person":["人","名"],"loves":["熱愛（love 的第三人稱）","動"],
+
+ // --- 故事 ---
+ "lion":["獅子","名"],"mouse":["老鼠","名"],"forest":["森林","名"],"ran":["跑（run 的過去式）","動"],
+ "nose":["鼻子","名"],"woke":["叫醒（wake 的過去式）","動"],"caught":["抓住（catch 的過去式）","動"],
+ "let":["讓","動"],"go":["走、離開","動"],"said":["說（say 的過去式）","動"],
+ "help":["幫助","動"],"laughed":["笑（laugh 的過去式）","動"],"small":["小的","形"],
+ "days":["天（複數）","名"],"later":["之後","副"],"hunters":["獵人（複數）","名"],"net":["網子","名"],
+ "roared":["吼叫（roar 的過去式）","動"],"move":["移動","動"],"heard":["聽到（hear 的過去式）","動"],
+ "ropes":["繩子（複數）","名"],"teeth":["牙齒（複數）","名"],"free":["自由的","形"],
+ "wrong":["錯的","形"],"friends":["朋友（複數）","名"],"great":["很棒的、偉大的","形"],
+ "north":["北方","名"],"wind":["風","名"],"sun":["太陽","名"],"fight":["爭吵、打架","名"],
+ "see":["看見；知道（Let us see＝我們試試看）","動"],"look":["看","動"],"looked":["看（過去式）","動"],
+ "man":["男人","名"],"road":["路","名"],"coat":["外套","名"],
+ "blew":["吹（blow 的過去式）","動"],"held":["抓緊（hold 的過去式）","動"],"finally":["最後","副"],
+ "gave":["給（give 的過去式；gave up＝放棄）","動"],"came":["來（come 的過去式）","動"],
+ "shone":["照耀（shine 的過去式）","動"],"gently":["溫和地","副"],"gentle":["溫和的","形"],
+ "warm":["溫暖的","形"],"smiled":["微笑（smile 的過去式）","動"],"sometimes":["有時候","副"],"better":["更好","副"],
+ "young":["年輕的","形"],"dragon":["龍","名"],"dragons":["龍（複數）","名"],"problem":["問題","名"],
+ "fly":["飛","動"],"flying":["正在飛","動"],"morning":["早晨","名"],"climbed":["爬（climb 的過去式）","動"],
+ "hill":["小山丘","名"],"jumped":["跳（jump 的過去式）","動"],"jump":["跳","動"],"fell":["掉落（fall 的過去式）","動"],
+ "grass":["草地","名"],"met":["遇見（meet 的過去式）","動"],"old":["老的","形"],"owl":["貓頭鷹","名"],
+ "sad":["難過的","形"],"asked":["問（ask 的過去式）","動"],"wings":["翅膀（複數）","名"],
+ "fine":["很好的、沒問題的","形"],"eyes":["眼睛（複數）","名"],"closed":["閉上的","形"],
+ "afraid":["害怕的","形"],"falling":["掉落","名"],"tomorrow":["明天","名"],"keep":["保持","動"],
+ "open":["張開的","形"],"sky":["天空","名"],"ground":["地面","名"],"next":["下一個","形"],
+ "clouds":["雲（複數）","名"],"cold":["冷的","形"],"wonderful":["美妙的","形"]
+};
+
+/* ================= 挑戰題（讀完後自選，答對 +1 點）================= */
+const QUIZ = {
+ heart:[
+  {q:'心臟的工作是什麼？', a:'把血液送到全身', o:['幫助消化食物','讓身體長高']},
+  {q:'你跑步的時候，心跳會怎麼樣？', a:'跳得更快', o:['跳得更慢','完全停下來']},
+  {q:'文章說，心臟大概跟什麼一樣大？', a:'你的拳頭', o:['一顆西瓜','一個硬幣']}],
+ sleep:[
+  {q:'睡覺的時候，大腦在做什麼？', a:'很忙，在整理今天學的東西', o:['完全關機休息','什麼都沒做']},
+  {q:'青少年每天大約需要睡幾小時？', a:'9 小時', o:['5 小時','12 小時']},
+  {q:'文章說，早點上床睡覺是＿＿的表現？', a:'聰明', o:['懶惰','浪費時間']}],
+ brain:[
+  {q:'文章說，大腦摸起來像什麼？', a:'豆腐', o:['石頭','麵包']},
+  {q:'大腦自己會不會感覺到痛？', a:'不會', o:['會，很痛','只有晚上會']},
+  {q:'文章說，什麼活動是「大腦的運動」？', a:'閱讀', o:['睡覺','吃飯']}],
+ crow:[
+  {q:'烏鴉一開始為什麼喝不到水？', a:'水太少、瓶頸太長，嘴搆不到', o:['水太燙了','瓶子是空的']},
+  {q:'烏鴉最後用什麼方法喝到水？', a:'丟小石頭進去，讓水位上升', o:['把瓶子打破','請朋友幫忙倒水']},
+  {q:'這個故事想告訴我們什麼？', a:'一直嘗試，就會找到方法', o:['力氣大最重要','喝水對身體很好']}],
+ wind:[
+  {q:'北風和太陽在比賽什麼？', a:'誰能讓路上的人脫掉外套', o:['誰跑得比較快','誰比較亮']},
+  {q:'風吹得越用力，那個人怎麼樣？', a:'把外套抓得更緊', o:['馬上脫掉外套','躲進屋子裡']},
+  {q:'最後誰贏了？為什麼？', a:'太陽，因為溫和的方法更有效', o:['北風，因為它力氣比較大','平手，兩個都沒辦法']}],
+ dragon:[
+  {q:'小龍 Kiko 的大問題是什麼？', a:'他不會飛', o:['他不會噴火','他找不到朋友']},
+  {q:'貓頭鷹說，Kiko 飛不起來的真正原因是？', a:'他怕摔，所以閉著眼睛跳', o:['他的翅膀受傷了','他吃得太重了']},
+  {q:'最後 Kiko 是怎麼飛起來的？', a:'睜開眼睛，看著天空跳', o:['從更高的山上跳','別的龍拉著他飛']}]
+};
+
+/* ================= Google Sheet 紀錄（與英文/國文同端點）=================
+   事件命名規則（重要，勿改）：
+   - v2_ 開頭 → API 撈得到
+   - 不以 _done 結尾 → 不會被英文錢包/日上限/連勝重算誤計（sync.js recomputeFromEvents）
+   - 不是 v2_cn_*_paid → 不會被國文錢包誤計
+   - 首頁錢包只認 _done 與 v2_cn_*_paid → 閱讀點數永遠不會變成錢
+   事件：
+   - v2_read_finish：讀完一篇（unit=文章id）→ ✓ 與上次閱讀日期的真相來源
+   - v2_read_quiz：挑戰結果（quizSize=3, correct=答對數, amount=得到點數；重玩 amount=0）
+   - v2_read_pagehide：閱讀中離開（觀察逃離熱點用，與英文慣例一致）
+   點數口袋＝所有裝置 v2_read_quiz 的 amount 加總（以人計，不綁裝置）。 */
+const PAY_URL="https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
+function rdDevice(){
+  try{
+    let n=localStorage.getItem('sv2.deviceName');
+    if(!n){const ua=navigator.userAgent||'';let k='裝置';
+      if(/iPad/i.test(ua))k='iPad';else if(/iPhone/i.test(ua))k='iPhone';
+      else if(/Android/i.test(ua))k='Android';else if(/Macintosh/i.test(ua))k='Mac';else if(/Windows/i.test(ua))k='Windows';
+      n=k+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+      localStorage.setItem('sv2.deviceName',n);}
+    return n;
+  }catch(e){return '(未命名)';}
+}
+function rdPost(ev, useBeacon){
+  try{
+    const body=JSON.stringify({event:ev.event,unit:ev.unit||'',quizSize:ev.quizSize??'',correct:ev.correct??'',
+      prediction:'',amount:ev.amount??'',note:ev.note||'',money:'',totalPaid:'',streak:'',user:rdDevice()});
+    if(useBeacon && navigator.sendBeacon){
+      navigator.sendBeacon(PAY_URL, new Blob([body],{type:'text/plain;charset=utf-8'})); return;
+    }
+    fetch(PAY_URL,{method:'POST',mode:'no-cors',keepalive:true,
+      headers:{'Content-Type':'text/plain;charset=utf-8'},body}).catch(()=>{});
+  }catch(e){}
+}
+async function rdFetchState(){
+  // 從 Sheet 重算：每篇 ✓/最後閱讀日、點數口袋、已挑戰過的文章（以人計＝全裝置）
+  const res=await fetch(`${PAY_URL}?action=v2_events`,{mode:'cors',cache:'no-cache'});
+  const data=await res.json();
+  if(!data||!data.ok||!Array.isArray(data.events)) throw new Error('API');
+  const lastRead={}, quizzed={}; let points=0;
+  for(const ev of data.events){
+    const name=String(ev.event||''); const unit=String(ev.unit||'');
+    const date=String(ev.timestamp||'').slice(0,10);
+    if(name==='v2_read_finish' && unit){
+      if(!lastRead[unit]||date>lastRead[unit]) lastRead[unit]=date;
+    }else if(name==='v2_read_quiz' && unit){
+      points+=Number(ev.amount)||0;
+      quizzed[unit]=true;
+    }
+  }
+  return {lastRead, quizzed, points};
+}
+
+/* ================= 狀態（記憶體內，真相來源＝Sheet）================= */
+let state = { view:'home', artId:null, seen:{}, finished:{} };
+let sheetState = { lastRead:{}, quizzed:{}, points:null, online:false };
+async function refreshSheetState(){
+  try{ const s=await rdFetchState(); sheetState={...s, online:true}; }
+  catch(e){ sheetState.online=false; }
+}
+
+/* ================= 畫面 ================= */
+const app = document.getElementById('app');
+
+function renderHome(){
+  closeSheet(); stopSpeech();
+  state.view='home'; state.artId=null;
+  const sci = ARTICLES.filter(a=>a.cat==='sci');
+  const story = ARTICLES.filter(a=>a.cat==='story');
+  const card = a=>{
+    const last = sheetState.lastRead[a.id];
+    const mark = last ? `<span class="done-mark">✅ ${last}</span>` : (state.finished[a.id]?'<span class="done-mark">✅ 今天</span>':'');
+    return `
+    <div class="card" onclick="openArticle('${a.id}')">
+      ${mark}
+      <div class="en">${a.emoji} ${a.en}</div>
+      <div class="zh">${a.zh}</div>
+      <div class="meta">${a.text.split(/\s+/).length} 個字 · 約 ${Math.max(1,Math.round(a.text.split(/\s+/).length/60))} 分鐘${QUIZ[a.id]?(sheetState.quizzed[a.id]?' · 🎯 挑戰過':''):''}</div>
+    </div>`;
+  };
+  const pts = sheetState.points===null ? '…' : sheetState.points;
+  app.innerHTML = `
+    <div class="home-title">謙恩的英文閱讀角 📚</div>
+    <div class="home-sub">看不懂的字，<b>用手指點一下</b>，中文就會出現，還會唸給你聽。<br>這裡的閱讀不算錢——想讀什麼就讀什麼。</div>
+    <div class="pocket">🎒 閱讀點數：<b id="pocket-pts">${pts}</b> 點
+      <span class="pocket-note">讀完文章後可以自選挑戰，答對拿點數（點數不是錢，是閱讀角自己的寶物）</span></div>
+    <div class="cat-label">🧬 身體與科學</div>
+    ${sci.map(card).join('')}
+    <div class="cat-label">🐉 故事與奇幻</div>
+    ${story.map(card).join('')}
+    <div class="attribution">寓言改寫自伊索寓言（公共財）。科普與龍的故事為原創。<br>想要更多文章的話，跟爸爸說一聲！<br><a href="../" style="color:#B7A98C">← 回學習系統首頁</a></div>`;
+  window.scrollTo(0,0);
+}
+
+function tokenizeToHtml(text, artId){
+  return text.split(/\n/).map(par=>{
+    const html = par.replace(/[A-Za-z]+/g, m=>{
+      const key = m.toLowerCase();
+      const seenCls = state.seen[artId] && state.seen[artId][key] ? ' seen' : '';
+      return `<span class="w${seenCls}" data-w="${key}" onclick="tapWord(this)">${m}</span>`;
+    });
+    return `<p>${html}</p>`;
+  }).join('');
+}
+
+function openArticle(id){
+  const a = ARTICLES.find(x=>x.id===id);
+  state.view='read'; state.artId=id;
+  if(!state.seen[id]) state.seen[id]={};
+  app.innerHTML = `
+    <div class="topbar">
+      <button class="btn-back" onclick="renderHome()">← 回書架</button>
+      <button class="btn-listen" id="btn-listen" onclick="toggleReadAloud()">🔊 聽整篇</button>
+    </div>
+    <div class="art-title">${a.emoji} ${a.en}</div>
+    <div class="art-zh">${a.zh} · ${a.src}</div>
+    <div class="art-body">${tokenizeToHtml(a.text, id)}</div>
+    <div class="art-footer">
+      <button class="btn-finish" onclick="finishArticle()">我讀完了 🌟</button>
+      <div class="finish-msg" id="finish-msg"></div>
+    </div>
+    <div class="hint-badge">小提醒：點任何一個字都可以，點過的字會有黃色底線。</div>`;
+  window.scrollTo(0,0);
+}
+
+/* ================= 點字查詢 ================= */
+let currentWord = null, currentEl = null;
+
+function tapWord(el){
+  const key = el.dataset.w;
+  if(currentEl) currentEl.classList.remove('current');
+  currentEl = el; el.classList.add('current');
+  el.classList.add('seen');
+  if(state.artId) state.seen[state.artId][key] = true;
+  // 同一個字全部標記
+  document.querySelectorAll(`.w[data-w="${key}"]`).forEach(x=>x.classList.add('seen'));
+
+  currentWord = key;
+  const entry = DICT[key];
+  document.getElementById('sh-word').textContent = key;
+  if(entry){
+    document.getElementById('sh-pos').textContent = entry[1];
+    document.getElementById('sh-pos').style.display='inline-block';
+    document.getElementById('sh-gloss').textContent = entry[0];
+  }else{
+    document.getElementById('sh-pos').style.display='none';
+    document.getElementById('sh-gloss').textContent = '這個字先聽聽發音，記住它的樣子 🌱';
+  }
+  document.getElementById('sheet').style.display='block';
+  speakWord();
+}
+
+function speakWord(){
+  if(!currentWord) return;
+  stopSpeech();
+  const u = new SpeechSynthesisUtterance(currentWord);
+  u.lang='en-US'; u.rate=0.8;
+  speechSynthesis.speak(u);
+}
+
+function closeSheet(){
+  document.getElementById('sheet').style.display='none';
+  if(currentEl){ currentEl.classList.remove('current'); currentEl=null; }
+}
+
+/* ================= 整篇朗讀 ================= */
+let readingAloud = false;
+function toggleReadAloud(){
+  const btn = document.getElementById('btn-listen');
+  if(readingAloud){ stopSpeech(); readingAloud=false; btn.textContent='🔊 聽整篇'; return; }
+  const a = ARTICLES.find(x=>x.id===state.artId);
+  stopSpeech();
+  const u = new SpeechSynthesisUtterance(a.text.replace(/\n/g,' '));
+  u.lang='en-US'; u.rate=0.85;
+  u.onend = ()=>{ readingAloud=false; const b=document.getElementById('btn-listen'); if(b) b.textContent='🔊 聽整篇'; };
+  readingAloud = true; btn.textContent='⏹ 停止';
+  speechSynthesis.speak(u);
+}
+function stopSpeech(){ try{ speechSynthesis.cancel(); }catch(e){} }
+
+/* ================= 讀完 → ✓ 紀錄 → 自選挑戰 ================= */
+function finishArticle(){
+  const a = ARTICLES.find(x=>x.id===state.artId);
+  const firstFinishToday = !state.finished[state.artId];
+  state.finished[state.artId]=true;
+  if(firstFinishToday){
+    rdPost({event:'v2_read_finish', unit:a.id, note:a.en});
+    sheetState.lastRead[a.id]=todayStr();
+  }
+  const n = Object.keys(state.seen[state.artId]||{}).length;
+  const msg = document.getElementById('finish-msg');
+  msg.style.display='block';
+  const already = sheetState.quizzed[a.id];
+  const quizBtns = QUIZ[a.id] ? `
+    <div style="margin-top:12px">
+      <button class="btn-finish" onclick="startQuiz()">${already?'🎯 再玩一次挑戰（不加點）':'🎯 要不要挑戰 3 題？答對 1 題拿 1 點'}</button>
+      <button class="btn-back" style="margin-left:8px" onclick="renderHome()">下次再說</button>
+    </div>` : '';
+  msg.innerHTML = (n>0
+    ? `太棒了！你讀完了一篇英文文章 🎉<br>今天認識了 <b>${n}</b> 個單字新朋友 🌱`
+    : `太棒了！你讀完了一篇英文文章 🎉<br>整篇都看得懂，太厲害了！`) + quizBtns;
+  msg.scrollIntoView({behavior:'smooth', block:'center'});
+}
+function todayStr(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+
+/* ================= 自選挑戰（答錯不扣、不羞辱）================= */
+let quiz = null;
+function startQuiz(){
+  closeSheet(); stopSpeech();
+  const artId = state.artId;
+  const replay = !!sheetState.quizzed[artId];
+  quiz = { artId, i:0, got:0, replay };
+  renderQuizQ();
+}
+function renderQuizQ(){
+  const a = ARTICLES.find(x=>x.id===quiz.artId);
+  const item = QUIZ[quiz.artId][quiz.i];
+  const opts = shuffleArr([item.a, ...item.o]);
+  app.innerHTML = `
+    <div class="topbar"><button class="btn-back" onclick="openArticle('${quiz.artId}')">← 回文章</button></div>
+    <div class="art-title">🎯 挑戰 ${quiz.i+1}／${QUIZ[quiz.artId].length}</div>
+    <div class="art-zh">${a.emoji} ${a.en}${quiz.replay?' · 再玩一次（不加點）':''}</div>
+    <div class="quiz-q">${item.q}</div>
+    <div id="quiz-opts">${opts.map(o=>`<button class="quiz-opt" onclick="answerQuiz(this)" data-ok="${o===item.a?1:0}">${o}</button>`).join('')}</div>
+    <div class="quiz-fb" id="quiz-fb"></div>`;
+  window.scrollTo(0,0);
+}
+function answerQuiz(btn){
+  if(quiz.answered) return;
+  quiz.answered = true;
+  const ok = btn.dataset.ok==='1';
+  const fb = document.getElementById('quiz-fb');
+  document.querySelectorAll('.quiz-opt').forEach(b=>{
+    b.style.pointerEvents='none';
+    if(b.dataset.ok==='1') b.classList.add('opt-right');
+  });
+  if(ok){ quiz.got++; fb.innerHTML = quiz.replay?'答對了！✨':'答對了！<b>+1 點</b> ✨'; }
+  else { btn.classList.add('opt-picked'); fb.innerHTML='答案是綠色的那個 🌱 沒關係，看一眼記起來就好'; }
+  setTimeout(()=>{
+    quiz.answered=false; quiz.i++;
+    if(quiz.i < QUIZ[quiz.artId].length) renderQuizQ();
+    else endQuiz();
+  }, 1600);
+}
+function endQuiz(){
+  const gotPts = quiz.replay ? 0 : quiz.got;
+  rdPost({event:'v2_read_quiz', unit:quiz.artId, quizSize:QUIZ[quiz.artId].length, correct:quiz.got,
+          amount:gotPts, note:quiz.replay?'replay':'points'});
+  if(!quiz.replay){
+    sheetState.quizzed[quiz.artId]=true;
+    if(sheetState.points!==null) sheetState.points+=gotPts;
+  }
+  const a = ARTICLES.find(x=>x.id===quiz.artId);
+  app.innerHTML = `
+    <div class="art-title" style="text-align:center;margin-top:40px">🎉 挑戰完成！</div>
+    <div style="text-align:center;font-size:17px;line-height:2;margin-top:10px">
+      ${a.emoji} ${a.en}<br>
+      答對 <b>${quiz.got}</b>／${QUIZ[quiz.artId].length} 題
+      ${quiz.replay?'（再玩模式，不加點）':`，拿到 <b>${gotPts}</b> 點！`}<br>
+      ${sheetState.points!==null&&!quiz.replay?`🎒 口袋現在有 <b>${sheetState.points}</b> 點`:''}
+    </div>
+    <div style="text-align:center;margin-top:24px">
+      <button class="btn-finish" onclick="renderHome()">回書架 📚</button>
+    </div>`;
+}
+function shuffleArr(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* ================= 逃離觀察（與英文 pagehide 慣例一致）================= */
+window.addEventListener('pagehide', ()=>{
+  if(state.view==='read' && state.artId && !state.finished[state.artId]){
+    rdPost({event:'v2_read_pagehide', unit:state.artId, note:'mid-read'}, true);
+  }
+});
+
+/* ================= 啟動 ================= */
+renderHome();
+refreshSheetState().then(()=>{ if(state.view==='home') renderHome(); });
+</script>
+</body>
+</html>

@@ -385,7 +385,9 @@ const SEMS=[{name:"2上",list:LESSONS},{name:"3上",list:LESSONS3}];
    只有⭐⭐⭐（一次答對）算錢；連連看/詞語配對＝複習不計酬。
    事件名 v2_cn_*_paid：v2_ 開頭（API 撈得到）、非 _done 結尾（不污染英文日上限）。 */
 const PAY_URL="https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
-const CN_CAP=100, CN_BASE=10, CN_PER=2, CN_MIN=5;
+/* v2.39：國文日上限改為家長可分科設定（提領頁 ⚙️，事件 v2_config_daily_cap_cn，最後一筆生效）。
+   CN_CAP 變成 let，cnFetchState() 每次結算前從 Sheet 讀最新值；沒設定＝預設 100。 */
+let CN_CAP=100; const CN_BASE=10, CN_PER=2, CN_MIN=5;
 const CN_TIERS=[[7,1.2],[14,1.4],[30,1.6]];
 function cnToday(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function cnMul(st){let m=1;for(const[d,x]of CN_TIERS)if(st>=d)m=x;return m;}
@@ -408,6 +410,11 @@ async function cnFetchState(){
   const t=cnToday(); let today=0, baseGiven=false; const days=new Set();
   for(const ev of data.events){
     const name=String(ev.event||'');
+    if(name==='v2_config_daily_cap_cn'){                       // v2.39：家長設定的國文上限（最後一筆生效）
+      const v=Math.floor(Number(ev.amount)||0);
+      if(v>=10&&v<=1000) CN_CAP=v;
+      continue;
+    }
     if(!name.startsWith('v2_cn_')||!name.endsWith('_paid'))continue;
     const date=String(ev.timestamp||'').slice(0,10);
     const amt=Number(ev.amount)||0, ft=Number(ev.correct)||0;
