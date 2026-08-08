@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>謙恩的國文練習（試用版）</title>
+<title>謙恩的國文練習（2上）</title>
 <style>
   :root{
     --bg:#f7f4ee; --card:#ffffff; --ink:#3b3a36; --sub:#8a867c;
@@ -14,31 +14,37 @@
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   body{margin:0; font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif; background:var(--bg); color:var(--ink); min-height:100vh;}
   .wrap{max-width:640px; margin:0 auto; padding:20px 16px 60px;}
-  header{ text-align:center; padding:10px 0 4px;}
+  header{text-align:center; padding:10px 0 4px;}
   header h1{font-size:22px; margin:0 0 4px;}
   header .sub{color:var(--sub); font-size:14px;}
-  .menu{display:flex; flex-direction:column; gap:14px; margin-top:24px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:20px;}
+  .grid button{
+    font-size:16px; padding:14px 12px; border:none; border-radius:14px; text-align:left;
+    background:var(--card); color:var(--ink); box-shadow:0 2px 8px rgba(0,0,0,.06); cursor:pointer;
+  }
+  .grid button b{display:block; font-size:18px;}
+  .grid button small{color:var(--sub); font-size:12px;}
+  .grid button:active{transform:scale(.97);}
+  .widebtn{grid-column:1 / -1; background:var(--blue-bg) !important;}
+  .menu{display:flex; flex-direction:column; gap:12px; margin-top:20px;}
   .menu button{
-    font-size:20px; padding:20px; border:none; border-radius:var(--radius);
+    font-size:19px; padding:18px; border:none; border-radius:var(--radius);
     background:var(--card); color:var(--ink); box-shadow:0 2px 8px rgba(0,0,0,.06);
     cursor:pointer; text-align:left; display:flex; align-items:center; gap:14px;
   }
-  .menu button .emoji{font-size:28px;}
-  .menu button small{display:block; color:var(--sub); font-size:13px; margin-top:3px; font-weight:normal;}
+  .menu button .emoji{font-size:26px;}
+  .menu button small{display:block; color:var(--sub); font-size:13px; margin-top:2px; font-weight:normal;}
   .menu button:active{transform:scale(.98);}
-  .scorenote{margin-top:18px; background:var(--amber-bg); border-radius:14px; padding:12px 14px; font-size:14px; color:#7a5c1e; line-height:1.7;}
+  .scorenote{margin-top:16px; background:var(--amber-bg); border-radius:14px; padding:12px 14px; font-size:14px; color:#7a5c1e; line-height:1.7;}
   .topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
   .topbar .back{background:none; border:none; font-size:15px; color:var(--blue); cursor:pointer; padding:6px;}
   .topbar .prog{font-size:14px; color:var(--sub);}
   .topbar .stars{font-size:14px; color:var(--amber); font-weight:bold;}
   .card{background:var(--card); border-radius:var(--radius); padding:22px 18px; box-shadow:0 2px 10px rgba(0,0,0,.06);}
-  .qtext{font-size:22px; line-height:1.9; margin-bottom:18px;}
-  .qtext .blank{display:inline-block; min-width:1.6em; border-bottom:3px solid var(--amber); text-align:center; color:var(--amber); font-weight:bold;}
+  .qtext{font-size:24px; line-height:1.9; margin-bottom:18px; letter-spacing:1px;}
+  .qtext .blank{display:inline-block; min-width:1.5em; border-bottom:3px solid var(--amber); text-align:center; color:var(--amber); font-weight:bold;}
   .opts{display:grid; grid-template-columns:repeat(auto-fit,minmax(90px,1fr)); gap:12px;}
-  .opts button{
-    font-size:30px; padding:16px 8px; border:2px solid #e5e1d8; border-radius:14px;
-    background:#fbfaf7; cursor:pointer; transition:all .15s;
-  }
+  .opts button{font-size:30px; padding:16px 8px; border:2px solid #e5e1d8; border-radius:14px; background:#fbfaf7; cursor:pointer; transition:all .15s;}
   .opts button:active{transform:scale(.96);}
   .opts button.right{background:var(--green-bg); border-color:var(--green); color:var(--green);}
   .opts button.wrong{background:var(--red-bg); border-color:var(--red); color:var(--red); animation:shake .3s;}
@@ -50,18 +56,15 @@
   .feedback.info{background:var(--amber-bg); color:#7a5c1e;}
   .nextbtn{margin-top:16px; width:100%; font-size:18px; padding:14px; border:none; border-radius:14px; background:var(--blue); color:#fff; cursor:pointer; display:none;}
   .nextbtn.show{display:block;}
-  .spot-sent{font-size:24px; line-height:2; letter-spacing:2px;}
-  .spot-sent .ch{cursor:pointer; padding:2px 1px; border-radius:6px;}
+  .spot-sent{font-size:30px; line-height:2; letter-spacing:6px; text-align:center;}
+  .spot-sent .ch{cursor:pointer; padding:4px 2px; border-radius:8px;}
   .spot-sent .ch:active{background:var(--blue-bg);}
   .spot-sent .ch.found{background:var(--red-bg); color:var(--red); text-decoration:line-through; font-weight:bold;}
   .spot-sent .ch.fixed{background:var(--green-bg); color:var(--green); font-weight:bold; text-decoration:none;}
   .spot-tip{color:var(--sub); font-size:14px; margin-bottom:10px;}
   .match-cols{display:flex; gap:12px;}
   .mcol{flex:1; display:flex; flex-direction:column; gap:10px;}
-  .mcol button{
-    font-size:17px; padding:12px 8px; border:2px solid #e5e1d8; border-radius:12px;
-    background:#fbfaf7; cursor:pointer; line-height:1.5; min-height:56px;
-  }
+  .mcol button{font-size:17px; padding:12px 8px; border:2px solid #e5e1d8; border-radius:12px; background:#fbfaf7; cursor:pointer; line-height:1.5; min-height:56px;}
   .mcol button.charbtn{font-size:32px;}
   .mcol button.sel{border-color:var(--blue); background:var(--blue-bg);}
   .mcol button.done{background:var(--green-bg); border-color:var(--green); color:var(--green); pointer-events:none;}
@@ -76,34 +79,44 @@
   .result .starline{font-size:22px; color:var(--amber); margin:8px 0;}
   .zhu{font-size:13px; color:var(--sub);}
   .starearn{font-weight:bold; color:var(--amber);}
+  .wordtable{width:100%; border-collapse:collapse; font-size:16px;}
+  .wordtable td{padding:10px 6px; border-bottom:1px solid #efece4; vertical-align:top; line-height:1.6;}
+  .wordtable .w{font-size:20px; font-weight:bold; white-space:nowrap;}
+  .wordtable .z{color:var(--blue); font-size:13px; white-space:nowrap;}
+  .wordtable .h{color:var(--sub); font-size:13px;}
+  .readtext{font-size:20px; line-height:2.1; letter-spacing:1px;}
+  .readtext h3{font-size:18px; color:var(--blue); margin:18px 0 6px;}
+  .readtext p{margin:0 0 10px;}
+  .readnote{color:var(--sub); font-size:13px; margin-top:14px; line-height:1.6;}
   .screen{display:none;}
   .screen.active{display:block;}
-  footer{text-align:center; color:#b6b1a5; font-size:12px; margin-top:40px; line-height:1.6;}
+  footer{text-align:center; color:#b6b1a5; font-size:12px; margin-top:36px; line-height:1.6;}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- 主選單 -->
   <div id="home" class="screen active">
     <header>
-      <h1>📖 國文練習・第一課〈田園之秋選〉</h1>
-      <div class="sub">試用版｜全部用「點」的，不用打字</div>
+      <h1>📖 謙恩的國文練習</h1>
+      <div class="sub">2上（翰林）｜全部用「點」的，不用打字</div>
     </header>
-    <div class="menu">
-      <button onclick="startMode('cloze')"><span class="emoji">✏️</span><span>選字填空<small>詞語缺一個字，點出正確的那個（14 題）</small></span></button>
-      <button onclick="startMode('spot')"><span class="emoji">🔍</span><span>抓錯字<small>詞語裡藏了一個錯字，把它點出來（8 題）</small></span></button>
-      <button onclick="startMode('match')"><span class="emoji">🔗</span><span>相似字連連看<small>長得像的字，配對它的注音和意思（4 組）</small></span></button>
-      <button onclick="startMode('word')"><span class="emoji">🧩</span><span>詞語配對<small>課文詞語連連看意思（12 個詞）</small></span></button>
-    </div>
-    <div class="scorenote">⭐ 計分方式：<b>一次就答對 ⭐⭐⭐</b>｜第二次才對 ⭐⭐｜第三次以上 ⭐<br>用猜的分數會變少，想清楚再點！（答錯不會倒扣，放心試）</div>
-    <footer>生字範圍：翰林 2上 L01｜題目採固定詞組與成語（語言公共財）<br>試用版 2026-08-08 v0.3｜之後陸續加入 L02–L10 與跨課混合複習</footer>
+    <div class="grid" id="lessonGrid"></div>
+    <div class="scorenote">⭐ 計分：<b>一次就答對 ⭐⭐⭐</b>｜第二次 ⭐⭐｜第三次以上 ⭐（不倒扣，用猜的星星會變少）</div>
+    <footer>生字範圍：翰林 2上 各課習字練功坊（官方完整清單）<br>題目採固定詞組・成語・古典詩文（語言公共財）｜v0.4 2026-08-08</footer>
   </div>
 
-  <!-- 題目畫面 -->
+  <div id="lesson" class="screen">
+    <div class="topbar">
+      <button class="back" onclick="show('home')">← 回課次</button>
+      <span class="prog" id="ltitle"></span>
+    </div>
+    <div class="menu" id="lessonMenu"></div>
+  </div>
+
   <div id="play" class="screen">
     <div class="topbar">
-      <button class="back" onclick="goHome()">← 回選單</button>
+      <button class="back" onclick="backFromPlay()">← 返回</button>
       <span class="stars" id="starbar">⭐ 0</span>
       <span class="prog" id="prog"></span>
     </div>
@@ -113,108 +126,238 @@
 </div>
 
 <script>
-const DATA = {
+/* ===== 資料：2上 L01–L10 =====
+   生字清單＝各課「習字練功坊」官方完整字詞（L10 為閱讀課，取注釋重點詞）。
+   題目一律為固定詞組／成語／古典詩文（語言公共財）。 */
+const LESSONS=[
+{id:"L01",title:"田園之秋選",author:"陳冠學",
+ words:[
+  {w:"番薯蒂",z:"ㄈㄢ ㄕㄨˇ ㄉㄧˋ",b:"蒂",o:["締","諦"],h:"蒂＝艸部，花果與枝相連處（締＝糸部締約；諦＝言部真諦）"},
+  {w:"震懾",z:"ㄓㄣˋ ㄓㄜˊ",b:"懾",o:["囁","躡"],h:"心部（忄）→ 心裡害怕"},
+  {w:"滂沱",z:"ㄆㄤ ㄊㄨㄛˊ",b:"滂",o:["磅","徬"],h:"水部（氵）→ 跟雨水有關"},
+  {w:"匍匐",z:"ㄆㄨˊ ㄈㄨˊ",b:"匐",o:["伏","服"],h:"匍匐＝勹部，伏地爬行"},
+  {w:"霹靂",z:"ㄆㄧ ㄌㄧˋ",b:"霹",o:["劈","癖"],h:"雨部 → 打雷"},
+  {w:"肆虐",z:"ㄙˋ ㄋㄩㄝˋ",b:"虐",o:["謔","瘧"],h:"虐＝殘害（謔＝言部開玩笑；瘧＝疒部瘧疾）"},
+  {w:"咫尺",z:"ㄓˇ ㄔˇ",b:"咫",o:["只","指"],h:"咫＝古代長度單位，「近在咫尺」"},
+  {w:"劈殺",z:"ㄆㄧ ㄕㄚ",b:"劈",o:["霹","噼"],h:"刀部 → 用刀砍"},
+  {w:"霎時",z:"ㄕㄚˋ ㄕˊ",b:"霎",o:["煞","剎"],h:"雨部 → 一陣雨的時間＝極短"},
+  {w:"蓑衣",z:"ㄙㄨㄛ ㄧ",b:"蓑",o:["衰","哀"],h:"艸部 → 草編的雨衣"},
+  {w:"攫取",z:"ㄐㄩㄝˊ ㄑㄩˇ",b:"攫",o:["獲","矍"],h:"手部（扌）→ 用爪抓取"},
+  {w:"滲水",z:"ㄕㄣˋ ㄕㄨㄟˇ",b:"滲",o:["摻","慘"],h:"水部 → 水透入（摻＝手部摻入；慘＝忄悲慘）"}],
  sets:[
-  {id:"S1",label:"滂・徬・磅",chars:[
+  {label:"滂・徬・磅",chars:[
    {c:"滂",z:"ㄆㄤ",m:"滂沱：雨勢盛大的樣子",u:"大雨滂沱",h:"水部（氵）→ 跟「水、雨」有關"},
    {c:"徬",z:"ㄆㄤˊ",m:"徬徨：徘徊不前",u:"徬徨失措",h:"彳部 → 跟「走路、腳步」有關"},
    {c:"磅",z:"ㄆㄤˊ",m:"磅礡：廣大無邊際",u:"氣勢磅礡",h:"石部 → 跟「石頭、厚重」有關"}]},
-  {id:"S2",label:"霹・劈・癖・闢",chars:[
+  {label:"霹・劈・癖・闢",chars:[
    {c:"霹",z:"ㄆㄧ",m:"霹靂：急而響的雷",u:"晴天霹靂",h:"雨部 → 跟「打雷、下雨」有關"},
    {c:"劈",z:"ㄆㄧ",m:"剖開；雷擊",u:"劈柴、天打雷劈",h:"刀部 → 跟「用刀砍」有關"},
    {c:"癖",z:"ㄆㄧˇ",m:"習性、嗜好",u:"潔癖",h:"疒部 → 跟「習性成癮」有關"},
    {c:"闢",z:"ㄆㄧˋ",m:"開拓；駁斥",u:"開闢、闢謠",h:"門部 → 跟「開門、開路」有關"}]},
-  {id:"S3",label:"懾・囁・躡・聶",chars:[
+  {label:"懾・囁・躡・聶",chars:[
    {c:"懾",z:"ㄓㄜˊ",m:"害怕、恐懼",u:"震懾",h:"心部（忄）→ 跟「心裡感受」有關"},
    {c:"囁",z:"ㄋㄧㄝˋ",m:"囁嚅：想說又不敢說",u:"囁嚅難言",h:"口部 → 跟「說話」有關"},
    {c:"躡",z:"ㄋㄧㄝˋ",m:"放輕腳步行走",u:"躡手躡腳",h:"足部 → 跟「腳步」有關"},
    {c:"聶",z:"ㄋㄧㄝˋ",m:"姓氏",u:"聶小倩",h:"三個耳朵 → 當「姓氏」用"}]},
-  {id:"S4",label:"鈞・均・勺・勻",chars:[
+  {label:"鈞・均・勺・勻",chars:[
    {c:"鈞",z:"ㄐㄩㄣ",m:"古代重量單位（三十斤）",u:"千鈞一髮",h:"金部 → 跟「金屬、重量」有關"},
    {c:"均",z:"ㄐㄩㄣ",m:"等同、相等",u:"勢均力敵",h:"土部 → 把土整平＝「平均」"},
    {c:"勺",z:"ㄕㄠˊ",m:"舀水的器具",u:"勺子舀水",h:"象形字 → 像一支杓子"},
-   {c:"勻",z:"ㄩㄣˊ",m:"平均的",u:"身材勻稱",h:"分得剛剛好 → 「均勻」"}]}
- ],
- cloze:[
-  {s:"S1",t:"大雨（＿）沱",a:"滂",w:"滂沱：雨下得很大"},
-  {s:"S1",t:"（＿）徨失措",a:"徬",w:"徬徨失措：慌張不知所措"},
-  {s:"S1",t:"氣勢（＿）礡",a:"磅",w:"氣勢磅礡：氣勢雄偉盛大"},
-  {s:"S2",t:"開天（＿）地",a:"闢",w:"開天闢地：盤古神話，比喻開創"},
-  {s:"S2",t:"天打雷（＿）",a:"劈",w:"天打雷劈：發誓用語"},
-  {s:"S2",t:"晴天（＿）靂",a:"霹",w:"晴天霹靂：突來的意外"},
-  {s:"S2",t:"潔（＿）成性",a:"癖",w:"潔癖：愛乾淨的習性"},
-  {s:"S3",t:"震（＿）人心",a:"懾",w:"震懾：使人震驚恐懼"},
-  {s:"S3",t:"（＿）小倩（聊齋志異人物）",a:"聶",w:"聶：姓氏"},
-  {s:"S3",t:"（＿）手（＿）腳",a:"躡",w:"躡手躡腳：放輕腳步"},
-  {s:"S3",t:"（＿）嚅難言",a:"囁",w:"囁嚅：想說又不敢說"},
-  {s:"S4",t:"千（＿）一髮",a:"鈞",w:"千鈞一髮：非常危險",o:["鈞","均","勻"]},
-  {s:"S4",t:"勢（＿）力敵",a:"均",w:"勢均力敵：實力相當",o:["鈞","均","勻"]},
-  {s:"S4",t:"身材（＿）稱",a:"勻",w:"勻稱：比例剛剛好",o:["鈞","均","勻"]}
- ],
- spot:[
-  {t:"大雨磅沱",wr:"磅",co:"滂",w:"滂沱",h:"雨是水 → 要用水部的「滂」"},
-  {t:"晴天劈靂",wr:"劈",co:"霹",w:"霹靂",h:"打雷 → 要用雨部的「霹」"},
-  {t:"開天霹地",wr:"霹",co:"闢",w:"開闢",h:"開路像開門 → 門部的「闢」"},
-  {t:"天打雷闢",wr:"闢",co:"劈",w:"天打雷劈",h:"雷像刀一樣劈下來 → 刀部的「劈」"},
-  {t:"潔霹成性",wr:"霹",co:"癖",w:"潔癖",h:"習性、嗜好 → 疒部的「癖」"},
-  {t:"聶手聶腳",wr:"聶",co:"躡",w:"躡手躡腳",h:"放輕腳步 → 足部的「躡」"},
-  {t:"千均一髮",wr:"均",co:"鈞",w:"千鈞一髮",h:"鈞是重量單位 → 金部的「鈞」"},
-  {t:"勢勻力敵",wr:"勻",co:"均",w:"勢均力敵",h:"等同、相等 → 土部的「均」"}
- ],
+   {c:"勻",z:"ㄩㄣˊ",m:"平均的",u:"身材勻稱",h:"分得剛剛好 → 「均勻」"}]}],
+ extra:[
+  {t:"（＿）徨失措",a:"徬",o:["滂","徬","磅"],w:"徬徨失措",h:"彳部 → 走路徘徊"},
+  {t:"氣勢（＿）礡",a:"磅",o:["滂","徬","磅"],w:"氣勢磅礡",h:"石部 → 厚重盛大"},
+  {t:"開天（＿）地",a:"闢",o:["霹","劈","癖","闢"],w:"開天闢地",h:"門部 → 開創"},
+  {t:"天打雷（＿）",a:"劈",o:["霹","劈","癖","闢"],w:"天打雷劈",h:"刀部 → 雷劈下來"},
+  {t:"晴天（＿）靂",a:"霹",o:["霹","劈","癖","闢"],w:"晴天霹靂",h:"雨部 → 打雷"},
+  {t:"潔（＿）成性",a:"癖",o:["霹","劈","癖","闢"],w:"潔癖",h:"疒部 → 習性"},
+  {t:"（＿）小倩（聊齋志異人物）",a:"聶",o:["懾","囁","躡","聶"],w:"聶（姓氏）",h:"三個耳朵 → 姓氏"},
+  {t:"（＿）手（＿）腳",a:"躡",o:["懾","囁","躡","聶"],w:"躡手躡腳",h:"足部 → 腳步"},
+  {t:"（＿）嚅難言",a:"囁",o:["懾","囁","躡","聶"],w:"囁嚅",h:"口部 → 說話吞吐"},
+  {t:"千（＿）一髮",a:"鈞",o:["鈞","均","勻"],w:"千鈞一髮",h:"金部 → 重量單位"},
+  {t:"勢（＿）力敵",a:"均",o:["鈞","均","勻"],w:"勢均力敵",h:"土部 → 相等"},
+  {t:"身材（＿）稱",a:"勻",o:["鈞","均","勻"],w:"勻稱",h:"均勻的勻"}]},
+{id:"L02",title:"古詩選",author:"佚名／白居易",
  words:[
-  {w:"滂沱",z:"ㄆㄤ ㄊㄨㄛˊ",m:"雨勢盛大的樣子"},
-  {w:"霹靂",z:"ㄆㄧ ㄌㄧˋ",m:"急而響的雷"},
-  {w:"霎時間",z:"ㄕㄚˋ ㄕˊ ㄐㄧㄢ",m:"極短的時間"},
-  {w:"攫",z:"ㄐㄩㄝˊ",m:"用爪抓取"},
-  {w:"孤伶伶",z:"ㄍㄨ ㄌㄧㄥˊ ㄌㄧㄥˊ",m:"孤單的樣子"},
-  {w:"震懾",z:"ㄓㄣˋ ㄓㄜˊ",m:"震驚恐懼"},
-  {w:"氣脫委頓",z:"ㄑㄧˋ ㄊㄨㄛ ㄨㄟˇ ㄉㄨㄣˋ",m:"失神無力，疲乏困頓"},
-  {w:"匍匐",z:"ㄆㄨˊ ㄈㄨˊ",m:"伏地爬行"},
-  {w:"肆虐",z:"ㄙˋ ㄋㄩㄝˋ",m:"任意作惡為害"},
-  {w:"氣勢萬鈞",z:"ㄑㄧˋ ㄕˋ ㄨㄢˋ ㄐㄩㄣ",m:"形容氣勢雄偉壯盛"},
-  {w:"登時",z:"ㄉㄥ ㄕˊ",m:"立刻"},
-  {w:"咫尺",z:"ㄓˇ ㄔˇ",m:"形容距離很近"}
- ]
-};
+  {w:"迢迢",z:"ㄊㄧㄠˊ ㄊㄧㄠˊ",b:"迢",o:["沼","昭"],h:"辵部（辶）→ 路途遙遠（沼＝水池；昭＝明亮）"},
+  {w:"啞啞",z:"ㄧㄚˋ ㄧㄚˋ",b:"啞",o:["鴉","亞"],h:"口部擬聲，烏鴉叫聲（這裡讀ㄧㄚˋ）"},
+  {w:"星宿",z:"ㄒㄧㄥ ㄒㄧㄡˋ",b:"宿",o:["秀","繡"],h:"「宿」當星座時讀ㄒㄧㄡˋ"},
+  {w:"衣襟",z:"ㄧ ㄐㄧㄣ",b:"襟",o:["禁","噤"],h:"衣部（衤）→ 衣服胸前部分"},
+  {w:"紛紜",z:"ㄈㄣ ㄩㄣˊ",b:"紜",o:["耘","云"],h:"糸部 → 眾說紛紜（耘＝耕耘）"},
+  {w:"反哺",z:"ㄈㄢˇ ㄅㄨˇ",b:"哺",o:["捕","脯"],h:"口部 → 餵食；烏鴉反哺報答母恩"},
+  {w:"皎皎",z:"ㄐㄧㄠˇ ㄐㄧㄠˇ",b:"皎",o:["狡","絞"],h:"白部 → 月光潔白（狡＝犬部狡猾）"},
+  {w:"病歿",z:"ㄅㄧㄥˋ ㄇㄛˋ",b:"歿",o:["沒","莫"],h:"歹部 → 死亡（「沒」是水部）"},
+  {w:"拔擢",z:"ㄅㄚˊ ㄓㄨㄛˊ",b:"擢",o:["濯","曜"],h:"手部（扌）→ 提拔（濯＝水部洗滌）"},
+  {w:"嗟哉",z:"ㄐㄧㄝ ㄗㄞ",b:"嗟",o:["蹉","磋"],h:"口部 → 感嘆詞（蹉＝足部蹉跎）"},
+  {w:"機杼",z:"ㄐㄧ ㄓㄨˋ",b:"杼",o:["抒","紓"],h:"木部 → 織布機的梭子（抒＝抒發）"},
+  {w:"簌簌",z:"ㄙㄨˋ ㄙㄨˋ",b:"簌",o:["嗽","漱"],h:"竹部 → 東西落下的聲音"}],
+ text:{title:"課文（古典詩・公共財）",parts:[
+  {h:"迢迢牽牛星（古詩十九首・佚名）",lines:["迢迢牽牛星，皎皎河漢女。","纖纖擢素手，札札弄機杼。","終日不成章，泣涕零如雨。","河漢清且淺，相去復幾許？","盈盈一水間，脈脈不得語。"]},
+  {h:"慈烏夜啼（白居易）",lines:["慈烏失其母，啞啞吐哀音。","晝夜不飛去，經年守故林。","夜夜夜半啼，聞者為沾襟。","聲中如告訴，未盡反哺心。","百鳥豈無母，爾獨哀怨深。","應是母慈重，使爾悲不任。","昔有吳起者，母歿喪不臨。","嗟哉斯徒輩，其心不如禽。","慈烏復慈烏，鳥中之曾參。"]}]}},
+{id:"L03",title:"下雨天，真好",author:"琦君",
+ words:[
+  {w:"熹微",z:"ㄒㄧ ㄨㄟˊ",b:"熹",o:["嬉","禧"],h:"下面四點是火 → 天剛亮的微光（嬉＝女部嬉戲）"},
+  {w:"長凳",z:"ㄔㄤˊ ㄉㄥˋ",b:"凳",o:["瞪","蹬"],h:"几部 → 坐的凳子（瞪＝目、蹬＝足）"},
+  {w:"皮靴",z:"ㄆㄧˊ ㄒㄩㄝ",b:"靴",o:["鞍","靶"],h:"革部 → 皮革做的長筒鞋"},
+  {w:"乞丐",z:"ㄑㄧˇ ㄍㄞˋ",b:"丐",o:["蓋","鈣"],h:"丐＝乞討的人"},
+  {w:"吱嗒",z:"ㄓ ㄉㄚ",b:"嗒",o:["搭","踏"],h:"口部擬聲 → 聲音"},
+  {w:"發霉",z:"ㄈㄚ ㄇㄟˊ",b:"霉",o:["梅","莓"],h:"雨部 → 潮溼發霉（梅＝木、莓＝艸）"},
+  {w:"茶壺",z:"ㄔㄚˊ ㄏㄨˊ",b:"壺",o:["壼","湖"],h:"注意「壺」的寫法，別多一橫寫成「壼」"},
+  {w:"揀麴",z:"ㄐㄧㄢˇ ㄑㄩˊ",b:"麴",o:["鞠","翹"],h:"麥部 → 釀酒用的酒麴"},
+  {w:"木犀",z:"ㄇㄨˋ ㄒㄧ",b:"犀",o:["西","樨"],h:"木犀＝桂花；犀＝牛部（犀牛）"},
+  {w:"黏答答",z:"ㄋㄧㄢˊ ㄉㄚ ㄉㄚ",b:"黏",o:["粘","沾"],h:"黍部 → 台灣標準用「黏」"},
+  {w:"魂牽夢縈",z:"ㄏㄨㄣˊ ㄑㄧㄢ ㄇㄥˋ ㄧㄥˊ",b:"縈",o:["瑩","螢"],h:"下面是「糸」→ 纏繞（瑩＝玉、螢＝虫）"}]},
+{id:"L04",title:"愛蓮說",author:"周敦頤",
+ words:[
+  {w:"解頤",z:"ㄐㄧㄝˇ ㄧˊ",b:"頤",o:["姨","貽"],h:"頁部 → 下巴；解頤＝開懷而笑"},
+  {w:"花梗",z:"ㄏㄨㄚ ㄍㄥˇ",b:"梗",o:["哽","埂"],h:"木部 → 花的莖（哽＝口哽咽；埂＝土田埂）"},
+  {w:"濂溪",z:"ㄌㄧㄢˊ ㄒㄧ",b:"濂",o:["簾","廉"],h:"水部 → 溪名，周敦頤號濂溪先生"},
+  {w:"蔓生",z:"ㄇㄢˋ ㄕㄥ",b:"蔓",o:["漫","曼"],h:"艸部 → 藤蔓蔓延（漫＝水瀰漫）"},
+  {w:"淤泥",z:"ㄩ ㄋㄧˊ",b:"淤",o:["瘀","於"],h:"水部 → 水底爛泥（瘀＝疒部瘀血）"},
+  {w:"褻玩",z:"ㄒㄧㄝˋ ㄨㄢˊ",b:"褻",o:["謝","屑"],h:"衣部 → 輕慢、不莊重"},
+  {w:"洗濯",z:"ㄒㄧˇ ㄓㄨㄛˊ",b:"濯",o:["擢","曜"],h:"水部 → 洗滌（擢＝手部提拔）"},
+  {w:"隱逸",z:"ㄧㄣˇ ㄧˋ",b:"逸",o:["軼","溢"],h:"辵部 → 隱居避世（溢＝水滿出）"},
+  {w:"清漣",z:"ㄑㄧㄥ ㄌㄧㄢˊ",b:"漣",o:["憐","蓮"],h:"水部 → 水的波紋（蓮＝艸部植物）"},
+  {w:"噫",z:"ㄧ",b:"噫",o:["意","臆"],h:"口部 → 感嘆詞"},
+  {w:"亭亭淨植",z:"ㄊㄧㄥˊ ㄊㄧㄥˊ ㄐㄧㄥˋ ㄓˊ",b:"亭",o:["停","婷"],h:"亭亭＝挺立的樣子"}],
+ text:{title:"課文（文言・公共財）",parts:[
+  {h:"愛蓮說（宋・周敦頤）",lines:["水陸草木之花，可愛者甚蕃。晉陶淵明獨愛菊；自李唐來，世人盛愛牡丹；予獨愛蓮之出淤泥而不染，濯清漣而不妖，中通外直，不蔓不枝，香遠益清，亭亭淨植，可遠觀而不可褻玩焉。","予謂菊，花之隱逸者也；牡丹，花之富貴者也；蓮，花之君子者也。噫！菊之愛，陶後鮮有聞；蓮之愛，同予者何人？牡丹之愛，宜乎眾矣！"]}]}},
+{id:"L05",title:"生命中的碎珠",author:"陳幸蕙",
+ words:[
+  {w:"仰慕",z:"ㄧㄤˇ ㄇㄨˋ",b:"慕",o:["幕","墓"],h:"下面是「心」→ 心裡仰慕（幕＝巾、墓＝土）"},
+  {w:"步履",z:"ㄅㄨˋ ㄌㄩˇ",b:"履",o:["屢","縷"],h:"尸部 → 鞋子、腳步（屢＝屢次）"},
+  {w:"溫藹",z:"ㄨㄣ ㄞˇ",b:"藹",o:["靄","謁"],h:"艸部 → 和藹可親（靄＝雨部雲霧）"},
+  {w:"撇開",z:"ㄆㄧㄝ ㄎㄞ",b:"撇",o:["瞥","蔽"],h:"手部（扌）→ 拋開（瞥＝目部看一眼）"},
+  {w:"瑣碎",z:"ㄙㄨㄛˇ ㄙㄨㄟˋ",b:"瑣",o:["鎖","嗩"],h:"玉部 → 細小繁雜（鎖＝金部門鎖）"},
+  {w:"尺璧",z:"ㄔˇ ㄅㄧˋ",b:"璧",o:["壁","避"],h:"下面是「玉」→ 圓形美玉（壁＝土牆壁）"},
+  {w:"空隙",z:"ㄎㄨㄥˋ ㄒㄧˋ",b:"隙",o:["細","戲"],h:"阜部（阝）→ 牆的縫隙"},
+  {w:"敷衍",z:"ㄈㄨ ㄧㄢˇ",b:"敷",o:["膚","傅"],h:"攴部 → 隨便應付"},
+  {w:"著書立說",z:"ㄓㄨˋ ㄕㄨ ㄌㄧˋ ㄕㄨㄛ",b:"著",o:["箸","注"],h:"著＝寫作，這裡讀ㄓㄨˋ"},
+  {w:"集腋成裘",z:"ㄐㄧˊ ㄧㄝˋ ㄔㄥˊ ㄑㄧㄡˊ",b:"腋",o:["液","掖"],h:"肉部（月）→ 胳肢窩（液＝水部液體）"}]},
+{id:"L06",title:"鳥",author:"梁實秋",
+ words:[
+  {w:"蹓躂",z:"ㄌㄧㄡˋ ˙ㄉㄚ",b:"躂",o:["達","韃"],h:"足部 → 散步閒逛"},
+  {w:"乾癟",z:"ㄍㄢ ㄅㄧㄝˇ",b:"癟",o:["憋","鱉"],h:"疒部 → 乾瘦不飽滿（鱉＝魚部甲魚）"},
+  {w:"羽翮",z:"ㄩˇ ㄏㄜˊ",b:"翮",o:["閣","隔"],h:"右邊是「羽」→ 羽毛的莖"},
+  {w:"釉綠",z:"ㄧㄡˋ ㄌㄩˋ",b:"釉",o:["柚","油"],h:"陶瓷表面的光澤層（柚＝木部柚子）"},
+  {w:"蜷伏",z:"ㄑㄩㄢˊ ㄈㄨˊ",b:"蜷",o:["倦","捲"],h:"虫部 → 身體彎曲趴著（倦＝人部疲倦）"},
+  {w:"窗櫺",z:"ㄔㄨㄤ ㄌㄧㄥˊ",b:"櫺",o:["玲","鈴"],h:"木部 → 窗上的木格子"},
+  {w:"盤踞",z:"ㄆㄢˊ ㄐㄩˋ",b:"踞",o:["據","鋸"],h:"足部 → 占據（據＝手部依據）"},
+  {w:"鴟梟",z:"ㄔ ㄒㄧㄠ",b:"梟",o:["裊","蕭"],h:"上面是「鳥」→ 貓頭鷹"},
+  {w:"瞵視昂藏",z:"ㄌㄧㄣˊ ㄕˋ ㄤˊ ㄘㄤˊ",b:"瞵",o:["鄰","麟"],h:"目部 → 注視（麟＝鹿部麒麟）"},
+  {w:"穠纖合度",z:"ㄋㄨㄥˊ ㄒㄧㄢ ㄏㄜˊ ㄉㄨˋ",b:"穠",o:["濃","農"],h:"禾部 → 穠纖＝胖與瘦（濃＝水部濃淡）"}]},
+{id:"L07",title:"張釋之執法",author:"司馬遷",
+ words:[
+  {w:"乘輿",z:"ㄕㄥˋ ㄩˊ",b:"輿",o:["與","歟"],h:"中間是「車」→ 君王的車駕"},
+  {w:"犯蹕",z:"ㄈㄢˋ ㄅㄧˋ",b:"蹕",o:["畢","斃"],h:"足部 → 帝王出行清道，衝犯＝犯蹕"},
+  {w:"陛下",z:"ㄅㄧˋ ㄒㄧㄚˋ",b:"陛",o:["斃","庇"],h:"阜部（阝）→ 宮殿臺階，代稱皇帝"},
+  {w:"藏匿",z:"ㄘㄤˊ ㄋㄧˋ",b:"匿",o:["暱","溺"],h:"匸部 → 躲藏（暱＝親暱；溺＝水部溺水）"},
+  {w:"誅",z:"ㄓㄨ",b:"誅",o:["株","珠"],h:"言部 → 殺、聲討（株＝木、珠＝玉）"},
+  {w:"傾",z:"ㄑㄧㄥ",b:"傾",o:["頃","卿"],h:"人部 → 偏斜（頃＝片刻）"},
+  {w:"抗辯",z:"ㄎㄤˋ ㄅㄧㄢˋ",b:"辯",o:["辨","辮"],h:"中間是「言」→ 用言語辯論（辨＝分辨；辮＝髮辮）"},
+  {w:"廷尉",z:"ㄊㄧㄥˊ ㄨㄟˋ",b:"廷",o:["庭","挺"],h:"朝廷的廷 → 漢代最高司法官（庭＝广部庭院）"},
+  {w:"贏得",z:"ㄧㄥˊ ㄉㄜˊ",b:"贏",o:["羸","嬴"],h:"裡面是「貝」→ 獲勝得利（羸＝羊，瘦弱）"},
+  {w:"據理力爭",z:"ㄐㄩˋ ㄌㄧˇ ㄌㄧˋ ㄓㄥ",b:"據",o:["踞","鋸"],h:"手部（扌）→ 依據（踞＝足部盤踞）"}],
+ text:{title:"課文（文言・公共財）",parts:[
+  {h:"張釋之執法（《史記》節錄・司馬遷）",lines:["釋之為廷尉。上行，出中渭橋，有一人從橋下走出，乘輿馬驚。於是使騎捕，屬之廷尉。","釋之治問。曰：「縣人來，聞蹕，匿橋下。久之，以為行已過，即出，見乘輿車騎，即走耳。」廷尉奏當：一人犯蹕，當罰金。","文帝怒曰：「此人親驚吾馬，吾馬賴柔和，令他馬，固不敗傷我乎？而廷尉乃當之罰金！」","釋之曰：「法者，天子所與天下公共也。今法如此而更重之，是法不信於民也。且方其時，上使立誅之則已。今既下廷尉，廷尉，天下之平也，一傾而天下用法皆為輕重，民安所錯其手足？唯陛下察之。」","良久，上曰：「廷尉當是也。」"]}]}},
+{id:"L08",title:"找尋失落的水源",author:"亞榮隆．撒可努",
+ words:[
+  {w:"遷移",z:"ㄑㄧㄢ ㄧˊ",b:"遷",o:["牽","簽"],h:"辵部（辶）→ 搬移（牽＝牛部牽手）"},
+  {w:"傾瀉",z:"ㄑㄧㄥ ㄒㄧㄝˋ",b:"瀉",o:["寫","卸"],h:"水部 → 水往下沖（寫＝宀部寫字）"},
+  {w:"打盹",z:"ㄉㄚˇ ㄉㄨㄣˇ",b:"盹",o:["頓","噸"],h:"目部 → 閉眼小睡（頓＝頁部停頓）"},
+  {w:"芋葉",z:"ㄩˋ ㄧㄝˋ",b:"芋",o:["宇","竽"],h:"艸部 → 芋頭（竽＝竹部樂器，濫竽充數）"},
+  {w:"狩獵",z:"ㄕㄡˋ ㄌㄧㄝˋ",b:"狩",o:["守","授"],h:"犬部（犭）→ 打獵（守＝宀部守護）"},
+  {w:"挖掘",z:"ㄨㄚ ㄐㄩㄝˊ",b:"掘",o:["崛","倔"],h:"手部（扌）→ 挖土（崛＝山部崛起）"},
+  {w:"蕨類",z:"ㄐㄩㄝˊ ㄌㄟˋ",b:"蕨",o:["厥","獗"],h:"艸部 → 蕨類植物"},
+  {w:"灌溉",z:"ㄍㄨㄢˋ ㄍㄞˋ",b:"溉",o:["概","慨"],h:"水部 → 澆水（概＝木部大概；慨＝忄感慨）"},
+  {w:"工寮",z:"ㄍㄨㄥ ㄌㄧㄠˊ",b:"寮",o:["僚","繚"],h:"宀部 → 小屋（僚＝人部同僚）"},
+  {w:"黃藤",z:"ㄏㄨㄤˊ ㄊㄥˊ",b:"藤",o:["騰","謄"],h:"艸部 → 藤蔓植物（騰＝馬部奔騰）"},
+  {w:"彌足珍貴",z:"ㄇㄧˊ ㄗㄨˊ ㄓㄣ ㄍㄨㄟˋ",b:"彌",o:["瀰","靡"],h:"弓部 → 更加（瀰＝水部瀰漫）"}]},
+{id:"L09",title:"一棵開花的樹",author:"席慕蓉",
+ words:[
+  {w:"塵緣",z:"ㄔㄣˊ ㄩㄢˊ",b:"緣",o:["源","園"],h:"糸部 → 緣分（源＝水源；園＝花園）"},
+  {w:"虔誠",z:"ㄑㄧㄢˊ ㄔㄥˊ",b:"虔",o:["乾","潛"],h:"虍部（虎字頭）→ 恭敬"},
+  {w:"顫抖",z:"ㄓㄢˋ ㄉㄡˇ",b:"顫",o:["戰","擅"],h:"頁部 → 身體發抖"},
+  {w:"跌宕",z:"ㄉㄧㄝˊ ㄉㄤˋ",b:"宕",o:["盪","蕩"],h:"宀部 → 起伏變化（盪＝皿部動盪）"},
+  {w:"花瓣",z:"ㄏㄨㄚ ㄅㄢˋ",b:"瓣",o:["辦","辮"],h:"中間是「瓜」→ 花瓣（辦＝力；辮＝糸）"},
+  {w:"心儀",z:"ㄒㄧㄣ ㄧˊ",b:"儀",o:["宜","疑"],h:"人部 → 心中仰慕"},
+  {w:"凋零",z:"ㄉㄧㄠ ㄌㄧㄥˊ",b:"凋",o:["雕","調"],h:"冫部（冰）→ 草木枯萎（雕＝隹部雕刻）"},
+  {w:"朝暾",z:"ㄓㄠ ㄊㄨㄣ",b:"暾",o:["吞","敦"],h:"日部 → 剛升起的太陽"},
+  {w:"祝禱",z:"ㄓㄨˋ ㄉㄠˇ",b:"禱",o:["濤","壽"],h:"示部（礻）→ 祈禱（濤＝水部波濤）"},
+  {w:"開闔",z:"ㄎㄞ ㄏㄜˊ",b:"闔",o:["合","盒"],h:"門部 → 門的開與關"},
+  {w:"視若無睹",z:"ㄕˋ ㄖㄨㄛˋ ㄨˊ ㄉㄨˇ",b:"睹",o:["賭","堵"],h:"目部 → 看見（賭＝貝部賭博；堵＝土部堵住）"}]},
+{id:"L10",title:"畫的哀傷（閱讀）",author:"國木田獨步",
+ words:[
+  {w:"恫嚇",z:"ㄉㄨㄥˋ ㄏㄜˋ",b:"嚇",o:["赫","喝"],h:"口部；恐嚇時讀ㄏㄜˋ"},
+  {w:"獨占鰲頭",z:"ㄉㄨˊ ㄓㄢˋ ㄠˊ ㄊㄡˊ",b:"鰲",o:["遨","傲"],h:"下面是「魚」→ 海中大龜（遨＝遨遊；傲＝驕傲）"},
+  {w:"捶胸頓足",z:"ㄔㄨㄟˊ ㄒㄩㄥ ㄉㄨㄣˋ ㄗㄨˊ",b:"捶",o:["錘","垂"],h:"手部（扌）→ 捶打（錘＝金部鐵鎚）"},
+  {w:"目眩神迷",z:"ㄇㄨˋ ㄒㄩㄢˋ ㄕㄣˊ ㄇㄧˊ",b:"眩",o:["炫","絢"],h:"目部 → 眼花（炫＝火部炫耀；絢＝糸部絢麗）"},
+  {w:"惺惺相惜",z:"ㄒㄧㄥ ㄒㄧㄥ ㄒㄧㄤ ㄒㄧˊ",b:"惺",o:["猩","腥"],h:"心部（忄）→ 聰明人欣賞聰明人"}]}
+];
 
-/* ── 計分：一次就對⭐⭐⭐、第二次⭐⭐、之後⭐（不倒扣，杜絕猜猜樂）── */
-let mode=null, idx=0, matchState=null;
-let stars=0, maxStars=0, firstTry=0, itemAttempt=0, totalItems=0;
+/* ===== 引擎 ===== */
+let mode=null, curLesson=null, idx=0, matchState=null;
+let stars=0, maxStars=0, firstTry=0, itemAttempt=0;
+let order=[];
 const starsFor=n=> n<=1?3 : n===2?2 : 1;
 const starStr=n=>'⭐'.repeat(n);
 const $=id=>document.getElementById(id);
 const shuffle=a=>{a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a;};
-const setOf=id=>DATA.sets.find(s=>s.id===id);
-const charInfo=(sid,ch)=>setOf(sid).chars.find(x=>x.c===ch);
-let order=[], wordRounds=[];
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); }
+function clozeFromWord(w){ return {t:w.w.split(w.b).join('（＿）'), a:w.b, o:[w.b,...w.o], w:w.w, z:w.z, h:w.h}; }
+function clozeItems(L){ return L.words.map(clozeFromWord).concat(L.extra||[]); }
+function spotItems(L){ return L.words.map(w=>({t:w.w.split(w.b).join(w.o[0]), wr:w.o[0], co:w.b, w:w.w, h:w.h})); }
 
-function startMode(m){
-  mode=m; idx=0; stars=0; firstTry=0; totalItems=0;
-  if(m==='cloze'){ order=shuffle(DATA.cloze); maxStars=order.length*3; }
-  if(m==='spot'){ order=shuffle(DATA.spot); maxStars=order.length*3; }
-  if(m==='match'){ order=DATA.sets.slice(); maxStars=DATA.sets.reduce((s,x)=>s+x.chars.length,0)*3; }
-  if(m==='word'){ order=shuffle(DATA.words); wordRounds=[]; for(let i=0;i<order.length;i+=4) wordRounds.push(order.slice(i,i+4)); maxStars=order.length*3; }
-  $('home').classList.remove('active');
-  $('play').classList.add('active');
-  updStar(); render();
+/* 首頁 */
+function renderHome(){
+  const g=$('lessonGrid');
+  g.innerHTML = LESSONS.map((L,i)=>`<button onclick="openLesson(${i})"><b>${L.id}〈${L.title}〉</b><small>${L.author}｜生字 ${L.words.length} 詞</small></button>`).join('')
+   + `<button class="widebtn" onclick="startMixed()"><b>🎲 跨課混合挑戰</b><small>全學期生字隨機 15 題（會考就是這樣混著考）</small></button>`;
 }
-function goHome(){ $('play').classList.remove('active'); $('home').classList.add('active'); }
-function updStar(){ $('starbar').textContent=`⭐ ${stars}${maxStars?` / ${maxStars}`:''}`; }
-function earn(attempts){ const e=starsFor(attempts); stars+=e; totalItems++; if(attempts<=1)firstTry++; updStar(); return e; }
+function openLesson(i){
+  curLesson=LESSONS[i];
+  $('ltitle').textContent=`${curLesson.id}〈${curLesson.title}〉`;
+  let m=`
+   <button onclick="startMode('cloze')"><span class="emoji">✏️</span><span>選字填空<small>${clozeItems(curLesson).length} 題</small></span></button>
+   <button onclick="startMode('spot')"><span class="emoji">🔍</span><span>抓錯字<small>${curLesson.words.length} 題</small></span></button>`;
+  if(curLesson.sets) m+=`<button onclick="startMode('match')"><span class="emoji">🔗</span><span>相似字連連看<small>${curLesson.sets.length} 組</small></span></button>`;
+  if(curLesson.text) m+=`<button onclick="startMode('read')"><span class="emoji">📜</span><span>課文閱讀<small>${curLesson.text.title}</small></span></button>`;
+  m+=`<button onclick="startMode('list')"><span class="emoji">📋</span><span>生字表<small>本課官方完整清單（習字練功坊）</small></span></button>`;
+  $('lessonMenu').innerHTML=m;
+  show('lesson');
+}
+function backFromPlay(){ if(curLesson) show('lesson'); else show('home'); }
 
+function startMixed(){
+  curLesson=null; mode='cloze';
+  const pool=LESSONS.flatMap(L=>clozeItems(L));
+  order=shuffle(pool).slice(0,15);
+  beginRun(order.length*3); render();
+}
+function startMode(m){
+  mode=m;
+  if(m==='cloze'){ order=shuffle(clozeItems(curLesson)); beginRun(order.length*3); }
+  if(m==='spot'){ order=shuffle(spotItems(curLesson)); beginRun(order.length*3); }
+  if(m==='match'){ order=curLesson.sets.slice(); beginRun(curLesson.sets.reduce((s,x)=>s+x.chars.length,0)*3); }
+  if(m==='read'){ renderRead(); show('play'); $('starbar').textContent=''; $('prog').textContent='閱讀'; return; }
+  if(m==='list'){ renderList(); show('play'); $('starbar').textContent=''; $('prog').textContent='生字表'; return; }
+  render();
+}
+function beginRun(mx){ idx=0; stars=0; firstTry=0; maxStars=mx; show('play'); updStar(); }
+function updStar(){ $('starbar').textContent=`⭐ ${stars} / ${maxStars}`; }
+function earn(attempts){ const e=starsFor(attempts); stars+=e; if(attempts<=1)firstTry++; updStar(); return e; }
 function render(){
   if(mode==='cloze'){ if(idx>=order.length) return showResult(order.length,'題'); itemAttempt=0; renderCloze(order[idx]); }
   if(mode==='spot'){ if(idx>=order.length) return showResult(order.length,'題'); itemAttempt=0; renderSpot(order[idx]); }
   if(mode==='match'){ if(idx>=order.length) return showResult(order.length,'組'); renderMatch(order[idx]); }
-  if(mode==='word'){ if(idx>=wordRounds.length) return showResult(DATA.words.length,'個詞'); renderWordMatch(wordRounds[idx]); }
 }
 function prog(total,unit){ $('prog').textContent = `${idx+1} / ${total} ${unit||'題'}`; }
 
-/* ---------- 選字填空 ---------- */
+/* 選字填空 */
 function renderCloze(q){
   prog(order.length);
-  const opts = shuffle(q.o || setOf(q.s).chars.map(x=>x.c));
-  $('qcard').innerHTML = `
+  const opts=shuffle(q.o);
+  $('qcard').innerHTML=`
     <div class="qtext">${q.t.replace(/（＿）/g,'<span class="blank">？</span>')}</div>
     <div class="opts">${opts.map(c=>`<button onclick="pickCloze(this,'${c}')">${c}</button>`).join('')}</div>
     <div class="feedback" id="fb"></div>
@@ -222,25 +365,23 @@ function renderCloze(q){
 }
 function pickCloze(btn,c){
   const q=order[idx]; itemAttempt++;
-  const info=charInfo(q.s,q.a);
   if(c===q.a){
     btn.classList.add('right');
     document.querySelectorAll('.opts button').forEach(b=>{if(b!==btn)b.classList.add('dim');});
     const e=earn(itemAttempt);
-    fb('good',`✅ 答對了！本題 <span class="starearn">${starStr(e)}</span>　「${q.w}」 <span class="zhu">${info.z}</span><br>${info.h}`);
+    fb('good',`✅ 答對了！本題 <span class="starearn">${starStr(e)}</span>　「${q.w}」${q.z?` <span class="zhu">${q.z}</span>`:''}<br>${q.h}`);
   }else{
     btn.classList.add('wrong'); btn.classList.add('dim');
-    const wrongInfo=charInfo(q.s,c);
-    fb('info',`「${c}」是：${wrongInfo?wrongInfo.m:''}<br>💡 ${info.h}<br>再試一次！（第一次就對才有 ⭐⭐⭐）`);
+    fb('info',`💡 ${q.h}<br>再試一次！（第一次就對才有 ⭐⭐⭐）`);
   }
 }
-/* ---------- 抓錯字 ---------- */
+/* 抓錯字 */
 function renderSpot(q){
   prog(order.length);
   const chars=[...q.t];
-  $('qcard').innerHTML = `
+  $('qcard').innerHTML=`
     <div class="spot-tip">詞語裡有一個字寫錯了（張冠李戴），把它點出來！</div>
-    <div class="spot-sent">${chars.map((ch,i)=>`<span class="ch" data-i="${i}" onclick="pickSpot(this,'${ch===q.wr?'Y':'N'}')">${ch}</span>`).join('')}</div>
+    <div class="spot-sent">${chars.map(ch=>`<span class="ch" onclick="pickSpot(this,'${ch===q.wr?'Y':'N'}')">${ch}</span>`).join('')}</div>
     <div class="feedback" id="fb"></div>
     <button class="nextbtn" id="nx" onclick="idx++;render()">下一題 →</button>`;
 }
@@ -252,18 +393,18 @@ function pickSpot(el,isWrong){
     el.classList.add('found');
     setTimeout(()=>{ el.textContent=q.co; el.classList.remove('found'); el.classList.add('fixed'); },700);
     const e=earn(itemAttempt);
-    fb('good',`✅ 抓到了！本題 <span class="starearn">${starStr(e)}</span>　「${q.wr}」是錯字，正確是「${q.co}」（${q.w}）<br>💡 ${q.h}`);
+    fb('good',`✅ 抓到了！本題 <span class="starearn">${starStr(e)}</span>　正確是「${q.w}」<br>💡 ${q.h}`);
   }else{
     el.style.background='var(--red-bg)'; setTimeout(()=>{el.style.background='';},400);
     fb('info',`這個字沒有錯喔，再找找看！<br>💡 提示：${q.h}`);
   }
 }
-/* ---------- 相似字連連看 ---------- */
+/* 連連看 */
 function renderMatch(set){
   prog(order.length,'組');
   matchState={sel:null, remain:set.chars.length, tries:{}};
-  const rights=shuffle(set.chars.map(x=>({key:x.c, label:`${x.z}<br><span style="font-size:14px">${x.m}</span>`})));
-  $('qcard').innerHTML = `
+  const rights=shuffle(set.chars.map(x=>({key:x.c,label:`${x.z}<br><span style="font-size:14px">${x.m}</span>`})));
+  $('qcard').innerHTML=`
     <div class="spot-tip">「${set.label}」長得很像！先點左邊的字，再點右邊它的注音＋意思。</div>
     <div class="match-cols">
       <div class="mcol">${set.chars.map(x=>`<button class="charbtn" id="L_${x.c}" onclick="pickLeft('${x.c}')">${x.c}</button>`).join('')}</div>
@@ -280,8 +421,7 @@ function pickLeft(c){
 }
 function pickRight(key){
   if(!matchState.sel){ fb('info','先點左邊的一個字，再點右邊的答案喔！'); return; }
-  const R=$('R_'+key), L=$('L_'+matchState.sel);
-  const sel=matchState.sel;
+  const R=$('R_'+key), L=$('L_'+matchState.sel), sel=matchState.sel;
   matchState.tries[sel]=(matchState.tries[sel]||0)+1;
   if(key===sel){
     R.classList.add('done'); L.classList.add('done'); L.classList.remove('sel');
@@ -300,60 +440,38 @@ function pickRight(key){
     fb('info',`💡 想想「${sel}」的部首：${info.h}`);
   }
 }
-/* ---------- 詞語配對（4個一輪） ---------- */
-function renderWordMatch(round){
-  prog(wordRounds.length,'輪');
-  matchState={sel:null, remain:round.length, round:round, tries:{}};
-  const rights=shuffle(round.map(x=>({key:x.w,label:x.m})));
-  $('qcard').innerHTML = `
-    <div class="spot-tip">點左邊的詞語，再點右邊它的意思。</div>
-    <div class="match-cols">
-      <div class="mcol">${round.map(x=>`<button id="L_${x.w}" style="font-size:22px" onclick="pickLeftW('${x.w}')">${x.w}</button>`).join('')}</div>
-      <div class="mcol">${rights.map(r=>`<button id="R_${r.key}" onclick="pickRightW('${r.key}')">${r.label}</button>`).join('')}</div>
-    </div>
-    <div class="feedback" id="fb"></div>
-    <button class="nextbtn" id="nx" onclick="idx++;render()">下一輪 →</button>`;
+/* 課文閱讀 */
+function renderRead(){
+  const T=curLesson.text;
+  $('qcard').innerHTML=`<div class="readtext">`+
+    T.parts.map(p=>`<h3>${p.h}</h3>`+p.lines.map(l=>`<p>${l}</p>`).join('')).join('')+
+    `</div><div class="readnote">古典詩文為文化公共財。白話課文（琦君、梁實秋、席慕蓉等作家作品）仍在著作權期間，請翻課本閱讀。</div>`;
 }
-function pickLeftW(w){
-  if($('L_'+w).classList.contains('done'))return;
-  document.querySelectorAll('.mcol .sel').forEach(b=>b.classList.remove('sel'));
-  matchState.sel=w; $('L_'+w).classList.add('sel');
+/* 生字表 */
+function renderList(){
+  $('qcard').innerHTML=`<table class="wordtable">`+
+    curLesson.words.map(w=>`<tr><td class="w">${w.w}</td><td><div class="z">${w.z}</div><div class="h">${w.h}</div></td></tr>`).join('')+
+    `</table><div class="readnote">來源：本課「習字練功坊」官方習寫字詞清單，一字不漏。</div>`;
 }
-function pickRightW(key){
-  if(!matchState.sel){ fb('info','先點左邊的一個詞語喔！'); return; }
-  const R=$('R_'+key), L=$('L_'+matchState.sel);
-  const sel=matchState.sel;
-  matchState.tries[sel]=(matchState.tries[sel]||0)+1;
-  if(key===sel){
-    const info=matchState.round.find(x=>x.w===key);
-    R.classList.add('done'); L.classList.add('done'); L.classList.remove('sel');
-    matchState.remain--; matchState.sel=null;
-    const e=earn(matchState.tries[sel]);
-    fb('good',`✅ <span class="starearn">${starStr(e)}</span>　「${info.w}」<span class="zhu">${info.z}</span>：${info.m}`);
-    if(matchState.remain===0) $('nx').classList.add('show');
-  }else{
-    R.classList.add('err'); setTimeout(()=>R.classList.remove('err'),400);
-    fb('info','再想想看，沒關係！');
-  }
-}
-/* ---------- 共用 ---------- */
+/* 共用 */
 function fb(type,html){
   const el=$('fb'); el.className='feedback show '+(type==='good'?'good':'info'); el.innerHTML=html;
   if(type==='good' && (mode==='cloze'||mode==='spot')) $('nx').classList.add('show');
 }
 function showResult(total,unit){
   $('prog').textContent='完成！';
-  const pct = maxStars? Math.round(stars/maxStars*100) : 100;
-  let msg = pct>=90?'太強了，幾乎都是一次就對！':pct>=65?'很不錯！有幾個字再看一下小撇步，下次就是滿星了。':'錯的字都看過正解了，明天再玩一次星星會變多！';
+  const pct=maxStars?Math.round(stars/maxStars*100):100;
+  const msg=pct>=90?'太強了，幾乎都是一次就對！':pct>=65?'很不錯！錯過的字再看一下小撇步，下次就是滿星。':'錯的字都看過正解了，明天再玩一次星星會變多！';
   $('qcard').innerHTML=`
     <div class="result">
       <div class="big">${pct>=90?'🏆':pct>=65?'🎉':'💪'}</div>
       <h2>完成 ${total} ${unit||'題'}</h2>
       <div class="starline">⭐ ${stars} / ${maxStars}</div>
-      <p>一次就答對：${firstTry} ${unit==='組'?'次':'題'}<br>${msg}</p>
-      <button class="nextbtn show" onclick="goHome()">回選單</button>
+      <p>一次就答對：${firstTry}<br>${msg}</p>
+      <button class="nextbtn show" onclick="backFromPlay()">返回</button>
     </div>`;
 }
+renderHome();
 </script>
 </body>
 </html>
