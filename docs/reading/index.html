@@ -44,6 +44,11 @@
     font-size:20px; line-height:2.0; letter-spacing:.2px;
   }
   .art-body p { margin-bottom:14px; }
+  .art-body-zh {
+    font-family:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif;
+    font-size:19px; line-height:2.2; letter-spacing:.5px; text-align:justify;
+  }
+  .art-body-zh p { text-indent:2em; }
   .w { cursor:pointer; border-radius:4px; padding:0 1px; }
   .w:active { background:#F5E9C8; }
   .w.seen { background:linear-gradient(transparent 70%, #F6E7B2 70%); }
@@ -127,6 +132,16 @@ If you do not sleep enough, you feel tired and angry, and it is hard to remember
   text:`Your brain is the boss of your body. It weighs about one and a half kilograms, and it feels soft, like tofu.
 Your brain uses electricity to send messages. The messages travel very fast, over four hundred kilometers per hour. Your brain never turns off. It controls your breathing and your heart, even when you sleep.
 Here is a fun fact: the brain itself cannot feel pain. And here is another one. Scientists say reading is exercise for your brain. Every time you read, your brain grows stronger. So a person who loves reading has a very strong brain.`},
+ {id:'congcong', cat:'cn', lang:'zh', emoji:'🖋', en:'匆匆', zh:'朱自清（1922）', src:'公共財（作者 1948 年歿，著作權已消滅）',
+  text:`燕子去了，有再來的時候；楊柳枯了，有再青的時候；桃花謝了，有再開的時候。但是，聰明的，你告訴我，我們的日子為什麼一去不復返呢？——是有人偷了他們吧：那是誰？又藏在何處呢？是他們自己逃走了吧：現在又到了哪裡呢？
+
+我不知道他們給了我多少日子，但我的手確乎是漸漸空虛了。在默默裡算著，八千多日子已經從我手中溜去，像針尖上一滴水滴在大海裡，我的日子滴在時間的流裡，沒有聲音，也沒有影子。我不禁頭涔涔而淚潸潸了。
+
+去的儘管去了，來的儘管來著，去來的中間，又怎樣地匆匆呢？早上我起來的時候，小屋裡射進兩三方斜斜的太陽。太陽他有腳啊，輕輕悄悄地挪移了，我也茫茫然跟著旋轉。於是——洗手的時候，日子從水盆裡過去；吃飯的時候，日子從飯碗裡過去；默默時，便從凝然的雙眼前過去；我覺察他去得匆匆了，伸出手遮挽時，他又從遮挽著的手邊過去；天黑時，我躺在床上，他便伶伶俐俐地從我身上跨過，從我腳邊飛去了；等我睜開眼和太陽再見，這算又溜走了一日；我掩面嘆息，但是新來的日子的影兒又開始在嘆息裡閃過了。
+
+在逃去如飛的日子裡，在千門萬戶的世界裡的我能做什麼呢？只有徘徊罷了，只有匆匆罷了。在八千多日的匆匆裡，除徘徊外，又剩些什麼呢？過去的日子如輕煙，被微風吹散了，如薄霧，被初陽蒸融了。我留著些什麼痕跡呢？我何曾留著像遊絲樣的痕跡呢？我赤裸裸來到這世界，轉眼間也將赤裸裸地回去吧？但不能平的，為什麼偏要白白走這一遭啊？
+
+你聰明的，告訴我，我們的日子為什麼一去不復返呢？`},
  {id:'crow', cat:'story', emoji:'🐦‍⬛', en:'The Crow and the Pitcher', zh:'烏鴉喝水', src:'改寫自伊索寓言（公共財）',
   text:`A crow was very thirsty. She found a pitcher with a little water at the bottom. But the neck of the pitcher was long, and her beak could not reach the water.
 She pushed the pitcher, but it was too heavy. She was tired and sad.
@@ -332,15 +347,20 @@ function renderHome(){
   state.view='home'; state.artId=null;
   const sci = ARTICLES.filter(a=>a.cat==='sci');
   const story = ARTICLES.filter(a=>a.cat==='story');
+  const cn = ARTICLES.filter(a=>a.cat==='cn');
   const card = a=>{
     const last = sheetState.lastRead[a.id];
     const mark = last ? `<span class="done-mark">✅ ${last}</span>` : (state.finished[a.id]?'<span class="done-mark">✅ 今天</span>':'');
+    const isZh = a.lang==='zh';
+    const meta = isZh
+      ? `${a.text.replace(/\s/g,'').length} 字 · 約 ${Math.max(1,Math.round(a.text.replace(/\s/g,'').length/250))} 分鐘`
+      : `${a.text.split(/\s+/).length} 個字 · 約 ${Math.max(1,Math.round(a.text.split(/\s+/).length/60))} 分鐘`;
     return `
     <div class="card" onclick="openArticle('${a.id}')">
       ${mark}
       <div class="en">${a.emoji} ${a.en}</div>
       <div class="zh">${a.zh}</div>
-      <div class="meta">${a.text.split(/\s+/).length} 個字 · 約 ${Math.max(1,Math.round(a.text.split(/\s+/).length/60))} 分鐘${QUIZ[a.id]?(sheetState.quizzed[a.id]?' · 🎯 挑戰過':''):''}</div>
+      <div class="meta">${meta}${QUIZ[a.id]?(sheetState.quizzed[a.id]?' · 🎯 挑戰過':''):''}</div>
     </div>`;
   };
   const pts = sheetState.points===null ? '…' : sheetState.points;
@@ -353,7 +373,8 @@ function renderHome(){
     ${sci.map(card).join('')}
     <div class="cat-label">🐉 故事與奇幻</div>
     ${story.map(card).join('')}
-    <div class="attribution">寓言改寫自伊索寓言（公共財）。科普與龍的故事為原創。<br>想要更多文章的話，跟爸爸說一聲！<br><a href="../" style="color:#B7A98C">← 回學習系統首頁</a></div>`;
+    ${cn.length?`<div class="cat-label">🖋 好文章（中文）</div>${cn.map(card).join('')}`:''}
+    <div class="attribution">寓言改寫自伊索寓言（公共財）。科普與龍的故事為原創。中文散文為公共財（作者歿逾五十年，著作權已消滅）。<br>想要更多文章的話，跟爸爸說一聲！<br><a href="../" style="color:#B7A98C">← 回學習系統首頁</a></div>`;
   window.scrollTo(0,0);
 }
 
@@ -372,6 +393,7 @@ function openArticle(id){
   const a = ARTICLES.find(x=>x.id===id);
   state.view='read'; state.artId=id;
   if(!state.seen[id]) state.seen[id]={};
+  const isZh = a.lang==='zh';
   app.innerHTML = `
     <div class="topbar">
       <button class="btn-back" onclick="renderHome()">← 回書架</button>
@@ -379,12 +401,12 @@ function openArticle(id){
     </div>
     <div class="art-title">${a.emoji} ${a.en}</div>
     <div class="art-zh">${a.zh} · ${a.src}</div>
-    <div class="art-body">${tokenizeToHtml(a.text, id)}</div>
+    <div class="art-body${isZh?' art-body-zh':''}">${tokenizeToHtml(a.text, id)}</div>
     <div class="art-footer">
       <button class="btn-finish" onclick="finishArticle()">我讀完了 🌟</button>
       <div class="finish-msg" id="finish-msg"></div>
     </div>
-    <div class="hint-badge">小提醒：點任何一個字都可以，點過的字會有黃色底線。</div>`;
+    ${isZh?'':'<div class="hint-badge">小提醒：點任何一個字都可以，點過的字會有黃色底線。</div>'}`;
   window.scrollTo(0,0);
 }
 
@@ -440,11 +462,34 @@ if('speechSynthesis' in window){
   refreshVoice();
   speechSynthesis.onvoiceschanged = refreshVoice;  // 語音清單常是非同步載入
 }
-function makeUtter(text, rate){
+function pickBestZhVoice(){
+  try{
+    const vs = speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.replace('_','-').toLowerCase().startsWith('zh'));
+    if(!vs.length) return null;
+    const score = v=>{
+      const n=v.name.toLowerCase();
+      const tw=v.lang.replace('_','-').toLowerCase().startsWith('zh-tw')?100:0;
+      if(n.includes('premium')) return tw+5;
+      if(n.includes('enhanced')||n.includes('進階')) return tw+4;
+      if(/meijia|美佳/.test(n)) return tw+2;
+      if(n.includes('google')) return tw+1;
+      return tw;
+    };
+    return vs.sort((a,b)=>score(b)-score(a))[0];
+  }catch(e){ return null; }
+}
+function makeUtter(text, rate, lang){
   const u = new SpeechSynthesisUtterance(text);
-  u.lang='en-US'; u.rate=rate;
+  u.rate = rate;
   if(!voicesReady) refreshVoice();
-  if(bestVoice) u.voice = bestVoice;
+  if(lang==='zh'){
+    u.lang='zh-TW';
+    const zv = pickBestZhVoice();
+    if(zv) u.voice = zv;
+  }else{
+    u.lang='en-US';
+    if(bestVoice) u.voice = bestVoice;
+  }
   return u;
 }
 
@@ -481,7 +526,7 @@ function toggleReadAloud(){
   }
 }
 function speakWholeTts(a){
-  const u = makeUtter(a.text.replace(/\n/g,' '), 0.85);
+  const u = makeUtter(a.text.replace(/\n/g,' '), a.lang==='zh'?0.9:0.85, a.lang);
   u.onend = resetListenBtn;
   speechSynthesis.speak(u);
 }
@@ -508,9 +553,10 @@ function finishArticle(){
       <button class="btn-finish" onclick="startQuiz()">${already?'🎯 再玩一次挑戰（不加點）':'🎯 要不要挑戰 3 題？答對 1 題拿 1 點'}</button>
       <button class="btn-back" style="margin-left:8px" onclick="renderHome()">下次再說</button>
     </div>` : '';
+  const kind = a.lang==='zh' ? '好文章' : '英文文章';
   msg.innerHTML = (n>0
-    ? `太棒了！你讀完了一篇英文文章 🎉<br>今天認識了 <b>${n}</b> 個單字新朋友 🌱`
-    : `太棒了！你讀完了一篇英文文章 🎉<br>整篇都看得懂，太厲害了！`) + quizBtns;
+    ? `太棒了！你讀完了一篇${kind} 🎉<br>今天認識了 <b>${n}</b> 個單字新朋友 🌱`
+    : `太棒了！你讀完了一篇${kind} 🎉<br>${a.lang==='zh'?'':'整篇都看得懂，太厲害了！'}`) + quizBtns;
   msg.scrollIntoView({behavior:'smooth', block:'center'});
 }
 function todayStr(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
