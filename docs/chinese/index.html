@@ -485,18 +485,43 @@ function clozeFromWord(w){ return {t:w.w.split(w.b).join('（＿）'), a:w.b, o:
 function clozeItems(L){ return L.words.map(clozeFromWord).concat(L.extra||[]); }
 function spotItems(L){ return L.words.map(w=>({t:w.w.split(w.b).join(w.o[0]), wr:w.o[0], co:w.b, w:w.w, h:w.h})); }
 
-/* 語音：點生字唸出來（瀏覽器內建中文語音） */
+/* 語音：點生字唸出來（瀏覽器內建中文語音）
+   v2.39.2：自動挑裝置上最好的中文語音——下載 Enhanced/Premium 語音
+  （設定→輔助使用→朗讀內容→System voice 旁 ⓘ →中文（台灣））後重開瀏覽器自動生效。
+   zh-TW 優先於其他中文；同語系內 Premium > Enhanced > 其他。Siri 語音瀏覽器拿不到，不列入。 */
+let zhBestVoice=null;
+function zhPickVoice(){
+  try{
+    const all=speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.replace('_','-').toLowerCase().startsWith('zh'));
+    if(!all.length) return null;
+    const score=v=>{
+      const n=v.name.toLowerCase();
+      const tw=v.lang.replace('_','-').toLowerCase().startsWith('zh-tw')?100:0;  // 台灣中文優先
+      if(n.includes('premium')) return tw+5;
+      if(n.includes('enhanced')||n.includes('進階')) return tw+4;
+      if(/meijia|美佳/.test(n)) return tw+2;
+      if(n.includes('google')) return tw+1;
+      return tw;
+    };
+    return all.sort((a,b)=>score(b)-score(a))[0];
+  }catch(e){ return null; }
+}
+function zhRefreshVoice(){ zhBestVoice=zhPickVoice(); }
 function speak(t){
   try{
     speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(t);
     u.lang='zh-TW'; u.rate=0.8;
-    const v=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.startsWith('zh-TW'))||speechSynthesis.getVoices().find(v=>v.lang&&v.lang.startsWith('zh'));
-    if(v)u.voice=v;
+    if(!zhBestVoice) zhRefreshVoice();
+    if(zhBestVoice)u.voice=zhBestVoice;
     speechSynthesis.speak(u);
   }catch(e){}
 }
-if('speechSynthesis' in window) speechSynthesis.getVoices();
+if('speechSynthesis' in window){
+  speechSynthesis.getVoices();
+  zhRefreshVoice();
+  speechSynthesis.onvoiceschanged=zhRefreshVoice;  // 語音清單非同步載入完再挑一次
+}
 
 /* 首頁 */
 function renderHome(){
