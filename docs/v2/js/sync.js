@@ -148,7 +148,12 @@ export function computeAllDevices(events) {
     const m = map.get(dev);
     const event = String(ev.event || '');
     const amount = Number(ev.amount) || 0;
-    if (event.endsWith('_done') && amount > 0) {
+    // v2.38：可提領要納入國文獎金（v2_cn_*_paid）。
+    //   國文事件刻意不用 _done 結尾（避免污染英文的日上限/連勝重算，見 recomputeFromEvents），
+    //   所以這裡（錢包/提領口徑）要明確把它加回來——錢包是同一個。
+    const isEnglishEarn = event.endsWith('_done');
+    const isChineseEarn = event.startsWith('v2_cn_') && event.endsWith('_paid');
+    if ((isEnglishEarn || isChineseEarn) && amount > 0) {
       m.totalEarned += amount;
     } else if (event === 'v2_payout') {
       m.totalWithdrawn += Math.abs(amount);
