@@ -524,10 +524,13 @@ function pickRight(key){
   const R=$('R_'+key), L=$('L_'+matchState.sel), sel=matchState.sel;
   matchState.tries[sel]=(matchState.tries[sel]||0)+1;
   if(key===sel){
+    const info=order[idx].chars.find(x=>x.c===sel);
     R.classList.add('done'); L.classList.add('done'); L.classList.remove('sel');
+    R.innerHTML=`${info.z}<br><span style="font-size:14px">${info.m}</span>`;
+    speak(info.u.split('、')[0]);
     matchState.remain--; matchState.sel=null;
     const e=earn(matchState.tries[sel]);
-    fb('good',`✅ 配對成功 <span class="starearn">${starStr(e)}</span>`);
+    fb('good',`✅ 配對成功 <span class="starearn">${starStr(e)}</span>　🔊「${info.u.split('、')[0]}」`);
     if(matchState.remain===0){
       const set=order[idx];
       const ht=$('ht'); ht.classList.add('show');
