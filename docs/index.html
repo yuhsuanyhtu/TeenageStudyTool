@@ -59,21 +59,25 @@ async function loadWallet(){
     const data=await res.json();
     if(!data||!data.ok||!Array.isArray(data.events)) throw new Error('API 未就緒');
     // 合計口徑：所有裝置加總（錢包屬於謙恩本人，不分裝置）
-    let earned=0, withdrawn=0, penalty=0, todayEn=0;
+    let earned=0, withdrawn=0, penalty=0, todayEn=0, todayCn=0;
     const t=todayStr();
     for(const ev of data.events){
       const name=String(ev.event||''); const amt=Number(ev.amount)||0;
       const date=String(ev.timestamp||'').slice(0,10);
-      if(name.endsWith('_done') && amt>0){
-        earned+=amt;
+      if(name.startsWith('v2_cn_') && name.endsWith('_paid') && amt>0){
+        earned+=amt;                            // 國文獎金（同一個錢包）
+        if(date===t) todayCn+=amt;
+      }else if(name.endsWith('_done') && amt>0){
+        earned+=amt;                            // 英文獎金
         if(date===t) todayEn+=amt;
       }else if(name==='v2_payout'){ withdrawn+=Math.abs(amt); }
       else if(name==='v2_penalty'){ penalty+=Math.abs(amt); }
     }
     const avail=Math.max(0, earned-withdrawn-penalty);
-    if(todayEn>100) todayEn=100; // 顯示層套英文日上限
+    if(todayEn>100) todayEn=100;  // 各科日上限各 $100，兩科都滿＝$200
+    if(todayCn>100) todayCn=100;
     B.textContent=`$${avail}`;
-    T.innerHTML=`今天：英文 <b>$${todayEn}</b> ／ 上限 $100<br>國文：試玩中（計酬規則確定後開始算錢）`;
+    T.innerHTML=`今天：英文 <b>$${todayEn}</b>／100　＋　國文 <b>$${todayCn}</b>／100<br>兩科都完成，一天最多 $200！`;
     S.textContent=`資料來源：Google Sheet（${new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})} 更新）`;
   }catch(e){
     B.textContent='—';

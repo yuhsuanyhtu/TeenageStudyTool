@@ -378,6 +378,93 @@ const LESSONS3=[
 
 const SEMS=[{name:"2上",list:LESSONS},{name:"3上",list:LESSONS3}];
 
+
+/* ===== 零用金（鏡射英文規則，事件記到同一張 Google Sheet） =====
+   規則：基礎$10（單日首輪「一次答對」≥5）＋每題一次答對+$2；日上限$100（國文獨立）；
+   連勝階梯 7/14/30 天 ×1.2/1.4/1.6（國文自己的連勝，跨裝置以「人」計）。
+   只有⭐⭐⭐（一次答對）算錢；連連看/詞語配對＝複習不計酬。
+   事件名 v2_cn_*_paid：v2_ 開頭（API 撈得到）、非 _done 結尾（不污染英文日上限）。 */
+const PAY_URL="https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
+const CN_CAP=100, CN_BASE=10, CN_PER=2, CN_MIN=5;
+const CN_TIERS=[[7,1.2],[14,1.4],[30,1.6]];
+function cnToday(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function cnMul(st){let m=1;for(const[d,x]of CN_TIERS)if(st>=d)m=x;return m;}
+function cnDevice(){
+  try{
+    let n=localStorage.getItem('sv2.deviceName');
+    if(!n){const ua=navigator.userAgent||'';let k='裝置';
+      if(/iPad/i.test(ua))k='iPad';else if(/iPhone/i.test(ua))k='iPhone';
+      else if(/Android/i.test(ua))k='Android';else if(/Macintosh/i.test(ua))k='Mac';else if(/Windows/i.test(ua))k='Windows';
+      n=k+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+      localStorage.setItem('sv2.deviceName',n);}
+    return n;
+  }catch(e){return '(未命名)';}
+}
+async function cnFetchState(){
+  // 從 Sheet 重算國文今日已賺/基礎是否已給/連勝（以人計＝所有裝置）
+  const res=await fetch(`${PAY_URL}?action=v2_events`,{mode:'cors',cache:'no-cache'});
+  const data=await res.json();
+  if(!data||!data.ok||!Array.isArray(data.events)) throw new Error('API');
+  const t=cnToday(); let today=0, baseGiven=false; const days=new Set();
+  for(const ev of data.events){
+    const name=String(ev.event||'');
+    if(!name.startsWith('v2_cn_')||!name.endsWith('_paid'))continue;
+    const date=String(ev.timestamp||'').slice(0,10);
+    const amt=Number(ev.amount)||0, ft=Number(ev.correct)||0;
+    if(amt>0&&date===t)today+=amt;
+    if(date===t&&String(ev.note||'').includes('base'))baseGiven=true;
+    if(ft>=CN_MIN)days.add(date);
+  }
+  if(today>CN_CAP)today=CN_CAP;
+  // streak：從今天往回連續打卡天數（今天沒完成則從昨天起算）
+  let st=0; let d=new Date();
+  const fmt=x=>`${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`;
+  if(!days.has(fmt(d)))d.setDate(d.getDate()-1);
+  while(days.has(fmt(d))){st++;d.setDate(d.getDate()-1);}
+  return {today,baseGiven,streak:st};
+}
+function cnCalc(ft,stx){
+  // ft=一次答對題數；stx={today,baseGiven,streak}
+  const base=(!stx.baseGiven&&ft>=CN_MIN)?CN_BASE:0;
+  const per=ft*CN_PER;
+  const raw=base+per;
+  const remain=Math.max(0,CN_CAP-stx.today);
+  const pre=Math.min(raw,remain);
+  const mul=cnMul(stx.streak);
+  const fin=Math.round(pre*mul);
+  let txt;
+  if(pre===0){ txt= ft>0?`國文今天已達 $${CN_CAP} 上限，明天再來！`:`這輪沒有一次答對的題目，沒有獎金（多練就有）`; }
+  else{
+    const b=base>0?`基礎 $${base}＋`:'';
+    const m=mul>1?`×${mul.toFixed(1)}（連勝 ${stx.streak} 天）`:'';
+    const capN=pre<raw?`（受日上限採計 $${pre}）`:'';
+    txt=`${b}一次答對 ${ft} 題 +$${per}${capN}${m}＝$${fin}`;
+  }
+  return {fin,pre,base,txt};
+}
+function cnPost(ev){
+  try{
+    fetch(PAY_URL,{method:'POST',mode:'no-cors',keepalive:true,
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({event:ev.event,unit:ev.unit||'',quizSize:ev.quizSize??'',correct:ev.correct??'',
+        prediction:'',amount:ev.amount??'',note:ev.note||'',money:'',totalPaid:'',streak:ev.streak??'',user:cnDevice()})
+    }).catch(()=>{});
+  }catch(e){}
+}
+async function cnSettle(modeName,unit,total){
+  // 回傳結算 HTML；同時把事件寫進 Sheet
+  try{
+    const stx=await cnFetchState();
+    const r=cnCalc(firstTry,stx);
+    cnPost({event:`v2_cn_${modeName}_paid`,unit,quizSize:total,correct:firstTry,amount:r.fin,
+            note:(r.base>0?'base;':'')+`stars=${stars}`,streak:stx.streak});
+    const newToday=Math.min(CN_CAP,stx.today+r.pre);
+    return `💰 這一輪賺進 <b>$${r.fin}</b><br><span style="font-size:13px">${r.txt}</span><br><span style="font-size:13px">國文今日 $${newToday} ／ 上限 $${CN_CAP}</span>`;
+  }catch(e){
+    return `💰 現在連不上錢包，本輪成績已記在星星上，連線後的下一輪會一起算錢`;
+  }
+}
+
 /* ===== 引擎 ===== */
 let mode=null, curLesson=null, idx=0, matchState=null;
 let stars=0, maxStars=0, firstTry=0, itemAttempt=0;
@@ -565,14 +652,21 @@ function showResult(total,unit){
   $('prog').textContent='完成！';
   const pct=maxStars?Math.round(stars/maxStars*100):100;
   const msg=pct>=90?'太強了，幾乎都是一次就對！':pct>=65?'很不錯！錯過的字再看一下小撇步，下次就是滿星。':'錯的字都看過正解了，明天再玩一次星星會變多！';
+  const payable=(mode==='cloze'||mode==='spot');   // 連連看/詞語配對＝複習不計酬
   $('qcard').innerHTML=`
     <div class="result">
       <div class="big">${pct>=90?'🏆':pct>=65?'🎉':'💪'}</div>
       <h2>完成 ${total} ${unit||'題'}</h2>
       <div class="starline">⭐ ${stars} / ${maxStars}</div>
       <p>一次就答對：${firstTry}<br>${msg}</p>
+      ${payable?'<div class="feedback good show" id="pay">💰 結算中…</div>':''}
       <button class="nextbtn show" onclick="backFromPlay()">返回</button>
     </div>`;
+  if(payable){
+    const mName = curLesson? mode : 'mix';
+    const u = curLesson? curLesson.id : 'mix';
+    cnSettle(mName,u,total).then(html=>{const el=$('pay'); if(el)el.innerHTML=html;});
+  }
 }
 renderHome();
 </script>
