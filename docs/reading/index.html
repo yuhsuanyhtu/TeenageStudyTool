@@ -459,19 +459,36 @@ function closeSheet(){
   if(currentEl){ currentEl.classList.remove('current'); currentEl=null; }
 }
 
-/* ================= 整篇朗讀 ================= */
-let readingAloud = false;
+/* ================= 整篇朗讀 =================
+   v2.39.3：優先播預先生成的神經 TTS 音檔（audio/<id>.mp3，Piper lessac，稍慢速）；
+   檔案載入失敗（離線/舊快取）自動退回系統語音。 */
+const HAS_AUDIO = {heart:1, sleep:1, brain:1, crow:1, wind:1, dragon:1};
+let readingAloud = false, audioEl = null;
+function resetListenBtn(){ readingAloud=false; const b=document.getElementById('btn-listen'); if(b) b.textContent='🔊 聽整篇'; }
 function toggleReadAloud(){
   const btn = document.getElementById('btn-listen');
-  if(readingAloud){ stopSpeech(); readingAloud=false; btn.textContent='🔊 聽整篇'; return; }
+  if(readingAloud){ stopSpeech(); resetListenBtn(); return; }
   const a = ARTICLES.find(x=>x.id===state.artId);
   stopSpeech();
-  const u = makeUtter(a.text.replace(/\n/g,' '), 0.85);
-  u.onend = ()=>{ readingAloud=false; const b=document.getElementById('btn-listen'); if(b) b.textContent='🔊 聽整篇'; };
   readingAloud = true; btn.textContent='⏹ 停止';
+  if(HAS_AUDIO[a.id]){
+    audioEl = new Audio('audio/'+a.id+'.mp3');
+    audioEl.onended = resetListenBtn;
+    audioEl.onerror = ()=>{ audioEl=null; speakWholeTts(a); };
+    audioEl.play().catch(()=>{ audioEl=null; speakWholeTts(a); });
+  }else{
+    speakWholeTts(a);
+  }
+}
+function speakWholeTts(a){
+  const u = makeUtter(a.text.replace(/\n/g,' '), 0.85);
+  u.onend = resetListenBtn;
   speechSynthesis.speak(u);
 }
-function stopSpeech(){ try{ speechSynthesis.cancel(); }catch(e){} }
+function stopSpeech(){
+  try{ speechSynthesis.cancel(); }catch(e){}
+  try{ if(audioEl){ audioEl.pause(); audioEl.currentTime=0; audioEl=null; } }catch(e){}
+}
 
 /* ================= 讀完 → ✓ 紀錄 → 自選挑戰 ================= */
 function finishArticle(){
