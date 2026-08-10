@@ -7,6 +7,7 @@
 //   rules    規則頁
 
 import * as state from './state.js';
+import * as tts from './tts.js';
 import * as reward from './reward.js';
 import { loadAll } from './data-loader.js';
 import { startMatchMode } from './modes/match.js';
@@ -191,6 +192,7 @@ function renderHome() {
   root.innerHTML = `
     <div class="header-row">
       <h1>謙恩的英文</h1>
+      <button class="rules-link" id="tts-rate-btn">${tts.rateModeLabel()}</button>
       <button class="rules-link" id="rules-btn">📋 規則</button>
     </div>
 
@@ -279,6 +281,11 @@ function renderHome() {
   root.querySelector('#resync').addEventListener('click', e => {
     e.preventDefault();
     syncInBackground();
+  });
+  // v2.39：語速切換（慢→正常→快循環），中英共用同一設定
+  root.querySelector('#tts-rate-btn').addEventListener('click', (e) => {
+    tts.cycleRateMode();
+    e.target.textContent = tts.rateModeLabel();
   });
   root.querySelector('#rules-btn').addEventListener('click', () => {
     renderRules(root, refreshAndRenderHome);

@@ -28,6 +28,27 @@ const PREFERRED_ZH_VOICES = [
   'Tian-Tian', 'Tingting',              // zh-CN fallback
 ];
 
+// v2.39：全域語速（謙恩要求可調）。存 localStorage sv2.ttsRate：slow/normal/fast
+//   慢=×0.7、正常=×1.0、快=×1.25，套在所有英文/中文/拼字的基準速率上（拼字仍相對更慢）。
+const RATE_FACTORS = { slow: 0.7, normal: 1.0, fast: 1.25 };
+export function getRateMode() {
+  try { const v = localStorage.getItem('sv2.ttsRate'); return RATE_FACTORS[v] ? v : 'normal'; } catch (e) { return 'normal'; }
+}
+export function setRateMode(mode) {
+  if (!RATE_FACTORS[mode]) mode = 'normal';
+  try { localStorage.setItem('sv2.ttsRate', mode); } catch (e) {}
+}
+export function cycleRateMode() {
+  const order = ['slow', 'normal', 'fast'];
+  const next = order[(order.indexOf(getRateMode()) + 1) % order.length];
+  setRateMode(next);
+  return next;
+}
+export function rateModeLabel(mode) {
+  return { slow: '🐢 慢', normal: '🔊 正常', fast: '⚡ 快' }[mode || getRateMode()];
+}
+function rateFactor() { return RATE_FACTORS[getRateMode()]; }
+
 let voicesCache = [];
 let bestVoice = null;
 let bestZhVoice = null;
@@ -88,7 +109,7 @@ export function speak(text, opts = {}) {
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(String(text));
   u.lang = 'en-US';
-  u.rate = opts.rate ?? 0.9;     // 略慢，孩子比較聽得清
+  u.rate = (opts.rate ?? 0.9) * rateFactor();  // 基準略慢 × 使用者語速
   u.pitch = opts.pitch ?? 1.0;
   u.volume = opts.volume ?? 1.0;
   if (bestVoice) u.voice = bestVoice;
@@ -118,7 +139,7 @@ export function speakSpell(text) {
 function _queueEnWord(trimmed) {
   if (!trimmed) return;
   const u = new SpeechSynthesisUtterance(trimmed);
-  u.lang = 'en-US'; u.rate = 0.9;
+  u.lang = 'en-US'; u.rate = 0.9 * rateFactor();
   if (bestVoice) u.voice = bestVoice;
   window.speechSynthesis.speak(u);
 }
@@ -133,7 +154,7 @@ function _queueEnSpell(trimmed) {
   }
   const spelled = trimmed.toUpperCase().split('').join('. ') + '.';
   const u = new SpeechSynthesisUtterance(spelled);
-  u.lang = 'en-US'; u.rate = 0.5;  // 拼字更慢更清楚
+  u.lang = 'en-US'; u.rate = 0.5 * rateFactor();  // 拼字更慢更清楚
   if (bestVoice) u.voice = bestVoice;
   window.speechSynthesis.speak(u);
 }
@@ -152,7 +173,7 @@ function _queueZh(zhTrimmed) {
   const clean = zhTrimmed.replace(/（[^）]*[a-zA-Z][^）]*）/g, '').replace(/\([^)]*[a-zA-Z][^)]*\)/g, '').trim();
   if (!clean) return;
   const u = new SpeechSynthesisUtterance(clean);
-  u.lang = 'zh-TW'; u.rate = 0.9;
+  u.lang = 'zh-TW'; u.rate = 0.9 * rateFactor();
   if (bestZhVoice) u.voice = bestZhVoice;
   window.speechSynthesis.speak(u);
 }

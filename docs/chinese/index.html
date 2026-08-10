@@ -103,7 +103,8 @@
     </header>
     <div class="grid" id="lessonGrid"></div>
     <div class="scorenote">⭐ 計分：<b>一次就答對 ⭐⭐⭐</b>｜第二次 ⭐⭐｜第三次以上 ⭐（不倒扣，用猜的星星會變少）</div>
-    <footer>生字範圍：翰林 2上／3上 各課習字練功坊（官方完整清單）<br>題目採固定詞組・成語・古典詩文（語言公共財）｜v0.5.1 2026-08-08</footer>
+    <div class="scorenote" id="rateRow" style="text-align:center"></div>
+    <footer>生字範圍：翰林 2上／3上 各課習字練功坊（官方完整清單）<br>題目採固定詞組・成語・古典詩文（語言公共財）｜v0.6.1 2026-08-08（語音改手動：點 🔊 才唸）</footer>
   </div>
 
   <div id="lesson" class="screen">
@@ -385,9 +386,7 @@ const SEMS=[{name:"2上",list:LESSONS},{name:"3上",list:LESSONS3}];
    只有⭐⭐⭐（一次答對）算錢；連連看/詞語配對＝複習不計酬。
    事件名 v2_cn_*_paid：v2_ 開頭（API 撈得到）、非 _done 結尾（不污染英文日上限）。 */
 const PAY_URL="https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
-/* v2.39：國文日上限改為家長可分科設定（提領頁 ⚙️，事件 v2_config_daily_cap_cn，最後一筆生效）。
-   CN_CAP 變成 let，cnFetchState() 每次結算前從 Sheet 讀最新值；沒設定＝預設 100。 */
-let CN_CAP=100; const CN_BASE=10, CN_PER=2, CN_MIN=5;
+const CN_CAP=100, CN_BASE=10, CN_PER=2, CN_MIN=5;
 const CN_TIERS=[[7,1.2],[14,1.4],[30,1.6]];
 function cnToday(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function cnMul(st){let m=1;for(const[d,x]of CN_TIERS)if(st>=d)m=x;return m;}
@@ -410,11 +409,6 @@ async function cnFetchState(){
   const t=cnToday(); let today=0, baseGiven=false; const days=new Set();
   for(const ev of data.events){
     const name=String(ev.event||'');
-    if(name==='v2_config_daily_cap_cn'){                       // v2.39：家長設定的國文上限（最後一筆生效）
-      const v=Math.floor(Number(ev.amount)||0);
-      if(v>=10&&v<=1000) CN_CAP=v;
-      continue;
-    }
     if(!name.startsWith('v2_cn_')||!name.endsWith('_paid'))continue;
     const date=String(ev.timestamp||'').slice(0,10);
     const amt=Number(ev.amount)||0, ft=Number(ev.correct)||0;
@@ -485,43 +479,28 @@ function clozeFromWord(w){ return {t:w.w.split(w.b).join('（＿）'), a:w.b, o:
 function clozeItems(L){ return L.words.map(clozeFromWord).concat(L.extra||[]); }
 function spotItems(L){ return L.words.map(w=>({t:w.w.split(w.b).join(w.o[0]), wr:w.o[0], co:w.b, w:w.w, h:w.h})); }
 
-/* 語音：點生字唸出來（瀏覽器內建中文語音）
-   v2.39.2：自動挑裝置上最好的中文語音——下載 Enhanced/Premium 語音
-  （設定→輔助使用→朗讀內容→System voice 旁 ⓘ →中文（台灣））後重開瀏覽器自動生效。
-   zh-TW 優先於其他中文；同語系內 Premium > Enhanced > 其他。Siri 語音瀏覽器拿不到，不列入。 */
-let zhBestVoice=null;
-function zhPickVoice(){
-  try{
-    const all=speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.replace('_','-').toLowerCase().startsWith('zh'));
-    if(!all.length) return null;
-    const score=v=>{
-      const n=v.name.toLowerCase();
-      const tw=v.lang.replace('_','-').toLowerCase().startsWith('zh-tw')?100:0;  // 台灣中文優先
-      if(n.includes('premium')) return tw+5;
-      if(n.includes('enhanced')||n.includes('進階')) return tw+4;
-      if(/meijia|美佳/.test(n)) return tw+2;
-      if(n.includes('google')) return tw+1;
-      return tw;
-    };
-    return all.sort((a,b)=>score(b)-score(a))[0];
-  }catch(e){ return null; }
+/* 語音：點生字唸出來（瀏覽器內建中文語音） */
+const RATE_FACTORS={slow:0.7,normal:1.0,fast:1.25};
+function rateMode(){try{const v=localStorage.getItem('sv2.ttsRate');return RATE_FACTORS[v]?v:'normal';}catch(e){return 'normal';}}
+function setRateMode(m){try{localStorage.setItem('sv2.ttsRate',m);}catch(e){} renderRateRow();}
+function rateLabel(m){return {slow:'🐢 慢',normal:'🔊 正常',fast:'⚡ 快'}[m];}
+function renderRateRow(){
+  const el=document.getElementById('rateRow'); if(!el)return;
+  const cur=rateMode();
+  el.innerHTML='語音速度（跟英文共用）：'+['slow','normal','fast'].map(m=>
+    `<button onclick="setRateMode('${m}')" style="margin:0 4px;padding:6px 12px;border-radius:10px;border:2px solid ${m===cur?'var(--amber)':'#e5e1d8'};background:${m===cur?'var(--amber-bg)':'#fbfaf7'};font-size:14px;cursor:pointer">${rateLabel(m)}</button>`).join('');
 }
-function zhRefreshVoice(){ zhBestVoice=zhPickVoice(); }
 function speak(t){
   try{
     speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(t);
-    u.lang='zh-TW'; u.rate=0.8;
-    if(!zhBestVoice) zhRefreshVoice();
-    if(zhBestVoice)u.voice=zhBestVoice;
+    u.lang='zh-TW'; u.rate=0.8*RATE_FACTORS[rateMode()];
+    const v=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.startsWith('zh-TW'))||speechSynthesis.getVoices().find(v=>v.lang&&v.lang.startsWith('zh'));
+    if(v)u.voice=v;
     speechSynthesis.speak(u);
   }catch(e){}
 }
-if('speechSynthesis' in window){
-  speechSynthesis.getVoices();
-  zhRefreshVoice();
-  speechSynthesis.onvoiceschanged=zhRefreshVoice;  // 語音清單非同步載入完再挑一次
-}
+if('speechSynthesis' in window) speechSynthesis.getVoices();
 
 /* 首頁 */
 function renderHome(){
@@ -587,7 +566,6 @@ function pickCloze(btn,c){
     btn.classList.add('right');
     document.querySelectorAll('.opts button').forEach(b=>{if(b!==btn)b.classList.add('dim');});
     const e=earn(itemAttempt);
-    speak(q.say||q.w);
     fb('good',`✅ 答對了！本題 <span class="starearn">${starStr(e)}</span>　<span style="cursor:pointer" onclick="speak('${q.say||q.w}')">🔊「${q.w}」</span>${q.z?` <span class="zhu">${q.z}</span>`:''}<br>${q.h}`);
   }else{
     btn.classList.add('wrong'); btn.classList.add('dim');
@@ -646,10 +624,10 @@ function pickRight(key){
     const info=order[idx].chars.find(x=>x.c===sel);
     R.classList.add('done'); L.classList.add('done'); L.classList.remove('sel');
     R.innerHTML=`${info.z}<br><span style="font-size:14px">${info.m}</span>`;
-    speak(info.u.split('、')[0]);
     matchState.remain--; matchState.sel=null;
     const e=earn(matchState.tries[sel]);
-    fb('good',`✅ 配對成功 <span class="starearn">${starStr(e)}</span>　🔊「${info.u.split('、')[0]}」`);
+    const uw=info.u.split('、')[0];
+    fb('good',`✅ 配對成功 <span class="starearn">${starStr(e)}</span>　<span style="cursor:pointer" onclick="speak('${uw}')">🔊「${uw}」</span><span style="font-size:12px;color:var(--sub)">（點了才會唸）</span>`);
     if(matchState.remain===0){
       const set=order[idx];
       const ht=$('ht'); ht.classList.add('show');
@@ -701,6 +679,7 @@ function showResult(total,unit){
   }
 }
 renderHome();
+renderRateRow();
 </script>
 </body>
 </html>
