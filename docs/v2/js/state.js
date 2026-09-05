@@ -18,6 +18,8 @@ const DEFAULTS = {
   reviewEarnedToday: 0,        // v2.28：今日從頭複習已賺的錢（cap 在 reviewDailyCap，每日重置）
   readingDoneToday: [],        // v2.28：今日已領獎金的故事 id（同篇一天只能領一次，每日重置）
   clozeDoneToday: [],          // v2.44：今日已領獎金的克漏字短文 id（同篇一天只能領一次，每日重置）
+  paidToday: {},               // v2.45：今日已付過錢的字 { en2zh:[en], zh2en:[en], vocab:[en] }（同字同題型一天一次，每日重置）
+  matchPaidUnitsToday: [],     // v2.45：今日已付過連連看的單元（同單元一天一場，每日重置）
   totalWithdrawn: 0,     // 累計已提領（v2.16）— 從 sync 同步
   totalPenalty: 0,       // v2.34：累計生活習慣扣款 — 從 sync 同步（只有家長頁能寫）
   availableToWithdraw: 0,// 可提領金額 = totalEarned - totalWithdrawn - totalPenalty（從 sync 同步）
@@ -77,6 +79,8 @@ export function refreshDailyState(state) {
     state.reviewEarnedToday = 0;   // v2.28：每天重置「複習已賺額度」
     state.readingDoneToday = [];   // v2.28：每天重置「已領獎金的故事」
     state.clozeDoneToday = [];     // v2.44：每天重置「已領獎金的克漏字短文」
+    state.paidToday = {};          // v2.45
+    state.matchPaidUnitsToday = [];  // v2.45
     changed = true;
   }
   if (state.freezeMonth !== m) {
@@ -105,6 +109,17 @@ export function markSeenEns(s, unit, ens) {
   const set = new Set(s.todaySeenEns[unit]);
   for (const en of ens) if (en) set.add(en);
   s.todaySeenEns[unit] = [...set];
+}
+
+// ===== v2.45：今日已付錢的字（同字同題型一天一次） =====
+export function getPaidSet(s, mode) {
+  return new Set(((s.paidToday || {})[mode] || []).map(x => String(x).toLowerCase()));
+}
+export function markPaid(s, mode, ens) {
+  if (!s.paidToday) s.paidToday = {};
+  const set = new Set((s.paidToday[mode] || []).map(x => String(x).toLowerCase()));
+  for (const en of ens || []) if (en) set.add(String(en).toLowerCase());
+  s.paidToday[mode] = [...set];
 }
 
 // ===== 裝置名（每台瀏覽器自己取，寫到 Google Sheet 的「裝置」欄） =====

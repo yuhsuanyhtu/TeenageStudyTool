@@ -124,6 +124,17 @@ async function syncInBackground() {
   if (Array.isArray(computed.todayReadingDone) && computed.todayReadingDone.length) {
     s.readingDoneToday = [...new Set([...(s.readingDoneToday || []), ...computed.todayReadingDone])];
   }
+  // v2.44：克漏字同篇一天一次 → 從 Sheet 補齊
+  if (Array.isArray(computed.todayClozeDone) && computed.todayClozeDone.length) {
+    s.clozeDoneToday = [...new Set([...(s.clozeDoneToday || []), ...computed.todayClozeDone])];
+  }
+  // v2.45：同字同題型一天一次／連連看同單元一天一場 → 也從 Sheet 補齊（換裝置、清資料都繞不過）
+  if (computed.todayPaid) {
+    for (const m of ['en2zh', 'zh2en', 'vocab']) state.markPaid(s, m, computed.todayPaid[m] || []);
+  }
+  if (Array.isArray(computed.todayMatchPaidUnits) && computed.todayMatchPaidUnits.length) {
+    s.matchPaidUnitsToday = [...new Set([...(s.matchPaidUnitsToday || []), ...computed.todayMatchPaidUnits])];
+  }
   s.dailyCap = computed.dailyCap;                      // v2.35：家長設定的每日上限（null = 預設）
   s.practiceMode = computed.practiceMode || 0;         // v2.42：練習量模式（家長頁設定，跨裝置同步）
   state.save(s);
@@ -373,6 +384,19 @@ function renderModePicker() {
     return `<button class="quiz-size-btn ${s.id === selectedQuizSizeId ? 'active' : ''}" data-size="${s.id}">${escapeHtml(label)}</button>`;
   }).join('');
 
+  // v2.45：同字同題型一天一次 → 題型卡顯示「今天已領 N／總數」，孩子看得到錢在哪裡
+  const paidCount = (mode) => {
+    const set = state.getPaidSet(s, mode);
+    return words.filter(w => set.has(String(w.en || '').toLowerCase())).length;
+  };
+  const paidLine = (mode) => {
+    const n = paidCount(mode);
+    if (n === 0) return '';
+    const all = n >= words.length;
+    return `<div class="mode-paid ${all ? 'all' : ''}">${all ? '✓ 這單元今天全部領過了（可再練，錢明天再領）' : `今天已領 ${n}／${words.length} 字`}</div>`;
+  };
+  const matchDone = (s.matchPaidUnitsToday || []).includes(currentUnit);
+
   root.innerHTML = `
     <button class="back" id="back">← 回主畫面</button>
     <h1>${escapeHtml(currentUnit)}</h1>
@@ -390,14 +414,17 @@ function renderModePicker() {
     <button class="mode-card" data-mode="match">
       <div class="mode-title">🔗 連連看</div>
       <div class="mode-desc">英中配對 6 組，輕鬆暖身。多個英文對到同個中文不會誤判。</div>
+      ${matchDone ? `<div class="mode-paid all">✓ 今天領過了（同單元一天一場，可再練）</div>` : ''}
     </button>
     <button class="mode-card" data-mode="en2zh">
       <div class="mode-title">🇬🇧 → 🇹🇼 英翻中</div>
       <div class="mode-desc">看英文選中文（4 選 1）。系統會先拼字母（A-P-P-L-E）再唸 apple。</div>
+      ${paidLine('en2zh')}
     </button>
     <button class="mode-card" data-mode="vocab">
       <div class="mode-title">📝 文意字彙</div>
       <div class="mode-desc">看句子選字（4 選 1）。跟段考第一大題一樣：句子挖空，選出最適合的英文字。</div>
+      ${paidLine('vocab')}
     </button>
     ${(appData.clozeByUnit && appData.clozeByUnit[currentUnit] && appData.clozeByUnit[currentUnit].length > 0) ? `
     <button class="mode-card" data-mode="cloze">
@@ -408,6 +435,7 @@ function renderModePicker() {
     <button class="mode-card" data-mode="zh2en">
       <div class="mode-title">🇹🇼 → 🇬🇧 中翻英</div>
       <div class="mode-desc">把英文拼出來。難度最高，學最深。each / every 都是「每一」這種多答案會兩個都接受。</div>
+      ${paidLine('zh2en')}
     </button>
   `;
   root.querySelector('#back').addEventListener('click', refreshAndRenderHome);
@@ -588,12 +616,14 @@ function startMode(mode) {
   };
   // v2.43：英翻中／從頭複習也吃本地例句庫（零等待），字典 API 退居補充
   const sentenceMap = (appData.sentencesByUnit && appData.sentencesByUnit[currentUnit]) || {};
+  // v2.45：同字同題型一天只付一次 → 出題優先抽今天還沒領過的字
+  const paidSet = state.getPaidSet(s, mode);
   if (mode === 'match') {
     startMatchMode({ root, words, seenSet, onComplete, wordStats });
   } else if (mode === 'en2zh') {
-    startEn2ZhMode({ root, words, seenSet, onComplete, allWords: words, wordStats, roundSize, sentenceMap });
+    startEn2ZhMode({ root, words, seenSet, onComplete, allWords: words, wordStats, roundSize, sentenceMap, paidSet });
   } else if (mode === 'zh2en') {
-    startZh2EnMode({ root, words, seenSet, onComplete, wordStats, roundSize });
+    startZh2EnMode({ root, words, seenSet, onComplete, wordStats, roundSize, paidSet });
   } else if (mode === 'review') {
     startReviewMode({ root, words, onComplete, sentenceMap });
   } else if (mode === 'vocab') {
@@ -603,6 +633,7 @@ function startMode(mode) {
       root, words, seenSet, onComplete, allWords: words, wordStats, roundSize,
       sentenceMap,
       extraPool: buildA1Pool(),
+      paidSet,
     });
   } else if (mode === 'cloze') {
     // v2.40：克漏字 — 只有題庫有這個單元的短文時，題型卡才會出現
@@ -672,14 +703,25 @@ function handleComplete(mode, result) {
     });
   } else if (mode === 'match') {
     // v2.15：連連看固定獎金，不依 sessionCorrect 計算（防 brute force 刷錢）
+    const matchRepeat = (s.matchPaidUnitsToday || []).includes(currentUnit);   // v2.45：同單元一天一場
     calc = reward.calcMatchReward({
       todayPreEarned: s.todayPreEarned || 0,
       dailyCap: s.dailyCap,
       practiceMode: s.practiceMode || 0,             // v2.42：加練模式（$5→$2）
+      alreadyRewarded: matchRepeat,
     });
+    if (!matchRepeat && calc.sessionPre > 0) {
+      if (!s.matchPaidUnitsToday) s.matchPaidUnitsToday = [];
+      s.matchPaidUnitsToday.push(currentUnit);
+    }
   } else {
     // v2.44：克漏字同一篇一天只領一次獎金（題庫固定 13 篇，防背熟刷錢）
     const clozeRepeat = mode === 'cloze' && !!result.passageId && (s.clozeDoneToday || []).includes(result.passageId);
+    // v2.45：同字同題型一天一次——本回合答對的字裡，今天已付過的不再計錢
+    const paidSetNow = state.getPaidSet(s, mode);
+    const correctEns = Array.isArray(result.wordResults) ? result.wordResults.filter(r => r.correct).map(r => r.en) : [];
+    const paidCorrect = correctEns.filter(en => paidSetNow.has(String(en).toLowerCase())).length;
+    const newlyPaidEns = correctEns.filter(en => !paidSetNow.has(String(en).toLowerCase()));
     calc = reward.calcSessionReward({
       sessionCorrect,
       streak: s.streak || 0,
@@ -689,7 +731,12 @@ function handleComplete(mode, result) {
       practiceMode: s.practiceMode || 0,    // v2.42：加練模式（基礎門檻 5→10 題；連勝門檻不變仍是 5）
       mode,                                 // v2.44：題型分級（文意字彙 $3、克漏字 $3）
       alreadyRewarded: clozeRepeat,
+      paidCorrect,                          // v2.45
     });
+    if (['en2zh', 'zh2en', 'vocab'].includes(mode) && newlyPaidEns.length && calc.sessionPre > 0) {
+      state.markPaid(s, mode, newlyPaidEns);
+      result._paidNow = newlyPaidEns;   // 寫進 Sheet 備註，跨裝置同步用
+    }
     if (mode === 'cloze' && result.passageId && !clozeRepeat && calc.sessionPre > 0) {
       if (!s.clozeDoneToday) s.clozeDoneToday = [];
       s.clozeDoneToday.push(result.passageId);
@@ -737,7 +784,7 @@ function handleComplete(mode, result) {
     amount: calc.sessionFinal,
     note: result.aborted
       ? `v2 ${modeLabel} 中途離開（做到 ${sessionCorrect}/${totalQuestions}）${result.passageTitle ? `「${result.passageTitle}」` : ''}`
-      : `v2 ${modeLabel}${result.passageTitle ? `「${result.passageTitle}」` : ''}${mode === 'cloze' && result.passageId ? ` #${result.passageId}` : ''}`,
+      : `v2 ${modeLabel}${result.passageTitle ? `「${result.passageTitle}」` : ''}${mode === 'cloze' && result.passageId ? ` #${result.passageId}` : ''}${Array.isArray(result._paidNow) && result._paidNow.length ? ` #paid:${result._paidNow.join('|')}` : ''}`,
   }, s);
 
   renderResult({ mode, result, calc, streakChanged });

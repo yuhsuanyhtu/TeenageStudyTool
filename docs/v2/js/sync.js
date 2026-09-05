@@ -102,6 +102,8 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
   let todayBaseGiven = false;
   const todayReadingDone = [];
   const todayClozeDone = [];   // v2.44：今日已領獎金的克漏字短文 id（從 note 的 #id 解析）
+  const todayPaid = { en2zh: [], zh2en: [], vocab: [] };   // v2.45：今日已付錢的字（note 的 #paid:a|b|c）
+  const todayMatchPaidUnits = [];                          // v2.45：今日已付過連連看的單元
   const completedDays = new Set();
 
   for (const ev of real) {
@@ -128,6 +130,13 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
           const m = String(ev.note || '').match(/#([A-Za-z0-9_-]+)\s*$/);
           if (m) todayClozeDone.push(m[1]);
         }
+        // v2.45：測驗付過錢的字寫在 note 的 "#paid:apple|mail carrier|…"；連連看看 unit 欄
+        const pm = event.match(/^v2_(en2zh|zh2en|vocab)_done$/);
+        if (pm) {
+          const m = String(ev.note || '').match(/#paid:(.*)$/);
+          if (m) for (const w of m[1].split('|')) if (w.trim()) todayPaid[pm[1]].push(w.trim().toLowerCase());
+        }
+        if (event === 'v2_match_done' && ev.unit) todayMatchPaidUnits.push(String(ev.unit));
       }
       const isReview = event === 'v2_review_done';
       const qualifies = isReview || correct >= 5;
@@ -171,6 +180,8 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
     todayBaseGiven,
     todayReadingDone,
     todayClozeDone,      // v2.44
+    todayPaid,           // v2.45
+    todayMatchPaidUnits, // v2.45
     dailyCap,
     practiceMode,        // v2.42：練習量模式（0=標準、1=加練）
   };

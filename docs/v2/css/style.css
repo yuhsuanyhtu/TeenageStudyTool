@@ -987,3 +987,7 @@ button.back:hover { background: transparent; text-decoration: underline; }
 .cloze-zh { text-align: left; line-height: 1.7; margin-top: 8px; padding: 10px 12px; background: #f6f3ec; border-radius: 10px; }
 .book-card.done-today { opacity: .75; }
 .badge-done { font-size: 12px; color: #4c9a6f; font-weight: normal; margin-left: 4px; }
+
+/* v2.45：題型卡「今天已領」小字 */
+.mode-paid { font-size: 12px; color: #8a867c; margin-top: 6px; }
+.mode-paid.all { color: #4c9a6f; }

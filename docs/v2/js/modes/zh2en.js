@@ -30,7 +30,7 @@ function extractZhAlts(zh) {
   return matches.map(m => m[1].trim()).filter(Boolean);
 }
 
-export function startZh2EnMode({ root, words, onComplete, seenSet, wordStats, roundSize }) {
+export function startZh2EnMode({ root, words, onComplete, seenSet, wordStats, roundSize, paidSet }) {
   roundSize = roundSize || QUESTIONS_PER_ROUND;
   // 建反向 map: cleanZh（去除「(= xxx)」註記後）→ 所有對應的 word
   // 這樣不同的 zh「給你。」「給你。 (= Here you go.)」會合併到同一題
@@ -53,10 +53,23 @@ export function startZh2EnMode({ root, words, onComplete, seenSet, wordStats, ro
   //   - wrong 限 1/3 round，剩下混抽 unseen + learning，避免被弱點卡住
   const hasStats = wordStats && Object.keys(wordStats).length > 0;
   const target = Math.min(roundSize, uniqueZh.length);
-  let round;
-  if (hasStats) {
+
+  // v2.45：同字同題型一天只付一次錢 → 出題優先抽「今天還沒領過」的題（paidSet = 今天已領過的 en）
+  //   一題 zh 對應多個 en 時，全部都領過才算「領過」
+  const paid = paidSet || new Set();
+  const isPaid = zh => zhToWords.get(zh).every(w => paid.has(String(w.en).toLowerCase()));
+  const freshZh = uniqueZh.filter(zh => !isPaid(zh));
+  const staleZh = uniqueZh.filter(zh => isPaid(zh));
+
+  function pickZh(list, n) {
+    if (n <= 0 || list.length === 0) return [];
+    if (!hasStats) {
+      const seen = seenSet || new Set();
+      const isZhSeen = zh => zhToWords.get(zh).every(w => seen.has(w.en));
+      return pickPreferUnseen(list, n, isZhSeen);
+    }
     const zhBuckets = { wrong: [], unseen: [], learning: [], mastered: [] };
-    for (const zh of uniqueZh) {
+    for (const zh of list) {
       const ens = zhToWords.get(zh);
       let minLv = 3, anyWrong = false;
       for (const w of ens) {
@@ -70,31 +83,31 @@ export function startZh2EnMode({ root, words, onComplete, seenSet, wordStats, ro
       else if (minLv < 3) zhBuckets.learning.push(zh);
       else zhBuckets.mastered.push(zh);
     }
-
-    round = [];
+    const out = [];
     const used = new Set();
     const tryAdd = (zh) => {
-      if (round.length >= target || used.has(zh)) return;
-      used.add(zh); round.push(zh);
+      if (out.length >= n || used.has(zh)) return;
+      used.add(zh); out.push(zh);
     };
-    const maxWrong = Math.max(1, Math.ceil(target / 3));
+    const maxWrong = Math.max(1, Math.ceil(n / 3));
     // 1. wrong 限額
     for (const zh of shuffle(zhBuckets.wrong)) {
-      if (round.length >= maxWrong) break;
+      if (out.length >= maxWrong) break;
       tryAdd(zh);
     }
     // 2. unseen + learning 混抽
     for (const zh of shuffle([...zhBuckets.unseen, ...zhBuckets.learning])) tryAdd(zh);
     // 3. 還不夠 → 補 wrong 剩餘
-    if (round.length < target) for (const zh of shuffle(zhBuckets.wrong)) tryAdd(zh);
+    if (out.length < n) for (const zh of shuffle(zhBuckets.wrong)) tryAdd(zh);
     // 4. 還不夠 → 補 mastered 回測
-    if (round.length < target) for (const zh of shuffle(zhBuckets.mastered)) tryAdd(zh);
-    round = shuffle(round);
-  } else {
-    const seen = seenSet || new Set();
-    const isZhSeen = zh => zhToWords.get(zh).every(w => seen.has(w.en));
-    round = pickPreferUnseen(uniqueZh, target, isZhSeen);
+    if (out.length < n) for (const zh of shuffle(zhBuckets.mastered)) tryAdd(zh);
+    return out;
   }
+
+  // v2.24/v2.26：用 SRS 排出題順序（修「永遠同題」bug，cap wrong 到 1/3）；v2.45：先抽沒領過的，不夠再補領過的
+  let round = pickZh(freshZh, target);
+  if (round.length < target) round = round.concat(pickZh(staleZh, target - round.length));
+  round = shuffle(round);
   const usedWords = round.flatMap(zh => zhToWords.get(zh));
   const state = { idx: 0, correct: 0 };
   // v2.24：累積每題對錯，最後 onComplete 傳回去寫 SRS

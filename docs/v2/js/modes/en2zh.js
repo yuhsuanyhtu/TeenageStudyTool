@@ -20,12 +20,12 @@
 
 import { speak, speakSpell } from '../tts.js';
 import { fetchDictionary, prefetchDictionary, highlightSurface, ecdictPosToApi } from '../dictionary.js';
-import { pickPreferLearning } from '../srs.js';
+import { pickPreferLearningAvoid } from '../srs.js';
 
 const QUESTIONS_PER_ROUND = 8;
 const MIN_DISTRACTORS_NEEDED = 4;
 
-export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wordStats, roundSize, sentenceMap }) {
+export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wordStats, roundSize, sentenceMap, paidSet }) {
   sentenceMap = sentenceMap || {};
   const usable = words.filter(w => w.en && w.zh);
   if (usable.length < MIN_DISTRACTORS_NEEDED) {
@@ -39,7 +39,7 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wor
 
   // v2.24：用 SRS 策略挑題（v2.26 修：cap wrong 到 1/3 避免被弱點卡死）
   const round = (wordStats && Object.keys(wordStats).length > 0)
-    ? pickPreferLearning(usable, Math.min(roundSize, usable.length), wordStats)
+    ? pickPreferLearningAvoid(usable, Math.min(roundSize, usable.length), wordStats, paidSet)   // v2.45：先抽今天沒領過的
     : pickPreferUnseen(usable, Math.min(roundSize, usable.length), seenSet || new Set());
 
   // 累積每題對錯結果，最後 onComplete 傳回去讓 main.js 寫進 SRS

@@ -133,6 +133,17 @@ export function pickPreferLearning(words, n, wordStats) {
   return shuffle(result);  // 最後再 shuffle 讓題目順序也是隨機
 }
 
+// v2.45：同字同題型一天只付一次錢 → 先從「今天還沒領過」的字抽，不夠再補已領過的
+//   avoidSet：今天已領過的 en（小寫）。兩段各自跑 pickPreferLearning（保留 wrong/unseen/learning 的配比）
+export function pickPreferLearningAvoid(words, n, wordStats, avoidSet) {
+  const avoid = avoidSet || new Set();
+  const fresh = [], stale = [];
+  for (const w of words || []) (avoid.has(String(w.en || '').toLowerCase()) ? stale : fresh).push(w);
+  let out = pickPreferLearning(fresh, n, wordStats);
+  if (out.length < n) out = out.concat(pickPreferLearning(stale, n - out.length, wordStats));
+  return shuffle(out);
+}
+
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {

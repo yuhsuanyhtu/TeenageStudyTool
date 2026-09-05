@@ -19,12 +19,12 @@
 
 import { speak } from '../tts.js';
 import { fetchDictionary } from '../dictionary.js';
-import { pickPreferLearning } from '../srs.js';
+import { pickPreferLearningAvoid } from '../srs.js';
 
 const MIN_WORDS_NEEDED = 4;
 const QUESTIONS_PER_ROUND = 8;
 
-export function startVocabMode({ root, words, onComplete, allWords, seenSet, wordStats, roundSize, sentenceMap, extraPool }) {
+export function startVocabMode({ root, words, onComplete, allWords, seenSet, wordStats, roundSize, sentenceMap, extraPool, paidSet }) {
   const usable = words.filter(w => w.en && w.zh);
   if (usable.length < MIN_WORDS_NEEDED) {
     onComplete({ sessionCorrect: 0, totalQuestions: 0, message: '單字不足，無法出題', usedWords: [] });
@@ -35,7 +35,7 @@ export function startVocabMode({ root, words, onComplete, allWords, seenSet, wor
   extraPool = (extraPool || []).filter(w => w.en && w.zh);
 
   const round = (wordStats && Object.keys(wordStats).length > 0)
-    ? pickPreferLearning(usable, Math.min(roundSize, usable.length), wordStats)
+    ? pickPreferLearningAvoid(usable, Math.min(roundSize, usable.length), wordStats, paidSet)   // v2.45：先抽今天沒領過的
     : pickPreferUnseen(usable, Math.min(roundSize, usable.length), seenSet || new Set());
 
   const wordResults = [];

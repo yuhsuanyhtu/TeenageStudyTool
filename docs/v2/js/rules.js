@@ -53,6 +53,15 @@ export function renderRules(root, onBack) {
     </div>
 
     <div class="card">
+      <h3>🔁 同一題一天只領一次錢</h3>
+      <p>錢是給「今天學到的東西」，不是給重複按的次數：</p>
+      <p class="muted small" style="margin-bottom:4px;">· 英翻中／中翻英／文意字彙：<b>同一個字、同一種題型，一天只付一次</b>（例：apple 英翻中今天領過了，再答對不再給錢；但 apple 在中翻英還可以領，那是不同能力）。系統會<b>優先出你今天還沒領過的字</b>，題型卡上看得到「今天已領 N／總數」。</p>
+      <p class="muted small" style="margin-bottom:4px;">· 連連看：同一個單元一天付一場。</p>
+      <p class="muted small" style="margin-bottom:4px;">· 克漏字：同一篇一天付一次。閱讀練習：同一篇一天付一次。從頭複習：一天最多 $${tune.reviewDailyCap}。</p>
+      <p class="muted small">領過的題目<b>還是可以練</b>，答對也照樣算進「基礎獎金」和「連勝」的題數，只是不再另外給錢。想賺更多就換單元、換題型——2,000 多個字等你。</p>
+    </div>
+
+    <div class="card">
       <h3>🛡️ 連勝中斷怎麼辦</h3>
       <p><b>每月送 3 張「保護卡」</b>。漏一天自動扣一張，連勝不會歸零。</p>
       <p class="muted small" style="margin-top:6px;">真的斷掉（保護卡用完）→ <b>只降一階，不歸零</b>。例：連 14 天斷掉 → 變回 7 天那階繼續算。讓你生病、考試週也不用怕全部白做。</p>
