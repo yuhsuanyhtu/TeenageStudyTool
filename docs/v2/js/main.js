@@ -35,14 +35,15 @@ let syncStatus = 'idle';  // idle | syncing | done | failed
 let syncMessage = '';
 
 // v2.43：效能量測（主畫面底下顯示「載入 N ms」，讓媽媽在 iPad 上一眼看得出快慢）
-const perf = { start: performance.now(), loadMs: 0, cached: false };
+// cached 要在模組一開始就判斷：Service Worker 第一次安裝會立刻接管頁面（clients.claim），
+// 若等到 loadAll 之後才看 controller，第一次開也會誤標「本機快取」（v2.43.1 修）
+const perf = { start: performance.now(), loadMs: 0, cached: !!(navigator.serviceWorker && navigator.serviceWorker.controller) };
 let updateAvailable = false;   // Service Worker 發現新版本 → 回主畫面時顯示提示條
 
 (async function init() {
   try {
     appData = await loadAll();
     perf.loadMs = Math.round(performance.now() - perf.start);
-    perf.cached = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
     // 第一次開：先讓使用者命名這台裝置
     if (!state.getDeviceName()) {
       renderNameDevice();
