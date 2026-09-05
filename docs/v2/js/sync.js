@@ -69,12 +69,28 @@ export function extractDailyCapCn(events) {
   return cap;  // null = 家長沒調過，用預設 100
 }
 
+// v2.42：練習量模式（家長頁設定）。事件 v2_config_practice，amount = 0（標準）或 1（加練）。
+// 最後一筆生效；讀它的人：孩子端獎金計算（main.js 同步進 state）、規則頁、家長頁。
+export function extractPracticeMode(events) {
+  let mode = 0;
+  for (const ev of events || []) {
+    if (String(ev.event || '') === 'v2_config_practice') {
+      const v = Math.floor(Number(ev.amount));
+      if (v === 0 || v === 1) mode = v;
+    }
+  }
+  return mode;
+}
+
 export function recomputeFromEvents(events, todayStr, myDevice) {
   const dev = String(myDevice || '').trim();
   const real = (events || []).filter(ev =>
     dev && String(ev.device || '') === dev
   );
   const dailyCap = extractDailyCap(events);
+  const practiceMode = extractPracticeMode(events);
+  // v2.42：加練模式下基礎獎金門檻 5→10，偵測「今天基礎已給」要用同一把尺
+  const effMinForBase = practiceMode === 1 ? 10 : REWARD_CONFIG.minCorrectForBase;
 
   let totalEarned = 0;
   let totalWithdrawn = 0;
@@ -102,7 +118,7 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
         if (event === 'v2_review_done') todayReviewEarned += amount;
         // 基礎獎金只可能在「真測驗」模式答對 ≥5 時發出（一天一次）
         // v2.40：文意字彙／克漏字也走 calcSessionReward，可能發基礎獎金 → 一併認
-        if ((event === 'v2_en2zh_done' || event === 'v2_zh2en_done' || event === 'v2_vocab_done' || event === 'v2_cloze_done') && correct >= REWARD_CONFIG.minCorrectForBase) {
+        if ((event === 'v2_en2zh_done' || event === 'v2_zh2en_done' || event === 'v2_vocab_done' || event === 'v2_cloze_done') && correct >= effMinForBase) {
           todayBaseGiven = true;
         }
         if (event === 'v2_reading_done' && ev.unit) todayReadingDone.push(String(ev.unit));
@@ -149,6 +165,7 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
     todayBaseGiven,
     todayReadingDone,
     dailyCap,
+    practiceMode,        // v2.42：練習量模式（0=標準、1=加練）
   };
 }
 

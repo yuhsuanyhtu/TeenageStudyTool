@@ -35,6 +35,21 @@ export function effectiveDailyCap(dailyCap) {
   return (v >= 10 && v <= 1000) ? v : REWARD_CONFIG.dailyCapPreMultiplier;
 }
 
+// v2.42：練習量模式（家長頁可切，v2_config_practice 事件跨裝置同步）。
+//   標準（0）＝原費率。
+//   加練（1）＝「砍被動、保主動」：升國二練習量要跟上——
+//     從頭複習 $25→$10（日上限同步 $25→$10）、連連看 $5→$2、
+//     基礎獎金門檻 答對 5 題→10 題。
+//   答對一題 $2、閱讀 $5/題「不動」（錢流向真測驗）；
+//   連勝門檻也「不動」（照舊答對 5 題就保住連勝——連勝是他最在乎的，不拿來加壓）。
+export function effectiveTuning(practiceMode) {
+  if (Number(practiceMode) === 1) {
+    return { reviewBase: 10, reviewDailyCap: 10, matchReward: 2, minCorrectForBase: 10, label: '加練模式' };
+  }
+  const cfg = REWARD_CONFIG;
+  return { reviewBase: cfg.reviewBase, reviewDailyCap: cfg.reviewDailyCap, matchReward: cfg.matchReward, minCorrectForBase: cfg.minCorrectForBase, label: '標準' };
+}
+
 export function streakMultiplier(streak) {
   let mul = 1.0;
   for (const tier of REWARD_CONFIG.streakTiers) {
@@ -48,14 +63,15 @@ export function streakMultiplier(streak) {
 // output: { sessionPre, sessionFinal, multiplier, base, perWord, breakdown, gaveBaseThisSession }
 //
 // v2.13：基礎獎金一天只給一次（baseGivenToday flag），不再每 session 都給
-export function calcSessionReward({ sessionCorrect, streak, todayPreEarned, baseGivenToday, dailyCap }) {
+export function calcSessionReward({ sessionCorrect, streak, todayPreEarned, baseGivenToday, dailyCap, practiceMode }) {
   const cfg = REWARD_CONFIG;
   const cap = effectiveDailyCap(dailyCap);
+  const tune = effectiveTuning(practiceMode);   // v2.42：加練模式門檻 5→10
 
   // 本回合 pre-multiplier 應得
-  //   - 基礎獎金：今天還沒給過 + 本回合答對 ≥ 5 → 給 $10
+  //   - 基礎獎金：今天還沒給過 + 本回合答對 ≥ 門檻 → 給 $10
   //   - 已經給過 → 0（避免一天多次練習重複拿基礎獎金）
-  const eligibleBase = (!baseGivenToday && sessionCorrect >= cfg.minCorrectForBase) ? cfg.base : 0;
+  const eligibleBase = (!baseGivenToday && sessionCorrect >= tune.minCorrectForBase) ? cfg.base : 0;
   const perWord = sessionCorrect * cfg.perCorrect;
   const sessionRawPre = eligibleBase + perWord;
 
@@ -72,7 +88,7 @@ export function calcSessionReward({ sessionCorrect, streak, todayPreEarned, base
       ? `今天已達上限（每天 ${cap} 元封頂），明天再來！`
       : `本回合沒答對，沒有獎金`;
   } else {
-    const baseTxt = eligibleBase > 0 ? `基礎 ${eligibleBase}` : `（未達 ${cfg.minCorrectForBase} 個正確，無基礎）`;
+    const baseTxt = eligibleBase > 0 ? `基礎 ${eligibleBase}` : `（未達 ${tune.minCorrectForBase} 個正確，無基礎）`;
     const wordTxt = `答對 ${sessionCorrect} 個 +${perWord}`;
     const capNote = sessionPre < sessionRawPre ? `（受日上限影響，採計 ${sessionPre}）` : '';
     const mulTxt = mul > 1 ? `　×${mul.toFixed(1)}（連勝 ${streak} 天）` : '';
@@ -94,11 +110,12 @@ export function calcSessionReward({ sessionCorrect, streak, todayPreEarned, base
 // 連連看一輪的獎金（固定 matchReward 元，受日上限但不受連勝倍率影響）
 // 設計：連連看可 brute force 刷對，所以不依賴 sessionCorrect，固定獎金防漏洞
 // 不影響 baseGivenToday flag（base 留給其他真正考能力的模式）
-export function calcMatchReward({ todayPreEarned, dailyCap }) {
+export function calcMatchReward({ todayPreEarned, dailyCap, practiceMode }) {
   const cfg = REWARD_CONFIG;
   const cap = effectiveDailyCap(dailyCap);
+  const tune = effectiveTuning(practiceMode);   // v2.42：加練模式 $5→$2
   const remainingCap = Math.max(0, cap - todayPreEarned);
-  const sessionPre = Math.min(cfg.matchReward, remainingCap);
+  const sessionPre = Math.min(tune.matchReward, remainingCap);
   // 不乘 streak 倍率（金額小，乘了也沒意義；保持簡單）
   const sessionFinal = sessionPre;
 
@@ -106,7 +123,7 @@ export function calcMatchReward({ todayPreEarned, dailyCap }) {
   if (sessionPre === 0) {
     breakdown = `今天獎金已達上限（${cap} 元封頂）。連連看仍可練習，明天再來領！`;
   } else {
-    breakdown = `連連看一輪 +$${sessionPre}（連連看可刷，獎金固定 $${cfg.matchReward}）`;
+    breakdown = `連連看一輪 +$${sessionPre}（連連看可刷，獎金固定 $${tune.matchReward}）`;
   }
   return {
     sessionPre,
@@ -122,21 +139,22 @@ export function calcMatchReward({ todayPreEarned, dailyCap }) {
 // 從頭複習一輪的獎金
 //   v2.28：加 reviewDailyCap（一天最多 $25），第二次以後 $0 防刷
 //          仍受 dailyCapPreMultiplier 全日上限影響，仍乘 streak 倍率
-export function calcReviewReward({ streak, todayPreEarned, reviewEarnedToday, dailyCap }) {
+export function calcReviewReward({ streak, todayPreEarned, reviewEarnedToday, dailyCap, practiceMode }) {
   const cfg = REWARD_CONFIG;
   const cap = effectiveDailyCap(dailyCap);
+  const tune = effectiveTuning(practiceMode);   // v2.42：加練模式 $25→$10
   reviewEarnedToday = reviewEarnedToday || 0;
   // 兩個 cap 都要受：今日複習額度 & 全日總額度
-  const reviewRemaining = Math.max(0, cfg.reviewDailyCap - reviewEarnedToday);
+  const reviewRemaining = Math.max(0, tune.reviewDailyCap - reviewEarnedToday);
   const globalRemaining = Math.max(0, cap - todayPreEarned);
-  const sessionPre = Math.min(cfg.reviewBase, reviewRemaining, globalRemaining);
+  const sessionPre = Math.min(tune.reviewBase, reviewRemaining, globalRemaining);
   const mul = streakMultiplier(streak);
   const sessionFinal = Math.round(sessionPre * mul);
 
   let breakdown;
   if (sessionPre === 0) {
     if (reviewRemaining === 0) {
-      breakdown = `從頭複習今天的 $${cfg.reviewDailyCap} 已經拿過了，再做沒獎金（但複習本身有用）。`;
+      breakdown = `從頭複習今天的 $${tune.reviewDailyCap} 已經拿過了，再做沒獎金（但複習本身有用）。`;
     } else {
       breakdown = `今天獎金已達總上限（${cap} 元）。明天再來領！`;
     }

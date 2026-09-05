@@ -117,6 +117,7 @@ async function syncInBackground() {
     s.readingDoneToday = [...new Set([...(s.readingDoneToday || []), ...computed.todayReadingDone])];
   }
   s.dailyCap = computed.dailyCap;                      // v2.35：家長設定的每日上限（null = 預設）
+  s.practiceMode = computed.practiceMode || 0;         // v2.42：練習量模式（家長頁設定，跨裝置同步）
   state.save(s);
   syncStatus = 'done';
   syncMessage = `本機 ${computed.eventCount} 筆、${computed.completedDayCount} 天`;
@@ -626,12 +627,14 @@ function handleComplete(mode, result) {
       todayPreEarned: s.todayPreEarned || 0,
       reviewEarnedToday: s.reviewEarnedToday || 0,   // v2.28：傳今日已賺複習額度做 cap
       dailyCap: s.dailyCap,                          // v2.35：家長可調每日上限
+      practiceMode: s.practiceMode || 0,             // v2.42：加練模式（複習 $25→$10）
     });
   } else if (mode === 'match') {
-    // v2.15：連連看固定 $5，不依 sessionCorrect 計算（防 brute force 刷錢）
+    // v2.15：連連看固定獎金，不依 sessionCorrect 計算（防 brute force 刷錢）
     calc = reward.calcMatchReward({
       todayPreEarned: s.todayPreEarned || 0,
       dailyCap: s.dailyCap,
+      practiceMode: s.practiceMode || 0,             // v2.42：加練模式（$5→$2）
     });
   } else {
     calc = reward.calcSessionReward({
@@ -640,6 +643,7 @@ function handleComplete(mode, result) {
       todayPreEarned: s.todayPreEarned || 0,
       baseGivenToday: !!s.baseGivenToday,   // v2.13：傳今天是否已給過基礎獎金
       dailyCap: s.dailyCap,
+      practiceMode: s.practiceMode || 0,    // v2.42：加練模式（基礎門檻 5→10 題；連勝門檻不變仍是 5）
     });
   }
 

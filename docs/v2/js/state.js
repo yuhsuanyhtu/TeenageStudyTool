@@ -23,6 +23,7 @@ const DEFAULTS = {
   lastCategoryId: null,  // v2.19：上次展開／選擇的分類；v2.21 起改用 units-meta `current` flag，保留欄位向下相容
   wordStats: {},         // v2.24：每字記憶追蹤（SRS Lite）。schema 與函式定義在 srs.js
   dailyCap: null,        // v2.35：家長設定的每日上限（null = 用預設 100），從 Sheet 的 v2_config_daily_cap 事件同步
+  practiceMode: 0,       // v2.42：練習量模式（0=標準、1=加練），從 Sheet 的 v2_config_practice 事件同步（只有家長頁能寫）
 };
 
 export function load() {

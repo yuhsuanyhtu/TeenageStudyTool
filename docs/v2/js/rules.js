@@ -3,7 +3,7 @@
 // 規則來源：reward.js 的 REWARD_CONFIG（金額自動跟著走，未來改設定不用改這裡）
 // 改了哪一版本要更新規則時，動 RULES_VERSION_DATE 一個常數就好
 
-import { REWARD_CONFIG, effectiveDailyCap } from './reward.js';
+import { REWARD_CONFIG, effectiveDailyCap, effectiveTuning } from './reward.js';
 import { load as loadState } from './state.js';
 
 const RULES_VERSION_DATE = '2026-09-05';
@@ -15,19 +15,30 @@ export function renderRules(root, onBack) {
   const cfg = REWARD_CONFIG;
   const tiers = cfg.streakTiers;
   // v2.35：每日上限家長可調（從 Sheet 同步到 state.dailyCap），規則頁永遠顯示目前生效的數字
-  const dailyCap = effectiveDailyCap(loadState().dailyCap);
+  const st = loadState();
+  const dailyCap = effectiveDailyCap(st.dailyCap);
+  // v2.42：練習量模式（家長可切「加練」：複習 $10、連連看 $2、基礎門檻 10 題）
+  const tune = effectiveTuning(st.practiceMode || 0);
+  const isBoost = Number(st.practiceMode) === 1;
 
   root.innerHTML = `
     <button class="back" id="back">← 回主畫面</button>
     <h1>📋 規則</h1>
     <p class="muted">最後更新 ${RULES_VERSION_DATE}　·　要改規則會先跟你講</p>
 
+    ${isBoost ? `
+    <div class="card" style="border-left:4px solid #d4a85a;">
+      <h3>⚡ 目前是「加練模式」（媽媽設定）</h3>
+      <p class="muted small" style="margin-bottom:0;">升國二了，練習量要跟上會考。改變的只有三個：從頭複習變 $${tune.reviewBase}/天、連連看變 $${tune.matchReward}/場、基礎獎金要答對 ${tune.minCorrectForBase} 題。<b>答對一題還是 $2、連勝照舊答對 5 題就保住</b>——認真作答的錢一毛都沒少，少的是輕鬆錢。</p>
+    </div>
+    ` : ''}
+
     <div class="card">
       <h3>💰 怎麼賺錢</h3>
       <p>每天背單字就有錢拿，越認真錢越多。</p>
 
-      <p style="margin-top:14px;"><b>① 基礎獎金：每天答對 ${cfg.minCorrectForBase} 個以上 = $${cfg.base}</b></p>
-      <p class="muted small">當天累積要答對 ${cfg.minCorrectForBase} 個以上才有基礎獎，避免隨便玩兩下也拿錢。一天只給一次（不會每回都拿）。</p>
+      <p style="margin-top:14px;"><b>① 基礎獎金：每天答對 ${tune.minCorrectForBase} 個以上 = $${cfg.base}</b></p>
+      <p class="muted small">當天累積要答對 ${tune.minCorrectForBase} 個以上才有基礎獎，避免隨便玩兩下也拿錢。一天只給一次（不會每回都拿）。</p>
 
       <p style="margin-top:14px;"><b>② 表現加碼：每答對 1 個 = +$${cfg.perCorrect}</b></p>
       <p class="muted small">沒有上限——但「基礎 + 加碼」一天最多 $${dailyCap}。每天背太多反而吸收不了，分散學比較有效。（這個數字媽媽可以調整，改了這裡會自動更新）</p>
@@ -49,8 +60,8 @@ export function renderRules(root, onBack) {
 
     <div class="card">
       <h3>🎯 六種題型 + 一種閱讀</h3>
-      <p style="margin-bottom:6px;">📖 <b>從頭複習</b> — 整課單字一張張看過，會幫你拼字母、唸發音，還有所有意思 + 近義字 + 反義字。走完整輪 +$${cfg.reviewBase}（<b>一天最多領 $${cfg.reviewDailyCap}</b>，再做沒獎金但仍可複習）</p>
-      <p style="margin-bottom:6px;">🔗 <b>連連看</b> — 暖身用，每輪固定 +$${cfg.matchReward}（很簡單可以刷，但獎金少）</p>
+      <p style="margin-bottom:6px;">📖 <b>從頭複習</b> — 整課單字一張張看過，會幫你拼字母、唸發音，還有所有意思 + 近義字 + 反義字。走完整輪 +$${tune.reviewBase}（<b>一天最多領 $${tune.reviewDailyCap}</b>，再做沒獎金但仍可複習）</p>
+      <p style="margin-bottom:6px;">🔗 <b>連連看</b> — 暖身用，每輪固定 +$${tune.matchReward}（很簡單可以刷，但獎金少）</p>
       <p style="margin-bottom:6px;">🇬🇧 → 🇹🇼 <b>英翻中</b> — 看英文選中文，4 選 1，題目上方會給英文例句（目標字加底線）。答對後可以展開看其他意思 + 同／反義字</p>
       <p style="margin-bottom:6px;">🇹🇼 → 🇬🇧 <b>中翻英</b> — 要拼出英文，難度最高，但學最深</p>
       <p style="margin-bottom:6px;">📝 <b>文意字彙</b>（老師推薦的段考題型）— 真實例句挖空，4 選 1 選出最適合的英文字。例句來自 Tatoeba 開放例句庫（每字最多 3 句、每次隨機出，句子的用字都在你學過的範圍）。選項會混一個基礎字，跟考卷一樣。答錯會告訴你「你選的字是什麼意思、為什麼不合」，而且那個字之後會優先再出現。獎金跟英翻中一樣：每答對 +$${cfg.perCorrect}，也算「已會」的連對次數</p>

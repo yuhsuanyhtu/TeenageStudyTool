@@ -9,8 +9,8 @@
 //
 // 完成後家長按「回主畫面」即可
 
-import { REWARD_CONFIG, effectiveDailyCap } from '../reward.js';
-import { fetchV2Events, computeAllDevices, extractDailyCap, extractDailyCapCn } from '../sync.js';
+import { REWARD_CONFIG, effectiveDailyCap, effectiveTuning } from '../reward.js';
+import { fetchV2Events, computeAllDevices, extractDailyCap, extractDailyCapCn, extractPracticeMode } from '../sync.js';
 import { logEvent } from '../logger.js';
 
 // v2.34：生活習慣扣款預設金額（媽媽跟謙恩約定：提醒過仍沒做到一次扣 $10）
@@ -53,6 +53,8 @@ export function startPayoutMode({ root, onBack }) {
     const currentCapEn = effectiveDailyCap(customCapEn);
     const customCapCn = extractDailyCapCn(events);
     const currentCapCn = effectiveDailyCap(customCapCn);
+    // v2.42：練習量模式
+    const currentPractice = extractPracticeMode(events);
     const map = computeAllDevices(events);
     // 排序：可提領金額 desc
     const allDevices = [...map.entries()].sort((a, b) =>
@@ -174,6 +176,26 @@ export function startPayoutMode({ root, onBack }) {
         <button id="cap-btn" class="penalty-btn">儲存上限</button>
         <p class="muted small" id="cap-msg" style="margin-bottom:0;"></p>
       </div>
+
+      <h2 style="margin-top:28px;">⚡ 練習量模式（英文）</h2>
+      <div class="card penalty-card">
+        <p class="muted small" style="margin-top:0;">
+          「加練」＝砍被動、保主動：從頭複習 $25→$10/天、連連看 $5→$2/場、
+          基礎獎金 $10 的門檻從答對 5 題提高到 <b>10 題</b>。
+          答對一題 $2、閱讀獎金、<b>連勝門檻（5 題保連勝）都不變</b>。
+          滿 $100 從約 25 題 → 約 40 題。改了會同步到所有裝置，規則頁自動顯示新數字，隨時可調回。
+        </p>
+        <p class="muted small">目前：<b>${currentPractice === 1 ? '⚡ 加練模式' : '標準'}</b></p>
+        <label class="penalty-field">
+          <span>模式</span>
+          <select id="practice-mode">
+            <option value="0" ${currentPractice === 0 ? 'selected' : ''}>標準（複習 $25、連連看 $5、基礎 5 題）</option>
+            <option value="1" ${currentPractice === 1 ? 'selected' : ''}>⚡ 加練（複習 $10、連連看 $2、基礎 10 題）</option>
+          </select>
+        </label>
+        <button id="practice-btn" class="penalty-btn">套用模式</button>
+        <p class="muted small" id="practice-msg" style="margin-bottom:0;"></p>
+      </div>
     `;
     root.querySelector('#back').addEventListener('click', onBack);
     root.querySelectorAll('.payout-btn').forEach(btn => {
@@ -183,6 +205,25 @@ export function startPayoutMode({ root, onBack }) {
     if (penBtn) penBtn.addEventListener('click', handlePenalty);
     const capBtn = root.querySelector('#cap-btn');
     if (capBtn) capBtn.addEventListener('click', () => handleDailyCap(currentCapEn, currentCapCn));
+    const practiceBtn = root.querySelector('#practice-btn');
+    if (practiceBtn) practiceBtn.addEventListener('click', () => handlePractice(currentPractice));
+  }
+
+  // v2.42：切換練習量模式 — POST v2_config_practice（amount 0/1），最後一筆生效
+  async function handlePractice(currentPractice) {
+    if (busy) return;
+    const mode = Math.floor(Number(root.querySelector('#practice-mode')?.value));
+    const msg = root.querySelector('#practice-msg');
+    const showMsg = (t) => { if (msg) msg.textContent = t; };
+    if (mode !== 0 && mode !== 1) { showMsg('模式選擇有誤'); return; }
+    if (mode === currentPractice) { showMsg('跟目前的模式一樣，不用改'); return; }
+    const label = mode === 1 ? '⚡ 加練模式' : '標準模式';
+    if (!confirm(`確定切換為「${label}」？\n\n（會同步到所有裝置，孩子的規則頁會自動顯示新數字）`)) return;
+    busy = true;
+    showMsg('儲存中…');
+    await postPracticeMode(mode);
+    busy = false;
+    load();
   }
 
   // v2.35 → v2.39：家長調整每科每日上限
@@ -355,6 +396,37 @@ async function postDailyCap(amount, subject) {
     console.warn('daily cap post failed', e);
   }
   // 等 1.5 秒讓 Sheet 寫入完成再 re-fetch
+  await new Promise(r => setTimeout(r, 1500));
+}
+
+// v2.42：練習量模式 — POST v2_config_practice 事件，amount = 0（標準）/ 1（加練）。
+// 後端零改動；sync.extractPracticeMode 掃全部事件取最後一筆生效。
+async function postPracticeMode(mode) {
+  const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
+  const payload = {
+    event: 'v2_config_practice',
+    unit: '',
+    quizSize: '',
+    correct: '',
+    prediction: '',
+    amount: mode,
+    note: `家長切換練習量模式為「${mode === 1 ? '加練（複習$10/連連看$2/基礎10題）' : '標準'}」`,
+    money: '',
+    totalPaid: '',
+    streak: '',
+    user: (() => { try { return localStorage.getItem('sv2.deviceName') || '(家長頁)'; } catch (e) { return '(家長頁)'; } })(),
+  };
+  try {
+    await fetch(LOG_WEBAPP_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      keepalive: true,
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+    });
+  } catch (e) {
+    console.warn('practice mode post failed', e);
+  }
   await new Promise(r => setTimeout(r, 1500));
 }
 
