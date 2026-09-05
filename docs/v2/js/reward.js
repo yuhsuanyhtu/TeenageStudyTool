@@ -12,6 +12,8 @@
 export const REWARD_CONFIG = {
   base: 10,
   perCorrect: 2,
+  // v2.44：依題型難度分級（媽媽決定）：英翻中／中翻英 $2、文意字彙 $3、克漏字每格 $3
+  perCorrectByMode: { vocab: 3, cloze: 3 },
   dailyCapPreMultiplier: 100,     // 每日「基礎+按字數」封頂（連勝倍率不算在內）
   minCorrectForBase: 5,
   reviewBase: 25,                 // v2.28：20→25（投入產出比合理化）
@@ -63,16 +65,34 @@ export function streakMultiplier(streak) {
 // output: { sessionPre, sessionFinal, multiplier, base, perWord, breakdown, gaveBaseThisSession }
 //
 // v2.13：基礎獎金一天只給一次（baseGivenToday flag），不再每 session 都給
-export function calcSessionReward({ sessionCorrect, streak, todayPreEarned, baseGivenToday, dailyCap, practiceMode }) {
+// v2.44：各題型每題獎金
+export function perCorrectFor(mode) {
+  const cfg = REWARD_CONFIG;
+  return (cfg.perCorrectByMode && cfg.perCorrectByMode[mode]) || cfg.perCorrect;
+}
+
+// v2.44 新增參數：
+//   mode            — 題型（決定每題獎金：perCorrectFor）
+//   alreadyRewarded — 克漏字同一篇今天已領過 → 這回合 $0（可以練，獎金明天再領）
+export function calcSessionReward({ sessionCorrect, streak, todayPreEarned, baseGivenToday, dailyCap, practiceMode, mode, alreadyRewarded }) {
   const cfg = REWARD_CONFIG;
   const cap = effectiveDailyCap(dailyCap);
   const tune = effectiveTuning(practiceMode);   // v2.42：加練模式門檻 5→10
+  const perCorrect = perCorrectFor(mode);
+
+  if (alreadyRewarded) {
+    return {
+      sessionPre: 0, sessionFinal: 0, multiplier: 1.0, base: 0, perWord: 0,
+      breakdown: `這篇今天已經領過獎金了（同一篇一天領一次）。再練一次很好，獎金明天再領！`,
+      gaveBaseThisSession: false,
+    };
+  }
 
   // 本回合 pre-multiplier 應得
   //   - 基礎獎金：今天還沒給過 + 本回合答對 ≥ 門檻 → 給 $10
   //   - 已經給過 → 0（避免一天多次練習重複拿基礎獎金）
   const eligibleBase = (!baseGivenToday && sessionCorrect >= tune.minCorrectForBase) ? cfg.base : 0;
-  const perWord = sessionCorrect * cfg.perCorrect;
+  const perWord = sessionCorrect * perCorrect;
   const sessionRawPre = eligibleBase + perWord;
 
   // 受日上限限制（v2.35：家長可調）
@@ -89,7 +109,7 @@ export function calcSessionReward({ sessionCorrect, streak, todayPreEarned, base
       : `本回合沒答對，沒有獎金`;
   } else {
     const baseTxt = eligibleBase > 0 ? `基礎 ${eligibleBase}` : `（未達 ${tune.minCorrectForBase} 個正確，無基礎）`;
-    const wordTxt = `答對 ${sessionCorrect} 個 +${perWord}`;
+    const wordTxt = `答對 ${sessionCorrect} 個 × $${perCorrect} = +${perWord}`;
     const capNote = sessionPre < sessionRawPre ? `（受日上限影響，採計 ${sessionPre}）` : '';
     const mulTxt = mul > 1 ? `　×${mul.toFixed(1)}（連勝 ${streak} 天）` : '';
     breakdown = `${baseTxt} ${wordTxt} = ${sessionRawPre}${capNote}${mulTxt} = ${sessionFinal} 元`;

@@ -12,7 +12,10 @@
 
 import { speak } from '../tts.js';
 
-export function startClozeMode({ root, passages, onComplete }) {
+// v2.44：doneToday = 今天已領過獎金的短文 id（Set）；chooser 標示「✓ 今天領過」，讓錢流向沒做過的篇章
+//        passage.zhText = 整段中文（家長決定：預設收起，點「💬 看中文」展開，答案仍要自己選）
+export function startClozeMode({ root, passages, onComplete, doneToday }) {
+  doneToday = doneToday || new Set();
   if (!Array.isArray(passages) || passages.length === 0) {
     onComplete({ sessionCorrect: 0, totalQuestions: 0, message: '這個單元還沒有克漏字題目', usedWords: [] });
     return;
@@ -30,9 +33,9 @@ export function startClozeMode({ root, passages, onComplete }) {
       <p class="muted">選一篇（跟段考題組一樣：讀短文，每個空格選出最適合的答案）</p>
       <div class="bookshelf">
         ${passages.map((p, i) => `
-          <button class="book-card" data-i="${i}">
-            <span class="book-title">${escapeHtml(p.title)}</span>
-            <span class="book-meta">${escapeHtml(p.zh || '')} · ${p.blanks.length} 格</span>
+          <button class="book-card ${doneToday.has(p.id) ? 'done-today' : ''}" data-i="${i}">
+            <span class="book-title">${escapeHtml(p.title)}${doneToday.has(p.id) ? ' <span class="badge-done">✓ 今天領過</span>' : ''}</span>
+            <span class="book-meta">${escapeHtml(p.zh || '')} · ${p.blanks.length} 格${doneToday.has(p.id) ? ' · 可再練，獎金明天再領' : ''}</span>
           </button>
         `).join('')}
       </div>
@@ -59,8 +62,25 @@ export function startClozeMode({ root, passages, onComplete }) {
         selected: null,
       };
     });
-    const state = { answered: false };
+    const state = { answered: false, showZh: false };
     render();
+
+    // v2.44：整段中文（預設收起）。render() 每次選項點擊都會重畫，所以開關狀態存在 state.showZh
+    function zhHtml() {
+      if (!passage.zhText) return '';
+      return `
+        <div class="cloze-zh-wrap">
+          <button class="speak-btn" id="toggle-zh">💬 ${state.showZh ? '收起中文' : '看中文'}</button>
+          ${state.showZh ? `<div class="cloze-zh muted small">${escapeHtml(passage.zhText).replace(/\n/g, '<br>')}</div>` : ''}
+        </div>`;
+    }
+    function bindZh() {
+      const b = root.querySelector('#toggle-zh');
+      if (b) b.addEventListener('click', () => {
+        state.showZh = !state.showZh;
+        if (state.answered) renderRevealAgain(); else render();
+      });
+    }
 
     function textHtml(revealMode) {
       let html = escapeHtml(passage.text);
@@ -89,6 +109,7 @@ export function startClozeMode({ root, passages, onComplete }) {
         <h2>🧩 克漏字</h2>
         <p class="muted">「${escapeHtml(passage.title)}」${passage.zh ? '（' + escapeHtml(passage.zh) + '）' : ''}　·　每格都選好才能送出，選了還可以改</p>
         <div class="sentence-card cloze-text" style="text-align:left; display:block;">${textHtml(false)}</div>
+        ${zhHtml()}
         ${notesHtml()}
         ${qs.map((q, qi) => `
           <div class="cloze-q" data-qi="${qi}">
@@ -101,6 +122,7 @@ export function startClozeMode({ root, passages, onComplete }) {
         <button id="submit" ${allPicked ? '' : 'disabled'}>送出答案${allPicked ? '' : `（還有 ${qs.filter(q => q.selected === null).length} 格沒選）`}</button>
       `;
       root.querySelector('#back').addEventListener('click', abortRound);
+      bindZh();
       root.querySelectorAll('.choice').forEach(el => {
         el.addEventListener('click', () => {
           if (state.answered) return;
@@ -118,12 +140,16 @@ export function startClozeMode({ root, passages, onComplete }) {
       renderReveal(correct);
     }
 
+    let lastCorrect = 0;
+    function renderRevealAgain() { renderReveal(lastCorrect); }
     function renderReveal(correct) {
+      lastCorrect = correct;
       root.innerHTML = `
         <button class="back" id="back">← 中途離開</button>
         <h2>🧩 克漏字</h2>
         <p class="muted">「${escapeHtml(passage.title)}」　·　${passage.blanks.length} 格答對 ${correct} 格</p>
         <div class="sentence-card cloze-text" style="text-align:left; display:block;">${textHtml(true)}</div>
+        ${zhHtml()}
         ${notesHtml()}
         <button class="speak-btn" id="speak-all" style="margin:4px 0 10px;">🔊 聽整篇（填好答案的版本）</button>
         ${qs.map(q => {
@@ -148,6 +174,7 @@ export function startClozeMode({ root, passages, onComplete }) {
         <button id="done">看結果</button>
       `;
       root.querySelector('#back').addEventListener('click', abortRound);
+      bindZh();
       root.querySelector('#speak-all').addEventListener('click', () => {
         let full = passage.text;
         for (const q of qs) full = full.replace(`{${q.n}}`, q.opts[q.correctIdx]);

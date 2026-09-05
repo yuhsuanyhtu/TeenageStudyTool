@@ -3,10 +3,10 @@
 // 規則來源：reward.js 的 REWARD_CONFIG（金額自動跟著走，未來改設定不用改這裡）
 // 改了哪一版本要更新規則時，動 RULES_VERSION_DATE 一個常數就好
 
-import { REWARD_CONFIG, effectiveDailyCap, effectiveTuning } from './reward.js';
+import { REWARD_CONFIG, effectiveDailyCap, effectiveTuning, perCorrectFor } from './reward.js';
 import { load as loadState } from './state.js';
 
-const RULES_VERSION_DATE = '2026-09-05';
+const RULES_VERSION_DATE = '2026-09-05';  // v2.44
 
 // v2.34：生活習慣扣款金額（跟家長頁 payout.js 的 DEFAULT_PENALTY 一致）
 const HABIT_PENALTY = 10;
@@ -40,8 +40,8 @@ export function renderRules(root, onBack) {
       <p style="margin-top:14px;"><b>① 基礎獎金：每天答對 ${tune.minCorrectForBase} 個以上 = $${cfg.base}</b></p>
       <p class="muted small">當天累積要答對 ${tune.minCorrectForBase} 個以上才有基礎獎，避免隨便玩兩下也拿錢。一天只給一次（不會每回都拿）。</p>
 
-      <p style="margin-top:14px;"><b>② 表現加碼：每答對 1 個 = +$${cfg.perCorrect}</b></p>
-      <p class="muted small">沒有上限——但「基礎 + 加碼」一天最多 $${dailyCap}。每天背太多反而吸收不了，分散學比較有效。（這個數字媽媽可以調整，改了這裡會自動更新）</p>
+      <p style="margin-top:14px;"><b>② 表現加碼：每答對 1 個 = +$${cfg.perCorrect}；文意字彙 +$${perCorrectFor('vocab')}、克漏字每格 +$${perCorrectFor('cloze')}</b></p>
+      <p class="muted small">題型越難、一題的錢越多（段考題型要讀句子、讀短文，比較費力）。沒有上限——但「基礎 + 加碼」一天最多 $${dailyCap}。每天背太多反而吸收不了，分散學比較有效。（這個數字媽媽可以調整，改了這裡會自動更新）</p>
 
       <p style="margin-top:14px;"><b>③ 連勝加成（最重要）</b></p>
       <table class="rules-table">
@@ -64,8 +64,8 @@ export function renderRules(root, onBack) {
       <p style="margin-bottom:6px;">🔗 <b>連連看</b> — 暖身用，每輪固定 +$${tune.matchReward}（很簡單可以刷，但獎金少）</p>
       <p style="margin-bottom:6px;">🇬🇧 → 🇹🇼 <b>英翻中</b> — 看英文選中文，4 選 1，題目上方會給英文例句（目標字加底線）。答對後可以展開看其他意思 + 同／反義字</p>
       <p style="margin-bottom:6px;">🇹🇼 → 🇬🇧 <b>中翻英</b> — 要拼出英文，難度最高，但學最深</p>
-      <p style="margin-bottom:6px;">📝 <b>文意字彙</b>（老師推薦的段考題型）— 真實例句挖空，4 選 1 選出最適合的英文字。例句來自 Tatoeba 開放例句庫（每字最多 3 句、每次隨機出，句子的用字都在你學過的範圍）。選項會混一個基礎字，跟考卷一樣。答錯會告訴你「你選的字是什麼意思、為什麼不合」，而且那個字之後會優先再出現。獎金跟英翻中一樣：每答對 +$${cfg.perCorrect}，也算「已會」的連對次數</p>
-      <p style="margin-bottom:6px;">🧩 <b>克漏字</b>（老師推薦的段考題型）— 讀短文，每格 4 選 1，考時態、連接詞跟課文單字。短文取自 VOA Learning English（美國之音的免費英語教材）真實課文對話，看不懂的字下面有中文註解。每答對 1 格 +$${cfg.perCorrect}；答錯會顯示你選的字的意思＋為什麼是正解</p>
+      <p style="margin-bottom:6px;">📝 <b>文意字彙</b>（老師推薦的段考題型）— 真實例句挖空，4 選 1 選出最適合的英文字。例句來自 Tatoeba 開放例句庫（每字最多 3 句、每次隨機出，句子的用字都在你學過的範圍）。選項會混一個基礎字，跟考卷一樣。答錯會告訴你「你選的字是什麼意思、為什麼不合」，而且那個字之後會優先再出現。每答對 <b>+$${perCorrectFor('vocab')}</b>（比英翻中多，因為要讀句子），也算「已會」的連對次數</p>
+      <p style="margin-bottom:6px;">🧩 <b>克漏字</b>（老師推薦的段考題型）— 讀短文，每格 4 選 1，考時態、連接詞跟課文單字。短文取自 VOA Learning English（美國之音的免費英語教材）真實課文對話，看不懂的字下面有中文註解，還可以按「💬 看中文」看整段翻譯（看了還是要自己選）。每答對 1 格 <b>+$${perCorrectFor('cloze')}</b>；答錯會顯示你選的字的意思＋為什麼是正解。<b>同一篇一天只領一次獎金</b>（可以再練，錢明天再領）——把 13 篇都做過比背熟一篇划算</p>
       <p style="margin-bottom:6px;">📚 <b>閱讀練習</b> — 主畫面下方有「閱讀練習」按鈕，可以讀短文。點任何字就會看到中文意思。<b>讀完要做英文理解測驗，答對 1 題 +$${cfg.readingPerCorrect}</b>（3 題全對 = $15／篇，跟段考一樣是英文題目）。同一篇一天只能領一次。查過的字會自動進入記憶系統，讀完還可以一鍵「練習剛剛的生字」</p>
       <p class="muted small" style="margin-top:8px;">建議流程：先「從頭複習」過一輪 → 連連看暖身 → 英翻中認熟 → 中翻英拼字打底。讀短文當作休息一下換腦袋。</p>
       <p class="muted small">中翻英碰到「每一個英文都對」的字（例如 every / each 都是「每一」），系統會兩個都接受，不會誤判。</p>

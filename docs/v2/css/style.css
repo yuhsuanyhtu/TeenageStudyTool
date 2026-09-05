@@ -981,3 +981,9 @@ button.back:hover { background: transparent; text-decoration: underline; }
   font-size: 14px;
 }
 .perf-row { margin-top: 4px; opacity: .8; }
+
+/* v2.44：克漏字整段中文（預設收起）＋「今天領過」標記 */
+.cloze-zh-wrap { margin: -6px 0 10px; }
+.cloze-zh { text-align: left; line-height: 1.7; margin-top: 8px; padding: 10px 12px; background: #f6f3ec; border-radius: 10px; }
+.book-card.done-today { opacity: .75; }
+.badge-done { font-size: 12px; color: #4c9a6f; font-weight: normal; margin-left: 4px; }

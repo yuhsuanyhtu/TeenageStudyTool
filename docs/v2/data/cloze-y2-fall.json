@@ -1,10 +1,12 @@
 {
 "_note": "克漏字題庫 v2.41。短文取自 VOA Learning English《Let's Learn English》各課對話（美國之音，公共財，節錄／輕度改編）。挖空、選項與中文解析為本系統編寫。Source: VOA Learning English (learningenglish.voanews.com), public domain.",
 "_attribution": "Passages excerpted/adapted from “Let's Learn English” Level 1, VOA Learning English (learningenglish.voanews.com), public domain. Blanks, options and Chinese explanations © this project.",
+"_note_zhText": "v2.44：zhText 為整段中文翻譯（家長決定：孩子可點「💬 看中文」展開，仍需自己選答案）。翻譯為本系統撰寫的註解，原文仍為 VOA 公共財。",
 "passages": [
 {
 "id": "u1-voa9", "unit": "二上 Unit 1", "title": "Is It Cold?", "zh": "今天冷嗎？（VOA 第 9 課）", "src": "VOA Let's Learn English 1-09",
 "text": "Anna: Here in Washington, D.C., the {1} changes often. One day is cold and {2}. But the next day is warm and sunny! So every day I check the forecast. Hello, Phone? Is it {3} today?\nPhone: No, Anna. It is not. There is no rain today.\nAnna: Is it sunny today?\nPhone: Yes, Anna. It is sunny.\nAnna: Great! Today the weather is warm and sunny — {4} for seeing Washington, D.C.!",
+"zhText": "Anna：在華盛頓特區這裡，天氣常常在變。前一天又冷又颳風，隔天卻又暖又晴朗！所以我每天都會查天氣預報。哈囉，手機？今天會下雨嗎？\n手機：不會，Anna。今天不會下雨。\nAnna：今天是晴天嗎？\n手機：是的，Anna。今天是晴天。\nAnna：太好了！今天天氣又暖又晴——很適合逛華盛頓特區！",
 "notes": ["forecast＝天氣預報", "Washington, D.C.＝美國首都華盛頓"],
 "blanks": [
 {"n":1, "opts":["weather","season","cloud","wind"], "oz":["天氣","季節","雲","風"], "a":0, "why":"一下冷一下暖、每天要查預報的是「天氣」→ weather（season 季節不會一天一變）"},
@@ -16,6 +18,7 @@
 {
 "id": "u1-voa46", "unit": "二上 Unit 1", "title": "May I Borrow That?", "zh": "可以借我嗎？（VOA 第 46 課）", "src": "VOA Let's Learn English 1-46",
 "text": "Anna: I forgot Marsha's birthday! I'll make her a gift. I'll just have to {1} a couple of things. Amelia, may I borrow your stapler?\nAmelia: Sure. I can {2} you my stapler, Anna. But please {3} it. It's my favorite stapler.\nAnna: You can trust me.\nJonathan: I can lend you my scissors too, {4} you must bring them back.\nAnna: I will be very careful, and I'll bring them back tomorrow!",
+"zhText": "Anna：我忘了 Marsha 的生日！我要做個禮物給她。我只需要借幾樣東西。Amelia，我可以借妳的釘書機嗎？\nAmelia：當然。我可以把釘書機借給妳，Anna。但是請還我，那是我最喜歡的釘書機。\nAnna：妳可以相信我。\nJonathan：我也可以把剪刀借妳，但是妳一定要拿回來還。\nAnna：我會很小心，明天就拿回來！",
 "notes": ["stapler＝釘書機", "scissors＝剪刀", "trust＝信任"],
 "blanks": [
 {"n":1, "opts":["borrow","lend","send","give"], "oz":["借（入）","借（出）","寄；送","給"], "a":0, "why":"Anna 要「跟別人借東西進來」→ borrow（借入）；lend 是借「出去」給別人"},
@@ -27,6 +30,7 @@
 {
 "id": "u2-voa50", "unit": "二上 Unit 2", "title": "Back to School", "zh": "重返校園（VOA 第 50 課）", "src": "VOA Let's Learn English 1-50",
 "text": "Taylor: I have been writing and re-writing my report since last night! The {1} is really interesting to me.\nSarah: Me too! I have been studying this topic for a long time.\nAnna: Am I {2}?\nSarah: A little. But don't worry. The professor isn't here yet.\nAnna: Oh no! I forgot my pencil sharpener. {3} me, do you have one I can {4}?\nTaylor: No, sorry.\nAnna: Oh wait. I found my extra one!",
+"zhText": "Taylor：我從昨天晚上就一直在寫報告、改報告！這個主題我真的很有興趣。\nSarah：我也是！我研究這個題目很久了。\nAnna：我遲到了嗎？\nSarah：有一點。不過別擔心，教授還沒來。\nAnna：糟了！我忘了帶削鉛筆機。不好意思，你有可以借我的嗎？\nTaylor：沒有，抱歉。\nAnna：等等。我找到我多帶的那個了！",
 "notes": ["report＝報告", "professor＝教授", "pencil sharpener＝削鉛筆機", "topic＝主題"],
 "blanks": [
 {"n":1, "opts":["subject","lesson","club","choice"], "oz":["主題；學科","課程","社團","選擇"], "a":0, "why":"下一句 Sarah 說 this topic（這個主題）→ 這裡指報告的「主題」：subject"},
@@ -38,6 +42,7 @@
 {
 "id": "u2-voa21", "unit": "二上 Unit 2", "title": "Can You Come to the Party?", "zh": "你能來派對嗎？（VOA 第 21 課）", "src": "VOA Let's Learn English 1-21",
 "text": "Marsha: Hey, Anna, my friend is having a party on Saturday. Can you come with me?\nAnna: Sorry, I can't. I have to take a test on the computer.\nMarsha: But the party is at night. Everyone has to bring something or do something. You can bring food, or you can {1}.\nAnna: Really? I can sing! Then I can come {2} the test!\nMarsha: That's it! You can sing at the party. Now I have to go {3} for food. Can you help me?\nAnna: {4}! I'm not busy right now.",
+"zhText": "Marsha：嘿，Anna，我朋友星期六要辦派對。妳可以跟我一起去嗎？\nAnna：抱歉，我不行。我得在電腦上考一個試。\nMarsha：可是派對是晚上。每個人都要帶點東西或表演點什麼。妳可以帶食物，或者表演。\nAnna：真的嗎？我會唱歌！那我考完試就可以去了！\nMarsha：就是這樣！妳可以在派對上唱歌。現在我得去買食物，妳可以幫我嗎？\nAnna：當然！我現在不忙。",
 "notes": ["test＝考試（這裡指路考的筆試）"],
 "blanks": [
 {"n":1, "opts":["perform","finish","worry","move"], "oz":["表演","完成","擔心","搬動"], "a":0, "why":"帶食物「或者表演節目」（下一句 Anna 說她可以唱歌）→ perform"},
@@ -49,6 +54,7 @@
 {
 "id": "u3-voa36", "unit": "二上 Unit 3", "title": "I Can Fix This", "zh": "我搞得定（VOA 第 36 課）", "src": "VOA Let's Learn English 1-36",
 "text": "Anna: I just need a couple of ingredients. Marsha, please hand me the flour.\nMarsha: Anna, where is the flour? It's not in the cabinets.\nAnna: I put the flour {1} the refrigerator. It's cold and dry there! Okay, now please hand me the eggs.\nMarsha: Where are the eggs?\nAnna: The eggs are in the cabinet {2} the sink.\nMarsha: Anna, why are the eggs in here?!\nAnna: Okay, okay. You {3} the living room. I will make dinner.\nMarsha: Okay, the apartment is clean now. The kitchen is not. What are you cooking?\nAnna: I made my favorite recipe! Sometimes when something goes wrong with your plan, just {4} the plan!",
+"zhText": "Anna：我只需要幾樣材料。Marsha，請把麵粉遞給我。\nMarsha：Anna，麵粉在哪裡？不在櫃子裡。\nAnna：我把麵粉放在冰箱裡面了。那裡又冷又乾！好，現在請把蛋遞給我。\nMarsha：蛋在哪裡？\nAnna：蛋在水槽下面的櫃子裡。\nMarsha：Anna，蛋為什麼會在這裡？！\nAnna：好啦好啦。妳去打掃客廳，我來做晚餐。\nMarsha：好，公寓現在乾淨了。廚房可沒有。妳在煮什麼？\nAnna：我做了我最愛的食譜！有時候計畫出了問題，那就改變計畫！",
 "notes": ["ingredients＝食材", "flour＝麵粉", "cabinet＝櫥櫃", "sink＝水槽", "recipe＝食譜"],
 "blanks": [
 {"n":1, "opts":["inside","past","through","along"], "oz":["在…裡面","經過","穿過","沿著"], "a":0, "why":"下一句說「那裡又冷又乾」→ 麵粉被放「進」冰箱裡面：inside"},
@@ -60,6 +66,7 @@
 {
 "id": "u3-voa42", "unit": "二上 Unit 3", "title": "I Was Minding My Own Business", "zh": "我本來只是路過（VOA 第 42 課）", "src": "VOA Let's Learn English 1-42",
 "text": "Guy: Anna, what did you see?\nAnna: I left work to get some lunch. Then suddenly, I {1} a woman yelling, \"Help! Help!\" Two robbers {2} grabbing her bag.\nGuy: Were you afraid?\nAnna: I had no time to be afraid! The robbers ran away, so I ran after them. {3} I was running, I tripped and fell.\nGuy: And that is when you {4} your arm?\nAnna: While I was lying on the ground, someone stepped on my arm!",
+"zhText": "Guy：Anna，妳看到了什麼？\nAnna：我離開公司去買午餐。然後突然間，我聽到一個女人在大喊：「救命！救命！」兩個搶匪正在搶她的包包。\nGuy：妳害怕嗎？\nAnna：我根本沒時間害怕！搶匪跑掉了，所以我追了上去。我正在跑的時候，絆倒摔了一跤。\nGuy：妳就是那時候弄傷手臂的？\nAnna：我正躺在地上的時候，有人踩到了我的手臂！",
 "notes": ["robber＝搶匪", "grab＝抓住；搶", "yell＝大喊", "trip＝絆倒", "step on＝踩到"],
 "blanks": [
 {"n":1, "opts":["heard","hear","hears","hearing"], "oz":["聽見（過去式）","聽見（原形）","聽見（三單）","聽見（V-ing）"], "a":0, "why":"整段在講「昨天發生的事」→ 過去式 heard（hear 的不規則變化）"},
@@ -71,6 +78,7 @@
 {
 "id": "u4-voa34", "unit": "二上 Unit 4", "title": "What Will I Do?", "zh": "我會怎麼樣呢？（VOA 第 34 課）", "src": "VOA Let's Learn English 1-34",
 "text": "Rebecca: Okay, tell me what I am thinking.\nAnna: Sure! First, what do you do?\nRebecca: I {1}. I'm a junior in college.\nAnna: What do you study?\nRebecca: I study journalism.\nAnna: You are thinking... you {2} graduate from college in about one year. And you are thinking... you might get a {3} writing the news.\nRebecca: I MIGHT get a job? That means I might not! And I'm studying really hard!\nAnna: No, no! You {4} get a job writing the news. You WILL!",
+"zhText": "Rebecca：好，告訴我我在想什麼。\nAnna：沒問題！首先，妳是做什麼的？\nRebecca：我在讀書。我是大學三年級生。\nAnna：妳讀什麼？\nRebecca：我讀新聞。\nAnna：妳在想……大約一年後妳會從大學畢業。而且妳在想……妳可能會找到一份寫新聞的工作。\nRebecca：我「可能」會找到工作？那表示我也可能找不到！我可是很用功在讀書！\nAnna：不不！妳一定會找到寫新聞的工作。妳一定會！",
 "notes": ["junior＝大三學生", "college＝大學", "journalism＝新聞學", "graduate＝畢業"],
 "blanks": [
 {"n":1, "opts":["study","act","grow","drive"], "oz":["讀書；唸書","表演","種植","開車"], "a":0, "why":"她是大學生，下一句也說 I study journalism → study"},
@@ -82,6 +90,7 @@
 {
 "id": "u4-voa18", "unit": "二上 Unit 4", "title": "Just the Facts", "zh": "只要事實（VOA 第 18 課）", "src": "VOA Let's Learn English 1-18",
 "text": "Caty: Okay, let's try the first story! And... go!\nAnna: Hello, and welcome to The News. A new book is very popular with children and families. It is about a {1} duckling. The duck's mother cannot {2} him.\nCaty: Stop! Anna, when you say \"duckling,\" you look really sad.\nAnna: This story is very sad!\nCaty: Anna, happy and sad are feelings. You can't have feelings in The News!\nAnna: In Indiana, a grandmother {3} the first 80-year-old woman to win the car race. She rarely talks to {4}. But when she does, she often says, \"Nothing can stop me now!\"",
+"zhText": "Caty：好，我們來試第一則新聞！然後……開始！\nAnna：哈囉，歡迎收看《新聞》。有一本新書很受小朋友和家庭歡迎。內容是關於一隻走失的小鴨。鴨媽媽找不到牠。\nCaty：停！Anna，妳說到「小鴨」的時候，看起來真的很難過。\nAnna：這個故事很難過嘛！\nCaty：Anna，開心和難過是感受。播新聞不能有感受！\nAnna：在印第安納州，一位祖母成為第一位贏得賽車比賽的八十歲女性。她很少跟記者說話。但當她開口時，她常說：「現在沒有什麼能阻止我！」",
 "notes": ["duckling＝小鴨", "popular＝受歡迎的", "feelings＝情緒", "rarely＝很少"],
 "blanks": [
 {"n":1, "opts":["lost","scared","successful","funny"], "oz":["迷路的；走失的","害怕的","成功的","滑稽的"], "a":0, "why":"下一句「鴨媽媽找不到牠」→ 是一隻「走失的」小鴨：lost"},
@@ -93,6 +102,7 @@
 {
 "id": "u5-voa11", "unit": "二上 Unit 5", "title": "This Is My Neighborhood", "zh": "我的社區（VOA 第 11 課）", "src": "VOA Let's Learn English 1-11",
 "text": "Anna: I need to return three books to the library. Where is the library?\nMarsha: It is on this street, on the {1}.\nAnna: And is there a {2} near here? I have four letters for my family!\nMarsha: No, it is far from here. But there is a mailbox {3} the store.\nAnna: Now I need to buy stamps. Do I have cash? No! Is there a {4} near here?\nMarsha: There is one behind you.\nAnna: Thanks, Marsha. You know our neighborhood so well!",
+"zhText": "Anna：我需要還三本書給圖書館。圖書館在哪裡？\nMarsha：就在這條街上，在轉角。\nAnna：那這附近有郵局嗎？我有四封信要寄給家人！\nMarsha：沒有，郵局離這裡很遠。不過商店對面有一個郵筒。\nAnna：現在我需要買郵票。我有現金嗎？沒有！這附近有銀行嗎？\nMarsha：妳後面就有一家。\nAnna：謝謝，Marsha。妳對我們的社區真熟！",
 "notes": ["mailbox＝郵筒", "stamp＝郵票", "neighborhood＝社區；鄰里"],
 "blanks": [
 {"n":1, "opts":["corner","block","ground","floor"], "oz":["轉角","街區","地面","地板"], "a":0, "why":"圖書館「在這條街的轉角上」→ on the corner"},
@@ -104,6 +114,7 @@
 {
 "id": "u5-voa6", "unit": "二上 Unit 5", "title": "Where Is the Gym?", "zh": "健身房在哪裡？（VOA 第 6 課）", "src": "VOA Let's Learn English 1-06",
 "text": "Anna: Pete, I want to work out. Where is the gym?\nPete: The gym is {1} the lounge. It's next to the mailroom. Go that way.\nAnna: Thanks, Pete!\nPete: No, Anna! Not that way! Go {2} way!\nAnna: Oh, Pete. This is not the gym.\nPete: That's {3}, Anna. This is the mailroom.\nAnna: Pete! This is not the gym! This is a parking garage!\nAnna: I am {4} in my own office building. This is a rooftop!",
+"zhText": "Anna：Pete，我想運動。健身房在哪裡？\nPete：健身房在休息室對面，就在收發室隔壁。往那邊走。\nAnna：謝謝，Pete！\nPete：不對，Anna！不是那邊！往那邊走！\nAnna：喔，Pete。這裡不是健身房。\nPete：沒錯，Anna。這裡是收發室。\nAnna：Pete！這裡不是健身房！這裡是停車場！\nAnna：我在自己的辦公大樓裡迷路了。這裡是屋頂！",
 "notes": ["gym＝健身房", "lounge＝交誼廳", "mailroom＝收發室", "parking garage＝停車場", "rooftop＝屋頂"],
 "blanks": [
 {"n":1, "opts":["across from","on foot","by","around"], "oz":["在…對面","步行","搭乘","大約"], "a":0, "why":"說位置：健身房「在交誼廳對面」→ across from"},
@@ -115,6 +126,7 @@
 {
 "id": "u6-voa14a", "unit": "二上 Unit 6", "title": "How About This? (1)", "zh": "這件如何？（VOA 第 14 課・上）", "src": "VOA Let's Learn English 1-14",
 "text": "Anna: Tonight I am going to the theater with my friends. But I don't know what {1} to wear!\nGenie: I am Genie! I am here to help you find the right clothes!\nAnna: Awesome! How about jeans and a {2}?\nGenie: No! Jeans and a T-shirt are too casual. How about something more formal?\nAnna: Wow! Genie, this {3} is beautiful. But it's not the right size. It's too {4}.\nGenie: Yes, it is. But green looks great on you! Let's try a green shirt and a skirt.",
+"zhText": "Anna：今晚我要和朋友去劇院。可是我不知道該穿什麼衣服！\nGenie：我是精靈！我來幫妳找到合適的衣服！\nAnna：太棒了！牛仔褲配 T 恤怎麼樣？\nGenie：不行！牛仔褲和 T 恤太休閒了。來點正式一點的怎麼樣？\nAnna：哇！精靈，這件洋裝好漂亮。可是尺寸不對，太小了。\nGenie：是啊。不過綠色很適合妳！我們試試綠色襯衫配裙子。",
 "notes": ["casual＝休閒的", "formal＝正式的", "size＝尺寸", "theater＝劇院"],
 "blanks": [
 {"n":1, "opts":["clothes","glasses","shorts","socks"], "oz":["衣服","眼鏡","短褲","襪子"], "a":0, "why":"不知道要「穿什麼衣服」→ what clothes to wear（去劇院要整套打扮，不是只挑襪子）"},
@@ -126,6 +138,7 @@
 {
 "id": "u6-voa14b", "unit": "二上 Unit 6", "title": "How About This? (2)", "zh": "這件如何？（VOA 第 14 課・下）", "src": "VOA Let's Learn English 1-14",
 "text": "Anna: These clothes are formal: a suit jacket, a dress shirt and a {1}! They look great!\nGenie: Those clothes look great... for a man! Let's try again.\nGenie: Oh! Now these clothes look great on you!\nAnna: They do! Um, Genie, can you put on a gold {2}?\nGenie: Sure! That looks great.\nAnna: I love the jacket! How about a hat?\nGenie: Why not?\nGenie: Mm, {3} the hat. That's better.\nAnna: Genie, these clothes look and feel great! {4} more, they are the right size!",
+"zhText": "Anna：這些衣服很正式：西裝外套、襯衫和領帶！看起來很棒！\nGenie：那些衣服是很棒……給男生穿的話！再試一次。\nGenie：喔！現在這些衣服穿在妳身上很好看！\nAnna：真的！嗯，精靈，可以幫我配一條金色皮帶嗎？\nGenie：當然！這樣很好看。\nAnna：我好喜歡這件外套！再加一頂帽子怎麼樣？\nGenie：有何不可？\nGenie：嗯……把帽子拿掉。這樣好多了。\nAnna：精靈，這些衣服又好看又舒服！更棒的是，尺寸剛剛好！",
 "notes": ["suit＝西裝", "gold＝金色的"],
 "blanks": [
 {"n":1, "opts":["tie","skirt","dress","sweater"], "oz":["領帶","裙子","洋裝","毛衣"], "a":0, "why":"男士正式穿著三件組：西裝外套＋襯衫＋「領帶」→ tie（後面也說這套適合男生）"},
@@ -137,6 +150,7 @@
 {
 "id": "fest-voa34", "unit": "二上 Festival", "title": "Halloween Is Coming!", "zh": "萬聖夜來了！（VOA 第 34 課）", "src": "VOA Let's Learn English 1-34",
 "text": "Anna: Hello! {1} is very popular in the United States. Children go trick-or-treating. They ask people for {2}. Children and adults wear {3} and go to parties! In fact, there is a party tonight. I don't have a costume. Can you help me, Genie?\nGenie: Dress as a genie!\nAnna: Great idea! Hey, look! I'm a genie! This is going to be {4}!",
+"zhText": "Anna：哈囉！萬聖夜在美國很受歡迎。小朋友會去「不給糖就搗蛋」，跟人們要糖果。小孩和大人都會穿上變裝服去參加派對！其實今晚就有一場派對。我沒有變裝服。精靈，你可以幫我嗎？\nGenie：打扮成精靈吧！\nAnna：好主意！嘿，你看！我變成精靈了！今晚一定會很好玩！",
 "notes": ["adults＝大人", "genie＝（阿拉丁神燈裡的）精靈"],
 "blanks": [
 {"n":1, "opts":["Halloween","Christmas","New Year","Birthday"], "oz":["萬聖夜","聖誕節","新年","生日"], "a":0, "why":"小孩去 trick-or-treating（不給糖就搗蛋）的節日 → Halloween"},

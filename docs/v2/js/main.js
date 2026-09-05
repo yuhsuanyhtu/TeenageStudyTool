@@ -610,6 +610,8 @@ function startMode(mode) {
       root,
       passages: (appData.clozeByUnit && appData.clozeByUnit[currentUnit]) || [],
       onComplete,
+      doneToday: new Set(s.clozeDoneToday || []),   // v2.44：同一篇一天只領一次
+
     });
   }
 }
@@ -676,6 +678,8 @@ function handleComplete(mode, result) {
       practiceMode: s.practiceMode || 0,             // v2.42：加練模式（$5→$2）
     });
   } else {
+    // v2.44：克漏字同一篇一天只領一次獎金（題庫固定 13 篇，防背熟刷錢）
+    const clozeRepeat = mode === 'cloze' && !!result.passageId && (s.clozeDoneToday || []).includes(result.passageId);
     calc = reward.calcSessionReward({
       sessionCorrect,
       streak: s.streak || 0,
@@ -683,7 +687,13 @@ function handleComplete(mode, result) {
       baseGivenToday: !!s.baseGivenToday,   // v2.13：傳今天是否已給過基礎獎金
       dailyCap: s.dailyCap,
       practiceMode: s.practiceMode || 0,    // v2.42：加練模式（基礎門檻 5→10 題；連勝門檻不變仍是 5）
+      mode,                                 // v2.44：題型分級（文意字彙 $3、克漏字 $3）
+      alreadyRewarded: clozeRepeat,
     });
+    if (mode === 'cloze' && result.passageId && !clozeRepeat && calc.sessionPre > 0) {
+      if (!s.clozeDoneToday) s.clozeDoneToday = [];
+      s.clozeDoneToday.push(result.passageId);
+    }
   }
 
   if (!result.aborted) {
@@ -727,7 +737,7 @@ function handleComplete(mode, result) {
     amount: calc.sessionFinal,
     note: result.aborted
       ? `v2 ${modeLabel} 中途離開（做到 ${sessionCorrect}/${totalQuestions}）${result.passageTitle ? `「${result.passageTitle}」` : ''}`
-      : `v2 ${modeLabel}${result.passageTitle ? `「${result.passageTitle}」` : ''}`,
+      : `v2 ${modeLabel}${result.passageTitle ? `「${result.passageTitle}」` : ''}${mode === 'cloze' && result.passageId ? ` #${result.passageId}` : ''}`,
   }, s);
 
   renderResult({ mode, result, calc, streakChanged });

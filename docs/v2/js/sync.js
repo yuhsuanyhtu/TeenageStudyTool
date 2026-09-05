@@ -101,6 +101,7 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
   let todayReviewEarned = 0;
   let todayBaseGiven = false;
   const todayReadingDone = [];
+  const todayClozeDone = [];   // v2.44：今日已領獎金的克漏字短文 id（從 note 的 #id 解析）
   const completedDays = new Set();
 
   for (const ev of real) {
@@ -122,6 +123,11 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
           todayBaseGiven = true;
         }
         if (event === 'v2_reading_done' && ev.unit) todayReadingDone.push(String(ev.unit));
+        // v2.44：克漏字 note 格式 "v2 克漏字「標題」#u1-voa9"，取 #id
+        if (event === 'v2_cloze_done') {
+          const m = String(ev.note || '').match(/#([A-Za-z0-9_-]+)\s*$/);
+          if (m) todayClozeDone.push(m[1]);
+        }
       }
       const isReview = event === 'v2_review_done';
       const qualifies = isReview || correct >= 5;
@@ -164,6 +170,7 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
     todayReviewEarned,
     todayBaseGiven,
     todayReadingDone,
+    todayClozeDone,      // v2.44
     dailyCap,
     practiceMode,        // v2.42：練習量模式（0=標準、1=加練）
   };

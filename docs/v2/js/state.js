@@ -17,6 +17,7 @@ const DEFAULTS = {
   baseGivenToday: false, // 今日基礎獎金 $10 是否已發過（每日重置）
   reviewEarnedToday: 0,        // v2.28：今日從頭複習已賺的錢（cap 在 reviewDailyCap，每日重置）
   readingDoneToday: [],        // v2.28：今日已領獎金的故事 id（同篇一天只能領一次，每日重置）
+  clozeDoneToday: [],          // v2.44：今日已領獎金的克漏字短文 id（同篇一天只能領一次，每日重置）
   totalWithdrawn: 0,     // 累計已提領（v2.16）— 從 sync 同步
   totalPenalty: 0,       // v2.34：累計生活習慣扣款 — 從 sync 同步（只有家長頁能寫）
   availableToWithdraw: 0,// 可提領金額 = totalEarned - totalWithdrawn - totalPenalty（從 sync 同步）
@@ -75,6 +76,7 @@ export function refreshDailyState(state) {
     state.baseGivenToday = false;  // 每天重置「基礎獎金已給」
     state.reviewEarnedToday = 0;   // v2.28：每天重置「複習已賺額度」
     state.readingDoneToday = [];   // v2.28：每天重置「已領獎金的故事」
+    state.clozeDoneToday = [];     // v2.44：每天重置「已領獎金的克漏字短文」
     changed = true;
   }
   if (state.freezeMonth !== m) {
