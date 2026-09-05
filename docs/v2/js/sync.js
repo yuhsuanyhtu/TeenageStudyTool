@@ -100,8 +100,9 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
       }
       if (date === todayStr && amount > 0) {
         if (event === 'v2_review_done') todayReviewEarned += amount;
-        // 基礎獎金只可能在英翻中／中翻英答對 ≥5 時發出（一天一次）
-        if ((event === 'v2_en2zh_done' || event === 'v2_zh2en_done') && correct >= REWARD_CONFIG.minCorrectForBase) {
+        // 基礎獎金只可能在「真測驗」模式答對 ≥5 時發出（一天一次）
+        // v2.40：文意字彙／克漏字也走 calcSessionReward，可能發基礎獎金 → 一併認
+        if ((event === 'v2_en2zh_done' || event === 'v2_zh2en_done' || event === 'v2_vocab_done' || event === 'v2_cloze_done') && correct >= REWARD_CONFIG.minCorrectForBase) {
           todayBaseGiven = true;
         }
         if (event === 'v2_reading_done' && ev.unit) todayReadingDone.push(String(ev.unit));

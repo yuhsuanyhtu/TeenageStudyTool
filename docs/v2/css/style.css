@@ -925,3 +925,30 @@ button.back:hover { background: transparent; text-decoration: underline; }
   .stats { grid-template-columns: repeat(4, 1fr); }
   .match-card { min-height: 64px; font-size: 18px; }
 }
+
+/* ===== v2.40：文意字彙 + 克漏字 ===== */
+/* 例句挖空處：綠色底線（跟 sentence-target 同色系，答案揭曉後會換成填回的字） */
+.vocab-blank {
+  font-weight: 700;
+  color: #6b9080;
+  letter-spacing: 1px;
+  border-bottom: 2px solid #6b9080;
+  padding: 0 2px;
+  white-space: nowrap;
+}
+.vocab-question { font-size: 17px; }
+
+/* 克漏字：空格編號小圈；短文左對齊、行高鬆一點好閱讀 */
+.cloze-no {
+  font-size: 12px;
+  color: #6b9080;
+  vertical-align: super;
+  margin-left: 1px;
+}
+.cloze-text { line-height: 1.9; }
+.cloze-q .en2zh-choices {
+  grid-template-columns: 1fr 1fr;   /* 克漏字選項短（單字/片語），兩欄比較像考卷 */
+}
+@media (max-width: 480px) {
+  .cloze-q .en2zh-choices { grid-template-columns: 1fr; }
+}

@@ -15,6 +15,8 @@ import { startEn2ZhMode } from './modes/en2zh.js';
 import { startZh2EnMode } from './modes/zh2en.js';
 import { startReviewMode } from './modes/review.js';
 import { startReadingMode } from './modes/reading.js';
+import { startVocabMode } from './modes/vocab.js';   // v2.40：文意字彙
+import { startClozeMode } from './modes/cloze.js';   // v2.40：克漏字
 import { startDexbook } from './dexbook.js';
 import { logEvent, logEventBeacon } from './logger.js';
 import { renderRules } from './rules.js';
@@ -339,7 +341,7 @@ function renderModePicker() {
     <p class="muted">${words.length} 個單字</p>
 
     <div class="quiz-size-row">
-      <span class="quiz-size-label">英翻中／中翻英 題數：</span>
+      <span class="quiz-size-label">英翻中／中翻英／文意字彙 題數：</span>
       ${sizeButtons}
     </div>
 
@@ -355,6 +357,16 @@ function renderModePicker() {
       <div class="mode-title">🇬🇧 → 🇹🇼 英翻中</div>
       <div class="mode-desc">看英文選中文（4 選 1）。系統會先拼字母（A-P-P-L-E）再唸 apple。</div>
     </button>
+    <button class="mode-card" data-mode="vocab">
+      <div class="mode-title">📝 文意字彙</div>
+      <div class="mode-desc">看句子選字（4 選 1）。跟段考第一大題一樣：句子挖空，選出最適合的英文字。</div>
+    </button>
+    ${(appData.clozeByUnit && appData.clozeByUnit[currentUnit] && appData.clozeByUnit[currentUnit].length > 0) ? `
+    <button class="mode-card" data-mode="cloze">
+      <div class="mode-title">🧩 克漏字</div>
+      <div class="mode-desc">讀短文，每個空格選出最適合的答案。考時態、連接詞跟課文單字，跟段考題組一樣。</div>
+    </button>
+    ` : ''}
     <button class="mode-card" data-mode="zh2en">
       <div class="mode-title">🇹🇼 → 🇬🇧 中翻英</div>
       <div class="mode-desc">把英文拼出來。難度最高，學最深。each / every 都是「每一」這種多答案會兩個都接受。</div>
@@ -524,6 +536,19 @@ function startMode(mode) {
     startZh2EnMode({ root, words, seenSet, onComplete, wordStats, roundSize });
   } else if (mode === 'review') {
     startReviewMode({ root, words, onComplete });
+  } else if (mode === 'vocab') {
+    // v2.40：文意字彙 — 例句庫（sentencesByUnit）優先，沒有的字退回 API 例句／中文提示
+    startVocabMode({
+      root, words, seenSet, onComplete, allWords: words, wordStats, roundSize,
+      sentenceMap: (appData.sentencesByUnit && appData.sentencesByUnit[currentUnit]) || {},
+    });
+  } else if (mode === 'cloze') {
+    // v2.40：克漏字 — 只有題庫有這個單元的短文時，題型卡才會出現
+    startClozeMode({
+      root,
+      passages: (appData.clozeByUnit && appData.clozeByUnit[currentUnit]) || [],
+      onComplete,
+    });
   }
 }
 
@@ -544,6 +569,11 @@ if (typeof window !== 'undefined') {
 }
 
 function handleComplete(mode, result) {
+  // v2.40：克漏字「選文頁」按返回 → 靜靜回題型選單（不記獎金、不寫 Sheet）
+  if (result && result.silent) {
+    renderModePicker();
+    return;
+  }
   const today = state.today();
   const sessionCorrect = result.sessionCorrect || 0;
   const totalQuestions = result.totalQuestions || 0;
@@ -622,6 +652,7 @@ function handleComplete(mode, result) {
   // 寫一筆到 Google Sheet
   const modeLabel = {
     match: '連連看', en2zh: '英翻中', zh2en: '中翻英', review: '從頭複習',
+    vocab: '文意字彙', cloze: '克漏字',   // v2.40
   }[mode] || mode;
   logEvent({
     event: result.aborted ? `v2_${mode}_abandoned` : `v2_${mode}_done`,
@@ -630,8 +661,8 @@ function handleComplete(mode, result) {
     correct: sessionCorrect,
     amount: calc.sessionFinal,
     note: result.aborted
-      ? `v2 ${modeLabel} 中途離開（做到 ${sessionCorrect}/${totalQuestions}）`
-      : `v2 ${modeLabel}`,
+      ? `v2 ${modeLabel} 中途離開（做到 ${sessionCorrect}/${totalQuestions}）${result.passageTitle ? `「${result.passageTitle}」` : ''}`
+      : `v2 ${modeLabel}${result.passageTitle ? `「${result.passageTitle}」` : ''}`,
   }, s);
 
   renderResult({ mode, result, calc, streakChanged });

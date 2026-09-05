@@ -1,0 +1,868 @@
+{
+ "_note": "文意字彙例句庫（原創句，v2.40）。⟨⟩ 標記挖空目標；只用謙恩已學過的字（一上/一下/二上字庫 + CEFR A1/A2 + 國小基礎字）。",
+ "units": {
+  "二上 Unit 1": {
+   "summer vacation": {
+    "s": "We do not go to school in July and August because it is ⟨summer vacation⟩."
+   },
+   "weather": {
+    "s": "The ⟨weather⟩ today is sunny and warm."
+   },
+   "Taiwan": {
+    "s": "⟨Taiwan⟩ is a beautiful island near Japan."
+   },
+   "fun": {
+    "s": "The game was so ⟨fun⟩ that we played it all afternoon."
+   },
+   "snow": {
+    "s": "In cold countries, ⟨snow⟩ falls in winter, and the ground is white."
+   },
+   "send": {
+    "s": "I will ⟨send⟩ a birthday card to my grandma."
+   },
+   "postcard": {
+    "s": "Amy went to Japan and sent me a ⟨postcard⟩."
+   },
+   "borrow": {
+    "s": "I do not have a pen. Can I ⟨borrow⟩ yours?"
+   },
+   "lend": {
+    "s": "Can you ⟨lend⟩ me your bike? I will give it back tomorrow."
+   },
+   "glove": {
+    "s": "It is cold outside, so I wear ⟨gloves⟩ on my hands."
+   },
+   "kind": {
+    "s": "Mrs. Lin is ⟨kind⟩; she often helps poor people."
+   },
+   "lovely": {
+    "s": "The baby is so ⟨lovely⟩ that everyone wants to hold her."
+   },
+   "jacket": {
+    "s": "Take your ⟨jacket⟩; it is cold outside."
+   },
+   "give": {
+    "s": "Please ⟨give⟩ this book to your teacher."
+   },
+   "hate": {
+    "s": "I ⟨hate⟩ rainy days because I cannot play outside."
+   },
+   "heavy": {
+    "s": "This box is too ⟨heavy⟩; I cannot move it."
+   },
+   "season": {
+    "s": "Summer is my favorite ⟨season⟩ of the year."
+   },
+   "spring": {
+    "s": "Flowers start to open in ⟨spring⟩, after the cold winter."
+   },
+   "cloud": {
+    "s": "There is not one ⟨cloud⟩ in the blue sky today."
+   },
+   "sun": {
+    "s": "The ⟨sun⟩ is bright; wear your hat when you go out."
+   },
+   "autumn": {
+    "s": "In ⟨autumn⟩, leaves fall from the trees before winter comes."
+   },
+   "wind": {
+    "s": "The ⟨wind⟩ blew my hat away."
+   },
+   "winter": {
+    "s": "It often snows in ⟨winter⟩, the coldest season of the year."
+   },
+   "sunny": {
+    "s": "It is a ⟨sunny⟩ day; the sky is bright and blue."
+   },
+   "snowy": {
+    "s": "On a ⟨snowy⟩ day, the mountains are all white."
+   },
+   "rainy": {
+    "s": "Take an umbrella with you on a ⟨rainy⟩ day."
+   },
+   "cloudy": {
+    "s": "The sky is gray and ⟨cloudy⟩; maybe it will rain soon."
+   },
+   "windy": {
+    "s": "It is so ⟨windy⟩ today that my hat cannot stay on my head."
+   },
+   "cool": {
+    "s": "Autumn is coming, and the weather is getting ⟨cool⟩."
+   },
+   "speak": {
+    "s": "Kevin can ⟨speak⟩ English and a little Japanese."
+   },
+   "mad": {
+    "s": "Dad was ⟨mad⟩ because I broke his phone."
+   },
+   "in fact": {
+    "s": "He looks young, but ⟨in fact⟩ he is very old."
+   },
+   "mean": {
+    "s": "What does this word ⟨mean⟩? I cannot understand it."
+   },
+   "another": {
+    "s": "This shirt is too small. Please show me ⟨another⟩ one."
+   },
+   "order": {
+    "s": "In the restaurant, we ⟨ordered⟩ some noodles and tea."
+   },
+   "strange": {
+    "s": "I heard a ⟨strange⟩ sound at night, but I saw nothing."
+   },
+   "soon": {
+    "s": "The movie will start ⟨soon⟩; please sit down."
+   },
+   "Rd.": {
+    "s": "The bookstore is on Green ⟨Rd.⟩, next to the post office."
+   },
+   "ROC": {
+    "s": "People also call our country the ⟨ROC⟩."
+   },
+   "snowboard": {
+    "s": "In winter, Jack rides his ⟨snowboard⟩ down the white mountain."
+   },
+   "anyway": {
+    "s": "It was raining, but we went to the park ⟨anyway⟩."
+   }
+  },
+  "二上 Unit 2": {
+   "club": {
+    "s": "Emma joined the English ⟨club⟩ at school this year."
+   },
+   "make up one's mind": {
+    "s": "Tom cannot ⟨make up his mind⟩: soccer club or art club?"
+   },
+   "interesting": {
+    "s": "This story is so ⟨interesting⟩ that I read it three times."
+   },
+   "science": {
+    "s": "In ⟨science⟩ class, we learned about plants and animals."
+   },
+   "subject": {
+    "s": "English is my favorite ⟨subject⟩ at school."
+   },
+   "hear": {
+    "s": "Please speak louder; I cannot ⟨hear⟩ you."
+   },
+   "same": {
+    "s": "Amy and I are in the ⟨same⟩ class at school."
+   },
+   "call": {
+    "s": "Please ⟨call⟩ me tonight; I will be at home after seven."
+   },
+   "tell": {
+    "s": "Please ⟨tell⟩ me your new phone number."
+   },
+   "pull one's leg": {
+    "s": "That cannot be true! Are you ⟨pulling my leg⟩?"
+   },
+   "poor": {
+    "s": "The ⟨poor⟩ old man has no money for food."
+   },
+   "end": {
+    "s": "At the ⟨end⟩ of the story, they all went home happy."
+   },
+   "whose": {
+    "s": "⟨Whose⟩ bag is this? It is not mine."
+   },
+   "camera": {
+    "s": "Dad took many pictures with his new ⟨camera⟩."
+   },
+   "mine": {
+    "s": "That blue bike is not yours; it is ⟨mine⟩."
+   },
+   "What's up?": {
+    "s": "A: ⟨What's up⟩? You look worried. B: I cannot find my dog."
+   },
+   "when": {
+    "s": "I was watching TV ⟨when⟩ Mom came home."
+   },
+   "back": {
+    "s": "Dad is not home now, but he will be ⟨back⟩ before dinner."
+   },
+   "sign up": {
+    "s": "The music contest is next month; you can ⟨sign up⟩ this week."
+   },
+   "wrong": {
+    "s": "This answer is ⟨wrong⟩; let me fix it."
+   },
+   "hold on": {
+    "s": "⟨Hold on⟩, please. I will get my mom to the phone."
+   },
+   "math": {
+    "s": "I am not good at numbers, so ⟨math⟩ is difficult for me."
+   },
+   "soccer": {
+    "s": "Eleven players are on a ⟨soccer⟩ team."
+   },
+   "Chinese": {
+    "s": "We speak ⟨Chinese⟩ at home and English at school."
+   },
+   "history": {
+    "s": "In ⟨history⟩ class, we learn about people from long ago."
+   },
+   "violin": {
+    "s": "My sister practices the ⟨violin⟩ every night."
+   },
+   "robot": {
+    "s": "The ⟨robot⟩ can walk and talk like a person."
+   },
+   "health": {
+    "s": "Exercise every day; it is good for your ⟨health⟩."
+   },
+   "PE": {
+    "s": "In ⟨PE⟩ class, we run and play ball games."
+   },
+   "look for": {
+    "s": "I am ⟨looking for⟩ my glasses; did you see them?"
+   },
+   "Ms.": {
+    "s": "⟨Ms.⟩ Chen is our English teacher; she is very kind."
+   },
+   "engineer": {
+    "s": "My uncle is an ⟨engineer⟩; he makes new computers."
+   },
+   "lesson": {
+    "s": "The piano ⟨lesson⟩ starts at four on Wednesday."
+   },
+   "difficult": {
+    "s": "This question is too ⟨difficult⟩; nobody can answer it."
+   },
+   "teach": {
+    "s": "Mr. Wang will ⟨teach⟩ us math next year."
+   },
+   "own": {
+    "s": "Joe has his ⟨own⟩ room, but I share one with my brother."
+   },
+   "finish": {
+    "s": "You can watch TV after you ⟨finish⟩ your homework."
+   },
+   "festival": {
+    "s": "There is a music ⟨festival⟩ in the park every year."
+   },
+   "start": {
+    "s": "The game will ⟨start⟩ at nine, so do not be late."
+   },
+   "choice": {
+    "s": "Milk tea or juice? You have only one ⟨choice⟩."
+   },
+   "not... at all": {
+    "s": "I am ⟨not⟩ tired ⟨at all⟩; let's play one more game."
+   },
+   "free": {
+    "s": "The game is ⟨free⟩; you do not have to pay for it."
+   },
+   "show": {
+    "s": "My favorite TV ⟨show⟩ is on at eight tonight."
+   },
+   "miss out": {
+    "s": "Sign up today, or you will ⟨miss out⟩ on the fun."
+   },
+   "design": {
+    "s": "Lisa likes to ⟨design⟩ clothes for her dolls."
+   },
+   "swimmer": {
+    "s": "Michael is a fast ⟨swimmer⟩; he swims faster than all his classmates."
+   },
+   "underwater": {
+    "s": "How long can you stay ⟨underwater⟩ in the pool?"
+   },
+   "winner": {
+    "s": "The ⟨winner⟩ of the game will get one hundred dollars."
+   },
+   "contest": {
+    "s": "Lily sang very well and won first place in the singing ⟨contest⟩."
+   },
+   "guest": {
+    "s": "We have a ⟨guest⟩ tonight, so Mom cooked a big dinner."
+   }
+  },
+  "二上 Unit 3": {
+   "someone": {
+    "s": "⟨Someone⟩ is at the door; can you open it?"
+   },
+   "break": {
+    "s": "Be careful, or you will ⟨break⟩ the glass."
+   },
+   "do the dishes": {
+    "s": "After dinner, I ⟨do the dishes⟩ and my brother cleans the table."
+   },
+   "half": {
+    "s": "It is ⟨half⟩ past six; dinner is ready."
+   },
+   "past": {
+    "s": "It is ten ⟨past⟩ nine, so the class already started."
+   },
+   "leave": {
+    "s": "The train will ⟨leave⟩ at eight thirty; do not be late."
+   },
+   "quarter": {
+    "s": "It is a ⟨quarter⟩ past three; we have fifteen more minutes."
+   },
+   "remember": {
+    "s": "I cannot ⟨remember⟩ his name. Is it Sam or Tom?"
+   },
+   "take it easy": {
+    "s": "Don't worry about the test. ⟨Take it easy⟩!"
+   },
+   "cool down": {
+    "s": "Mike was mad, so he went outside to ⟨cool down⟩."
+   },
+   "close": {
+    "s": "My house is ⟨close⟩ to the school, so I walk there."
+   },
+   "feed": {
+    "s": "Please ⟨feed⟩ the dog before you go to school."
+   },
+   "pet": {
+    "s": "Do you have a ⟨pet⟩? I have two cats."
+   },
+   "sweep": {
+    "s": "I ⟨sweep⟩ the floor every morning before breakfast."
+   },
+   "floor": {
+    "s": "There is water on the ⟨floor⟩; please wipe it."
+   },
+   "fix": {
+    "s": "The computer is broken; can you ⟨fix⟩ it?"
+   },
+   "drawer": {
+    "s": "Your socks are in the top ⟨drawer⟩."
+   },
+   "mop": {
+    "s": "The floor is dirty; please ⟨mop⟩ it with water."
+   },
+   "stairs": {
+    "s": "We walked up the ⟨stairs⟩ to the fifth floor."
+   },
+   "wipe": {
+    "s": "Please ⟨wipe⟩ the table before we eat."
+   },
+   "window": {
+    "s": "Open the ⟨window⟩ and let the wind come in."
+   },
+   "dry": {
+    "s": "Hang the wet clothes outside, and they will be ⟨dry⟩ soon."
+   },
+   "hang": {
+    "s": "Please ⟨hang⟩ your coat behind the door."
+   },
+   "clothes": {
+    "s": "Mom washed our ⟨clothes⟩ and hung them outside."
+   },
+   "move": {
+    "s": "We will ⟨move⟩ to Taipei next month, so I need a new school."
+   },
+   "city": {
+    "s": "Taipei is a big ⟨city⟩ with many tall buildings."
+   },
+   "dream": {
+    "s": "Last night I had a ⟨dream⟩ about flying in the sky."
+   },
+   "almost": {
+    "s": "It is ⟨almost⟩ time for bed; brush your teeth now."
+   },
+   "fall asleep": {
+    "s": "The movie was long, and Dad ⟨fell asleep⟩ on the sofa."
+   },
+   "scared": {
+    "s": "My little sister is ⟨scared⟩ of dogs; she cries when she sees one."
+   },
+   "problem": {
+    "s": "I have a ⟨problem⟩ with this question. Can you help me?"
+   },
+   "tip": {
+    "s": "Here is a ⟨tip⟩: read the question two times before you answer."
+   },
+   "however": {
+    "s": "The shoes are nice; ⟨however⟩, they are too expensive."
+   },
+   "nothing": {
+    "s": "There is ⟨nothing⟩ to eat at home, so let's eat outside."
+   },
+   "catch": {
+    "s": "Throw the ball to me, and I will ⟨catch⟩ it."
+   },
+   "through": {
+    "s": "The train goes ⟨through⟩ a long, dark mountain hole."
+   },
+   "finally": {
+    "s": "After three long hours, we ⟨finally⟩ got to the top of the mountain."
+   },
+   "save": {
+    "s": "The man jumped into the water to ⟨save⟩ the dog."
+   },
+   "terrible": {
+    "s": "The weather was ⟨terrible⟩: rain, wind, and no sun."
+   },
+   "monitor": {
+    "s": "Dad put a ⟨monitor⟩ at the door to watch the house."
+   },
+   "sleepwalk": {
+    "s": "My brother ⟨sleepwalks⟩ at night; last night he walked to the kitchen."
+   },
+   "web": {
+    "s": "There is a spider ⟨web⟩ in the corner of the window."
+   },
+   "hole": {
+    "s": "There is a ⟨hole⟩ in my old sock."
+   }
+  },
+  "二上 Unit 4": {
+   "hope": {
+    "s": "I ⟨hope⟩ it will be sunny tomorrow; we are going to the beach."
+   },
+   "future": {
+    "s": "In the ⟨future⟩, people may live on the moon."
+   },
+   "plan": {
+    "s": "What is your ⟨plan⟩ for the summer vacation?"
+   },
+   "lawyer": {
+    "s": "A ⟨lawyer⟩ knows the law and helps people with it."
+   },
+   "job": {
+    "s": "My mother has a new ⟨job⟩ at a bank."
+   },
+   "get butterflies in one's stomach": {
+    "s": "Before the big game, Sam ⟨got butterflies in his stomach⟩."
+   },
+   "worry": {
+    "s": "Don't ⟨worry⟩ about me; I can take care of myself."
+   },
+   "keep": {
+    "s": "⟨Keep⟩ practicing, and you will get better and better."
+   },
+   "idea": {
+    "s": "Let's eat outside! That is a great ⟨idea⟩."
+   },
+   "right": {
+    "s": "Every child has the ⟨right⟩ to go to school."
+   },
+   "put on": {
+    "s": "It is cold; ⟨put on⟩ your coat before you go out."
+   },
+   "reporter": {
+    "s": "The ⟨reporter⟩ asked the singer many questions for the news."
+   },
+   "interview": {
+    "s": "The reporter will ⟨interview⟩ the famous ball player today."
+   },
+   "mail carrier": {
+    "s": "The ⟨mail carrier⟩ brings letters to our house every day."
+   },
+   "dentist": {
+    "s": "My tooth hurts; I need to see a ⟨dentist⟩."
+   },
+   "factory": {
+    "s": "My uncle works in a car ⟨factory⟩; they make two hundred cars a day."
+   },
+   "fisherman": {
+    "s": "The ⟨fisherman⟩ goes out to sea early to catch fish."
+   },
+   "secretary": {
+    "s": "The ⟨secretary⟩ answers the phone and writes letters for her boss."
+   },
+   "boss": {
+    "s": "My ⟨boss⟩ is nice; he lets us go home early on Friday."
+   },
+   "salesman": {
+    "s": "The ⟨salesman⟩ sold us a new TV at a good price."
+   },
+   "farmer": {
+    "s": "The ⟨farmer⟩ gets up early to take care of his cows and rice."
+   },
+   "grow": {
+    "s": "Farmers ⟨grow⟩ rice in the south of Taiwan."
+   },
+   "soldier": {
+    "s": "A ⟨soldier⟩ fights for his country and keeps people safe."
+   },
+   "country": {
+    "s": "Japan is a ⟨country⟩ near Taiwan."
+   },
+   "truck driver": {
+    "s": "A ⟨truck driver⟩ moves things from city to city."
+   },
+   "drive": {
+    "s": "Dad will ⟨drive⟩ us to school because it is raining."
+   },
+   "successful": {
+    "s": "Her restaurant is very ⟨successful⟩; people wait an hour to eat there."
+   },
+   "find": {
+    "s": "I cannot ⟨find⟩ my glasses; maybe they are under the sofa."
+   },
+   "grade": {
+    "s": "My little brother is in the third ⟨grade⟩."
+   },
+   "decide": {
+    "s": "I cannot ⟨decide⟩ which one to buy: the blue shirt or the white one."
+   },
+   "become": {
+    "s": "Jenny wants to ⟨become⟩ a doctor and help sick people."
+   },
+   "relative": {
+    "s": "Uncle Ben is my favorite ⟨relative⟩; he tells the best stories."
+   },
+   "believe": {
+    "s": "I cannot ⟨believe⟩ it! We won first place!"
+   },
+   "act": {
+    "s": "Leo loves to ⟨act⟩; he wants to be a movie star."
+   },
+   "all over": {
+    "s": "This singer is famous ⟨all over⟩ the world."
+   },
+   "make fun of": {
+    "s": "Don't ⟨make fun of⟩ him because he runs slowly."
+   },
+   "give up": {
+    "s": "The math problem was hard, but Tim did not ⟨give up⟩."
+   },
+   "channel": {
+    "s": "Change the ⟨channel⟩; I don't like this show."
+   },
+   "wig": {
+    "s": "Grandpa has little hair, so he sometimes wears a ⟨wig⟩."
+   },
+   "career": {
+    "s": "Teaching is a good ⟨career⟩ for people who love kids."
+   },
+   "deliver": {
+    "s": "The man will ⟨deliver⟩ the pizza to our house in thirty minutes."
+   },
+   "success": {
+    "s": "The school festival was a big ⟨success⟩; everyone had fun."
+   },
+   "audition": {
+    "s": "Amy will sing at the ⟨audition⟩ tomorrow; she wants to join the show."
+   }
+  },
+  "二上 Unit 5": {
+   "metro": {
+    "s": "You can take the ⟨metro⟩ to the zoo; it is fast and easy."
+   },
+   "lost": {
+    "s": "We were ⟨lost⟩ in the big city without a map."
+   },
+   "map": {
+    "s": "I don't know this place. Let's look at the ⟨map⟩."
+   },
+   "ask": {
+    "s": "If you don't know the way, ⟨ask⟩ a police officer."
+   },
+   "Excuse me.": {
+    "s": "⟨Excuse me⟩, where is the train station?"
+   },
+   "straight": {
+    "s": "Go ⟨straight⟩ for two blocks, and you will see the park."
+   },
+   "turn left": {
+    "s": "⟨Turn left⟩ at the corner, and the bank is right there."
+   },
+   "along": {
+    "s": "We walked ⟨along⟩ the river and watched the boats."
+   },
+   "block": {
+    "s": "The library is only one ⟨block⟩ from my house."
+   },
+   "corner": {
+    "s": "The coffee shop is on the ⟨corner⟩ of the street."
+   },
+   "across from": {
+    "s": "The bookstore is ⟨across from⟩ the park; you can see it from here."
+   },
+   "supermarket": {
+    "s": "Mom buys milk and eggs at the ⟨supermarket⟩."
+   },
+   "ground": {
+    "s": "The apple fell from the tree to the ⟨ground⟩."
+   },
+   "sir": {
+    "s": "May I help you, ⟨sir⟩? We have nice shirts today."
+   },
+   "on foot": {
+    "s": "The school is near, so I go there ⟨on foot⟩."
+   },
+   "take": {
+    "s": "We can ⟨take⟩ the bus to the museum."
+   },
+   "by": {
+    "s": "Amy goes to school ⟨by⟩ bike every day."
+   },
+   "get off": {
+    "s": "⟨Get off⟩ the bus at the next stop; the zoo is right there."
+   },
+   "get": {
+    "s": "How can I ⟨get⟩ to the train station from here?"
+   },
+   "right": {
+    "s": "The post office is on your ⟨right⟩, next to the flower shop."
+   },
+   "ship": {
+    "s": "It takes twelve hours to go to the island by ⟨ship⟩."
+   },
+   "taxi": {
+    "s": "We were late, so we took a ⟨taxi⟩ to the station."
+   },
+   "bike": {
+    "s": "Riding a ⟨bike⟩ is good exercise, and it saves money too."
+   },
+   "motorcycle": {
+    "s": "Dad goes to work on his ⟨motorcycle⟩; it is faster than a bike."
+   },
+   "scooter": {
+    "s": "Many people in Taiwan ride a ⟨scooter⟩ to work."
+   },
+   "bank": {
+    "s": "Mom went to the ⟨bank⟩ to get some money."
+   },
+   "fire station": {
+    "s": "The ⟨fire station⟩ is near our school; we see the fire trucks every day."
+   },
+   "toy": {
+    "s": "The baby is playing with his favorite ⟨toy⟩ car."
+   },
+   "post office": {
+    "s": "I went to the ⟨post office⟩ to send a letter."
+   },
+   "hospital": {
+    "s": "Grandpa is sick, so he is in the ⟨hospital⟩ now."
+   },
+   "pool": {
+    "s": "We swim in the school ⟨pool⟩ every Friday."
+   },
+   "go jogging": {
+    "s": "Dad ⟨goes jogging⟩ in the park every morning before work."
+   },
+   "go sailing": {
+    "s": "You need a boat and wind to ⟨go sailing⟩."
+   },
+   "go surfing": {
+    "s": "In summer, many people ⟨go surfing⟩ at the beach."
+   },
+   "fly": {
+    "s": "My dream is to ⟨fly⟩ a plane around the world."
+   },
+   "bus stop": {
+    "s": "Wait at the ⟨bus stop⟩; the bus comes every ten minutes."
+   },
+   "go biking": {
+    "s": "The weather is nice today. Let's ⟨go biking⟩ by the river."
+   },
+   "go shopping": {
+    "s": "Mom likes to ⟨go shopping⟩ at the night market."
+   },
+   "hit": {
+    "s": "The ball ⟨hit⟩ me on the head, and it really hurt."
+   },
+   "sound": {
+    "s": "Did you hear that ⟨sound⟩? I think it came from the kitchen."
+   },
+   "bell": {
+    "s": "When the ⟨bell⟩ rings, class is over."
+   },
+   "experience": {
+    "s": "Riding a horse for the first time was a special ⟨experience⟩."
+   },
+   "wonderful": {
+    "s": "We had a ⟨wonderful⟩ time at the beach; I want to go again."
+   },
+   "play": {
+    "s": "Our class will put on a ⟨play⟩ about the Moon Festival."
+   },
+   "around": {
+    "s": "The movie starts ⟨around⟩ seven, so let's eat first."
+   },
+   "go sightseeing": {
+    "s": "We will ⟨go sightseeing⟩ in Tainan and visit many old places."
+   }
+  },
+  "二上 Unit 6": {
+   "will": {
+    "s": "Emma ⟨will⟩ be fourteen years old next month."
+   },
+   "ugly": {
+    "s": "Nobody buys that ⟨ugly⟩ bag; its colors look terrible together."
+   },
+   "sweater": {
+    "s": "Grandma made me a warm ⟨sweater⟩ for the winter."
+   },
+   "tonight": {
+    "s": "The moon is so big and bright ⟨tonight⟩."
+   },
+   "funny": {
+    "s": "His story was so ⟨funny⟩ that everyone laughed."
+   },
+   "cost": {
+    "s": "How much does this watch ⟨cost⟩?"
+   },
+   "price": {
+    "s": "The ⟨price⟩ of the shoes is too high for me."
+   },
+   "spend": {
+    "s": "Don't ⟨spend⟩ all your money on toy cars."
+   },
+   "expensive": {
+    "s": "One thousand dollars for a T-shirt? That is too ⟨expensive⟩!"
+   },
+   "on sale": {
+    "s": "These bags are ⟨on sale⟩ today: half price!"
+   },
+   "pair": {
+    "s": "I bought a new ⟨pair⟩ of shoes for the ball game."
+   },
+   "total": {
+    "s": "Two drinks and one cake — the ⟨total⟩ is ninety dollars."
+   },
+   "pay": {
+    "s": "You can ⟨pay⟩ with cash or a card at the store."
+   },
+   "thousand": {
+    "s": "This phone costs ten ⟨thousand⟩ dollars."
+   },
+   "tomorrow": {
+    "s": "Today is Friday, so ⟨tomorrow⟩ is Saturday."
+   },
+   "high": {
+    "s": "The prices in this store are too ⟨high⟩; let's go to another one."
+   },
+   "save": {
+    "s": "Walk to school and ⟨save⟩ your bus money."
+   },
+   "would like": {
+    "s": "I ⟨would like⟩ a cup of black tea, please."
+   },
+   "change": {
+    "s": "Here is one hundred dollars. You can keep the ⟨change⟩."
+   },
+   "take": {
+    "s": "It ⟨takes⟩ twenty minutes to walk to the station."
+   },
+   "dress": {
+    "s": "Anna wore a beautiful white ⟨dress⟩ to the party."
+   },
+   "cap": {
+    "s": "The baseball player wears a blue ⟨cap⟩ on his head."
+   },
+   "shirt": {
+    "s": "Dad wears a white ⟨shirt⟩ and a tie to work."
+   },
+   "belt": {
+    "s": "My pants are falling! I need a ⟨belt⟩."
+   },
+   "jeans": {
+    "s": "Kevin wears blue ⟨jeans⟩ and a T-shirt on weekends."
+   },
+   "sock": {
+    "s": "There is a hole in my ⟨sock⟩, so I need new ones."
+   },
+   "tie": {
+    "s": "Dad wears a red ⟨tie⟩ on important work days."
+   },
+   "pants": {
+    "s": "These ⟨pants⟩ are too long; can I try a shorter pair?"
+   },
+   "shoe": {
+    "s": "My little brother cannot put on his left ⟨shoe⟩."
+   },
+   "T-shirt": {
+    "s": "In hot summer, a ⟨T-shirt⟩ and shorts are the best."
+   },
+   "shorts": {
+    "s": "It is hot today, so Tim is wearing ⟨shorts⟩, not long pants."
+   },
+   "hat": {
+    "s": "The sun is strong; wear a ⟨hat⟩ when you work outside."
+   },
+   "coat": {
+    "s": "It is snowing outside; put on your warm ⟨coat⟩."
+   },
+   "skirt": {
+    "s": "Mary wears a white shirt and a blue ⟨skirt⟩ to school."
+   },
+   "glasses": {
+    "s": "Grandpa cannot read small words without his ⟨glasses⟩."
+   },
+   "ring": {
+    "s": "Sherry wears a beautiful ⟨ring⟩ on her finger."
+   },
+   "take off": {
+    "s": "Please ⟨take off⟩ your shoes before you come into the house."
+   },
+   "fast": {
+    "s": "The metro is much ⟨faster⟩ than the bus."
+   },
+   "low": {
+    "s": "Please speak in a ⟨low⟩ voice in the library."
+   },
+   "cheap": {
+    "s": "The night market sells ⟨cheap⟩ and yummy food."
+   },
+   "what's more": {
+    "s": "The house is big and bright; ⟨what's more⟩, it is near the metro."
+   },
+   "most": {
+    "s": "⟨Most⟩ students in my class like PE best."
+   },
+   "hurt": {
+    "s": "I fell off my bike and ⟨hurt⟩ my leg."
+   },
+   "come off": {
+    "s": "The paint is ⟨coming off⟩ the old wall."
+   },
+   "second": {
+    "s": "Wait a ⟨second⟩; I am putting on my shoes."
+   },
+   "checkout": {
+    "s": "Take your things to the ⟨checkout⟩ and pay there."
+   },
+   "cash": {
+    "s": "I have no ⟨cash⟩ with me; can I pay with a card?"
+   },
+   "truth": {
+    "s": "Nobody knows the ⟨truth⟩ about that strange night."
+   },
+   "fashion": {
+    "s": "Sandy reads ⟨fashion⟩ news because she loves beautiful clothes."
+   },
+   "environment": {
+    "s": "Take the bus, not the car — it is better for the ⟨environment⟩."
+   }
+  },
+  "二上 Festival": {
+   "Halloween": {
+    "s": "⟨Halloween⟩ comes on the last day of October."
+   },
+   "children": {
+    "s": "The ⟨children⟩ are playing games in the park."
+   },
+   "pumpkin": {
+    "s": "Mom cooked ⟨pumpkin⟩ soup; it is sweet and orange."
+   },
+   "cut out": {
+    "s": "Dad ⟨cut out⟩ two eyes and a mouth on the pumpkin."
+   },
+   "moment": {
+    "s": "This is a happy ⟨moment⟩; let's take a picture!"
+   },
+   "go trick-or-treating": {
+    "s": "On Halloween night, kids ⟨go trick-or-treating⟩ for candy."
+   },
+   "costume": {
+    "s": "Amy wears a cat ⟨costume⟩ to the Halloween party."
+   },
+   "jack-o'-lantern": {
+    "s": "We put a light inside the pumpkin to make a ⟨jack-o'-lantern⟩."
+   },
+   "haunted house": {
+    "s": "The ⟨haunted house⟩ at the school festival was dark and scary."
+   },
+   "scary": {
+    "s": "The movie was so ⟨scary⟩ that I could not sleep."
+   }
+  }
+ }
+}

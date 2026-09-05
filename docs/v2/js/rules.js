@@ -6,7 +6,7 @@
 import { REWARD_CONFIG, effectiveDailyCap } from './reward.js';
 import { load as loadState } from './state.js';
 
-const RULES_VERSION_DATE = '2026-07-10';
+const RULES_VERSION_DATE = '2026-09-05';
 
 // v2.34：生活習慣扣款金額（跟家長頁 payout.js 的 DEFAULT_PENALTY 一致）
 const HABIT_PENALTY = 10;
@@ -48,18 +48,20 @@ export function renderRules(root, onBack) {
     </div>
 
     <div class="card">
-      <h3>🎯 四種題型 + 一種閱讀</h3>
+      <h3>🎯 六種題型 + 一種閱讀</h3>
       <p style="margin-bottom:6px;">📖 <b>從頭複習</b> — 整課單字一張張看過，會幫你拼字母、唸發音，還有所有意思 + 近義字 + 反義字。走完整輪 +$${cfg.reviewBase}（<b>一天最多領 $${cfg.reviewDailyCap}</b>，再做沒獎金但仍可複習）</p>
       <p style="margin-bottom:6px;">🔗 <b>連連看</b> — 暖身用，每輪固定 +$${cfg.matchReward}（很簡單可以刷，但獎金少）</p>
       <p style="margin-bottom:6px;">🇬🇧 → 🇹🇼 <b>英翻中</b> — 看英文選中文，4 選 1，題目上方會給英文例句（目標字加底線）。答對後可以展開看其他意思 + 同／反義字</p>
       <p style="margin-bottom:6px;">🇹🇼 → 🇬🇧 <b>中翻英</b> — 要拼出英文，難度最高，但學最深</p>
+      <p style="margin-bottom:6px;">📝 <b>文意字彙</b>（老師推薦的段考題型）— 句子挖空，4 選 1 選出最適合的英文字。獎金跟英翻中一樣：每答對 +$${cfg.perCorrect}，也算「已會」的連對次數。二上每個字都有專屬例句，只用你學過的字寫的</p>
+      <p style="margin-bottom:6px;">🧩 <b>克漏字</b>（老師推薦的段考題型）— 讀短文，每格 4 選 1，考時態、連接詞跟課文單字。每答對 1 格 +$${cfg.perCorrect}，答錯有中文解析教你「為什麼」。目前二上每單元有 2 篇</p>
       <p style="margin-bottom:6px;">📚 <b>閱讀練習</b> — 主畫面下方有「閱讀練習」按鈕，可以讀短文。點任何字就會看到中文意思。<b>讀完要做英文理解測驗，答對 1 題 +$${cfg.readingPerCorrect}</b>（3 題全對 = $15／篇，跟段考一樣是英文題目）。同一篇一天只能領一次。查過的字會自動進入記憶系統，讀完還可以一鍵「練習剛剛的生字」</p>
       <p class="muted small" style="margin-top:8px;">建議流程：先「從頭複習」過一輪 → 連連看暖身 → 英翻中認熟 → 中翻英拼字打底。讀短文當作休息一下換腦袋。</p>
       <p class="muted small">中翻英碰到「每一個英文都對」的字（例如 every / each 都是「每一」），系統會兩個都接受，不會誤判。</p>
     </div>
 
     <div class="card">
-      <h3>🔢 題數選擇（英翻中／中翻英）</h3>
+      <h3>🔢 題數選擇（英翻中／中翻英／文意字彙）</h3>
       <p>進入單元後，題型卡上方可以選題數：</p>
       <p style="margin-bottom:6px;"><b>8 題（快練）</b> — 預設，每天暖身用</p>
       <p style="margin-bottom:6px;"><b>半套</b> — 約一半單元字數，中量複習</p>
@@ -78,6 +80,8 @@ export function renderRules(root, onBack) {
       <table class="rules-table">
         <tr><td>🇬🇧 → 🇹🇼 英翻中</td><td>✅ 答對 +1、答錯歸 0</td></tr>
         <tr><td>🇹🇼 → 🇬🇧 中翻英</td><td>✅ 答對 +1、答錯歸 0</td></tr>
+        <tr><td>📝 文意字彙</td><td>✅ 答對 +1、答錯歸 0（也是真考試）</td></tr>
+        <tr><td>🧩 克漏字</td><td>❌ 考文法語感，不算單字 streak</td></tr>
         <tr><td>🔗 連連看</td><td>❌ 只算「看過」，不算 streak</td></tr>
         <tr><td>📖 從頭複習</td><td>❌ 同上（沒考試怎麼算對）</td></tr>
         <tr><td>📚 閱讀練習</td><td>❌ 只記查過的字</td></tr>

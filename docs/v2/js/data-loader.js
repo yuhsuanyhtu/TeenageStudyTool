@@ -7,6 +7,11 @@
 //   2) 把檔名加進 units-meta.json
 //   不用改任何程式碼。
 //
+// v2.40：分類可以多兩個選填欄位（一樣只改 meta 不用改程式）：
+//   "sentences": "sentences-xxx.json" — 文意字彙例句庫 { units: { 單元: { en: {s} } } }
+//   "cloze":     "cloze-xxx.json"     — 克漏字題庫   { passages: [ { unit, ... } ] }
+//   載入後掛在回傳值 sentencesByUnit / clozeByUnit（單元名 → 資料）。
+//
 // v2.29 加速：
 //   - 所有 JSON 用 Promise.all 平行抓（以前 sequential，8 個檔 1.5-3 秒）
 //   - cache 從 'no-cache' 改 'default' 讓瀏覽器快取生效
@@ -45,6 +50,8 @@ export async function loadAll() {
   if (meta.version === 2 && Array.isArray(meta.categories)) {
     for (const cat of meta.categories) {
       for (const file of cat.files || []) allFiles.add(file);
+      if (cat.sentences) allFiles.add(cat.sentences);   // v2.40：文意字彙例句庫
+      if (cat.cloze) allFiles.add(cat.cloze);           // v2.40：克漏字題庫
     }
   } else if (Array.isArray(meta.files)) {
     for (const file of meta.files) allFiles.add(file);
@@ -58,6 +65,9 @@ export async function loadAll() {
   const units = {};
   const categories = [];
   let stories = [];
+  // v2.40：文意字彙例句庫 + 克漏字題庫（單元名 → 資料；沒有的單元就是 undefined）
+  const sentencesByUnit = {};
+  const clozeByUnit = {};
 
   if (fileMap['stories.json'] && Array.isArray(fileMap['stories.json'].stories)) {
     stories = fileMap['stories.json'].stories;
@@ -80,6 +90,21 @@ export async function loadAll() {
         current: !!cat.current,                   // v2.21：current 旗標
         units: catUnits,
       });
+      // v2.40：掛例句庫與克漏字（失敗載不到就靜靜跳過，不影響其他功能）
+      const sentData = cat.sentences && fileMap[cat.sentences];
+      if (sentData && sentData.units) {
+        for (const [u, m] of Object.entries(sentData.units)) {
+          sentencesByUnit[u] = {};
+          for (const [en, o] of Object.entries(m)) sentencesByUnit[u][en] = o.s;
+        }
+      }
+      const clozeData = cat.cloze && fileMap[cat.cloze];
+      if (clozeData && Array.isArray(clozeData.passages)) {
+        for (const p of clozeData.passages) {
+          if (!clozeByUnit[p.unit]) clozeByUnit[p.unit] = [];
+          clozeByUnit[p.unit].push(p);
+        }
+      }
     }
   } else if (Array.isArray(meta.files)) {
     const catUnits = {};
@@ -92,5 +117,5 @@ export async function loadAll() {
     categories.push({ id: 'all', name: '單字', icon: '📚', units: catUnits });
   }
 
-  return { meta, units, categories, stories };
+  return { meta, units, categories, stories, sentencesByUnit, clozeByUnit };
 }

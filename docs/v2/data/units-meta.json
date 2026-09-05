@@ -18,6 +18,8 @@
       "name": "二上",
       "icon": "📙",
       "files": ["textbook-y2-fall.json"],
+      "sentences": "sentences-y2-fall.json",
+      "cloze": "cloze-y2-fall.json",
       "current": true
     },
     {

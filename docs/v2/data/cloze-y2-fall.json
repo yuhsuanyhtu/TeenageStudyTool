@@ -1,0 +1,125 @@
+{
+"_note": "克漏字題庫（原創短文，v2.40）。text 內 {1}~{4} 為挖空；每格 4 選 1，a 為正解索引，why 為中文解析。只用謙恩已學過的字。",
+"passages": [
+{
+"id": "u1-a", "unit": "二上 Unit 1", "title": "A Cold Winter Trip", "zh": "寒假的日本之旅",
+"text": "Last winter, my family went to Japan. It was very cold, and it {1} every day. The ground was all white. I wore a heavy jacket and gloves, {2} I still felt cold. One day, the {3} was strong, and my hat flew away! Dad caught it, and we all laughed. It was a {4} trip, and I want to go again.",
+"blanks": [
+{"n":1, "opts":["snowed","snows","is snowing","will snow"], "a":0, "why":"Last winter（去年冬天）是過去的事 → 動詞用過去式 snowed"},
+{"n":2, "opts":["but","so","or","because"], "a":0, "why":"穿了外套和手套「卻還是」冷 → 語氣轉折用 but"},
+{"n":3, "opts":["wind","sun","cloud","season"], "a":0, "why":"帽子被吹走了 → 是「風」很強：wind"},
+{"n":4, "opts":["fun","terrible","heavy","rainy"], "a":0, "why":"最後說「還想再去一次」→ 是好玩的旅行：fun"}
+]
+},
+{
+"id": "u1-b", "unit": "二上 Unit 1", "title": "Four Seasons in Taiwan", "zh": "臺灣的四季",
+"text": "Taiwan has four {1}. In spring, it often rains, and everything grows. Summer is very hot and sunny, so many people go to the beach. In autumn, the weather turns {2}, and the leaves fall. Winter here is not very cold, and it almost never {3}. Many people love Taiwan's winter {4} it is short and warm.",
+"blanks": [
+{"n":1, "opts":["seasons","weathers","winds","clouds"], "a":0, "why":"春夏秋冬是四個「季節」→ seasons"},
+{"n":2, "opts":["cool","hot","heavy","lovely"], "a":0, "why":"秋天天氣「轉涼」→ cool"},
+{"n":3, "opts":["snows","snowed","snowing","snow"], "a":0, "why":"講臺灣冬天的「習慣事實」用現在式；主詞 it 是第三人稱單數 → snows"},
+{"n":4, "opts":["because","but","or","until"], "a":0, "why":"「因為」冬天又短又暖，所以大家喜歡 → because"}
+]
+},
+{
+"id": "u2-a", "unit": "二上 Unit 2", "title": "The Science Club", "zh": "加入科學社",
+"text": "Last month, our school had a club day. I could not make up my mind: the science club or the soccer club? My best friend said, \"Join the science club with me! Our teacher shows us many {1} things.\" So I {2} up for it. Now we do fun tests every Wednesday. Last week, we made a small robot, and it really walked! I was so happy {3} I saw it move. I made the right {4}.",
+"blanks": [
+{"n":1, "opts":["interesting","difficult","wrong","poor"], "a":0, "why":"朋友在推薦社團，當然是說老師會展示「有趣的」東西 → interesting"},
+{"n":2, "opts":["signed","sign","signs","signing"], "a":0, "why":"上個月報名，是過去的事 → 過去式 signed（sign up 報名）"},
+{"n":3, "opts":["when","before","until","or"], "a":0, "why":"「當」我看到機器人動起來的那一刻很開心 → when"},
+{"n":4, "opts":["choice","subject","lesson","club"], "a":0, "why":"make the right choice＝做了正確的「選擇」"}
+]
+},
+{
+"id": "u2-b", "unit": "二上 Unit 2", "title": "A Phone Call", "zh": "一通電話",
+"text": "(The phone rings.) Amy: Hello. This is Amy. May I speak to Lisa? Mom: {1}, please. I will get her. Lisa: Hi, Amy. {2}? Amy: Our history teacher is sick, so there is no test tomorrow! Lisa: Really? That is great news! Amy: Also, don't forget to {3} your workbook to school. Ms. Wang wants to see it. Lisa: Thank you for {4} me. See you tomorrow.",
+"blanks": [
+{"n":1, "opts":["Hold on","Sign up","Miss out","Look out"], "a":0, "why":"電話用語「稍等一下」→ Hold on"},
+{"n":2, "opts":["What's up","Who is that","How much","Whose is it"], "a":0, "why":"接起電話問「怎麼了？有什麼事？」→ What's up?"},
+{"n":3, "opts":["bring","borrow","lend","leave"], "a":0, "why":"把習作「帶來」學校 → bring；borrow 是借入、lend 是借出、leave 是留下"},
+{"n":4, "opts":["telling","teaching","calling","asking"], "a":0, "why":"謝謝你「告訴」我這件事 → thank you for telling me"}
+]
+},
+{
+"id": "u3-a", "unit": "二上 Unit 3", "title": "Busy Saturday Morning", "zh": "忙碌的星期六早上",
+"text": "Last Saturday morning, everyone in my family was busy. Mom was mopping the floor, and Dad was wiping the windows. My sister was doing the dishes in the kitchen. And me? At that moment, I {1} my dog a bath in the bathroom. At noon, the house was clean and bright. We hung the wet {2} outside, ate lunch, and then took a {3}. Housework is hard, {4} a clean house made us all happy.",
+"blanks": [
+{"n":1, "opts":["was giving","gave","give","giving"], "a":0, "why":"At that moment（就在那時，動作進行中）配合前面 was mopping / was wiping → 過去進行式 was giving"},
+{"n":2, "opts":["clothes","drawers","stairs","floors"], "a":0, "why":"洗完「掛在外面晾」的是濕「衣服」→ clothes"},
+{"n":3, "opts":["break","half","hole","tip"], "a":0, "why":"take a break＝休息一下"},
+{"n":4, "opts":["but","because","before","until"], "a":0, "why":"家事很累「但是」乾淨的家讓大家開心 → 轉折 but"}
+]
+},
+{
+"id": "u3-b", "unit": "二上 Unit 3", "title": "A Strange Sound at Night", "zh": "半夜的怪聲音",
+"text": "Last night, I was sleeping when I heard a strange sound. Someone was walking past my door! I was so {1} that I could not move. Then the door opened slowly... It was my brother! He was {2} again. He walked through the living room and went back to his bed. The next morning, I told Mom about it. She said, \"Take it easy. He does that {3} he is too tired.\" {4}, I still want to put a monitor at his door.",
+"blanks": [
+{"n":1, "opts":["scared","close","dry","terrible"], "a":0, "why":"嚇到「不敢動」→ 我很「害怕」：scared（terrible 是形容事物很糟，不是人在害怕）"},
+{"n":2, "opts":["sleepwalking","sweeping","moving","feeding"], "a":0, "why":"半夜邊睡邊走 → 他又在「夢遊」：was sleepwalking"},
+{"n":3, "opts":["when","until","before","so"], "a":0, "why":"「當」他太累的時候就會夢遊 → when"},
+{"n":4, "opts":["However","Finally","Almost","Through"], "a":0, "why":"媽媽說沒事，「然而」我還是想裝監視器 → 轉折 However"}
+]
+},
+{
+"id": "u4-a", "unit": "二上 Unit 4", "title": "My Future Dream", "zh": "我的未來夢想",
+"text": "What do you want to be in the {1}? Everyone has different ideas. My cousin wants to be a {2}; she loves teeth and wants everyone to have a healthy smile. My brother hopes to become a reporter, so he can {3} famous people and write news. And me? I want to be a successful farmer! I will use science to {4} the best rice in Taiwan. Dad laughs, but I will not give up my dream.",
+"blanks": [
+{"n":1, "opts":["future","factory","country","grade"], "a":0, "why":"in the future＝在「未來」你想做什麼"},
+{"n":2, "opts":["dentist","lawyer","soldier","salesman"], "a":0, "why":"喜歡牙齒、希望大家有健康的笑容 → 牙醫 dentist"},
+{"n":3, "opts":["interview","deliver","believe","worry"], "a":0, "why":"記者「採訪」名人寫新聞 → interview"},
+{"n":4, "opts":["grow","act","drive","find"], "a":0, "why":"農夫用科學「種」出最好的米 → grow"}
+]
+},
+{
+"id": "u4-b", "unit": "二上 Unit 4", "title": "A Successful Man", "zh": "一位成功的人",
+"text": "Mr. Lin was born in a poor family. His father was a {1} and caught fish for the market every day. Little Lin studied hard because he wanted to {2} a lawyer. His teachers believed in him, but some kids made fun {3} him. He did not give up. Twenty years later, he is famous {4} the country, and he helps poor children go to school.",
+"blanks": [
+{"n":1, "opts":["fisherman","farmer","boss","secretary"], "a":0, "why":"每天「抓魚」到市場賣 → 漁夫 fisherman"},
+{"n":2, "opts":["become","keep","act","interview"], "a":0, "why":"想「成為」律師 → become a lawyer"},
+{"n":3, "opts":["of","at","on","for"], "a":0, "why":"make fun of＝取笑（固定片語）"},
+{"n":4, "opts":["all over","across from","along","through"], "a":0, "why":"famous all over the country＝「全國」有名"}
+]
+},
+{
+"id": "u5-a", "unit": "二上 Unit 5", "title": "How Do I Get There?", "zh": "請問怎麼走？",
+"text": "Tom is new in the city, and he is lost. Tom: {1}, sir. How can I get to the train station? Man: Go {2} for three blocks — don't turn — and then turn left at the bank. The station is {3} the post office; you can see it easily. Tom: Should I walk there? Man: It is a little far. You can take the {4} — it comes every five minutes, and there is a stop right here. Tom: Thank you so much!",
+"blanks": [
+{"n":1, "opts":["Excuse me","What's up","Hold on","Take it easy"], "a":0, "why":"開口問路的禮貌用語 →「不好意思，請問…」Excuse me"},
+{"n":2, "opts":["straight","right","along","around"], "a":0, "why":"「don't turn（不要轉彎）」→ 直直走：go straight"},
+{"n":3, "opts":["across from","all over","close","next"], "a":0, "why":"車站在郵局「對面」→ across from（close 後面要加 to、next 要加 to 才能接名詞）"},
+{"n":4, "opts":["metro","taxi","ship","scooter"], "a":0, "why":"每五分鐘一班、有固定站牌 → 大眾運輸「捷運」metro"}
+]
+},
+{
+"id": "u5-b", "unit": "二上 Unit 5", "title": "A Wonderful Sunday", "zh": "美好的星期天",
+"text": "Last Sunday was sunny. In the morning, Dad went {1} along the river before breakfast. Mom took the metro to the city and went shopping. In the afternoon, we all rode our bikes to the sea. We watched people go {2} on the water; standing on a board looks so cool! On the way home, the sky turned dark, so we came back fast {3} bike. What a {4} day!",
+"blanks": [
+{"n":1, "opts":["jogging","surfing","sailing","shopping"], "a":0, "why":"早餐前沿著河邊運動 → 慢跑 go jogging（shopping 是媽媽後來做的事）"},
+{"n":2, "opts":["surfing","jogging","biking","sightseeing"], "a":0, "why":"站在板子上、在水上 → 衝浪 go surfing"},
+{"n":3, "opts":["by","on","at","in"], "a":0, "why":"by＋交通工具＝搭乘／騎乘：by bike"},
+{"n":4, "opts":["wonderful","terrible","lost","low"], "a":0, "why":"全家出遊玩了一整天 →「美好的」一天：wonderful"}
+]
+},
+{
+"id": "u6-a", "unit": "二上 Unit 6", "title": "At the Night Market", "zh": "夜市買帽子",
+"text": "Ben and his mom are at the night market. Ben: Look at that baseball cap! How much does it {1}? Shopkeeper: Two hundred dollars, young man. Ben: That is too {2}. I only have one hundred and fifty. Shopkeeper: OK, OK. For you, one hundred and forty. Ben: Great! Here are one hundred and fifty dollars. Shopkeeper: And here is ten dollars — your {3}. Ben: Thanks! I {4} wear it to the ball game tomorrow!",
+"blanks": [
+{"n":1, "opts":["cost","spend","pay","take"], "a":0, "why":"問「東西」多少錢用 cost（主詞是物品）；spend／pay 的主詞是人"},
+{"n":2, "opts":["expensive","cheap","low","ugly"], "a":0, "why":"錢不夠 → 太「貴」了：expensive"},
+{"n":3, "opts":["change","cash","price","total"], "a":0, "why":"付一百五、東西一百四，找回十元 →「找零」change"},
+{"n":4, "opts":["will","did","do","was"], "a":0, "why":"tomorrow（明天）是未來 → 用 will"}
+]
+},
+{
+"id": "u6-b", "unit": "二上 Unit 6", "title": "New Clothes for the Party", "zh": "為派對買新衣",
+"text": "Tomorrow is the school party, and Tina has nothing special to wear. Mom takes her to the store. Tina tries on a yellow dress, {1} it is too long for her. Then she sees a white skirt. It is on {2} today — half price, only ninety dollars! Tina says, \"I love it! What's {3}, it goes well with my new shoes.\" Mom pays at the checkout with {4}, and they go home happy.",
+"blanks": [
+{"n":1, "opts":["but","so","because","or"], "a":0, "why":"試穿了洋裝「但是」太長 → 轉折 but"},
+{"n":2, "opts":["sale","fashion","hand","foot"], "a":0, "why":"on sale＝特價中（半價！）"},
+{"n":3, "opts":["more","up","wrong","high"], "a":0, "why":"what's more＝而且（補充另一個優點）"},
+{"n":4, "opts":["cash","change","truth","environment"], "a":0, "why":"在結帳處用「現金」付錢 → cash"}
+]
+}
+]
+}
