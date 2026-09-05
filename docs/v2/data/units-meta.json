@@ -33,7 +33,8 @@
       "id": "cefr-a2",
       "name": "A2 基礎",
       "icon": "🌿",
-      "files": ["cefr-a2.json"]
+      "files": ["cefr-a2.json"],
+      "sentences": "sentences-a2.json"
     },
     {
       "id": "cefr-b1",

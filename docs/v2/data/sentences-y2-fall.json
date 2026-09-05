@@ -1619,12 +1619,6 @@
    "festival": {
     "ss": [
      {
-      "t": "Spring Festival is also known as Chinese New Year.",
-      "m": "Festival",
-      "zh": "春節，即農曆新年。",
-      "id": 756981
-     },
-     {
       "t": "Each year Hamamatsu has a kite festival.",
       "m": "festival",
       "zh": "每年濱松有風箏節。",
@@ -2041,16 +2035,16 @@
       "id": 40524
      },
      {
-      "t": "You are working too hard. Take it easy for a while.",
-      "m": "Take it easy",
-      "zh": "你工作得太辛苦了。放輕鬆一下。",
-      "id": 15878
-     },
-     {
       "t": "Let's take it easy.",
       "m": "take it easy",
       "zh": "讓我們放輕鬆吧。",
       "id": 20346
+     },
+     {
+      "t": "Take it easy.",
+      "m": "Take it easy",
+      "zh": "放輕鬆。",
+      "id": 20344
      }
     ]
    },
@@ -3481,12 +3475,6 @@
       "id": 10854166
      },
      {
-      "t": "He is the only American who has swum the English Channel.",
-      "m": "Channel",
-      "zh": "他是遊過英吉利海峽的唯一一個美國人。",
-      "id": 288976
-     },
-     {
       "t": "He changed the channel.",
       "m": "channel",
       "zh": "他換臺了。",
@@ -3563,12 +3551,6 @@
    "success": {
     "ss": [
      {
-      "t": "Hold on! Success is close!",
-      "m": "Success",
-      "zh": "堅持一下！就要成功了！",
-      "id": 9401968
-     },
-     {
       "t": "The concert was a success.",
       "m": "success",
       "zh": "音樂會很成功。",
@@ -3579,6 +3561,12 @@
       "m": "success",
       "zh": "晚會很成功。",
       "id": 386722
+     },
+     {
+      "t": "He is sure of success.",
+      "m": "success",
+      "zh": "他一定會成功。",
+      "id": 298793
      }
     ]
    },
@@ -3877,16 +3865,16 @@
       "id": 64667
      },
      {
-      "t": "Yes, there are. How many of you are there, Sir?",
-      "m": "Sir",
-      "zh": "有的，先生你有幾位？",
-      "id": 2227912
-     },
-     {
       "t": "I am looking for a job, sir.",
       "m": "sir",
       "zh": "先生，我想找一份工作。",
       "id": 474607
+     },
+     {
+      "t": "What are you looking for, sir?",
+      "m": "sir",
+      "zh": "先生您在找甚麼呀？",
+      "id": 8130205
      }
     ]
    },
@@ -5249,10 +5237,10 @@
       "id": 5134823
      },
      {
-      "t": "Can you speak Low German?",
-      "m": "Low",
-      "zh": "你會講低地德語嗎？",
-      "id": 4770630
+      "t": "This mountain is low.",
+      "m": "low",
+      "zh": "這座山很低。",
+      "id": 13079659
      }
     ]
    },

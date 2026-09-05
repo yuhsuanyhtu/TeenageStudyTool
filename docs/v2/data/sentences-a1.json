@@ -1717,16 +1717,16 @@
       "id": 630327
      },
      {
-      "t": "I am the State!",
-      "m": "State",
-      "zh": "朕即國家！",
-      "id": 435669
-     },
-     {
       "t": "Tom goes to a state school.",
       "m": "state",
       "zh": "湯姆上公立學校。",
       "id": 10643366
+     },
+     {
+      "t": "This is a state school.",
+      "m": "state",
+      "zh": "這是一所公立學校。",
+      "id": 10643367
      }
     ]
    },
@@ -2555,10 +2555,10 @@
       "id": 1356988
      },
      {
-      "t": "Oh! Show me, please.",
+      "t": "Show me that.",
       "m": "Show",
-      "zh": "哦！請你給我看看。",
-      "id": 473810
+      "zh": "讓我看看。",
+      "id": 2454235
      }
     ]
    },
@@ -3443,12 +3443,6 @@
       "m": "national",
       "zh": "推行普通話，是中國的國策。",
       "id": 3537571
-     },
-     {
-      "t": "He's a professor at the National University.",
-      "m": "National",
-      "zh": "他是國立大學的一名教授。",
-      "id": 2258573
      }
     ]
    },
@@ -5833,10 +5827,10 @@
       "id": 5134823
      },
      {
-      "t": "Can you speak Low German?",
-      "m": "Low",
-      "zh": "你會講低地德語嗎？",
-      "id": 4770630
+      "t": "This mountain is low.",
+      "m": "low",
+      "zh": "這座山很低。",
+      "id": 13079659
      }
     ]
    },
@@ -6041,16 +6035,16 @@
       "id": 5553851
      },
      {
-      "t": "May the Force be with you!",
-      "m": "Force",
-      "zh": "願力量與你同在。",
-      "id": 1630332
-     },
-     {
       "t": "May the force be with you.",
       "m": "force",
       "zh": "願力量與你同在。",
       "id": 386688
+     },
+     {
+      "t": "Don't force yourself to do things that you don't like.",
+      "m": "force",
+      "zh": "不要強迫自己做不喜歡的事情。",
+      "id": 11274737
      }
     ]
    }
@@ -6487,12 +6481,6 @@
    "probably": {
     "ss": [
      {
-      "t": "Do you understand? Probably.",
-      "m": "Probably",
-      "zh": "你懂嗎？可能吧。",
-      "id": 11294141
-     },
-     {
       "t": "They're probably tired.",
       "m": "probably",
       "zh": "她們應該累了吧。",
@@ -6503,6 +6491,12 @@
       "m": "probably",
       "zh": "你可能是對的。",
       "id": 2713500
+     },
+     {
+      "t": "You're probably tired.",
+      "m": "probably",
+      "zh": "她們應該累了吧。",
+      "id": 2218335
      }
     ]
    },
