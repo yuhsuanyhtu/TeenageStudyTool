@@ -1,0 +1,6929 @@
+{
+ "_note": "文意字彙例句庫。例句取自 Tatoeba (https://tatoeba.org)，CC BY 2.0 FR，各句附 id 可溯源（https://tatoeba.org/en/sentences/show/<id>）。中文翻譯亦來自 Tatoeba（OpenCC s2twp 轉正體）。挑選規則：全句用字在謙恩已學範圍、附中文翻譯做詞義比對。",
+ "units": {
+  "A1 Unit 1": {
+   "one": {
+    "ss": [
+     {
+      "t": "One, two, three!",
+      "m": "One",
+      "zh": "一，二，三！",
+      "id": 12938295
+     },
+     {
+      "t": "One more time!",
+      "m": "One",
+      "zh": "再來一次！",
+      "id": 4736846
+     },
+     {
+      "t": "I needed one.",
+      "m": "one",
+      "zh": "我要一個。",
+      "id": 2873264
+     }
+    ]
+   },
+   "time": {
+    "ss": [
+     {
+      "t": "Time is relative.",
+      "m": "Time",
+      "zh": "時間是相對的。",
+      "id": 6311022
+     },
+     {
+      "t": "I needed time.",
+      "m": "time",
+      "zh": "我需要更多時間。",
+      "id": 5840381
+     },
+     {
+      "t": "I have time.",
+      "m": "time",
+      "zh": "我有時間。",
+      "id": 2245901
+     }
+    ]
+   },
+   "there": {
+    "ss": [
+     {
+      "t": "Nobody was there.",
+      "m": "there",
+      "zh": "誰也不在那裡。",
+      "id": 9540334
+     },
+     {
+      "t": "Is there any?",
+      "m": "there",
+      "zh": "有嗎？",
+      "id": 10060980
+     },
+     {
+      "t": "Are they there?",
+      "m": "there",
+      "zh": "在嗎？",
+      "id": 9589093
+     }
+    ]
+   },
+   "year": {
+    "ss": [
+     {
+      "t": "Summer is cold this year.",
+      "m": "year",
+      "zh": "今年夏天很冷。",
+      "id": 10900402
+     },
+     {
+      "t": "She married me last year.",
+      "m": "year",
+      "zh": "她去年嫁給了我。",
+      "id": 10605051
+     },
+     {
+      "t": "It's the new year.",
+      "m": "year",
+      "zh": "過年了。",
+      "id": 9408730
+     }
+    ]
+   },
+   "so": {
+    "ss": [
+     {
+      "t": "So it is.",
+      "m": "So",
+      "zh": "如此。",
+      "id": 13593964
+     },
+     {
+      "t": "So they say.",
+      "m": "So",
+      "zh": "人們是這樣說的。",
+      "id": 7532003
+     },
+     {
+      "t": "I hope so!",
+      "m": "so",
+      "zh": "我希望如此。",
+      "id": 7096325
+     }
+    ]
+   },
+   "think": {
+    "ss": [
+     {
+      "t": "Let me think!",
+      "m": "think",
+      "zh": "讓我想一想。",
+      "id": 9171235
+     },
+     {
+      "t": "Think about tomorrow.",
+      "m": "Think",
+      "zh": "請思考一下明天。",
+      "id": 2253707
+     },
+     {
+      "t": "Think about this.",
+      "m": "Think",
+      "zh": "你想想。",
+      "id": 2253706
+     }
+    ]
+   },
+   "when": {
+    "ss": [
+     {
+      "t": "When did you begin?",
+      "m": "When",
+      "zh": "您何時開始的？",
+      "id": 8453118
+     },
+     {
+      "t": "When's the movie?",
+      "m": "When",
+      "zh": "電影什麼時候開始？",
+      "id": 13328842
+     },
+     {
+      "t": "When should I call?",
+      "m": "When",
+      "zh": "我應該什麼時候打電話？",
+      "id": 12373569
+     }
+    ]
+   },
+   "which": {
+    "ss": [
+     {
+      "t": "Which one is easier?",
+      "m": "Which",
+      "zh": "哪一個最簡單？",
+      "id": 4755147
+     },
+     {
+      "t": "Which is my stop?",
+      "m": "Which",
+      "zh": "我在哪站下？",
+      "id": 10776946
+     },
+     {
+      "t": "Which one's mine?",
+      "m": "Which",
+      "zh": "哪個是我的？",
+      "id": 9493874
+     }
+    ]
+   },
+   "them": {
+    "ss": [
+     {
+      "t": "I miss them.",
+      "m": "them",
+      "zh": "我想念他們。",
+      "id": 7834167
+     },
+     {
+      "t": "What about them?",
+      "m": "them",
+      "zh": "他們呢？",
+      "id": 3920588
+     },
+     {
+      "t": "I ate them.",
+      "m": "them",
+      "zh": "我吃了。",
+      "id": 13237570
+     }
+    ]
+   },
+   "some": {
+    "ss": [
+     {
+      "t": "Buy some apples.",
+      "m": "some",
+      "zh": "買一些蘋果。",
+      "id": 13055116
+     },
+     {
+      "t": "Need some help?",
+      "m": "some",
+      "zh": "你需要幫助嗎？",
+      "id": 12872982
+     },
+     {
+      "t": "Have some more.",
+      "m": "some",
+      "zh": "你該多吃點。",
+      "id": 4755386
+     }
+    ]
+   },
+   "me": {
+    "ss": [
+     {
+      "t": "I know that you still want to be with me.",
+      "m": "me",
+      "zh": "我知道你還是想跟我一起。",
+      "id": 2573654
+     },
+     {
+      "t": "Give me a bell tomorrow at nine.",
+      "m": "me",
+      "zh": "明天九點打電話給我吧。",
+      "id": 10754048
+     },
+     {
+      "t": "Father sometimes took me to his office.",
+      "m": "me",
+      "zh": "我父親有時候會帶我去他的辦公室。",
+      "id": 319246
+     }
+    ]
+   },
+   "people": {
+    "ss": [
+     {
+      "t": "People are people.",
+      "m": "People",
+      "zh": "人是人。",
+      "id": 13712956
+     },
+     {
+      "t": "Are cats people?",
+      "m": "people",
+      "zh": "貓是人嗎？",
+      "id": 13112859
+     },
+     {
+      "t": "They are people.",
+      "m": "people",
+      "zh": "他們是人類。",
+      "id": 11175456
+     }
+    ]
+   },
+   "take": {
+    "ss": [
+     {
+      "t": "Take this money.",
+      "m": "Take",
+      "zh": "把這錢拿上。",
+      "id": 11828464
+     }
+    ]
+   },
+   "out": {
+    "ss": [
+     {
+      "t": "We helped out.",
+      "m": "out",
+      "zh": "我們幫忙了。",
+      "id": 9926617
+     },
+     {
+      "t": "I went out.",
+      "m": "out",
+      "zh": "我出去了。",
+      "id": 8856572
+     },
+     {
+      "t": "He helped out.",
+      "m": "out",
+      "zh": "他幫忙了。",
+      "id": 8476906
+     }
+    ]
+   },
+   "into": {
+    "ss": [
+     {
+      "t": "Get into your car.",
+      "m": "into",
+      "zh": "進你的車裡。",
+      "id": 3636095
+     },
+     {
+      "t": "Tom got into trouble.",
+      "m": "into",
+      "zh": "湯姆遇上麻煩了。",
+      "id": 3405206
+     },
+     {
+      "t": "Look into my eyes.",
+      "m": "into",
+      "zh": "看著我的眼睛。",
+      "id": 456317
+     }
+    ]
+   },
+   "just": {
+    "ss": [
+     {
+      "t": "Just say something!",
+      "m": "Just",
+      "zh": "隨便說點什麼。",
+      "id": 13184560
+     },
+     {
+      "t": "Just do it!",
+      "m": "Just",
+      "zh": "趕緊去做！",
+      "id": 9282141
+     },
+     {
+      "t": "Just get lost.",
+      "m": "Just",
+      "zh": "滾開！",
+      "id": 8013488
+     }
+    ]
+   },
+   "see": {
+    "ss": [
+     {
+      "t": "I see light.",
+      "m": "see",
+      "zh": "我能看到光線。",
+      "id": 14036013
+     },
+     {
+      "t": "I see nothing.",
+      "m": "see",
+      "zh": "我什麼都看不見。",
+      "id": 11836538
+     },
+     {
+      "t": "I cannot see.",
+      "m": "see",
+      "zh": "我什麼都看不見。",
+      "id": 10705238
+     }
+    ]
+   },
+   "him": {
+    "ss": [
+     {
+      "t": "Bring him down.",
+      "m": "him",
+      "zh": "把他叫下來。",
+      "id": 12869403
+     },
+     {
+      "t": "I rang him.",
+      "m": "him",
+      "zh": "我打電話給他。",
+      "id": 11879132
+     },
+     {
+      "t": "Nobody loves him.",
+      "m": "him",
+      "zh": "沒有人愛他。",
+      "id": 11142210
+     }
+    ]
+   },
+   "your": {
+    "ss": [
+     {
+      "t": "In your dreams.",
+      "m": "your",
+      "zh": "你們做夢。",
+      "id": 13246865
+     },
+     {
+      "t": "Park your bike.",
+      "m": "your",
+      "zh": "把你的腳踏車放好。",
+      "id": 10794589
+     },
+     {
+      "t": "Wipe your noses.",
+      "m": "your",
+      "zh": "擦擦妳們的鼻子。",
+      "id": 12547220
+     }
+    ]
+   },
+   "come": {
+    "ss": [
+     {
+      "t": "Is it OK for me to come in now?",
+      "m": "come",
+      "zh": "我現在進來方便麼？",
+      "id": 4014096
+     },
+     {
+      "t": "She would often come late for school.",
+      "m": "come",
+      "zh": "她經常上學遲到。",
+      "id": 312402
+     },
+     {
+      "t": "When can you come to my house?",
+      "m": "come",
+      "zh": "你什麼時候能來我家？",
+      "id": 5190609
+     }
+    ]
+   },
+   "could": {
+    "ss": [
+     {
+      "t": "Tom could help out.",
+      "m": "could",
+      "zh": "湯姆會幫我們。",
+      "id": 12187786
+     },
+     {
+      "t": "Could Tom help out?",
+      "m": "Could",
+      "zh": "湯姆會幫我們嗎？",
+      "id": 12087642
+     },
+     {
+      "t": "I could not sleep.",
+      "m": "could",
+      "zh": "我無法入睡。",
+      "id": 12008026
+     }
+    ]
+   },
+   "now": {
+    "ss": [
+     {
+      "t": "Make it now!",
+      "m": "now",
+      "zh": "現在就做！",
+      "id": 13246859
+     },
+     {
+      "t": "Do it now!",
+      "m": "now",
+      "zh": "現在就做！",
+      "id": 12436924
+     },
+     {
+      "t": "Busy right now.",
+      "m": "now",
+      "zh": "現在忙",
+      "id": 5327626
+     }
+    ]
+   },
+   "than": {
+    "ss": [
+     {
+      "t": "She is stronger than you.",
+      "m": "than",
+      "zh": "她比你強壯。",
+      "id": 12997180
+     },
+     {
+      "t": "She is older than him.",
+      "m": "than",
+      "zh": "她比他大。",
+      "id": 12624644
+     },
+     {
+      "t": "Mary is taller than me.",
+      "m": "than",
+      "zh": "瑪麗比我高。",
+      "id": 12618690
+     }
+    ]
+   },
+   "like": {
+    "ss": [
+     {
+      "t": "We like apples.",
+      "m": "like",
+      "zh": "我們喜歡蘋果。",
+      "id": 13080071
+     },
+     {
+      "t": "I like Algiers.",
+      "m": "like",
+      "zh": "我喜歡阿爾及爾。",
+      "id": 12889589
+     },
+     {
+      "t": "I like Bratislava.",
+      "m": "like",
+      "zh": "我喜歡布拉提斯拉瓦。",
+      "id": 12680786
+     }
+    ]
+   },
+   "other": {
+    "ss": [
+     {
+      "t": "The other students laughed.",
+      "m": "other",
+      "zh": "其他學生都笑了。",
+      "id": 3402129
+     },
+     {
+      "t": "We help each other.",
+      "m": "other",
+      "zh": "我們互相幫忙。",
+      "id": 4950723
+     },
+     {
+      "t": "I made other plans.",
+      "m": "other",
+      "zh": "我另有計劃。",
+      "id": 2380415
+     }
+    ]
+   },
+   "how": {
+    "ss": [
+     {
+      "t": "He knows how to play the piano.",
+      "m": "how",
+      "zh": "他知道如何彈鋼琴。",
+      "id": 292473
+     },
+     {
+      "t": "That shows how little we know of ourselves.",
+      "m": "how",
+      "zh": "這表明我們對自身的認知很少。",
+      "id": 50477
+     },
+     {
+      "t": "How long have you been in Kobe?",
+      "m": "How",
+      "zh": "你在神戶多久了？",
+      "id": 269682
+     }
+    ]
+   },
+   "then": {
+    "ss": [
+     {
+      "t": "We were kids then.",
+      "m": "then",
+      "zh": "我們那時是孩子。",
+      "id": 2273767
+     },
+     {
+      "t": "Okay, and then?",
+      "m": "then",
+      "zh": "是的，然後呢？",
+      "id": 12278428
+     },
+     {
+      "t": "What happened then?",
+      "m": "then",
+      "zh": "然後發生了什麼事？",
+      "id": 816062
+     }
+    ]
+   },
+   "its": {
+    "ss": [
+     {
+      "t": "Its color is red.",
+      "m": "Its",
+      "zh": "它的顏色是紅的。",
+      "id": 42863
+     },
+     {
+      "t": "What gives life its meaning?",
+      "m": "its",
+      "zh": "什麼賦予了人生意義？",
+      "id": 11917877
+     },
+     {
+      "t": "Winter is on its way.",
+      "m": "its",
+      "zh": "冬天來了。",
+      "id": 10630423
+     }
+    ]
+   },
+   "our": {
+    "ss": [
+     {
+      "t": "They're our children.",
+      "m": "our",
+      "zh": "他們是我們的孩子。",
+      "id": 13635678
+     },
+     {
+      "t": "They are our partners.",
+      "m": "our",
+      "zh": "他們是我們的合作夥伴。",
+      "id": 13199901
+     },
+     {
+      "t": "She is our daughter.",
+      "m": "our",
+      "zh": "她是我們的女兒。",
+      "id": 12169841
+     }
+    ]
+   },
+   "two": {
+    "ss": [
+     {
+      "t": "One, two, three!",
+      "m": "two",
+      "zh": "一，二，三！",
+      "id": 12938295
+     },
+     {
+      "t": "We have two cats.",
+      "m": "two",
+      "zh": "我們有兩隻貓。",
+      "id": 13497059
+     },
+     {
+      "t": "You had two apples.",
+      "m": "two",
+      "zh": "你有兩顆蘋果。",
+      "id": 12340104
+     }
+    ]
+   },
+   "more": {
+    "ss": [
+     {
+      "t": "Eat more apples.",
+      "m": "more",
+      "zh": "你多吃蘋果。",
+      "id": 13187582
+     },
+     {
+      "t": "How much more?",
+      "m": "more",
+      "zh": "還要多少？",
+      "id": 8108710
+     },
+     {
+      "t": "Have some more.",
+      "m": "more",
+      "zh": "你該多吃點。",
+      "id": 4755386
+     }
+    ]
+   },
+   "these": {
+    "ss": [
+     {
+      "t": "These apples are small.",
+      "m": "These",
+      "zh": "這些蘋果很小。",
+      "id": 13002465
+     },
+     {
+      "t": "I like these.",
+      "m": "these",
+      "zh": "我喜歡這些東西。",
+      "id": 4500187
+     },
+     {
+      "t": "I found these.",
+      "m": "these",
+      "zh": "我找到了這些。",
+      "id": 2245781
+     }
+    ]
+   },
+   "want": {
+    "ss": [
+     {
+      "t": "I want Dorayaki!",
+      "m": "want",
+      "zh": "我要銅鑼燒！",
+      "id": 12624895
+     },
+     {
+      "t": "I want juice.",
+      "m": "want",
+      "zh": "我想要果汁。",
+      "id": 11885834
+     },
+     {
+      "t": "We want help.",
+      "m": "want",
+      "zh": "我們需要幫助。",
+      "id": 9141505
+     }
+    ]
+   },
+   "way": {
+    "ss": [
+     {
+      "t": "There is a way.",
+      "m": "way",
+      "zh": "有個辦法。",
+      "id": 6615711
+     },
+     {
+      "t": "There's no way.",
+      "m": "way",
+      "zh": "沒有辦法。",
+      "id": 4703037
+     },
+     {
+      "t": "This is way better.",
+      "m": "way",
+      "zh": "這樣好多了。",
+      "id": 2789017
+     }
+    ]
+   },
+   "look": {
+    "ss": [
+     {
+      "t": "Look, something new.",
+      "m": "Look",
+      "zh": "看，有新鮮事。",
+      "id": 12250005
+     },
+     {
+      "t": "Look! A UFO!",
+      "m": "Look",
+      "zh": "看！UFO！",
+      "id": 11118155
+     },
+     {
+      "t": "Look here, boy.",
+      "m": "Look",
+      "zh": "看這裡，小孩。",
+      "id": 10208954
+     }
+    ]
+   },
+   "first": {
+    "ss": [
+     {
+      "t": "You're the first.",
+      "m": "first",
+      "zh": "你是第一。",
+      "id": 2218427
+     },
+     {
+      "t": "Tom came in first.",
+      "m": "first",
+      "zh": "湯姆第一個進來。",
+      "id": 1474735
+     },
+     {
+      "t": "He came first.",
+      "m": "first",
+      "zh": "他是第一個來的。",
+      "id": 2768617
+     }
+    ]
+   },
+   "also": {
+    "ss": [
+     {
+      "t": "This is also right.",
+      "m": "also",
+      "zh": "這也是對的。",
+      "id": 13998121
+     },
+     {
+      "t": "We also like this.",
+      "m": "also",
+      "zh": "我們也喜歡這個。",
+      "id": 12137250
+     },
+     {
+      "t": "Tom also has one.",
+      "m": "also",
+      "zh": "湯姆也有一個。",
+      "id": 8917964
+     }
+    ]
+   },
+   "new": {
+    "ss": [
+     {
+      "t": "I need something new.",
+      "m": "new",
+      "zh": "我要一些新的。",
+      "id": 13263285
+     },
+     {
+      "t": "Visit our new place!",
+      "m": "new",
+      "zh": "來看看我們的新客廳！",
+      "id": 8668741
+     },
+     {
+      "t": "We need new shoes.",
+      "m": "new",
+      "zh": "你們需要新的鞋子。",
+      "id": 7918357
+     }
+    ]
+   },
+   "because": {
+    "ss": [
+     {
+      "t": "We were late because of you.",
+      "m": "because",
+      "zh": "因為你我們才遲了。",
+      "id": 10828584
+     },
+     {
+      "t": "Dan was fired because of Linda.",
+      "m": "because",
+      "zh": "丹因為琳達被炒了魷魚。",
+      "id": 3991428
+     },
+     {
+      "t": "Tom is here because of me.",
+      "m": "because",
+      "zh": "湯姆是因為我才在這裡的。",
+      "id": 3618710
+     }
+    ]
+   },
+   "day": {
+    "ss": [
+     {
+      "t": "We walked all day.",
+      "m": "day",
+      "zh": "我們走了一整天。",
+      "id": 13140223
+     },
+     {
+      "t": "She drove all day.",
+      "m": "day",
+      "zh": "她開了一整天車。",
+      "id": 12948660
+     },
+     {
+      "t": "He worked all day.",
+      "m": "day",
+      "zh": "他工作了一整天。",
+      "id": 12917322
+     }
+    ]
+   }
+  },
+  "A1 Unit 2": {
+   "use": {
+    "ss": [
+     {
+      "t": "Do you use Skype?",
+      "m": "use",
+      "zh": "你使用Skype嗎？",
+      "id": 8297517
+     },
+     {
+      "t": "I use this.",
+      "m": "use",
+      "zh": "我使用這個。",
+      "id": 1356774
+     },
+     {
+      "t": "I use Firefox.",
+      "m": "use",
+      "zh": "我使用火狐瀏覽器。",
+      "id": 430893
+     }
+    ]
+   },
+   "no": {
+    "ss": [
+     {
+      "t": "It seems that no one knew the truth.",
+      "m": "no",
+      "zh": "貌似沒有人知道真相。",
+      "id": 40360
+     },
+     {
+      "t": "There is no telling what will happen in the future.",
+      "m": "no",
+      "zh": "誰也不知道將來會發生甚麼事。",
+      "id": 267501
+     },
+     {
+      "t": "I want to see him no matter what.",
+      "m": "no",
+      "zh": "不管怎樣我必須見他。",
+      "id": 36033
+     }
+    ]
+   },
+   "man": {
+    "ss": [
+     {
+      "t": "The man is big.",
+      "m": "man",
+      "zh": "那個男人很高。",
+      "id": 8962695
+     },
+     {
+      "t": "I love this man.",
+      "m": "man",
+      "zh": "我愛這個男人。",
+      "id": 4728085
+     },
+     {
+      "t": "I love this man!",
+      "m": "man",
+      "zh": "我愛這個男人。",
+      "id": 4667864
+     }
+    ]
+   },
+   "find": {
+    "ss": [
+     {
+      "t": "What did you find?",
+      "m": "find",
+      "zh": "你發現了什麼？",
+      "id": 1839612
+     },
+     {
+      "t": "I could only find two.",
+      "m": "find",
+      "zh": "我只能找到兩個。",
+      "id": 13199283
+     },
+     {
+      "t": "We didn't find you.",
+      "m": "find",
+      "zh": "我們沒找到你。",
+      "id": 11361830
+     }
+    ]
+   },
+   "here": {
+    "ss": [
+     {
+      "t": "You live here.",
+      "m": "here",
+      "zh": "你們住這裡。",
+      "id": 12137259
+     },
+     {
+      "t": "Is Mum here?",
+      "m": "here",
+      "zh": "媽媽在這裡嗎？",
+      "id": 11126605
+     },
+     {
+      "t": "Look here, boy.",
+      "m": "here",
+      "zh": "看這裡，小孩。",
+      "id": 10208954
+     }
+    ]
+   },
+   "thing": {
+    "ss": [
+     {
+      "t": "So this is the thing.",
+      "m": "thing",
+      "zh": "這事嘛",
+      "id": 13111742
+     },
+     {
+      "t": "I hardly saw a thing.",
+      "m": "thing",
+      "zh": "我幾乎什麼也沒看到。",
+      "id": 12526811
+     },
+     {
+      "t": "This is a bad thing.",
+      "m": "thing",
+      "zh": "這是件壞事。",
+      "id": 5756577
+     }
+    ]
+   },
+   "give": {
+    "ss": [
+     {
+      "t": "Give me water!",
+      "m": "Give",
+      "zh": "給我水！",
+      "id": 7347590
+     },
+     {
+      "t": "Give me everything.",
+      "m": "Give",
+      "zh": "都給我。",
+      "id": 6113980
+     },
+     {
+      "t": "They give nothing.",
+      "m": "give",
+      "zh": "他們什麼都不給。",
+      "id": 1179117
+     }
+    ]
+   },
+   "many": {
+    "ss": [
+     {
+      "t": "We have many goals.",
+      "m": "many",
+      "zh": "我們有許多目標。",
+      "id": 4493716
+     },
+     {
+      "t": "This is how many?",
+      "m": "many",
+      "zh": "多少個了？",
+      "id": 11291141
+     },
+     {
+      "t": "I bought many notebooks.",
+      "m": "many",
+      "zh": "我買了很多筆記本。",
+      "id": 10018143
+     }
+    ]
+   },
+   "well": {
+    "ss": [
+     {
+      "t": "I slept well.",
+      "m": "well",
+      "zh": "我睡得很好。",
+      "id": 10107306
+     },
+     {
+      "t": "He swims well.",
+      "m": "well",
+      "zh": "他遊得很好。",
+      "id": 8477098
+     },
+     {
+      "t": "Sleep well, Timmy.",
+      "m": "well",
+      "zh": "睡好，迪米。",
+      "id": 4402239
+     }
+    ]
+   },
+   "only": {
+    "ss": [
+     {
+      "t": "We only need water.",
+      "m": "only",
+      "zh": "我們需要的只有水。",
+      "id": 9471997
+     },
+     {
+      "t": "Tom drinks only coffee.",
+      "m": "only",
+      "zh": "湯姆只喝咖啡。",
+      "id": 8399997
+     },
+     {
+      "t": "He could only watch.",
+      "m": "only",
+      "zh": "他只能看著。",
+      "id": 8253660
+     }
+    ]
+   },
+   "those": {
+    "ss": [
+     {
+      "t": "Those are your friends.",
+      "m": "Those",
+      "zh": "那些是你的朋友。",
+      "id": 13980373
+     },
+     {
+      "t": "Those apples are small.",
+      "m": "Those",
+      "zh": "那些蘋果很小。",
+      "id": 13002466
+     },
+     {
+      "t": "Who took those apples?",
+      "m": "those",
+      "zh": "誰拿走了那些蘋果？",
+      "id": 11180615
+     }
+    ]
+   },
+   "tell": {
+    "ss": [
+     {
+      "t": "Tell me later.",
+      "m": "Tell",
+      "zh": "一會兒再告訴我。",
+      "id": 6953260
+     },
+     {
+      "t": "Tell us everything!",
+      "m": "Tell",
+      "zh": "告訴我們一切。",
+      "id": 6713631
+     },
+     {
+      "t": "Tell her everything.",
+      "m": "Tell",
+      "zh": "把一切都告訴她。",
+      "id": 3908172
+     }
+    ]
+   },
+   "very": {
+    "ss": [
+     {
+      "t": "It is very fun.",
+      "m": "very",
+      "zh": "非常好玩。",
+      "id": 13537669
+     },
+     {
+      "t": "Ken is very happy.",
+      "m": "very",
+      "zh": "肯很快樂。",
+      "id": 13987337
+     },
+     {
+      "t": "She spoke very loudly.",
+      "m": "very",
+      "zh": "他說得很大聲。",
+      "id": 13849186
+     }
+    ]
+   },
+   "even": {
+    "ss": [
+     {
+      "t": "Even cake shops are closed!",
+      "m": "Even",
+      "zh": "連糕餅店都休息！",
+      "id": 9401895
+     },
+     {
+      "t": "Oh, that's even better.",
+      "m": "even",
+      "zh": "啊，這更好。",
+      "id": 8859155
+     },
+     {
+      "t": "Even walls have ears.",
+      "m": "Even",
+      "zh": "牆上有耳。",
+      "id": 6915530
+     }
+    ]
+   },
+   "back": {
+    "ss": [
+     {
+      "t": "He is back.",
+      "m": "back",
+      "zh": "他回來了。",
+      "id": 7766811
+     },
+     {
+      "t": "He came back.",
+      "m": "back",
+      "zh": "他回來了。",
+      "id": 7766810
+     },
+     {
+      "t": "Wait. Come back.",
+      "m": "back",
+      "zh": "等等。回來。",
+      "id": 5817671
+     }
+    ]
+   },
+   "any": {
+    "ss": [
+     {
+      "t": "Were there any problems?",
+      "m": "any",
+      "zh": "你有沒有遇到任何問題？",
+      "id": 3738511
+     },
+     {
+      "t": "Press any key.",
+      "m": "any",
+      "zh": "按任何鍵。",
+      "id": 9164876
+     },
+     {
+      "t": "Is there any problem?",
+      "m": "any",
+      "zh": "有問題嗎？",
+      "id": 8221806
+     }
+    ]
+   },
+   "good": {
+    "ss": [
+     {
+      "t": "Saturday is a good day for writing.",
+      "m": "good",
+      "zh": "星期六是個寫作的好日子。",
+      "id": 10465106
+     },
+     {
+      "t": "I thought that it was very good.",
+      "m": "good",
+      "zh": "我覺得它真的很不錯。",
+      "id": 7174593
+     },
+     {
+      "t": "I have a feeling you'll be a very good lawyer.",
+      "m": "good",
+      "zh": "我感覺你將來會成為一名優秀的律師。",
+      "id": 9592
+     }
+    ]
+   },
+   "woman": {
+    "ss": [
+     {
+      "t": "Where is that woman?",
+      "m": "woman",
+      "zh": "那個女人在哪裡？",
+      "id": 9414941
+     },
+     {
+      "t": "Who's that woman?",
+      "m": "woman",
+      "zh": "那個女人是誰？",
+      "id": 6440582
+     },
+     {
+      "t": "She's a woman.",
+      "m": "woman",
+      "zh": "她是個女人。",
+      "id": 3127556
+     }
+    ]
+   },
+   "through": {
+    "ss": [
+     {
+      "t": "Am I coming through okay?",
+      "m": "through",
+      "zh": "你聽得見嗎？",
+      "id": 13520716
+     },
+     {
+      "t": "She's been through enough.",
+      "m": "through",
+      "zh": "她經受得夠多了。",
+      "id": 11291102
+     },
+     {
+      "t": "We ran through the park.",
+      "m": "through",
+      "zh": "我們在公園裡跑了步。",
+      "id": 10187473
+     }
+    ]
+   },
+   "us": {
+    "ss": [
+     {
+      "t": "Come with us!",
+      "m": "us",
+      "zh": "和我們一起來吧。",
+      "id": 8883721
+     },
+     {
+      "t": "Buy us it.",
+      "m": "us",
+      "zh": "給我們買.",
+      "id": 8393090
+     },
+     {
+      "t": "Tell us everything!",
+      "m": "us",
+      "zh": "告訴我們一切。",
+      "id": 6713631
+     }
+    ]
+   },
+   "life": {
+    "ss": [
+     {
+      "t": "Life is difficult.",
+      "m": "Life",
+      "zh": "生活是難的。",
+      "id": 2603171
+     },
+     {
+      "t": "Life is tough.",
+      "m": "Life",
+      "zh": "生活是難的。",
+      "id": 2549695
+     },
+     {
+      "t": "How is life?",
+      "m": "life",
+      "zh": "生活怎麼樣？",
+      "id": 2205973
+     }
+    ]
+   },
+   "child": {
+    "ss": [
+     {
+      "t": "That child started speaking early.",
+      "m": "child",
+      "zh": "那個孩子很早就會說話了。",
+      "id": 13902223
+     },
+     {
+      "t": "Every child likes an apple.",
+      "m": "child",
+      "zh": "每個孩子都喜歡蘋果。",
+      "id": 13235545
+     },
+     {
+      "t": "My child is sick.",
+      "m": "child",
+      "zh": "我的孩子病了。",
+      "id": 10696154
+     }
+    ]
+   },
+   "work": {
+    "ss": [
+     {
+      "t": "Finish your work.",
+      "m": "work",
+      "zh": "完成你的工作。",
+      "id": 5323507
+     },
+     {
+      "t": "How is work?",
+      "m": "work",
+      "zh": "工作怎麼樣？",
+      "id": 5107360
+     },
+     {
+      "t": "I work nights.",
+      "m": "work",
+      "zh": "我在晚上工作。",
+      "id": 3888109
+     }
+    ]
+   },
+   "down": {
+    "ss": [
+     {
+      "t": "Bring him down.",
+      "m": "down",
+      "zh": "把他叫下來。",
+      "id": 12869403
+     },
+     {
+      "t": "Write everything down.",
+      "m": "down",
+      "zh": "把所有東西寫下來。",
+      "id": 4503013
+     },
+     {
+      "t": "Tom sat down.",
+      "m": "down",
+      "zh": "湯姆坐下了。",
+      "id": 2237642
+     }
+    ]
+   },
+   "may": {
+    "ss": [
+     {
+      "t": "May I help?",
+      "m": "May",
+      "zh": "我能幫忙嗎？",
+      "id": 8908588
+     },
+     {
+      "t": "Tom may change.",
+      "m": "may",
+      "zh": "湯姆能改變。",
+      "id": 4394833
+     },
+     {
+      "t": "May I begin?",
+      "m": "May",
+      "zh": "我可以開始了嗎？",
+      "id": 2762766
+     }
+    ]
+   },
+   "after": {
+    "ss": [
+     {
+      "t": "What happens after death?",
+      "m": "after",
+      "zh": "人死了之後會怎麼樣？",
+      "id": 11464158
+     },
+     {
+      "t": "After spring comes summer.",
+      "m": "After",
+      "zh": "春去夏來。",
+      "id": 10736210
+     },
+     {
+      "t": "Life begins after coffee.",
+      "m": "after",
+      "zh": "人生從一杯咖啡開始。",
+      "id": 9803931
+     }
+    ]
+   },
+   "should": {
+    "ss": [
+     {
+      "t": "I should hurry!",
+      "m": "should",
+      "zh": "我應該快點！",
+      "id": 12656456
+     },
+     {
+      "t": "You should listen.",
+      "m": "should",
+      "zh": "你應該聽聽。",
+      "id": 12534046
+     },
+     {
+      "t": "They should come.",
+      "m": "should",
+      "zh": "他們應該來。",
+      "id": 12382183
+     }
+    ]
+   },
+   "call": {
+    "ss": [
+     {
+      "t": "Call me Jack.",
+      "m": "Call",
+      "zh": "我叫做Jack。",
+      "id": 13246903
+     },
+     {
+      "t": "Make a call.",
+      "m": "call",
+      "zh": "打電話。",
+      "id": 11811159
+     },
+     {
+      "t": "Call a taxi.",
+      "m": "Call",
+      "zh": "叫一輛計程車。",
+      "id": 9770427
+     }
+    ]
+   },
+   "world": {
+    "ss": [
+     {
+      "t": "The world is beautiful.",
+      "m": "world",
+      "zh": "世界真美好。",
+      "id": 8898987
+     },
+     {
+      "t": "The world is small.",
+      "m": "world",
+      "zh": "世界很小。",
+      "id": 1467703
+     },
+     {
+      "t": "God created the world.",
+      "m": "world",
+      "zh": "上帝創造了世界。",
+      "id": 269624
+     }
+    ]
+   },
+   "over": {
+    "ss": [
+     {
+      "t": "It is over.",
+      "m": "over",
+      "zh": "已經結束了。",
+      "id": 11206166
+     },
+     {
+      "t": "March is over.",
+      "m": "over",
+      "zh": "三月已過。",
+      "id": 13187504
+     },
+     {
+      "t": "Winter is over.",
+      "m": "over",
+      "zh": "冬天過了。",
+      "id": 9195428
+     }
+    ]
+   },
+   "school": {
+    "ss": [
+     {
+      "t": "Where's the school?",
+      "m": "school",
+      "zh": "學校在哪兒？",
+      "id": 13320607
+     },
+     {
+      "t": "You are at school.",
+      "m": "school",
+      "zh": "你在學校。",
+      "id": 11004611
+     },
+     {
+      "t": "Tom attends state school.",
+      "m": "school",
+      "zh": "湯姆上公立學校。",
+      "id": 10643365
+     }
+    ]
+   },
+   "still": {
+    "ss": [
+     {
+      "t": "You're still eating.",
+      "m": "still",
+      "zh": "你還在吃。",
+      "id": 12912458
+     },
+     {
+      "t": "Who's still here?",
+      "m": "still",
+      "zh": "誰還在這裡？",
+      "id": 12543330
+     },
+     {
+      "t": "Who is still here?",
+      "m": "still",
+      "zh": "誰還在這裡？",
+      "id": 12543329
+     }
+    ]
+   },
+   "try": {
+    "ss": [
+     {
+      "t": "I can try.",
+      "m": "try",
+      "zh": "我可以試試。",
+      "id": 11430702
+     },
+     {
+      "t": "Try this game.",
+      "m": "Try",
+      "zh": "試玩此遊戲。",
+      "id": 10808250
+     },
+     {
+      "t": "Can I try?",
+      "m": "try",
+      "zh": "我能試試嗎？",
+      "id": 6584682
+     }
+    ]
+   },
+   "ask": {
+    "ss": [
+     {
+      "t": "What did they ask?",
+      "m": "ask",
+      "zh": "他們問了什麼？",
+      "id": 12766449
+     },
+     {
+      "t": "What did you ask?",
+      "m": "ask",
+      "zh": "你問了什麼？",
+      "id": 9163424
+     },
+     {
+      "t": "I often ask questions.",
+      "m": "ask",
+      "zh": "我總是問問題。",
+      "id": 8837772
+     }
+    ]
+   },
+   "need": {
+    "ss": [
+     {
+      "t": "Need some help?",
+      "m": "Need",
+      "zh": "你需要幫助嗎？",
+      "id": 12872982
+     },
+     {
+      "t": "They need glasses.",
+      "m": "need",
+      "zh": "他們需要眼鏡。",
+      "id": 8233629
+     },
+     {
+      "t": "Cats need love.",
+      "m": "need",
+      "zh": "貓需要愛。",
+      "id": 5966515
+     }
+    ]
+   },
+   "too": {
+    "ss": [
+     {
+      "t": "Flying fish exist, too.",
+      "m": "too",
+      "zh": "飛魚也存在著。",
+      "id": 13748785
+     },
+     {
+      "t": "I like apples, too.",
+      "m": "too",
+      "zh": "我也喜歡蘋果。",
+      "id": 11509288
+     },
+     {
+      "t": "I cried, too.",
+      "m": "too",
+      "zh": "我也哭了。",
+      "id": 4497098
+     }
+    ]
+   },
+   "feel": {
+    "ss": [
+     {
+      "t": "I feel poorly.",
+      "m": "feel",
+      "zh": "我覺得有點兒不舒服。",
+      "id": 10689177
+     },
+     {
+      "t": "I feel thirsty.",
+      "m": "feel",
+      "zh": "我渴了。",
+      "id": 5294551
+     },
+     {
+      "t": "I feel sad.",
+      "m": "feel",
+      "zh": "我很難過。",
+      "id": 5263414
+     }
+    ]
+   },
+   "three": {
+    "ss": [
+     {
+      "t": "She has three sons.",
+      "m": "three",
+      "zh": "他有三個兒子。",
+      "id": 11542666
+     },
+     {
+      "t": "It's almost three.",
+      "m": "three",
+      "zh": "快三時了。",
+      "id": 9468512
+     },
+     {
+      "t": "Tom took three cookies.",
+      "m": "three",
+      "zh": "湯姆拿了三塊餅乾。",
+      "id": 9399654
+     }
+    ]
+   },
+   "state": {
+    "ss": [
+     {
+      "t": "I am the state.",
+      "m": "state",
+      "zh": "朕即國家。",
+      "id": 630327
+     },
+     {
+      "t": "I am the State!",
+      "m": "State",
+      "zh": "朕即國家！",
+      "id": 435669
+     },
+     {
+      "t": "Tom goes to a state school.",
+      "m": "state",
+      "zh": "湯姆上公立學校。",
+      "id": 10643366
+     }
+    ]
+   },
+   "never": {
+    "ss": [
+     {
+      "t": "Tom never strikes out.",
+      "m": "never",
+      "zh": "湯姆從不失手。",
+      "id": 12494941
+     },
+     {
+      "t": "He never sleeps.",
+      "m": "never",
+      "zh": "他從不睡覺。",
+      "id": 8479402
+     },
+     {
+      "t": "I never sleep.",
+      "m": "never",
+      "zh": "我從不睡覺。",
+      "id": 2764179
+     }
+    ]
+   }
+  },
+  "A1 Unit 3": {
+   "become": {
+    "ss": [
+     {
+      "t": "Did your dream become reality?",
+      "m": "become",
+      "zh": "你的夢想實現了嗎？",
+      "id": 12136676
+     },
+     {
+      "t": "Why did he become angry?",
+      "m": "become",
+      "zh": "他為什麼生氣了呢？",
+      "id": 9052249
+     },
+     {
+      "t": "I've become thin.",
+      "m": "become",
+      "zh": "我變苗條了。",
+      "id": 11051452
+     }
+    ]
+   },
+   "between": {
+    "ss": [
+     {
+      "t": "Share out the sweets between you.",
+      "m": "between",
+      "zh": "你們分了這些糖果吧。",
+      "id": 10490926
+     },
+     {
+      "t": "What happened between you and Tom?",
+      "m": "between",
+      "zh": "你和湯姆之間發生了什麼？",
+      "id": 2457449
+     },
+     {
+      "t": "There is no connection between them.",
+      "m": "between",
+      "zh": "兩者沒有關聯。",
+      "id": 325630
+     }
+    ]
+   },
+   "high": {
+    "ss": [
+     {
+      "t": "The tree is very high.",
+      "m": "high",
+      "zh": "這棵樹很高。",
+      "id": 8858071
+     },
+     {
+      "t": "The bird flew high.",
+      "m": "high",
+      "zh": "鳥兒曾飛得很高。",
+      "id": 7544991
+     },
+     {
+      "t": "It's very high.",
+      "m": "high",
+      "zh": "他非常高大。",
+      "id": 3301488
+     }
+    ]
+   },
+   "something": {
+    "ss": [
+     {
+      "t": "Just say something!",
+      "m": "something",
+      "zh": "隨便說點什麼。",
+      "id": 13184560
+     },
+     {
+      "t": "Look, something new.",
+      "m": "something",
+      "zh": "看，有新鮮事。",
+      "id": 12250005
+     },
+     {
+      "t": "Looking for something?",
+      "m": "something",
+      "zh": "你在找什麼嗎？",
+      "id": 6815279
+     }
+    ]
+   },
+   "really": {
+    "ss": [
+     {
+      "t": "German is really difficult.",
+      "m": "really",
+      "zh": "德語真的很難。",
+      "id": 13647513
+     },
+     {
+      "t": "She really likes cats.",
+      "m": "really",
+      "zh": "她很喜歡貓。",
+      "id": 13408203
+     },
+     {
+      "t": "Who really knows?",
+      "m": "really",
+      "zh": "那有誰會知道呢？",
+      "id": 4500500
+     }
+    ]
+   },
+   "most": {
+    "ss": [
+     {
+      "t": "He hates maths the most.",
+      "m": "most",
+      "zh": "她最討厭數學。",
+      "id": 7772862
+     },
+     {
+      "t": "Tom likes me the most.",
+      "m": "most",
+      "zh": "Tom 最喜歡我。",
+      "id": 4872229
+     },
+     {
+      "t": "Most Americans like hamburgers.",
+      "m": "Most",
+      "zh": "大多數的美國人喜歡漢堡。",
+      "id": 41207
+     }
+    ]
+   },
+   "another": {
+    "ss": [
+     {
+      "t": "Get another chair!",
+      "m": "another",
+      "zh": "再拿把椅子！",
+      "id": 14029044
+     },
+     {
+      "t": "Maybe another time.",
+      "m": "another",
+      "zh": "也許下一次吧。",
+      "id": 12968371
+     },
+     {
+      "t": "Get another chair.",
+      "m": "another",
+      "zh": "再拿一把椅子。",
+      "id": 9116254
+     }
+    ]
+   },
+   "much": {
+    "ss": [
+     {
+      "t": "Mine is much more.",
+      "m": "much",
+      "zh": "我要多很多。",
+      "id": 13976294
+     },
+     {
+      "t": "Nothing much has changed.",
+      "m": "much",
+      "zh": "沒有多少改變。",
+      "id": 3825794
+     },
+     {
+      "t": "This is much better.",
+      "m": "much",
+      "zh": "這樣好多了。",
+      "id": 3419937
+     }
+    ]
+   },
+   "family": {
+    "ss": [
+     {
+      "t": "We're a family.",
+      "m": "family",
+      "zh": "我們是個家庭。",
+      "id": 2240835
+     },
+     {
+      "t": "We are a family.",
+      "m": "family",
+      "zh": "我們是個家庭。",
+      "id": 2210268
+     },
+     {
+      "t": "I like your family.",
+      "m": "family",
+      "zh": "我喜歡你的家庭。",
+      "id": 1867469
+     }
+    ]
+   },
+   "own": {
+    "ss": [
+     {
+      "t": "Start your own YouTube channel.",
+      "m": "own",
+      "zh": "開始你自己的 YouTube 頻道。",
+      "id": 10854166
+     },
+     {
+      "t": "I own a horse.",
+      "m": "own",
+      "zh": "我擁有一匹馬。",
+      "id": 810963
+     },
+     {
+      "t": "Please bring your own food.",
+      "m": "own",
+      "zh": "請自帶食物。",
+      "id": 10275235
+     }
+    ]
+   },
+   "leave": {
+    "ss": [
+     {
+      "t": "I cannot leave.",
+      "m": "leave",
+      "zh": "我不能走。",
+      "id": 6157626
+     },
+     {
+      "t": "Let her leave.",
+      "m": "leave",
+      "zh": "讓她走。",
+      "id": 3913182
+     },
+     {
+      "t": "You should leave.",
+      "m": "leave",
+      "zh": "你應該去。",
+      "id": 2255217
+     }
+    ]
+   },
+   "put": {
+    "ss": [
+     {
+      "t": "Put your bike away.",
+      "m": "Put",
+      "zh": "把你的腳踏車放好。",
+      "id": 10794591
+     },
+     {
+      "t": "Put your bike down.",
+      "m": "Put",
+      "zh": "把你的腳踏車放好。",
+      "id": 10794588
+     },
+     {
+      "t": "Put your bike up.",
+      "m": "Put",
+      "zh": "把你的腳踏車放好。",
+      "id": 10794587
+     }
+    ]
+   },
+   "old": {
+    "ss": [
+     {
+      "t": "She was very old.",
+      "m": "old",
+      "zh": "她非常老。",
+      "id": 7756594
+     },
+     {
+      "t": "I am not old.",
+      "m": "old",
+      "zh": "我不老。",
+      "id": 7327796
+     },
+     {
+      "t": "Sami is very old.",
+      "m": "old",
+      "zh": "薩米很老了。",
+      "id": 7265929
+     }
+    ]
+   },
+   "while": {
+    "ss": [
+     {
+      "t": "I stayed for a while.",
+      "m": "while",
+      "zh": "我呆了一會兒。",
+      "id": 8397994
+     },
+     {
+      "t": "Stay for a while.",
+      "m": "while",
+      "zh": "再坐一會兒吧。",
+      "id": 379611
+     },
+     {
+      "t": "It has been a while.",
+      "m": "while",
+      "zh": "好久不見了。",
+      "id": 12170598
+     }
+    ]
+   },
+   "mean": {
+    "ss": [
+     {
+      "t": "What's that mean?",
+      "m": "mean",
+      "zh": "這是什麼意思？",
+      "id": 9713918
+     },
+     {
+      "t": "What does that mean?",
+      "m": "mean",
+      "zh": "這是甚麼意思？",
+      "id": 954533
+     },
+     {
+      "t": "What could he mean?",
+      "m": "mean",
+      "zh": "他什麼意思？",
+      "id": 914033
+     }
+    ]
+   },
+   "keep": {
+    "ss": [
+     {
+      "t": "Keep your cool.",
+      "m": "Keep",
+      "zh": "保持冷靜。",
+      "id": 2249509
+     },
+     {
+      "t": "Keep at it!",
+      "m": "Keep",
+      "zh": "加油！",
+      "id": 3985977
+     },
+     {
+      "t": "Keep on working.",
+      "m": "Keep",
+      "zh": "繼續工作！",
+      "id": 3507575
+     }
+    ]
+   },
+   "student": {
+    "ss": [
+     {
+      "t": "You're a student.",
+      "m": "student",
+      "zh": "你是學生。",
+      "id": 10048125
+     },
+     {
+      "t": "Bring your student ID.",
+      "m": "student",
+      "zh": "帶上你的學生卡。",
+      "id": 1435670
+     },
+     {
+      "t": "You are a student.",
+      "m": "student",
+      "zh": "你是學生。",
+      "id": 1163562
+     }
+    ]
+   },
+   "why": {
+    "ss": [
+     {
+      "t": "Why learn French?",
+      "m": "Why",
+      "zh": "為什麼要學法語？",
+      "id": 7989483
+     },
+     {
+      "t": "Why is that?",
+      "m": "Why",
+      "zh": "為什麼？",
+      "id": 3636463
+     },
+     {
+      "t": "Why is this?",
+      "m": "Why",
+      "zh": "為什麼呢？",
+      "id": 2692855
+     }
+    ]
+   },
+   "let": {
+    "ss": [
+     {
+      "t": "Let me die!",
+      "m": "Let",
+      "zh": "讓我去死。",
+      "id": 9800738
+     },
+     {
+      "t": "Let me think!",
+      "m": "Let",
+      "zh": "讓我想一想。",
+      "id": 9171235
+     },
+     {
+      "t": "Let me in!",
+      "m": "Let",
+      "zh": "讓我進去。",
+      "id": 8229162
+     }
+    ]
+   },
+   "great": {
+    "ss": [
+     {
+      "t": "This shirt looks great.",
+      "m": "great",
+      "zh": "這件衣服很好看的。",
+      "id": 12090934
+     },
+     {
+      "t": "What a great shot!",
+      "m": "great",
+      "zh": "精彩的一擊！",
+      "id": 4502096
+     },
+     {
+      "t": "We got along great.",
+      "m": "great",
+      "zh": "我們相處得很好。",
+      "id": 3313052
+     }
+    ]
+   },
+   "same": {
+    "ss": [
+     {
+      "t": "We like the same things.",
+      "m": "same",
+      "zh": "我們喜歡同樣的東西。",
+      "id": 5965043
+     },
+     {
+      "t": "They have the same name.",
+      "m": "same",
+      "zh": "他們的名字一樣。",
+      "id": 13862413
+     },
+     {
+      "t": "I was feeling the same.",
+      "m": "same",
+      "zh": "我也有一樣的感覺。",
+      "id": 4980521
+     }
+    ]
+   },
+   "big": {
+    "ss": [
+     {
+      "t": "The organization is big.",
+      "m": "big",
+      "zh": "組織很大。",
+      "id": 13237772
+     },
+     {
+      "t": "The elephant is big.",
+      "m": "big",
+      "zh": "大象很大。",
+      "id": 11553991
+     },
+     {
+      "t": "This house is big.",
+      "m": "big",
+      "zh": "那棟房子很大。",
+      "id": 10555331
+     }
+    ]
+   },
+   "group": {
+    "ss": [
+     {
+      "t": "He has taught a group of Hindustani boys.",
+      "m": "group",
+      "zh": "他教過一群印度男生。",
+      "id": 9415349
+     },
+     {
+      "t": "The group of people came along with us.",
+      "m": "group",
+      "zh": "那幫人也和我們一起來了。",
+      "id": 50526
+     },
+     {
+      "t": "He taught a group of Indian boys.",
+      "m": "group",
+      "zh": "他教過一群印度男生。",
+      "id": 289316
+     }
+    ]
+   },
+   "begin": {
+    "ss": [
+     {
+      "t": "Lessons begin at ten.",
+      "m": "begin",
+      "zh": "十點開始上課。",
+      "id": 10540242
+     },
+     {
+      "t": "When did you begin?",
+      "m": "begin",
+      "zh": "您何時開始的？",
+      "id": 8453118
+     },
+     {
+      "t": "Who wants to begin?",
+      "m": "begin",
+      "zh": "誰想開始？",
+      "id": 2857927
+     }
+    ]
+   },
+   "seem": {
+    "ss": [
+     {
+      "t": "That doesn't seem enough.",
+      "m": "seem",
+      "zh": "這看來不夠。",
+      "id": 9963386
+     },
+     {
+      "t": "You don't seem scared.",
+      "m": "seem",
+      "zh": "你不好象很害怕的。",
+      "id": 8838535
+     },
+     {
+      "t": "You seem to be tired.",
+      "m": "seem",
+      "zh": "你看起來很累",
+      "id": 5916940
+     }
+    ]
+   },
+   "country": {
+    "ss": [
+     {
+      "t": "Taiwan is my favorite country.",
+      "m": "country",
+      "zh": "臺灣是我最愛的國家。",
+      "id": 13247807
+     },
+     {
+      "t": "Taiwan is a country.",
+      "m": "country",
+      "zh": "臺灣是一個國家。",
+      "id": 6620655
+     },
+     {
+      "t": "Everyone loves his country.",
+      "m": "country",
+      "zh": "每個人都愛自己的國家。",
+      "id": 276478
+     }
+    ]
+   },
+   "help": {
+    "ss": [
+     {
+      "t": "Taiwan can help.",
+      "m": "help",
+      "zh": "臺灣能幫助。",
+      "id": 13247900
+     },
+     {
+      "t": "Need some help?",
+      "m": "help",
+      "zh": "你需要幫助嗎？",
+      "id": 12872982
+     },
+     {
+      "t": "We want help.",
+      "m": "help",
+      "zh": "我們需要幫助。",
+      "id": 9141505
+     }
+    ]
+   },
+   "talk": {
+    "ss": [
+     {
+      "t": "They talk about music.",
+      "m": "talk",
+      "zh": "他們在談音樂。",
+      "id": 12739634
+     },
+     {
+      "t": "She doesn't talk.",
+      "m": "talk",
+      "zh": "她不說話。",
+      "id": 11510492
+     },
+     {
+      "t": "Vegetables can't talk.",
+      "m": "talk",
+      "zh": "蔬菜不能說話。",
+      "id": 10744146
+     }
+    ]
+   },
+   "where": {
+    "ss": [
+     {
+      "t": "Where is Zhejiang?",
+      "m": "Where",
+      "zh": "浙江在哪裡？",
+      "id": 13953751
+     },
+     {
+      "t": "Where is dad?",
+      "m": "Where",
+      "zh": "爸爸在哪裡？",
+      "id": 6140593
+     },
+     {
+      "t": "Where is spring?",
+      "m": "Where",
+      "zh": "春天在哪裡？",
+      "id": 2350867
+     }
+    ]
+   },
+   "turn": {
+    "ss": [
+     {
+      "t": "Turn right, please.",
+      "m": "Turn",
+      "zh": "請向右轉。",
+      "id": 12823433
+     },
+     {
+      "t": "Please turn right.",
+      "m": "turn",
+      "zh": "請向右轉。",
+      "id": 2355815
+     }
+    ]
+   },
+   "problem": {
+    "ss": [
+     {
+      "t": "Where's the problem?",
+      "m": "problem",
+      "zh": "哪裡有問題?",
+      "id": 12402802
+     },
+     {
+      "t": "We are the problem.",
+      "m": "problem",
+      "zh": "我們就是問題所在。",
+      "id": 10587074
+     },
+     {
+      "t": "Is there any problem?",
+      "m": "problem",
+      "zh": "有問題嗎？",
+      "id": 8221806
+     }
+    ]
+   },
+   "every": {
+    "ss": [
+     {
+      "t": "She bathes every morning.",
+      "m": "every",
+      "zh": "她每天早上都洗澡。",
+      "id": 13816625
+     },
+     {
+      "t": "Every bedroom is clean.",
+      "m": "Every",
+      "zh": "哪間臥室都乾淨。",
+      "id": 13558954
+     },
+     {
+      "t": "Every beginning is difficult.",
+      "m": "Every",
+      "zh": "萬事開頭難。",
+      "id": 12900348
+     }
+    ]
+   },
+   "start": {
+    "ss": [
+     {
+      "t": "Classes start in April.",
+      "m": "start",
+      "zh": "課程於四月開始。",
+      "id": 12287043
+     },
+     {
+      "t": "When did this start?",
+      "m": "start",
+      "zh": "這件事什麼時候開始的？",
+      "id": 10337099
+     },
+     {
+      "t": "Who wants to start?",
+      "m": "start",
+      "zh": "誰想開始？",
+      "id": 8511538
+     }
+    ]
+   },
+   "hand": {
+    "ss": [
+     {
+      "t": "I hurt my hand.",
+      "m": "hand",
+      "zh": "我手受傷了。",
+      "id": 12089330
+     },
+     {
+      "t": "Tom waved his hand.",
+      "m": "hand",
+      "zh": "湯姆揮手了。",
+      "id": 6663180
+     },
+     {
+      "t": "My hand was burned.",
+      "m": "hand",
+      "zh": "我的手燒傷了。",
+      "id": 5085486
+     }
+    ]
+   },
+   "might": {
+    "ss": [
+     {
+      "t": "I might die tomorrow.",
+      "m": "might",
+      "zh": "我可能明天就會死了。",
+      "id": 7538429
+     },
+     {
+      "t": "He might not come.",
+      "m": "might",
+      "zh": "他可能不來了。",
+      "id": 6691595
+     },
+     {
+      "t": "It might snow tomorrow.",
+      "m": "might",
+      "zh": "明天可能會下雪。",
+      "id": 6440233
+     }
+    ]
+   },
+   "american": {
+    "ss": [
+     {
+      "t": "Are you guys American?",
+      "m": "American",
+      "zh": "你們是美國人嗎？",
+      "id": 9285230
+     },
+     {
+      "t": "I'm an American.",
+      "m": "American",
+      "zh": "我是一位美國人。",
+      "id": 8170459
+     },
+     {
+      "t": "Are you an American?",
+      "m": "American",
+      "zh": "你是美國人嗎？",
+      "id": 3767559
+     }
+    ]
+   },
+   "show": {
+    "ss": [
+     {
+      "t": "Show it to me.",
+      "m": "Show",
+      "zh": "給我看下它吧。",
+      "id": 1356990
+     },
+     {
+      "t": "Show them to me.",
+      "m": "Show",
+      "zh": "給我看下它吧。",
+      "id": 1356988
+     },
+     {
+      "t": "Oh! Show me, please.",
+      "m": "Show",
+      "zh": "哦！請你給我看看。",
+      "id": 473810
+     }
+    ]
+   },
+   "part": {
+    "ss": [
+     {
+      "t": "Taiwan isn't part of China.",
+      "m": "part",
+      "zh": "臺灣不是中國的一部分。",
+      "id": 2244120
+     },
+     {
+      "t": "That's my favorite part.",
+      "m": "part",
+      "zh": "那是我最喜歡的部分。",
+      "id": 3728723
+     },
+     {
+      "t": "My grandfather was part Indian.",
+      "m": "part",
+      "zh": "我祖父有部分印度血統。",
+      "id": 251336
+     }
+    ]
+   },
+   "against": {
+    "ss": [
+     {
+      "t": "I am against political reform.",
+      "m": "against",
+      "zh": "我反對政治改革。",
+      "id": 7784664
+     },
+     {
+      "t": "We're against war.",
+      "m": "against",
+      "zh": "我們反對戰爭。",
+      "id": 8066849
+     },
+     {
+      "t": "Nobody voted against it.",
+      "m": "against",
+      "zh": "沒有人投反對票。",
+      "id": 4502773
+     }
+    ]
+   },
+   "place": {
+    "ss": [
+     {
+      "t": "Everyone likes this place.",
+      "m": "place",
+      "zh": "每一個人都喜歡那個地方。",
+      "id": 8930379
+     },
+     {
+      "t": "Sami checked the place.",
+      "m": "place",
+      "zh": "薩米檢視了地方。",
+      "id": 7165392
+     },
+     {
+      "t": "Is this your place?",
+      "m": "place",
+      "zh": "這是你的地方？",
+      "id": 2648102
+     }
+    ]
+   }
+  },
+  "A1 Unit 4": {
+   "such": {
+    "ss": [
+     {
+      "t": "Was there such a thing?",
+      "m": "such",
+      "zh": "有這回事嗎？",
+      "id": 751792
+     },
+     {
+      "t": "Who buys such art?",
+      "m": "such",
+      "zh": "誰買這種藝術品？",
+      "id": 4910168
+     },
+     {
+      "t": "Such is life!",
+      "m": "Such",
+      "zh": "那就是人生",
+      "id": 4546716
+     }
+    ]
+   },
+   "again": {
+    "ss": [
+     {
+      "t": "Tom began again.",
+      "m": "again",
+      "zh": "湯姆從頭開始了。",
+      "id": 9776799
+     },
+     {
+      "t": "Try once again.",
+      "m": "again",
+      "zh": "再試一次。",
+      "id": 2264432
+     },
+     {
+      "t": "Tell me again.",
+      "m": "again",
+      "zh": "重新告訴我。",
+      "id": 2250076
+     }
+    ]
+   },
+   "few": {
+    "ss": [
+     {
+      "t": "She has few friends.",
+      "m": "few",
+      "zh": "她朋友很少。",
+      "id": 451212
+     },
+     {
+      "t": "I have few friends.",
+      "m": "few",
+      "zh": "我朋友很少。",
+      "id": 324366
+     },
+     {
+      "t": "Few people think so.",
+      "m": "Few",
+      "zh": "很少人這麼認為。",
+      "id": 51060
+     }
+    ]
+   },
+   "week": {
+    "ss": [
+     {
+      "t": "I'm off this week.",
+      "m": "week",
+      "zh": "我這個星期放假了。",
+      "id": 12590947
+     },
+     {
+      "t": "I'm leaving next week.",
+      "m": "week",
+      "zh": "我下個星期離開。",
+      "id": 6873215
+     },
+     {
+      "t": "See you next week!",
+      "m": "week",
+      "zh": "下個星期見！",
+      "id": 32557
+     }
+    ]
+   },
+   "company": {
+    "ss": [
+     {
+      "t": "I really enjoy your company.",
+      "m": "company",
+      "zh": "我非常享受你的陪伴。",
+      "id": 4583943
+     },
+     {
+      "t": "So this is your company?",
+      "m": "company",
+      "zh": "這就是你們公司？",
+      "id": 3060506
+     },
+     {
+      "t": "That's company money.",
+      "m": "company",
+      "zh": "那是公司的錢。",
+      "id": 12136697
+     }
+    ]
+   },
+   "each": {
+    "ss": [
+     {
+      "t": "We bath each day.",
+      "m": "each",
+      "zh": "我們每天洗澡。",
+      "id": 12268169
+     },
+     {
+      "t": "We help each other.",
+      "m": "each",
+      "zh": "我們互相幫忙。",
+      "id": 4950723
+     },
+     {
+      "t": "They love each other.",
+      "m": "each",
+      "zh": "他們彼此相愛。",
+      "id": 307721
+     }
+    ]
+   },
+   "right": {
+    "ss": [
+     {
+      "t": "Is she right?",
+      "m": "right",
+      "zh": "她是正確的嗎？",
+      "id": 7680282
+     }
+    ]
+   },
+   "hear": {
+    "ss": [
+     {
+      "t": "What did I hear?",
+      "m": "hear",
+      "zh": "我聽到了什麼？",
+      "id": 5573310
+     },
+     {
+      "t": "I hear someone singing.",
+      "m": "hear",
+      "zh": "我聽到有人在唱歌。",
+      "id": 5218768
+     },
+     {
+      "t": "Do you hear anything?",
+      "m": "hear",
+      "zh": "你聽到什麼了嗎？",
+      "id": 3417694
+     }
+    ]
+   },
+   "question": {
+    "ss": [
+     {
+      "t": "I have one question.",
+      "m": "question",
+      "zh": "我有一個問題。",
+      "id": 3142888
+     },
+     {
+      "t": "Please answer the question.",
+      "m": "question",
+      "zh": "請回答問題。",
+      "id": 1898275
+     },
+     {
+      "t": "I have another question.",
+      "m": "question",
+      "zh": "我還有一個問題。",
+      "id": 1887358
+     }
+    ]
+   },
+   "during": {
+    "ss": [
+     {
+      "t": "Tom fell asleep during the meeting.",
+      "m": "during",
+      "zh": "湯姆在會議期間睡著了。",
+      "id": 9165070
+     },
+     {
+      "t": "He was hanged during the Revolution.",
+      "m": "during",
+      "zh": "革命的時候他被吊死了。",
+      "id": 1534778
+     },
+     {
+      "t": "Do not read during the meal.",
+      "m": "during",
+      "zh": "別在吃飯時讀書。",
+      "id": 1432084
+     }
+    ]
+   },
+   "play": {
+    "ss": [
+     {
+      "t": "Should we play?",
+      "m": "play",
+      "zh": "我們能否去玩？",
+      "id": 12824782
+     },
+     {
+      "t": "Go and play!",
+      "m": "play",
+      "zh": "去玩吧！",
+      "id": 7156007
+     }
+    ]
+   },
+   "government": {
+    "ss": [
+     {
+      "t": "The Colombian government demanded more money.",
+      "m": "government",
+      "zh": "哥倫比亞政府要了更多的錢。",
+      "id": 804358
+     },
+     {
+      "t": "Keep religion out of government.",
+      "m": "government",
+      "zh": "別讓宗教影響政府。",
+      "id": 5729033
+     }
+    ]
+   },
+   "run": {
+    "ss": [
+     {
+      "t": "Run like the wind.",
+      "m": "Run",
+      "zh": "跑得飛快",
+      "id": 8645641
+     },
+     {
+      "t": "Do you run daily?",
+      "m": "run",
+      "zh": "你每天都跑步嗎？",
+      "id": 8184837
+     },
+     {
+      "t": "She likes to run.",
+      "m": "run",
+      "zh": "她喜歡跑步。",
+      "id": 456733
+     }
+    ]
+   },
+   "small": {
+    "ss": [
+     {
+      "t": "Those apples are small.",
+      "m": "small",
+      "zh": "那些蘋果很小。",
+      "id": 13002466
+     },
+     {
+      "t": "These apples are small.",
+      "m": "small",
+      "zh": "這些蘋果很小。",
+      "id": 13002465
+     },
+     {
+      "t": "Which painting is small?",
+      "m": "small",
+      "zh": "哪幅畫小？",
+      "id": 9401847
+     }
+    ]
+   },
+   "number": {
+    "ss": [
+     {
+      "t": "What's my room number?",
+      "m": "number",
+      "zh": "我的房間號是多少？",
+      "id": 4662375
+     },
+     {
+      "t": "What's your number?",
+      "m": "number",
+      "zh": "你的電話是多少？",
+      "id": 2713710
+     },
+     {
+      "t": "Tom knows my number.",
+      "m": "number",
+      "zh": "Tom知道我的號碼。",
+      "id": 1495872
+     }
+    ]
+   },
+   "off": {
+    "ss": [
+     {
+      "t": "The water is off.",
+      "m": "off",
+      "zh": "停水了。",
+      "id": 14038317
+     },
+     {
+      "t": "I'm off now.",
+      "m": "off",
+      "zh": "我要走了。",
+      "id": 13117619
+     },
+     {
+      "t": "Take your socks off.",
+      "m": "off",
+      "zh": "把襪子脫掉。",
+      "id": 12068206
+     }
+    ]
+   },
+   "always": {
+    "ss": [
+     {
+      "t": "He's always laughing.",
+      "m": "always",
+      "zh": "他總是在笑著。",
+      "id": 10540243
+     },
+     {
+      "t": "You always fight!",
+      "m": "always",
+      "zh": "你們總是打架。",
+      "id": 1359398
+     },
+     {
+      "t": "She always smiles.",
+      "m": "always",
+      "zh": "她總是微笑。",
+      "id": 862967
+     }
+    ]
+   },
+   "move": {
+    "ss": [
+     {
+      "t": "Tom wants to move.",
+      "m": "move",
+      "zh": "湯姆想搬家。",
+      "id": 8844983
+     },
+     {
+      "t": "Maybe you should move.",
+      "m": "move",
+      "zh": "你可能該動一動。",
+      "id": 4501066
+     },
+     {
+      "t": "Get a move on.",
+      "m": "move",
+      "zh": "趕快!",
+      "id": 3734924
+     }
+    ]
+   },
+   "night": {
+    "ss": [
+     {
+      "t": "It snowed all night.",
+      "m": "night",
+      "zh": "雪下了一整夜。",
+      "id": 4853247
+     },
+     {
+      "t": "Night has fallen!",
+      "m": "Night",
+      "zh": "夜幕降臨了！",
+      "id": 718350
+     },
+     {
+      "t": "I bath every night.",
+      "m": "night",
+      "zh": "我每晚洗澡。",
+      "id": 10569570
+     }
+    ]
+   },
+   "live": {
+    "ss": [
+     {
+      "t": "I will live.",
+      "m": "live",
+      "zh": "我將會活下去。",
+      "id": 4181237
+     },
+     {
+      "t": "Live and learn.",
+      "m": "Live",
+      "zh": "活到老，學到老。",
+      "id": 2588711
+     },
+     {
+      "t": "Let Tom live.",
+      "m": "live",
+      "zh": "給湯姆活路！",
+      "id": 2262231
+     }
+    ]
+   },
+   "point": {
+    "ss": [
+     {
+      "t": "I see your point.",
+      "m": "point",
+      "zh": "我明白你的重點。",
+      "id": 63850
+     }
+    ]
+   },
+   "believe": {
+    "ss": [
+     {
+      "t": "Who will believe you?",
+      "m": "believe",
+      "zh": "誰會相信你？",
+      "id": 13280134
+     },
+     {
+      "t": "We can believe everything.",
+      "m": "believe",
+      "zh": "我們全都可以相信。",
+      "id": 6825929
+     },
+     {
+      "t": "Nobody will believe you.",
+      "m": "believe",
+      "zh": "沒人會相信你。",
+      "id": 5773685
+     }
+    ]
+   },
+   "hold": {
+    "ss": [
+     {
+      "t": "Hold on one second.",
+      "m": "Hold",
+      "zh": "等一下。",
+      "id": 2891242
+     },
+     {
+      "t": "Hold on a minute.",
+      "m": "Hold",
+      "zh": "等一下！",
+      "id": 1839429
+     },
+     {
+      "t": "Hold on a second.",
+      "m": "Hold",
+      "zh": "請稍等一下。",
+      "id": 1120399
+     }
+    ]
+   },
+   "today": {
+    "ss": [
+     {
+      "t": "Today is cold.",
+      "m": "Today",
+      "zh": "今天很冷。",
+      "id": 12137507
+     },
+     {
+      "t": "Today is cloudy.",
+      "m": "Today",
+      "zh": "今天是個陰天。",
+      "id": 11051412
+     },
+     {
+      "t": "Today is Tuesday.",
+      "m": "Today",
+      "zh": "今天是星期二。",
+      "id": 3256311
+     }
+    ]
+   },
+   "bring": {
+    "ss": [
+     {
+      "t": "I'll bring you.",
+      "m": "bring",
+      "zh": "我帶你們去。",
+      "id": 8466232
+     },
+     {
+      "t": "Please bring the bill.",
+      "m": "bring",
+      "zh": "買單。",
+      "id": 7030791
+     },
+     {
+      "t": "Bring him down.",
+      "m": "Bring",
+      "zh": "把他叫下來。",
+      "id": 12869403
+     }
+    ]
+   },
+   "happen": {
+    "ss": [
+     {
+      "t": "That will not happen.",
+      "m": "happen",
+      "zh": "那是不會發生的。",
+      "id": 12389003
+     },
+     {
+      "t": "Those things happen sometimes.",
+      "m": "happen",
+      "zh": "那有時會發生。",
+      "id": 7120636
+     },
+     {
+      "t": "Where did that happen?",
+      "m": "happen",
+      "zh": "在哪裡發生？",
+      "id": 6356541
+     }
+    ]
+   },
+   "next": {
+    "ss": [
+     {
+      "t": "Am I next?",
+      "m": "next",
+      "zh": "下一個是我嗎？",
+      "id": 11651974
+     },
+     {
+      "t": "Is Tom next?",
+      "m": "next",
+      "zh": "湯姆是下一個嗎？",
+      "id": 4397622
+     },
+     {
+      "t": "Who is next?",
+      "m": "next",
+      "zh": "下一個是誰？",
+      "id": 801609
+     }
+    ]
+   },
+   "without": {
+    "ss": [
+     {
+      "t": "He left without paying.",
+      "m": "without",
+      "zh": "他沒付錢就離開了。",
+      "id": 9194591
+     },
+     {
+      "t": "Tom speaks without thinking.",
+      "m": "without",
+      "zh": "湯姆不假思索脫口而出。",
+      "id": 4518891
+     },
+     {
+      "t": "Tom acted without thinking.",
+      "m": "without",
+      "zh": "湯姆不加思索地行動。",
+      "id": 2821450
+     }
+    ]
+   },
+   "before": {
+    "ss": [
+     {
+      "t": "I studied Chinese before.",
+      "m": "before",
+      "zh": "我學過漢語。",
+      "id": 11837761
+     },
+     {
+      "t": "Think before you act.",
+      "m": "before",
+      "zh": "三思而後行！",
+      "id": 4495480
+     },
+     {
+      "t": "Think before you act!",
+      "m": "before",
+      "zh": "三思而後行！",
+      "id": 597602
+     }
+    ]
+   },
+   "large": {
+    "ss": [
+     {
+      "t": "The Americas are very large.",
+      "m": "large",
+      "zh": "美國非常大。",
+      "id": 9775690
+     },
+     {
+      "t": "Tom has large hands.",
+      "m": "large",
+      "zh": "湯姆的手大。",
+      "id": 6274555
+     },
+     {
+      "t": "The market is large.",
+      "m": "large",
+      "zh": "市場很大。",
+      "id": 2490788
+     }
+    ]
+   },
+   "must": {
+    "ss": [
+     {
+      "t": "We must wait.",
+      "m": "must",
+      "zh": "我們必須等待。",
+      "id": 2241410
+     },
+     {
+      "t": "She must eat.",
+      "m": "must",
+      "zh": "她需要吃飯。",
+      "id": 11512565
+     },
+     {
+      "t": "You must sleep.",
+      "m": "must",
+      "zh": "你應該睡覺。",
+      "id": 8212227
+     }
+    ]
+   },
+   "home": {
+    "ss": [
+     {
+      "t": "You went home.",
+      "m": "home",
+      "zh": "你回家了。",
+      "id": 13562364
+     },
+     {
+      "t": "Is she home?",
+      "m": "home",
+      "zh": "她在家嗎?",
+      "id": 10024550
+     },
+     {
+      "t": "Tom is home.",
+      "m": "home",
+      "zh": "湯姆在家裡。",
+      "id": 5854376
+     }
+    ]
+   },
+   "under": {
+    "ss": [
+     {
+      "t": "I hid under the desk.",
+      "m": "under",
+      "zh": "我藏在桌子底下。",
+      "id": 11252778
+     },
+     {
+      "t": "Nothing new under the sky.",
+      "m": "under",
+      "zh": "太陽之下無新事。",
+      "id": 10365473
+     },
+     {
+      "t": "I hid under the bed.",
+      "m": "under",
+      "zh": "我躲在了床底下。",
+      "id": 5859880
+     }
+    ]
+   },
+   "water": {
+    "ss": [
+     {
+      "t": "I drank water.",
+      "m": "water",
+      "zh": "我喝了水。",
+      "id": 12455173
+     },
+     {
+      "t": "I drink water.",
+      "m": "water",
+      "zh": "我喝水。",
+      "id": 7932256
+     },
+     {
+      "t": "Give me water!",
+      "m": "water",
+      "zh": "給我水！",
+      "id": 7347590
+     }
+    ]
+   },
+   "room": {
+    "ss": [
+     {
+      "t": "The room is cold.",
+      "m": "room",
+      "zh": "這間房間很冷。",
+      "id": 4779064
+     },
+     {
+      "t": "Is this your room?",
+      "m": "room",
+      "zh": "這是你的房間嗎？",
+      "id": 3672960
+     },
+     {
+      "t": "Clean your room.",
+      "m": "room",
+      "zh": "清掃你的房間。",
+      "id": 435774
+     }
+    ]
+   },
+   "write": {
+    "ss": [
+     {
+      "t": "You must write something.",
+      "m": "write",
+      "zh": "你得寫點什麼。",
+      "id": 10047108
+     },
+     {
+      "t": "I write letters.",
+      "m": "write",
+      "zh": "我寫字母。",
+      "id": 9401975
+     },
+     {
+      "t": "Did you write?",
+      "m": "write",
+      "zh": "你寫嗎?",
+      "id": 8108705
+     }
+    ]
+   },
+   "mother": {
+    "ss": [
+     {
+      "t": "Are you her mother?",
+      "m": "mother",
+      "zh": "您是他的母親嗎？",
+      "id": 10228329
+     },
+     {
+      "t": "That's his mother.",
+      "m": "mother",
+      "zh": "那是他的母親。",
+      "id": 8319162
+     },
+     {
+      "t": "My mother is here.",
+      "m": "mother",
+      "zh": "我媽來了。",
+      "id": 13208600
+     }
+    ]
+   },
+   "area": {
+    "ss": [
+     {
+      "t": "Sami knows the area very well.",
+      "m": "area",
+      "zh": "薩米十分了解這片區域。",
+      "id": 7294416
+     },
+     {
+      "t": "This area is off-limits.",
+      "m": "area",
+      "zh": "那一帶是禁區。",
+      "id": 1702651
+     },
+     {
+      "t": "I live in this area.",
+      "m": "area",
+      "zh": "我住在這區。",
+      "id": 929143
+     }
+    ]
+   },
+   "national": {
+    "ss": [
+     {
+      "t": "Taiwan has nine national parks.",
+      "m": "national",
+      "zh": "臺灣有九個國家公園。",
+      "id": 13247811
+     },
+     {
+      "t": "Promoting Mandarin Chinese is China's national plan.",
+      "m": "national",
+      "zh": "推行普通話，是中國的國策。",
+      "id": 3537571
+     },
+     {
+      "t": "He's a professor at the National University.",
+      "m": "National",
+      "zh": "他是國立大學的一名教授。",
+      "id": 2258573
+     }
+    ]
+   },
+   "money": {
+    "ss": [
+     {
+      "t": "Time is money.",
+      "m": "money",
+      "zh": "時間就是金錢。",
+      "id": 566026
+     },
+     {
+      "t": "Take this money.",
+      "m": "money",
+      "zh": "把這錢拿上。",
+      "id": 11828464
+     },
+     {
+      "t": "She needs money.",
+      "m": "money",
+      "zh": "他需要錢。",
+      "id": 8999617
+     }
+    ]
+   }
+  },
+  "A1 Unit 5": {
+   "story": {
+    "ss": [
+     {
+      "t": "Who wrote this story?",
+      "m": "story",
+      "zh": "誰寫了這個故事？",
+      "id": 4764618
+     },
+     {
+      "t": "Her story is true.",
+      "m": "story",
+      "zh": "她的故事是真實的。",
+      "id": 3247696
+     },
+     {
+      "t": "Tell me a story.",
+      "m": "story",
+      "zh": "請講我一個故事吧。",
+      "id": 3199823
+     }
+    ]
+   },
+   "young": {
+    "ss": [
+     {
+      "t": "Is the teacher young?",
+      "m": "young",
+      "zh": "那個老師年輕嗎？",
+      "id": 10654919
+     },
+     {
+      "t": "We aren't young.",
+      "m": "young",
+      "zh": "我們不年輕。",
+      "id": 10060513
+     },
+     {
+      "t": "We are not young.",
+      "m": "young",
+      "zh": "我們不年輕。",
+      "id": 10060512
+     }
+    ]
+   },
+   "fact": {
+    "ss": [
+     {
+      "t": "This is a fact.",
+      "m": "fact",
+      "zh": "這是事實。",
+      "id": 1653958
+     },
+     {
+      "t": "Do you know it for a fact?",
+      "m": "fact",
+      "zh": "你肯定嗎？",
+      "id": 2649850
+     },
+     {
+      "t": "In fact, he too loved her.",
+      "m": "fact",
+      "zh": "其實，他也愛著她。",
+      "id": 785439
+     }
+    ]
+   },
+   "month": {
+    "ss": [
+     {
+      "t": "It's twice a month.",
+      "m": "month",
+      "zh": "一個月兩次。",
+      "id": 13795307
+     },
+     {
+      "t": "Tom married Mary last month.",
+      "m": "month",
+      "zh": "上個月，湯姆娶了瑪莉。",
+      "id": 7008811
+     },
+     {
+      "t": "I'm moving next month.",
+      "m": "month",
+      "zh": "我下個月要搬家了。",
+      "id": 6873213
+     }
+    ]
+   },
+   "different": {
+    "ss": [
+     {
+      "t": "Tom is different from Mary.",
+      "m": "different",
+      "zh": "湯姆和瑪麗不同。",
+      "id": 10529663
+     },
+     {
+      "t": "All people are different.",
+      "m": "different",
+      "zh": "每個人都是不同的。",
+      "id": 10720646
+     },
+     {
+      "t": "He was always different.",
+      "m": "different",
+      "zh": "他總是與眾不同。",
+      "id": 2798986
+     }
+    ]
+   },
+   "lot": {
+    "ss": [
+     {
+      "t": "He reads a lot.",
+      "m": "lot",
+      "zh": "他讀很多書。",
+      "id": 4731249
+     },
+     {
+      "t": "I missed a lot.",
+      "m": "lot",
+      "zh": "我錯過了很多。",
+      "id": 3822929
+     },
+     {
+      "t": "He talks a lot.",
+      "m": "lot",
+      "zh": "她講話很多。",
+      "id": 2295540
+     }
+    ]
+   },
+   "study": {
+    "ss": [
+     {
+      "t": "I study Hangul.",
+      "m": "study",
+      "zh": "我學習韓文。",
+      "id": 13244096
+     },
+     {
+      "t": "Do you study?",
+      "m": "study",
+      "zh": "你們學習嗎？",
+      "id": 5575830
+     },
+     {
+      "t": "We study Chinese.",
+      "m": "study",
+      "zh": "我們學習中文。",
+      "id": 464442
+     }
+    ]
+   },
+   "book": {
+    "ss": [
+     {
+      "t": "That's their book.",
+      "m": "book",
+      "zh": "那是他們的書。",
+      "id": 13635690
+     },
+     {
+      "t": "That's your book.",
+      "m": "book",
+      "zh": "它是你的書。",
+      "id": 13091267
+     },
+     {
+      "t": "Your book is interesting.",
+      "m": "book",
+      "zh": "您的書很有意思。",
+      "id": 12360510
+     }
+    ]
+   },
+   "eye": {
+    "ss": [
+     {
+      "t": "Look me in the eye.",
+      "m": "eye",
+      "zh": "看著我的眼睛。",
+      "id": 10491040
+     },
+     {
+      "t": "He almost lost his eye.",
+      "m": "eye",
+      "zh": "他差點失去了一隻眼睛。",
+      "id": 7384572
+     },
+     {
+      "t": "I opened an eye.",
+      "m": "eye",
+      "zh": "我睜開一隻眼睛。",
+      "id": 5162316
+     }
+    ]
+   },
+   "job": {
+    "ss": [
+     {
+      "t": "I'm job hunting.",
+      "m": "job",
+      "zh": "我在找工作。",
+      "id": 5858327
+     },
+     {
+      "t": "She's job hunting.",
+      "m": "job",
+      "zh": "她在找工作。",
+      "id": 4065594
+     },
+     {
+      "t": "That job paid well.",
+      "m": "job",
+      "zh": "這份工作工資很高。",
+      "id": 3818615
+     }
+    ]
+   },
+   "word": {
+    "ss": [
+     {
+      "t": "His word is law.",
+      "m": "word",
+      "zh": "他的話就是命令。",
+      "id": 287669
+     },
+     {
+      "t": "It is a word game.",
+      "m": "word",
+      "zh": "這是個文字遊戲。",
+      "id": 13199879
+     },
+     {
+      "t": "Please read this word again.",
+      "m": "word",
+      "zh": "請再讀一遍這個詞。",
+      "id": 13146474
+     }
+    ]
+   },
+   "though": {
+    "ss": [
+     {
+      "t": "Even though he's poor, he's happy.",
+      "m": "though",
+      "zh": "他雖然窮，卻很幸福。",
+      "id": 3967858
+     },
+     {
+      "t": "They talk as though they were old friends.",
+      "m": "though",
+      "zh": "他們像老朋友一樣交談。",
+      "id": 6008665
+     },
+     {
+      "t": "Tom is acting as though nothing has happened.",
+      "m": "though",
+      "zh": "湯姆像什麼也沒發生一樣行動。",
+      "id": 5844481
+     }
+    ]
+   },
+   "business": {
+    "ss": [
+     {
+      "t": "This could hurt our business.",
+      "m": "business",
+      "zh": "這會打擊我們的生意。",
+      "id": 4665494
+     },
+     {
+      "t": "Man is business difficult!",
+      "m": "business",
+      "zh": "生意真難做!",
+      "id": 2656846
+     },
+     {
+      "t": "I came on business.",
+      "m": "business",
+      "zh": "我來出差。",
+      "id": 13198856
+     }
+    ]
+   },
+   "four": {
+    "ss": [
+     {
+      "t": "One, two, three, four, five.",
+      "m": "four",
+      "zh": "一，二，三，四，五。",
+      "id": 12993387
+     },
+     {
+      "t": "A table for four, please.",
+      "m": "four",
+      "zh": "四個人用餐。",
+      "id": 11031293
+     },
+     {
+      "t": "The war lasted four years.",
+      "m": "four",
+      "zh": "戰爭持續了四年。",
+      "id": 10517703
+     }
+    ]
+   },
+   "side": {
+    "ss": [
+     {
+      "t": "She sat by my side.",
+      "m": "side",
+      "zh": "她坐在我旁邊。",
+      "id": 7960143
+     },
+     {
+      "t": "I am on your side.",
+      "m": "side",
+      "zh": "我支援你。",
+      "id": 3994477
+     },
+     {
+      "t": "I'm by your side.",
+      "m": "side",
+      "zh": "我支援你。",
+      "id": 1542761
+     }
+    ]
+   },
+   "kind": {
+    "ss": [
+     {
+      "t": "Americans are kind people.",
+      "m": "kind",
+      "zh": "美國人是親切的人",
+      "id": 7800709
+     },
+     {
+      "t": "He is very kind.",
+      "m": "kind",
+      "zh": "他非常親切。",
+      "id": 480142
+     }
+    ]
+   },
+   "head": {
+    "ss": [
+     {
+      "t": "Whose head hurts?",
+      "m": "head",
+      "zh": "誰的頭在疼？",
+      "id": 8963398
+     },
+     {
+      "t": "His head hurt.",
+      "m": "head",
+      "zh": "他的頭痛了。",
+      "id": 7587532
+     },
+     {
+      "t": "Watch your head.",
+      "m": "head",
+      "zh": "小心碰頭。",
+      "id": 2253884
+     }
+    ]
+   },
+   "far": {
+    "ss": [
+     {
+      "t": "Do not swim far!",
+      "m": "far",
+      "zh": "不要遊太遠！",
+      "id": 12128953
+     },
+     {
+      "t": "She went far away.",
+      "m": "far",
+      "zh": "她去了遠方。",
+      "id": 8249351
+     },
+     {
+      "t": "It's far away.",
+      "m": "far",
+      "zh": "很遠。",
+      "id": 6704028
+     }
+    ]
+   },
+   "black": {
+    "ss": [
+     {
+      "t": "The spider is black.",
+      "m": "black",
+      "zh": "那隻蜘蛛是黑色的。",
+      "id": 12278223
+     },
+     {
+      "t": "The spider was black.",
+      "m": "black",
+      "zh": "那隻蜘蛛是黑色的。",
+      "id": 12078980
+     },
+     {
+      "t": "Which dog is black?",
+      "m": "black",
+      "zh": "哪隻狗是黑色的？",
+      "id": 5316882
+     }
+    ]
+   },
+   "long": {
+    "ss": [
+     {
+      "t": "That's long enough.",
+      "m": "long",
+      "zh": "那夠長了。",
+      "id": 3724193
+     },
+     {
+      "t": "Long live free Quebec!",
+      "m": "Long",
+      "zh": "自由魁北克萬歲！",
+      "id": 11758735
+     },
+     {
+      "t": "Long live the Revolution!",
+      "m": "Long",
+      "zh": "革命萬歲！",
+      "id": 9707126
+     }
+    ]
+   },
+   "both": {
+    "ss": [
+     {
+      "t": "Are you both ready?",
+      "m": "both",
+      "zh": "你們兩個人都準備好了嗎？",
+      "id": 10794861
+     },
+     {
+      "t": "They're both free.",
+      "m": "both",
+      "zh": "兩人都自由了。",
+      "id": 10557644
+     },
+     {
+      "t": "You are both wrong.",
+      "m": "both",
+      "zh": "你們倆都錯了。",
+      "id": 8008356
+     }
+    ]
+   },
+   "little": {
+    "ss": [
+     {
+      "t": "I did a little gardening.",
+      "m": "little",
+      "zh": "稍微打理了一下院子。",
+      "id": 12847415
+     },
+     {
+      "t": "Walk over a little!",
+      "m": "little",
+      "zh": "走過去一點！",
+      "id": 8261976
+     },
+     {
+      "t": "Go a little faster.",
+      "m": "little",
+      "zh": "快一點好吧！",
+      "id": 7770567
+     }
+    ]
+   },
+   "house": {
+    "ss": [
+     {
+      "t": "That house is ours.",
+      "m": "house",
+      "zh": "那個房子是我們的。",
+      "id": 11149103
+     },
+     {
+      "t": "This house is big.",
+      "m": "house",
+      "zh": "那棟房子很大。",
+      "id": 10555331
+     },
+     {
+      "t": "That's my house.",
+      "m": "house",
+      "zh": "這個房子是我的。",
+      "id": 8436194
+     }
+    ]
+   },
+   "yes": {
+    "ss": [
+     {
+      "t": "Yes, I am Tom.",
+      "m": "Yes",
+      "zh": "是的。我是湯姆。",
+      "id": 13216576
+     },
+     {
+      "t": "Yes, next Tuesday.",
+      "m": "Yes",
+      "zh": "是的，下個星期二。",
+      "id": 9408774
+     },
+     {
+      "t": "Yes, I understand!",
+      "m": "Yes",
+      "zh": "是，我懂了！",
+      "id": 4332413
+     }
+    ]
+   },
+   "since": {
+    "ss": [
+     {
+      "t": "He has long since moved away.",
+      "m": "since",
+      "zh": "他搬走好久了。",
+      "id": 11066284
+     },
+     {
+      "t": "I've been busy since yesterday.",
+      "m": "since",
+      "zh": "我從昨天開始一直忙著。",
+      "id": 7715146
+     },
+     {
+      "t": "Since when do you learn Japanese?",
+      "m": "Since",
+      "zh": "你從什麼時候開始學日文？",
+      "id": 4492095
+     }
+    ]
+   },
+   "provide": {
+    "ss": [
+     {
+      "t": "Cows provide us with milk.",
+      "m": "provide",
+      "zh": "奶牛為我們提供牛奶。",
+      "id": 19495
+     },
+     {
+      "t": "We must provide for the future.",
+      "m": "provide",
+      "zh": "我們必須為未來作好準備。",
+      "id": 22907
+     },
+     {
+      "t": "Cows provide us with good milk.",
+      "m": "provide",
+      "zh": "牛供給我們好奶。",
+      "id": 19496
+     }
+    ]
+   },
+   "service": {
+    "ss": [
+     {
+      "t": "This restaurant has very good service.",
+      "m": "service",
+      "zh": "那家餐館提供良好的服務。",
+      "id": 10282053
+     },
+     {
+      "t": "I'm poor at customer service.",
+      "m": "service",
+      "zh": "我不擅長客服工作。",
+      "id": 10196158
+     },
+     {
+      "t": "I work in customer service.",
+      "m": "service",
+      "zh": "我從事客服業。",
+      "id": 12076561
+     }
+    ]
+   },
+   "around": {
+    "ss": [
+     {
+      "t": "She travelled around Japan.",
+      "m": "around",
+      "zh": "她環遊了日本。",
+      "id": 11935618
+     },
+     {
+      "t": "Go around it.",
+      "m": "around",
+      "zh": "繞過去。",
+      "id": 5355258
+     },
+     {
+      "t": "Nobody was around.",
+      "m": "around",
+      "zh": "誰也不在那裡。",
+      "id": 2549028
+     }
+    ]
+   },
+   "friend": {
+    "ss": [
+     {
+      "t": "Is your friend Ukrainian?",
+      "m": "friend",
+      "zh": "你女朋友是烏克蘭人嗎？",
+      "id": 12008630
+     },
+     {
+      "t": "Who's her friend?",
+      "m": "friend",
+      "zh": "誰是他朋友？",
+      "id": 11855357
+     },
+     {
+      "t": "Who's his friend?",
+      "m": "friend",
+      "zh": "誰是他朋友？",
+      "id": 11855354
+     }
+    ]
+   },
+   "important": {
+    "ss": [
+     {
+      "t": "It is not important.",
+      "m": "important",
+      "zh": "這個不重要。",
+      "id": 12011568
+     },
+     {
+      "t": "That is very important.",
+      "m": "important",
+      "zh": "這非常重要。",
+      "id": 9460445
+     },
+     {
+      "t": "This isn't important.",
+      "m": "important",
+      "zh": "這個不重要。",
+      "id": 7492662
+     }
+    ]
+   },
+   "father": {
+    "ss": [
+     {
+      "t": "From father to son.",
+      "m": "father",
+      "zh": "從父親到兒子。",
+      "id": 9981717
+     },
+     {
+      "t": "My father likes pizza.",
+      "m": "father",
+      "zh": "我父親喜歡批薩。",
+      "id": 7770337
+     },
+     {
+      "t": "Father is very healthy.",
+      "m": "Father",
+      "zh": "父親很健康。",
+      "id": 7767781
+     }
+    ]
+   },
+   "sit": {
+    "ss": [
+     {
+      "t": "Can you sit there?",
+      "m": "sit",
+      "zh": "你能坐在那裡嗎？",
+      "id": 12137256
+     },
+     {
+      "t": "Please sit in here.",
+      "m": "sit",
+      "zh": "請坐這裡。",
+      "id": 7818254
+     },
+     {
+      "t": "Sit on the plane.",
+      "m": "Sit",
+      "zh": "你坐飛機吧。",
+      "id": 7782248
+     }
+    ]
+   },
+   "away": {
+    "ss": [
+     {
+      "t": "They hurried away.",
+      "m": "away",
+      "zh": "他們匆匆離去了。",
+      "id": 2243159
+     },
+     {
+      "t": "Mary ran away.",
+      "m": "away",
+      "zh": "瑪麗跑了。",
+      "id": 13902771
+     },
+     {
+      "t": "Throw it away.",
+      "m": "away",
+      "zh": "扔掉",
+      "id": 7723590
+     }
+    ]
+   },
+   "until": {
+    "ss": [
+     {
+      "t": "Until next week.",
+      "m": "Until",
+      "zh": "直到下週。",
+      "id": 325082
+     },
+     {
+      "t": "He worked from morning until night.",
+      "m": "until",
+      "zh": "他從早上工作到夜晚。",
+      "id": 13559238
+     },
+     {
+      "t": "I shall wait until she comes.",
+      "m": "until",
+      "zh": "我要等她來。",
+      "id": 11160522
+     }
+    ]
+   },
+   "hour": {
+    "ss": [
+     {
+      "t": "He left just an hour ago.",
+      "m": "hour",
+      "zh": "他一小時前剛走。",
+      "id": 10263457
+     },
+     {
+      "t": "He just left an hour ago.",
+      "m": "hour",
+      "zh": "他一小時前剛走。",
+      "id": 10259571
+     },
+     {
+      "t": "He talked for an entire hour.",
+      "m": "hour",
+      "zh": "他講了整整一小時。",
+      "id": 4763449
+     }
+    ]
+   },
+   "game": {
+    "ss": [
+     {
+      "t": "This game is easy.",
+      "m": "game",
+      "zh": "這款遊戲很容易。",
+      "id": 2714604
+     },
+     {
+      "t": "Begin the game.",
+      "m": "game",
+      "zh": "開始遊戲。",
+      "id": 11904582
+     },
+     {
+      "t": "The game continued.",
+      "m": "game",
+      "zh": "遊戲繼續。",
+      "id": 11679054
+     }
+    ]
+   },
+   "often": {
+    "ss": [
+     {
+      "t": "I often feel sad.",
+      "m": "often",
+      "zh": "我常常覺得悲傷。",
+      "id": 11294113
+     },
+     {
+      "t": "I often ask questions.",
+      "m": "often",
+      "zh": "我總是問問題。",
+      "id": 8837772
+     },
+     {
+      "t": "Tom often loses things.",
+      "m": "often",
+      "zh": "湯姆常常丟東西。",
+      "id": 6273361
+     }
+    ]
+   },
+   "yet": {
+    "ss": [
+     {
+      "t": "Are you there yet?",
+      "m": "yet",
+      "zh": "到了嗎？",
+      "id": 12278421
+     },
+     {
+      "t": "Did you eat yet?",
+      "m": "yet",
+      "zh": "你吃了嗎？",
+      "id": 4783696
+     },
+     {
+      "t": "Have you voted yet?",
+      "m": "yet",
+      "zh": "您已經投了票了嗎？",
+      "id": 4502779
+     }
+    ]
+   },
+   "line": {
+    "ss": [
+     {
+      "t": "He was first in line.",
+      "m": "line",
+      "zh": "他是排隊的第一個。",
+      "id": 8766230
+     },
+     {
+      "t": "No day without a line.",
+      "m": "line",
+      "zh": "拳不離手，曲不離口。",
+      "id": 815042
+     },
+     {
+      "t": "Draw a straight line here.",
+      "m": "line",
+      "zh": "在這裡畫一條直線。",
+      "id": 61729
+     }
+    ]
+   },
+   "end": {
+    "ss": [
+     {
+      "t": "The meeting will end tomorrow.",
+      "m": "end",
+      "zh": "會議明天就結束了。",
+      "id": 1137006
+     },
+     {
+      "t": "This is the end!",
+      "m": "end",
+      "zh": "這是結束。",
+      "id": 8978279
+     },
+     {
+      "t": "When will it end?",
+      "m": "end",
+      "zh": "什麼時候才結束啊？",
+      "id": 2892742
+     }
+    ]
+   }
+  },
+  "A1 Unit 6": {
+   "among": {
+    "ss": [
+     {
+      "t": "He's popular among his colleagues.",
+      "m": "among",
+      "zh": "他在他的同事之中受到歡迎。",
+      "id": 302055
+     },
+     {
+      "t": "He is included among my friends.",
+      "m": "among",
+      "zh": "他是我的朋友之一。",
+      "id": 298008
+     },
+     {
+      "t": "They are very popular among boys.",
+      "m": "among",
+      "zh": "它們很受男孩的歡迎。",
+      "id": 276841
+     }
+    ]
+   },
+   "ever": {
+    "ss": [
+     {
+      "t": "Did you ever get married?",
+      "m": "ever",
+      "zh": "你曾經結過婚嗎？",
+      "id": 4813092
+     },
+     {
+      "t": "I hardly ever do that.",
+      "m": "ever",
+      "zh": "我偶爾做。",
+      "id": 5851208
+     },
+     {
+      "t": "Were you ever married?",
+      "m": "ever",
+      "zh": "你結過婚嗎？",
+      "id": 5042889
+     }
+    ]
+   },
+   "stand": {
+    "ss": [
+     {
+      "t": "I stand with Taiwan.",
+      "m": "stand",
+      "zh": "我和臺灣站在一起。",
+      "id": 13247937
+     },
+     {
+      "t": "Please stand behind me.",
+      "m": "stand",
+      "zh": "請你站在我後面。",
+      "id": 11837141
+     },
+     {
+      "t": "Can you stand up?",
+      "m": "stand",
+      "zh": "你能站起來嗎？",
+      "id": 1543665
+     }
+    ]
+   },
+   "bad": {
+    "ss": [
+     {
+      "t": "The meat went bad.",
+      "m": "bad",
+      "zh": "這肉已經壞了。",
+      "id": 8191448
+     },
+     {
+      "t": "The coffee is bad.",
+      "m": "bad",
+      "zh": "咖啡不好。",
+      "id": 12521664
+     },
+     {
+      "t": "That is too bad.",
+      "m": "bad",
+      "zh": "太可惜了！",
+      "id": 10134385
+     }
+    ]
+   },
+   "lose": {
+    "ss": [
+     {
+      "t": "We have nothing to lose.",
+      "m": "lose",
+      "zh": "我們沒有什麼可以失去的。",
+      "id": 5051482
+     },
+     {
+      "t": "Do not lose hope.",
+      "m": "lose",
+      "zh": "你不要死心。",
+      "id": 6560506
+     },
+     {
+      "t": "Don't lose hope.",
+      "m": "lose",
+      "zh": "你不要死心。",
+      "id": 2761742
+     }
+    ]
+   },
+   "however": {
+    "ss": [
+     {
+      "t": "Tom and Mary can do that however they like.",
+      "m": "however",
+      "zh": "湯姆和瑪麗喜歡怎麼做就怎麼做。",
+      "id": 6516284
+     },
+     {
+      "t": "However you do it, the result will be the same.",
+      "m": "However",
+      "zh": "你無論用甚麼方法，結果都是一樣。",
+      "id": 36577
+     },
+     {
+      "t": "However, I have no money.",
+      "m": "However",
+      "zh": "但是，我沒有錢。",
+      "id": 53632
+     }
+    ]
+   },
+   "member": {
+    "ss": [
+     {
+      "t": "He is a member of the baseball club.",
+      "m": "member",
+      "zh": "他是這棒球俱樂部的成員。",
+      "id": 304275
+     },
+     {
+      "t": "Every member must attend.",
+      "m": "member",
+      "zh": "所有的成員都必須參加。",
+      "id": 273701
+     },
+     {
+      "t": "I am not a member of the club.",
+      "m": "member",
+      "zh": "我不是這個俱樂部的會員。",
+      "id": 4286298
+     }
+    ]
+   },
+   "pay": {
+    "ss": [
+     {
+      "t": "I pay in cash.",
+      "m": "pay",
+      "zh": "我用現金付款。",
+      "id": 707178
+     },
+     {
+      "t": "I'll pay in cash.",
+      "m": "pay",
+      "zh": "我用現金付錢。",
+      "id": 13183799
+     },
+     {
+      "t": "Can I pay by card?",
+      "m": "pay",
+      "zh": "我可以用信用卡付帳嗎?",
+      "id": 8758473
+     }
+    ]
+   },
+   "law": {
+    "ss": [
+     {
+      "t": "You must observe the law.",
+      "m": "law",
+      "zh": "你必須遵守法律。",
+      "id": 321056
+     },
+     {
+      "t": "He broke the law.",
+      "m": "law",
+      "zh": "他觸犯了法律。",
+      "id": 303653
+     },
+     {
+      "t": "Everyone knows the law.",
+      "m": "law",
+      "zh": "大家都知道這個法律。",
+      "id": 276534
+     }
+    ]
+   },
+   "meet": {
+    "ss": [
+     {
+      "t": "We'll meet again.",
+      "m": "meet",
+      "zh": "後會有期。",
+      "id": 3734899
+     },
+     {
+      "t": "We will meet again.",
+      "m": "meet",
+      "zh": "後會有期。",
+      "id": 1649015
+     },
+     {
+      "t": "How did they meet?",
+      "m": "meet",
+      "zh": "他們是怎麼認識的？",
+      "id": 11540191
+     }
+    ]
+   },
+   "car": {
+    "ss": [
+     {
+      "t": "I drive the car.",
+      "m": "car",
+      "zh": "我開汽車。",
+      "id": 9190297
+     },
+     {
+      "t": "Whose is this car?",
+      "m": "car",
+      "zh": "這輛汽車是誰的?",
+      "id": 4845159
+     },
+     {
+      "t": "This is your car.",
+      "m": "car",
+      "zh": "這是你的車。",
+      "id": 6276537
+     }
+    ]
+   },
+   "city": {
+    "ss": [
+     {
+      "t": "In which city are you?",
+      "m": "city",
+      "zh": "你在哪座城市呀？",
+      "id": 2728352
+     },
+     {
+      "t": "Boston is a great city.",
+      "m": "city",
+      "zh": "波士頓是一座非常好的城市。",
+      "id": 2646100
+     },
+     {
+      "t": "Boston is a wonderful city.",
+      "m": "city",
+      "zh": "波士頓是一座非常好的城市。",
+      "id": 2644149
+     }
+    ]
+   },
+   "almost": {
+    "ss": [
+     {
+      "t": "I almost won.",
+      "m": "almost",
+      "zh": "我幾乎贏了。",
+      "id": 2245600
+     },
+     {
+      "t": "Almost everyone came.",
+      "m": "Almost",
+      "zh": "幾乎每箇人都來了。",
+      "id": 894917
+     },
+     {
+      "t": "It was almost April.",
+      "m": "almost",
+      "zh": "快到四月了。",
+      "id": 11797889
+     }
+    ]
+   },
+   "include": {
+    "ss": [
+     {
+      "t": "Does that price include soup and salad?",
+      "m": "include",
+      "zh": "這個價錢包括湯和沙拉了嗎？",
+      "id": 45251
+     },
+     {
+      "t": "Does the price include breakfast?",
+      "m": "include",
+      "zh": "包括早飯嗎？",
+      "id": 5270225
+     },
+     {
+      "t": "Does that include breakfast?",
+      "m": "include",
+      "zh": "包括早飯嗎？",
+      "id": 42897
+     }
+    ]
+   },
+   "continue": {
+    "ss": [
+     {
+      "t": "We have to continue to do our jobs.",
+      "m": "continue",
+      "zh": "我們要繼續我們的工作。",
+      "id": 5573999
+     },
+     {
+      "t": "Her mother will continue to work.",
+      "m": "continue",
+      "zh": "她母親將繼續工作。",
+      "id": 309746
+     },
+     {
+      "t": "Once you begin, you must continue.",
+      "m": "continue",
+      "zh": "你一旦開始了，就應該繼續下去。",
+      "id": 16781
+     }
+    ]
+   },
+   "set": {
+    "ss": [
+     {
+      "t": "Tom set the bird free.",
+      "m": "set",
+      "zh": "Tom將鳥放走。",
+      "id": 3922017
+     },
+     {
+      "t": "Set it down there.",
+      "m": "Set",
+      "zh": "在那裡放下來。",
+      "id": 41862
+     },
+     {
+      "t": "Set me free!",
+      "m": "Set",
+      "zh": "釋放我！",
+      "id": 4609519
+     }
+    ]
+   },
+   "name": {
+    "ss": [
+     {
+      "t": "My name is Mary.",
+      "m": "name",
+      "zh": "我的名字是瑪麗。",
+      "id": 11114181
+     },
+     {
+      "t": "Someone called my name.",
+      "m": "name",
+      "zh": "有人喊我的名字。",
+      "id": 10891016
+     },
+     {
+      "t": "Nobody knows her name.",
+      "m": "name",
+      "zh": "沒人知道她的名字。",
+      "id": 10128046
+     }
+    ]
+   },
+   "five": {
+    "ss": [
+     {
+      "t": "He got five years.",
+      "m": "five",
+      "zh": "他被判了五年。",
+      "id": 13005684
+     },
+     {
+      "t": "I see five men.",
+      "m": "five",
+      "zh": "我看見五個男人。",
+      "id": 7773726
+     },
+     {
+      "t": "Layla is five now.",
+      "m": "five",
+      "zh": "萊拉現在五歲了",
+      "id": 6069698
+     }
+    ]
+   },
+   "once": {
+    "ss": [
+     {
+      "t": "We held hands, once.",
+      "m": "once",
+      "zh": "我們牽過一次手。",
+      "id": 4172104
+     },
+     {
+      "t": "Try it once more.",
+      "m": "once",
+      "zh": "再試一次。",
+      "id": 433593
+     },
+     {
+      "t": "Try it once again.",
+      "m": "once",
+      "zh": "再試一次。",
+      "id": 31497
+     }
+    ]
+   },
+   "white": {
+    "ss": [
+     {
+      "t": "Is your dog white?",
+      "m": "white",
+      "zh": "家裡的小狗狗是白色的嗎？",
+      "id": 10248837
+     },
+     {
+      "t": "The horse is white.",
+      "m": "white",
+      "zh": "這匹馬是白色的。",
+      "id": 5257037
+     },
+     {
+      "t": "My horse is white.",
+      "m": "white",
+      "zh": "我的馬是白色的。",
+      "id": 2778260
+     }
+    ]
+   },
+   "least": {
+    "ss": [
+     {
+      "t": "Out of everyone there, I spoke the least.",
+      "m": "least",
+      "zh": "所有人裡，我說話最少。",
+      "id": 7803107
+     },
+     {
+      "t": "She at least, she can face them!",
+      "m": "least",
+      "zh": "至少她能面對他們！",
+      "id": 9770110
+     },
+     {
+      "t": "He has at least one thousand books.",
+      "m": "least",
+      "zh": "他至少有一千本書。",
+      "id": 299607
+     }
+    ]
+   },
+   "president": {
+    "ss": [
+     {
+      "t": "Later he wrote to the president.",
+      "m": "president",
+      "zh": "他後來寫信給總統。",
+      "id": 803047
+     },
+     {
+      "t": "I hate the new president.",
+      "m": "president",
+      "zh": "我厭惡這位新總統。",
+      "id": 11863352
+     },
+     {
+      "t": "Bush followed Reagan as president.",
+      "m": "president",
+      "zh": "布什繼里根之後當上了總統。",
+      "id": 34345
+     }
+    ]
+   },
+   "learn": {
+    "ss": [
+     {
+      "t": "Smile and learn!",
+      "m": "learn",
+      "zh": "微笑吧！學習吧！",
+      "id": 13412485
+     },
+     {
+      "t": "Do you learn?",
+      "m": "learn",
+      "zh": "你在學習嗎？",
+      "id": 10565499
+     },
+     {
+      "t": "We learn Chinese.",
+      "m": "learn",
+      "zh": "我們學習漢語。",
+      "id": 9511234
+     }
+    ]
+   },
+   "real": {
+    "ss": [
+     {
+      "t": "Are the flowers real?",
+      "m": "real",
+      "zh": "真花？",
+      "id": 11940220
+     },
+     {
+      "t": "Are these real flowers?",
+      "m": "real",
+      "zh": "真花？",
+      "id": 11940219
+     },
+     {
+      "t": "Is the flower real?",
+      "m": "real",
+      "zh": "真花？",
+      "id": 10053272
+     }
+    ]
+   },
+   "change": {
+    "ss": [
+     {
+      "t": "Goals change games.",
+      "m": "change",
+      "zh": "進球改變比賽。",
+      "id": 11143100
+     },
+     {
+      "t": "Tom can change.",
+      "m": "change",
+      "zh": "湯姆能改變。",
+      "id": 4496506
+     },
+     {
+      "t": "Tom may change.",
+      "m": "change",
+      "zh": "湯姆能改變。",
+      "id": 4394833
+     }
+    ]
+   },
+   "team": {
+    "ss": [
+     {
+      "t": "We are a team of three.",
+      "m": "team",
+      "zh": "我們三個一隊。",
+      "id": 13552865
+     },
+     {
+      "t": "The team in green have lost.",
+      "m": "team",
+      "zh": "綠隊被打敗了。",
+      "id": 11188305
+     },
+     {
+      "t": "We have a great team.",
+      "m": "team",
+      "zh": "我們有個好極了的團隊。",
+      "id": 5008985
+     }
+    ]
+   },
+   "minute": {
+    "ss": [
+     {
+      "t": "One minute is sixty seconds.",
+      "m": "minute",
+      "zh": "一分鐘有六十秒。",
+      "id": 12025999
+     },
+     {
+      "t": "One minute contains sixty seconds.",
+      "m": "minute",
+      "zh": "一分鐘有六十秒。",
+      "id": 12024686
+     },
+     {
+      "t": "Just a minute, please.",
+      "m": "minute",
+      "zh": "請稍等一下。",
+      "id": 5294565
+     }
+    ]
+   },
+   "several": {
+    "ss": [
+     {
+      "t": "She asked us several questions.",
+      "m": "several",
+      "zh": "她問了我們好幾個問題。",
+      "id": 998961
+     },
+     {
+      "t": "I bought several books yesterday.",
+      "m": "several",
+      "zh": "我昨天買了好幾本書。",
+      "id": 6452045
+     },
+     {
+      "t": "She has written several books.",
+      "m": "several",
+      "zh": "她已經寫了幾本書。",
+      "id": 3067824
+     }
+    ]
+   },
+   "idea": {
+    "ss": [
+     {
+      "t": "Your idea is good.",
+      "m": "idea",
+      "zh": "你的主意很好。",
+      "id": 5008938
+     },
+     {
+      "t": "That's an idea.",
+      "m": "idea",
+      "zh": "這是個好主意。",
+      "id": 2251053
+     },
+     {
+      "t": "What a nice idea!",
+      "m": "idea",
+      "zh": "多好的主意啊！",
+      "id": 673190
+     }
+    ]
+   },
+   "kid": {
+    "ss": [
+     {
+      "t": "I'm not a kid.",
+      "m": "kid",
+      "zh": "我已經不是個孩子了。",
+      "id": 2549706
+     },
+     {
+      "t": "You're a good kid.",
+      "m": "kid",
+      "zh": "你是個好男孩。",
+      "id": 2548890
+     },
+     {
+      "t": "Tom is a smart kid.",
+      "m": "kid",
+      "zh": "湯姆是聰明的孩子。",
+      "id": 1868236
+     }
+    ]
+   },
+   "body": {
+    "ss": [
+     {
+      "t": "His body is too thin.",
+      "m": "body",
+      "zh": "他的身體太瘦了。",
+      "id": 7808545
+     },
+     {
+      "t": "Over my dead body!",
+      "m": "body",
+      "zh": "除非我死了！",
+      "id": 1588709
+     }
+    ]
+   },
+   "information": {
+    "ss": [
+     {
+      "t": "I knew that information.",
+      "m": "information",
+      "zh": "我知道了那個訊息。",
+      "id": 7772922
+     },
+     {
+      "t": "I'd like some information.",
+      "m": "information",
+      "zh": "我想要了解一些資訊。",
+      "id": 3530277
+     },
+     {
+      "t": "They acted on the information.",
+      "m": "information",
+      "zh": "他們根據情報採取行動。",
+      "id": 305828
+     }
+    ]
+   },
+   "nothing": {
+    "ss": [
+     {
+      "t": "I got nothing.",
+      "m": "nothing",
+      "zh": "我一無所有。",
+      "id": 4498916
+     },
+     {
+      "t": "I see nothing.",
+      "m": "nothing",
+      "zh": "我什麼都看不見。",
+      "id": 11836538
+     },
+     {
+      "t": "She ate nothing.",
+      "m": "nothing",
+      "zh": "她沒有吃。",
+      "id": 8650256
+     }
+    ]
+   },
+   "ago": {
+    "ss": [
+     {
+      "t": "That was ages ago.",
+      "m": "ago",
+      "zh": "那是好久以前。",
+      "id": 6923977
+     },
+     {
+      "t": "It was a while ago.",
+      "m": "ago",
+      "zh": "好久不見了。",
+      "id": 12170597
+     },
+     {
+      "t": "They married not long ago.",
+      "m": "ago",
+      "zh": "他們剛結婚不久。",
+      "id": 9435207
+     }
+    ]
+   },
+   "lead": {
+    "ss": [
+     {
+      "t": "You're in the lead.",
+      "m": "lead",
+      "zh": "你領先。",
+      "id": 12201440
+     }
+    ]
+   },
+   "social": {
+    "ss": [
+     {
+      "t": "Social security? Who do they think they're kidding.",
+      "m": "Social",
+      "zh": "社會保障嗎？他們在說什麼笑話？",
+      "id": 265358
+     },
+     {
+      "t": "They were busy working for social reforms.",
+      "m": "social",
+      "zh": "他們忙於社會改革。",
+      "id": 802462
+     },
+     {
+      "t": "I believe that a fine education can change one's social status.",
+      "m": "social",
+      "zh": "我相信良好的教育能改變人的社會地位。",
+      "id": 13906262
+     }
+    ]
+   },
+   "understand": {
+    "ss": [
+     {
+      "t": "Did you understand?",
+      "m": "understand",
+      "zh": "你明白了嗎?",
+      "id": 6708266
+     },
+     {
+      "t": "I understand French.",
+      "m": "understand",
+      "zh": "我懂法語。",
+      "id": 5958308
+     },
+     {
+      "t": "Yes, I understand!",
+      "m": "understand",
+      "zh": "是，我懂了！",
+      "id": 4332413
+     }
+    ]
+   },
+   "whether": {
+    "ss": [
+     {
+      "t": "He asked me whether I was busy.",
+      "m": "whether",
+      "zh": "他問我是否很忙。",
+      "id": 430077
+     },
+     {
+      "t": "Let us know whether you can come.",
+      "m": "whether",
+      "zh": "讓我們知道你是否能來。",
+      "id": 71603
+     },
+     {
+      "t": "He asked me whether I like math.",
+      "m": "whether",
+      "zh": "他問我喜不喜歡數學。",
+      "id": 1266429
+     }
+    ]
+   },
+   "watch": {
+    "ss": [
+     {
+      "t": "Watch the road.",
+      "m": "Watch",
+      "zh": "看著路。",
+      "id": 3467757
+     }
+    ]
+   },
+   "together": {
+    "ss": [
+     {
+      "t": "Let's study together!",
+      "m": "together",
+      "zh": "我們一起學習吧！",
+      "id": 13142087
+     },
+     {
+      "t": "We danced together.",
+      "m": "together",
+      "zh": "我們一起跳了舞。",
+      "id": 6580766
+     },
+     {
+      "t": "We were together.",
+      "m": "together",
+      "zh": "我們在一起。",
+      "id": 3735551
+     }
+    ]
+   }
+  },
+  "A1 Unit 7": {
+   "follow": {
+    "ss": [
+     {
+      "t": "Follow my lead!",
+      "m": "Follow",
+      "zh": "跟隨我 ！",
+      "id": 952708
+     },
+     {
+      "t": "Follow us on Twitter.",
+      "m": "Follow",
+      "zh": "在推特上關注我們吧。",
+      "id": 5753457
+     },
+     {
+      "t": "I follow the rules.",
+      "m": "follow",
+      "zh": "我遵守規矩。",
+      "id": 4498739
+     }
+    ]
+   },
+   "parent": {
+    "ss": [
+     {
+      "t": "He's the new CEO from the parent company in France.",
+      "m": "parent",
+      "zh": "他是來自法國母公司的新任執行長。",
+      "id": 283280
+     }
+    ]
+   },
+   "stop": {
+    "ss": [
+     {
+      "t": "I held up my hand to stop a taxi.",
+      "m": "stop",
+      "zh": "我舉起手攔計程車。",
+      "id": 40936
+     },
+     {
+      "t": "Stop getting yourself worked up over little things.",
+      "m": "Stop",
+      "zh": "不要讓自己因為一些小事而煩躁了。",
+      "id": 8742931
+     },
+     {
+      "t": "Pretty soon you will stop thinking of her.",
+      "m": "stop",
+      "zh": "很快你就會不想她了。",
+      "id": 3621226
+     }
+    ]
+   },
+   "face": {
+    "ss": [
+     {
+      "t": "Her face went red.",
+      "m": "face",
+      "zh": "她臉紅了。",
+      "id": 13097349
+     },
+     {
+      "t": "I made a face.",
+      "m": "face",
+      "zh": "我做了鬼臉。",
+      "id": 5840413
+     },
+     {
+      "t": "Let's face facts.",
+      "m": "face",
+      "zh": "面對事實吧。",
+      "id": 2007864
+     }
+    ]
+   },
+   "anything": {
+    "ss": [
+     {
+      "t": "Has anything changed?",
+      "m": "anything",
+      "zh": "有任何事情改變了嗎？",
+      "id": 433721
+     },
+     {
+      "t": "I hardly saw anything.",
+      "m": "anything",
+      "zh": "我幾乎什麼也沒看到。",
+      "id": 10345187
+     },
+     {
+      "t": "May I say anything?",
+      "m": "anything",
+      "zh": "我可以說些什麼嗎?",
+      "id": 9029789
+     }
+    ]
+   },
+   "create": {
+    "ss": [
+     {
+      "t": "You need to create two new categories.",
+      "m": "create",
+      "zh": "需新建兩個分類。",
+      "id": 11263679
+     }
+    ]
+   },
+   "public": {
+    "ss": [
+     {
+      "t": "I don't like singing in public.",
+      "m": "public",
+      "zh": "我不喜歡在公共場合唱歌。",
+      "id": 10641715
+     },
+     {
+      "t": "I don't enjoy singing in public.",
+      "m": "public",
+      "zh": "我不喜歡在公共場合唱歌。",
+      "id": 10641714
+     },
+     {
+      "t": "Next Thursday is a public holiday.",
+      "m": "public",
+      "zh": "下星期四是公定假日。",
+      "id": 10739554
+     }
+    ]
+   },
+   "already": {
+    "ss": [
+     {
+      "t": "She is already asleep.",
+      "m": "already",
+      "zh": "她已經睡下了。",
+      "id": 13870845
+     },
+     {
+      "t": "It's already June...",
+      "m": "already",
+      "zh": "已經6月了啊⋯",
+      "id": 10663761
+     },
+     {
+      "t": "You've already eaten!",
+      "m": "already",
+      "zh": "你已經吃過飯了！",
+      "id": 10372332
+     }
+    ]
+   },
+   "speak": {
+    "ss": [
+     {
+      "t": "I speak Chinese.",
+      "m": "speak",
+      "zh": "我會說中文。",
+      "id": 11630404
+     },
+     {
+      "t": "I speak Gronings.",
+      "m": "speak",
+      "zh": "我說格羅寧根方言。",
+      "id": 7536726
+     },
+     {
+      "t": "I speak Basque.",
+      "m": "speak",
+      "zh": "我說巴斯克語。",
+      "id": 6862205
+     }
+    ]
+   },
+   "read": {
+    "ss": [
+     {
+      "t": "Read good books!",
+      "m": "Read",
+      "zh": "讀好書。",
+      "id": 10060037
+     },
+     {
+      "t": "Read good books.",
+      "m": "Read",
+      "zh": "讀好書。",
+      "id": 5614580
+     },
+     {
+      "t": "Can you read?",
+      "m": "read",
+      "zh": "你能閱讀嗎？",
+      "id": 5195302
+     }
+    ]
+   },
+   "level": {
+    "ss": [
+     {
+      "t": "We are on the same level.",
+      "m": "level",
+      "zh": "我們不在一個水平上。",
+      "id": 2679242
+     },
+     {
+      "t": "Their love has gone to the next level.",
+      "m": "level",
+      "zh": "他倆的愛情，已經上升了一個臺階。",
+      "id": 11291137
+     },
+     {
+      "t": "I won't lower myself to his level.",
+      "m": "level",
+      "zh": "我不會墮落到他那個地步。",
+      "id": 2044
+     }
+    ]
+   },
+   "allow": {
+    "ss": [
+     {
+      "t": "I can't allow you to do this.",
+      "m": "allow",
+      "zh": "我不允許你那樣做。",
+      "id": 7241120
+     },
+     {
+      "t": "I don't allow sleeping in class.",
+      "m": "allow",
+      "zh": "我不允許有人在課上睡覺。",
+      "id": 7492552
+     },
+     {
+      "t": "I do not allow sleeping in class.",
+      "m": "allow",
+      "zh": "我不允許有人在課上睡覺。",
+      "id": 266235
+     }
+    ]
+   },
+   "add": {
+    "ss": [
+     {
+      "t": "Please add up the bill.",
+      "m": "add",
+      "zh": "請確認帳單。",
+      "id": 21099
+     },
+     {
+      "t": "Add up these figures.",
+      "m": "Add",
+      "zh": "請把這些數字合計一下。",
+      "id": 55153
+     },
+     {
+      "t": "Add a little milk.",
+      "m": "Add",
+      "zh": "加點牛奶。",
+      "id": 19454
+     }
+    ]
+   },
+   "office": {
+    "ss": [
+     {
+      "t": "Ring me at the office.",
+      "m": "office",
+      "zh": "打電話到我辦公室來。",
+      "id": 11433971
+     },
+     {
+      "t": "I drive to the office.",
+      "m": "office",
+      "zh": "我開車去辦公室。",
+      "id": 5647124
+     },
+     {
+      "t": "Go back to the office.",
+      "m": "office",
+      "zh": "回辦公室去。",
+      "id": 3413094
+     }
+    ]
+   },
+   "spend": {
+    "ss": [
+     {
+      "t": "How much does he spend per month?",
+      "m": "spend",
+      "zh": "他一個月花費多少？",
+      "id": 1568698
+     },
+     {
+      "t": "I spend all my free time reading.",
+      "m": "spend",
+      "zh": "我把空閒時間全都花在閱讀上。",
+      "id": 7221045
+     },
+     {
+      "t": "Why did you spend all the money?",
+      "m": "spend",
+      "zh": "為什麼你花了所有錢？",
+      "id": 5181060
+     }
+    ]
+   },
+   "door": {
+    "ss": [
+     {
+      "t": "Wait behind the door.",
+      "m": "door",
+      "zh": "在門後等著。",
+      "id": 13486794
+     },
+     {
+      "t": "The door slowly opened.",
+      "m": "door",
+      "zh": "門慢慢地開了。",
+      "id": 12771066
+     },
+     {
+      "t": "Close that door!",
+      "m": "door",
+      "zh": "把門關起來!",
+      "id": 4695243
+     }
+    ]
+   },
+   "health": {
+    "ss": [
+     {
+      "t": "Drink to my health!",
+      "m": "health",
+      "zh": "為健康乾杯！",
+      "id": 8366685
+     },
+     {
+      "t": "Drink to my health.",
+      "m": "health",
+      "zh": "為健康乾杯。",
+      "id": 8366684
+     },
+     {
+      "t": "What is health?",
+      "m": "health",
+      "zh": "健康是甚麼？",
+      "id": 12554790
+     }
+    ]
+   },
+   "person": {
+    "ss": [
+     {
+      "t": "Tom is a person.",
+      "m": "person",
+      "zh": "湯姆是好人。",
+      "id": 13772075
+     },
+     {
+      "t": "I am a person.",
+      "m": "person",
+      "zh": "我是人類。",
+      "id": 11294961
+     },
+     {
+      "t": "Who's that person?",
+      "m": "person",
+      "zh": "那個人是誰？",
+      "id": 6626928
+     }
+    ]
+   },
+   "art": {
+    "ss": [
+     {
+      "t": "Can art change the world?",
+      "m": "art",
+      "zh": "藝術能改變世界嗎 ?",
+      "id": 4666506
+     },
+     {
+      "t": "I'm studying art history.",
+      "m": "art",
+      "zh": "我學習藝術史。",
+      "id": 790046
+     },
+     {
+      "t": "Who buys such art?",
+      "m": "art",
+      "zh": "誰買這種藝術品？",
+      "id": 4910168
+     }
+    ]
+   },
+   "sure": {
+    "ss": [
+     {
+      "t": "Sure, why not?",
+      "m": "Sure",
+      "zh": "當然，為什麼不？",
+      "id": 1610745
+     },
+     {
+      "t": "It sure is windy.",
+      "m": "sure",
+      "zh": "風真大。",
+      "id": 10776737
+     },
+     {
+      "t": "Be sure to remember!",
+      "m": "sure",
+      "zh": "切記！",
+      "id": 6744873
+     }
+    ]
+   },
+   "war": {
+    "ss": [
+     {
+      "t": "We're against war.",
+      "m": "war",
+      "zh": "我們反對戰爭。",
+      "id": 8066849
+     },
+     {
+      "t": "Make love, not war!",
+      "m": "war",
+      "zh": "要做愛不要戰爭。",
+      "id": 1551901
+     },
+     {
+      "t": "No one likes war.",
+      "m": "war",
+      "zh": "沒有人喜歡戰爭。",
+      "id": 961604
+     }
+    ]
+   },
+   "history": {
+    "ss": [
+     {
+      "t": "Changing history is difficult.",
+      "m": "history",
+      "zh": "要改變歷史是很難的。",
+      "id": 12080272
+     },
+     {
+      "t": "Real people make history.",
+      "m": "history",
+      "zh": "歷史是由人民創造的。",
+      "id": 3333263
+     },
+     {
+      "t": "Mr. Ito teaches history.",
+      "m": "history",
+      "zh": "伊籐老師教歷史學。",
+      "id": 1445302
+     }
+    ]
+   },
+   "party": {
+    "ss": [
+     {
+      "t": "Are you a party member?",
+      "m": "party",
+      "zh": "你是黨員嗎？",
+      "id": 9235832
+     },
+     {
+      "t": "Did I miss the party?",
+      "m": "party",
+      "zh": "我錯過派對了嗎？",
+      "id": 5392595
+     },
+     {
+      "t": "Come to my party.",
+      "m": "party",
+      "zh": "來我的派對吧。",
+      "id": 11187144
+     }
+    ]
+   },
+   "grow": {
+    "ss": [
+     {
+      "t": "Oranges grow in warm countries.",
+      "m": "grow",
+      "zh": "橘子在溫暖的地方生長。",
+      "id": 64777
+     },
+     {
+      "t": "Why don't you grow up?",
+      "m": "grow",
+      "zh": "你為什麼長不大呢？",
+      "id": 2210747
+     },
+     {
+      "t": "I want you to grow up.",
+      "m": "grow",
+      "zh": "我希望你能長大。",
+      "id": 2011690
+     }
+    ]
+   },
+   "result": {
+    "ss": [
+     {
+      "t": "Don't worry about the test result.",
+      "m": "result",
+      "zh": "不要擔心考試的結果。",
+      "id": 12287244
+     },
+     {
+      "t": "I didn't expect this result.",
+      "m": "result",
+      "zh": "我沒有期望得到這樣的結果。",
+      "id": 2744385
+     },
+     {
+      "t": "They are happy with the result.",
+      "m": "result",
+      "zh": "他們對結果很滿意。",
+      "id": 1726024
+     }
+    ]
+   },
+   "open": {
+    "ss": [
+     {
+      "t": "Open that bottle.",
+      "m": "Open",
+      "zh": "把瓶子開啟。",
+      "id": 13563425
+     },
+     {
+      "t": "Open it carefully.",
+      "m": "Open",
+      "zh": "小心開啟。",
+      "id": 10251077
+     },
+     {
+      "t": "Open the book.",
+      "m": "Open",
+      "zh": "開啟書。",
+      "id": 8207661
+     }
+    ]
+   },
+   "morning": {
+    "ss": [
+     {
+      "t": "She bathes every morning.",
+      "m": "morning",
+      "zh": "她每天早上都洗澡。",
+      "id": 13816625
+     },
+     {
+      "t": "I bath every morning.",
+      "m": "morning",
+      "zh": "我每天早上都會浸浴。",
+      "id": 11952913
+     },
+     {
+      "t": "Tom showers every morning.",
+      "m": "morning",
+      "zh": "湯姆每天都洗澡。",
+      "id": 5553936
+     }
+    ]
+   },
+   "walk": {
+    "ss": [
+     {
+      "t": "Walk over a little!",
+      "m": "Walk",
+      "zh": "走過去一點！",
+      "id": 8261976
+     },
+     {
+      "t": "I can walk home.",
+      "m": "walk",
+      "zh": "我能走路回家。",
+      "id": 2301418
+     },
+     {
+      "t": "I can't walk.",
+      "m": "walk",
+      "zh": "我不能走。",
+      "id": 1955125
+     }
+    ]
+   },
+   "reason": {
+    "ss": [
+     {
+      "t": "They don't need a reason.",
+      "m": "reason",
+      "zh": "他們不需要理由。",
+      "id": 2278281
+     },
+     {
+      "t": "Your reason is very good.",
+      "m": "reason",
+      "zh": "你的理由很充分。",
+      "id": 7796493
+     },
+     {
+      "t": "Must I give him a reason?",
+      "m": "reason",
+      "zh": "我有必要向他解釋原因嗎？",
+      "id": 10794674
+     }
+    ]
+   },
+   "low": {
+    "ss": [
+     {
+      "t": "This is a low mountain.",
+      "m": "low",
+      "zh": "這座山很低。",
+      "id": 13079658
+     },
+     {
+      "t": "Interest rates are still low.",
+      "m": "low",
+      "zh": "利率還是低。",
+      "id": 5134823
+     },
+     {
+      "t": "Can you speak Low German?",
+      "m": "Low",
+      "zh": "你會講低地德語嗎？",
+      "id": 4770630
+     }
+    ]
+   },
+   "win": {
+    "ss": [
+     {
+      "t": "Okay, you win.",
+      "m": "win",
+      "zh": "行，你贏了。",
+      "id": 7264970
+     },
+     {
+      "t": "Did they win?",
+      "m": "win",
+      "zh": "我贏了嗎？",
+      "id": 6884383
+     },
+     {
+      "t": "Did she win?",
+      "m": "win",
+      "zh": "我贏了嗎？",
+      "id": 6884382
+     }
+    ]
+   },
+   "research": {
+    "ss": [
+     {
+      "t": "What does a Sovietologist research?",
+      "m": "research",
+      "zh": "蘇聯學家研究什麼呢？",
+      "id": 2610942
+     },
+     {
+      "t": "Do research before asking others.",
+      "m": "research",
+      "zh": "先做調查，再問別人。",
+      "id": 13155971
+     }
+    ]
+   },
+   "girl": {
+    "ss": [
+     {
+      "t": "The girl opened the door.",
+      "m": "girl",
+      "zh": "女孩開啟門。",
+      "id": 13971607
+     },
+     {
+      "t": "This girl is my daughter.",
+      "m": "girl",
+      "zh": "這個女孩是我的女兒。",
+      "id": 13083192
+     },
+     {
+      "t": "The girl drinks tea.",
+      "m": "girl",
+      "zh": "這個女孩子在喝茶。",
+      "id": 9189230
+     }
+    ]
+   },
+   "early": {
+    "ss": [
+     {
+      "t": "It's so early.",
+      "m": "early",
+      "zh": "太早了。",
+      "id": 9483437
+     },
+     {
+      "t": "I woke up early.",
+      "m": "early",
+      "zh": "我起得早。",
+      "id": 2549543
+     },
+     {
+      "t": "It's too early.",
+      "m": "early",
+      "zh": "太早了。",
+      "id": 2249321
+     }
+    ]
+   },
+   "food": {
+    "ss": [
+     {
+      "t": "I miss Japanese food.",
+      "m": "food",
+      "zh": "我想念日本的食物。",
+      "id": 10742822
+     },
+     {
+      "t": "It is food.",
+      "m": "food",
+      "zh": "它是食物。",
+      "id": 7781095
+     },
+     {
+      "t": "Go buy some food.",
+      "m": "food",
+      "zh": "你去吃飯吧。",
+      "id": 13866214
+     }
+    ]
+   },
+   "himself": {
+    "ss": [
+     {
+      "t": "He went there himself.",
+      "m": "himself",
+      "zh": "他自己去那兒了。",
+      "id": 11855757
+     },
+     {
+      "t": "Tom hates himself.",
+      "m": "himself",
+      "zh": "湯姆厭惡他自己。",
+      "id": 2821682
+     },
+     {
+      "t": "Tom likes challenging himself.",
+      "m": "himself",
+      "zh": "湯姆喜歡挑戰自己。",
+      "id": 9432381
+     }
+    ]
+   },
+   "moment": {
+    "ss": [
+     {
+      "t": "Wait a moment, please.",
+      "m": "moment",
+      "zh": "請稍等一下。",
+      "id": 6356577
+     },
+     {
+      "t": "Give her a moment.",
+      "m": "moment",
+      "zh": "給她點時間。",
+      "id": 3915885
+     },
+     {
+      "t": "Excuse me a moment.",
+      "m": "moment",
+      "zh": "不好意思。",
+      "id": 3393231
+     }
+    ]
+   },
+   "air": {
+    "ss": [
+     {
+      "t": "The air was warm.",
+      "m": "air",
+      "zh": "空氣暖暖的。",
+      "id": 11595669
+     },
+     {
+      "t": "Please air the room.",
+      "m": "air",
+      "zh": "請把房間通通氣。",
+      "id": 319525
+     },
+     {
+      "t": "He hates air travel.",
+      "m": "air",
+      "zh": "他討厭坐飛機旅行。",
+      "id": 303016
+     }
+    ]
+   },
+   "teacher": {
+    "ss": [
+     {
+      "t": "He's a teacher.",
+      "m": "teacher",
+      "zh": "他是個教師。",
+      "id": 8478426
+     },
+     {
+      "t": "She is a teacher.",
+      "m": "teacher",
+      "zh": "她是女教師。",
+      "id": 315459
+     },
+     {
+      "t": "Is the teacher young?",
+      "m": "teacher",
+      "zh": "那個老師年輕嗎？",
+      "id": 10654919
+     }
+    ]
+   },
+   "force": {
+    "ss": [
+     {
+      "t": "We can't force people to do that.",
+      "m": "force",
+      "zh": "我們不能強迫人去做。",
+      "id": 5553851
+     },
+     {
+      "t": "May the Force be with you!",
+      "m": "Force",
+      "zh": "願力量與你同在。",
+      "id": 1630332
+     },
+     {
+      "t": "May the force be with you.",
+      "m": "force",
+      "zh": "願力量與你同在。",
+      "id": 386688
+     }
+    ]
+   }
+  },
+  "A1 Unit 8": {
+   "offer": {
+    "ss": [
+     {
+      "t": "She considered his offer carefully.",
+      "m": "offer",
+      "zh": "她仔細考慮了他的提議。",
+      "id": 1293059
+     },
+     {
+      "t": "She turned down my offer.",
+      "m": "offer",
+      "zh": "她拒絕了我的資助。",
+      "id": 314360
+     },
+     {
+      "t": "He turned down my offer.",
+      "m": "offer",
+      "zh": "他拒絕了我的提議。",
+      "id": 297913
+     }
+    ]
+   },
+   "enough": {
+    "ss": [
+     {
+      "t": "I've had enough!",
+      "m": "enough",
+      "zh": "我受夠了！",
+      "id": 9679517
+     },
+     {
+      "t": "This will be enough.",
+      "m": "enough",
+      "zh": "夠了。",
+      "id": 9332242
+     },
+     {
+      "t": "Have you eaten enough?",
+      "m": "enough",
+      "zh": "你吃夠了嗎？",
+      "id": 5111951
+     }
+    ]
+   },
+   "education": {
+    "ss": [
+     {
+      "t": "Education is really important.",
+      "m": "Education",
+      "zh": "教育是很重要。",
+      "id": 5530931
+     },
+     {
+      "t": "Education is very important.",
+      "m": "Education",
+      "zh": "教育是很重要。",
+      "id": 1488118
+     },
+     {
+      "t": "Education begins at home.",
+      "m": "Education",
+      "zh": "教育從家庭開始。",
+      "id": 1005359
+     }
+    ]
+   },
+   "across": {
+    "ss": [
+     {
+      "t": "Don't walk across the tracks!",
+      "m": "across",
+      "zh": "不要翻越鐵軌！",
+      "id": 12137541
+     },
+     {
+      "t": "His house is across from mine.",
+      "m": "across",
+      "zh": "他的房子在我的對面。",
+      "id": 466248
+     },
+     {
+      "t": "Whose house is across from yours?",
+      "m": "across",
+      "zh": "你家對面的房子是誰的?",
+      "id": 387420
+     }
+    ]
+   },
+   "although": {
+    "ss": [
+     {
+      "t": "Although I had ordered tea, he served me coffee.",
+      "m": "Although",
+      "zh": "雖然我已經點了茶, 他還是給了我一杯咖啡。",
+      "id": 9409570
+     },
+     {
+      "t": "Although he is Chinese, he doesn't speak Chinese.",
+      "m": "Although",
+      "zh": "雖然他是中國人，但他不會說中文。",
+      "id": 3748283
+     },
+     {
+      "t": "Although I haven't slept on the train.",
+      "m": "Although",
+      "zh": "雖然我沒在火車上睡覺。",
+      "id": 10219951
+     }
+    ]
+   },
+   "remember": {
+    "ss": [
+     {
+      "t": "I remember seeing it.",
+      "m": "remember",
+      "zh": "我記得見過他。",
+      "id": 7538433
+     },
+     {
+      "t": "I will remember it.",
+      "m": "remember",
+      "zh": "我會記得的。",
+      "id": 6082485
+     },
+     {
+      "t": "I remember this map.",
+      "m": "remember",
+      "zh": "我記得這張地圖。",
+      "id": 3822877
+     }
+    ]
+   },
+   "foot": {
+    "ss": [
+     {
+      "t": "It's fifteen minutes on foot.",
+      "m": "foot",
+      "zh": "走路要十五分鐘。",
+      "id": 320490
+     },
+     {
+      "t": "I'm six foot three.",
+      "m": "foot",
+      "zh": "我有一米九高。",
+      "id": 11206895
+     },
+     {
+      "t": "I will go on foot.",
+      "m": "foot",
+      "zh": "我走路去。",
+      "id": 261669
+     }
+    ]
+   },
+   "second": {
+    "ss": [
+     {
+      "t": "Tom came second.",
+      "m": "second",
+      "zh": "湯姆得了第二名。",
+      "id": 4337116
+     },
+     {
+      "t": "Tom finished second.",
+      "m": "second",
+      "zh": "湯姆得了第二名。",
+      "id": 1474799
+     }
+    ]
+   },
+   "boy": {
+    "ss": [
+     {
+      "t": "The boy is smiling.",
+      "m": "boy",
+      "zh": "男孩微微笑。",
+      "id": 13131838
+     },
+     {
+      "t": "The boy drinks milk.",
+      "m": "boy",
+      "zh": "男孩在喝牛奶。",
+      "id": 9963562
+     },
+     {
+      "t": "I'm a boy.",
+      "m": "boy",
+      "zh": "我是一個男孩。",
+      "id": 7426412
+     }
+    ]
+   },
+   "maybe": {
+    "ss": [
+     {
+      "t": "Maybe Tom was sleepwalking.",
+      "m": "Maybe",
+      "zh": "Tom也許在夢遊。",
+      "id": 9787780
+     },
+     {
+      "t": "Maybe another time.",
+      "m": "Maybe",
+      "zh": "也許下一次吧。",
+      "id": 12968371
+     },
+     {
+      "t": "Maybe next time.",
+      "m": "Maybe",
+      "zh": "也許下一次吧。",
+      "id": 1516119
+     }
+    ]
+   },
+   "toward": {
+    "ss": [
+     {
+      "t": "Who's that boy running toward us?",
+      "m": "toward",
+      "zh": "那個朝我們跑過來的男孩是誰？",
+      "id": 8023845
+     },
+     {
+      "t": "Who is that boy running toward us?",
+      "m": "toward",
+      "zh": "那個朝我們跑過來的男孩是誰？",
+      "id": 247415
+     },
+     {
+      "t": "My house looks toward the sea.",
+      "m": "toward",
+      "zh": "我的房子面朝大海",
+      "id": 321477
+     }
+    ]
+   },
+   "able": {
+    "ss": [
+     {
+      "t": "I'm not able to dance.",
+      "m": "able",
+      "zh": "我不能跳舞。",
+      "id": 6887113
+     },
+     {
+      "t": "Tom isn't able to swim.",
+      "m": "able",
+      "zh": "湯姆不會游泳。",
+      "id": 6687502
+     },
+     {
+      "t": "Will you be able to attend?",
+      "m": "able",
+      "zh": "你能來嗎？",
+      "id": 6576688
+     }
+    ]
+   },
+   "age": {
+    "ss": [
+     {
+      "t": "They're the same age.",
+      "m": "age",
+      "zh": "他們倆在同一個年齡。",
+      "id": 2713630
+     },
+     {
+      "t": "Tom is your age.",
+      "m": "age",
+      "zh": "湯姆與你年齡相仿。",
+      "id": 5401550
+     },
+     {
+      "t": "What's your age?",
+      "m": "age",
+      "zh": "你有多大年齡?",
+      "id": 435255
+     }
+    ]
+   },
+   "policy": {
+    "ss": [
+     {
+      "t": "This is a book about public policy.",
+      "m": "policy",
+      "zh": "這是一本關於公共政策的書。",
+      "id": 4261700
+     },
+     {
+      "t": "He had decided on a new policy.",
+      "m": "policy",
+      "zh": "他已經決定了新的政策。",
+      "id": 299909
+     }
+    ]
+   },
+   "everything": {
+    "ss": [
+     {
+      "t": "Thanks for everything!",
+      "m": "everything",
+      "zh": "感謝你的付出。",
+      "id": 12622853
+     },
+     {
+      "t": "He reads everything.",
+      "m": "everything",
+      "zh": "他什麼都讀。",
+      "id": 10838274
+     },
+     {
+      "t": "I burned everything.",
+      "m": "everything",
+      "zh": "我燒掉了一切。",
+      "id": 9021762
+     }
+    ]
+   },
+   "love": {
+    "ss": [
+     {
+      "t": "I love flying.",
+      "m": "love",
+      "zh": "我很愛飛。",
+      "id": 12624899
+     },
+     {
+      "t": "We love Dad.",
+      "m": "love",
+      "zh": "我們愛爸爸。",
+      "id": 8321664
+     },
+     {
+      "t": "I love apples!",
+      "m": "love",
+      "zh": "我喜歡蘋果！",
+      "id": 12381281
+     }
+    ]
+   },
+   "music": {
+    "ss": [
+     {
+      "t": "He likes Brazilian music.",
+      "m": "music",
+      "zh": "他喜歡巴西音樂。",
+      "id": 12933522
+     },
+     {
+      "t": "We hear music.",
+      "m": "music",
+      "zh": "我們聽音樂。",
+      "id": 10351094
+     },
+     {
+      "t": "I like music.",
+      "m": "music",
+      "zh": "我喜歡音樂。",
+      "id": 2318277
+     }
+    ]
+   },
+   "consider": {
+    "ss": [
+     {
+      "t": "I didn't even consider that.",
+      "m": "consider",
+      "zh": "我都沒考慮過。",
+      "id": 2269335
+     },
+     {
+      "t": "That's something to consider.",
+      "m": "consider",
+      "zh": "那值得考慮。",
+      "id": 13622335
+     },
+     {
+      "t": "Please consider it carefully.",
+      "m": "consider",
+      "zh": "請好好考慮一下那件事情。",
+      "id": 8920027
+     }
+    ]
+   },
+   "appear": {
+    "ss": [
+     {
+      "t": "The king will appear in person tomorrow evening.",
+      "m": "appear",
+      "zh": "國王明晚會親自出現。",
+      "id": 25606
+     },
+     {
+      "t": "He did not appear until about noon.",
+      "m": "appear",
+      "zh": "直到快要中午前他都沒出現。",
+      "id": 301550
+     },
+     {
+      "t": "Stars began to appear in the sky.",
+      "m": "appear",
+      "zh": "星星開始在天空中出現。",
+      "id": 271521
+     }
+    ]
+   },
+   "buy": {
+    "ss": [
+     {
+      "t": "Buy a few apples.",
+      "m": "Buy",
+      "zh": "買幾顆蘋果。",
+      "id": 13055117
+     },
+     {
+      "t": "I will buy chocolate.",
+      "m": "buy",
+      "zh": "我會買巧克力。",
+      "id": 12615433
+     },
+     {
+      "t": "Buy me some sweets.",
+      "m": "Buy",
+      "zh": "幫我買點零食吧。",
+      "id": 10282801
+     }
+    ]
+   },
+   "probably": {
+    "ss": [
+     {
+      "t": "Do you understand? Probably.",
+      "m": "Probably",
+      "zh": "你懂嗎？可能吧。",
+      "id": 11294141
+     },
+     {
+      "t": "They're probably tired.",
+      "m": "probably",
+      "zh": "她們應該累了吧。",
+      "id": 10515967
+     },
+     {
+      "t": "You're probably right.",
+      "m": "probably",
+      "zh": "你可能是對的。",
+      "id": 2713500
+     }
+    ]
+   },
+   "human": {
+    "ss": [
+     {
+      "t": "Women are also human beings.",
+      "m": "human",
+      "zh": "婦女也是人。",
+      "id": 13323689
+     },
+     {
+      "t": "We are human beings.",
+      "m": "human",
+      "zh": "我們是人。",
+      "id": 10315065
+     },
+     {
+      "t": "We're human beings.",
+      "m": "human",
+      "zh": "我們是人。",
+      "id": 5756736
+     }
+    ]
+   },
+   "wait": {
+    "ss": [
+     {
+      "t": "Wait outside, please.",
+      "m": "Wait",
+      "zh": "請在屋外等候。",
+      "id": 10371735
+     },
+     {
+      "t": "Wait here, please.",
+      "m": "Wait",
+      "zh": "請在這稍等。",
+      "id": 10151274
+     },
+     {
+      "t": "Will you wait?",
+      "m": "wait",
+      "zh": "你願意等嗎 ?",
+      "id": 7114425
+     }
+    ]
+   },
+   "serve": {
+    "ss": [
+     {
+      "t": "Now it's your serve.",
+      "m": "serve",
+      "zh": "現在該你發球。",
+      "id": 242375
+     },
+     {
+      "t": "Can I serve you?",
+      "m": "serve",
+      "zh": "我能為您服務嗎？",
+      "id": 7832918
+     },
+     {
+      "t": "Please serve the guests some coffee, dear.",
+      "m": "serve",
+      "zh": "親愛的，給客人端點咖啡吧。",
+      "id": 4770642
+     }
+    ]
+   },
+   "market": {
+    "ss": [
+     {
+      "t": "Shall we go to the market?",
+      "m": "market",
+      "zh": "我們去市場咋樣？",
+      "id": 10478164
+     },
+     {
+      "t": "I'm going to the market.",
+      "m": "market",
+      "zh": "我要去市場。",
+      "id": 8882322
+     },
+     {
+      "t": "I go into the market.",
+      "m": "market",
+      "zh": "進入市場。",
+      "id": 8850233
+     }
+    ]
+   },
+   "die": {
+    "ss": [
+     {
+      "t": "Did they die?",
+      "m": "die",
+      "zh": "死了嗎？",
+      "id": 13529873
+     },
+     {
+      "t": "Let me die!",
+      "m": "die",
+      "zh": "讓我去死。",
+      "id": 9800738
+     },
+     {
+      "t": "Everyone will die.",
+      "m": "die",
+      "zh": "人固有一死。",
+      "id": 8597926
+     }
+    ]
+   },
+   "send": {
+    "ss": [
+     {
+      "t": "Please send me a letter.",
+      "m": "send",
+      "zh": "請寄信給我。",
+      "id": 542518
+     },
+     {
+      "t": "I will send you to Jesus.",
+      "m": "send",
+      "zh": "我會送你去見上帝。",
+      "id": 11156559
+     },
+     {
+      "t": "Did Tom send you here?",
+      "m": "send",
+      "zh": "湯姆派了你們來嗎？",
+      "id": 12183965
+     }
+    ]
+   },
+   "expect": {
+    "ss": [
+     {
+      "t": "What does Jane expect of Marie?",
+      "m": "expect",
+      "zh": "簡對瑪麗有什麼期望？",
+      "id": 9011741
+     },
+     {
+      "t": "I didn't expect these results.",
+      "m": "expect",
+      "zh": "沒想到會是這個結果。",
+      "id": 4890787
+     },
+     {
+      "t": "I didn't expect this result.",
+      "m": "expect",
+      "zh": "我沒有期望得到這樣的結果。",
+      "id": 2744385
+     }
+    ]
+   },
+   "sense": {
+    "ss": [
+     {
+      "t": "This makes sense to me.",
+      "m": "sense",
+      "zh": "我覺得挺合理的。",
+      "id": 13237743
+     },
+     {
+      "t": "You're not making sense.",
+      "m": "sense",
+      "zh": "你說的話沒有道理。",
+      "id": 3354133
+     },
+     {
+      "t": "Yes, that makes sense.",
+      "m": "sense",
+      "zh": "有道理。",
+      "id": 8993942
+     }
+    ]
+   },
+   "build": {
+    "ss": [
+     {
+      "t": "It is important that we build up our health.",
+      "m": "build",
+      "zh": "增強我們的健康,這個很重要。",
+      "id": 1577212
+     },
+     {
+      "t": "How much will it cost to build?",
+      "m": "build",
+      "zh": "造出來要多少錢？",
+      "id": 2912657
+     },
+     {
+      "t": "They decided to build a bridge.",
+      "m": "build",
+      "zh": "他們決定建一座橋。",
+      "id": 306381
+     }
+    ]
+   },
+   "stay": {
+    "ss": [
+     {
+      "t": "Stay with us here.",
+      "m": "Stay",
+      "zh": "和我們留在一起吧！",
+      "id": 6799045
+     },
+     {
+      "t": "We must stay together.",
+      "m": "stay",
+      "zh": "我們必須待在一起。",
+      "id": 3178435
+     },
+     {
+      "t": "Let's stay focused.",
+      "m": "stay",
+      "zh": "讓我們集中注意力。",
+      "id": 3101555
+     }
+    ]
+   },
+   "fall": {
+    "ss": [
+     {
+      "t": "The leaves fall in autumn.",
+      "m": "fall",
+      "zh": "秋天，葉子會落下。",
+      "id": 5165604
+     },
+     {
+      "t": "Fall is my favorite season.",
+      "m": "Fall",
+      "zh": "秋天是我最喜愛的季節。",
+      "id": 3022621
+     },
+     {
+      "t": "It's fall now.",
+      "m": "fall",
+      "zh": "現在是秋天。",
+      "id": 503752
+     }
+    ]
+   },
+   "plan": {
+    "ss": [
+     {
+      "t": "How is this plan?",
+      "m": "plan",
+      "zh": "這計劃如何？",
+      "id": 10372367
+     },
+     {
+      "t": "What's the plan?",
+      "m": "plan",
+      "zh": "計劃是什麼？",
+      "id": 991690
+     },
+     {
+      "t": "Your plan sounds great.",
+      "m": "plan",
+      "zh": "你的計劃聽起來很不錯。",
+      "id": 17357
+     }
+    ]
+   },
+   "cut": {
+    "ss": [
+     {
+      "t": "I cut an apple.",
+      "m": "cut",
+      "zh": "我切開一顆蘋果。",
+      "id": 11929689
+     },
+     {
+      "t": "I cut myself.",
+      "m": "cut",
+      "zh": "我切到自己了。",
+      "id": 1553482
+     },
+     {
+      "t": "Let's cut class!",
+      "m": "cut",
+      "zh": "我們逃課吧！",
+      "id": 12886015
+     }
+    ]
+   },
+   "college": {
+    "ss": [
+     {
+      "t": "They're all college students.",
+      "m": "college",
+      "zh": "他們都是大學生。",
+      "id": 9432254
+     },
+     {
+      "t": "Tom finished college last year.",
+      "m": "college",
+      "zh": "湯姆去年上完了大學。",
+      "id": 4664972
+     },
+     {
+      "t": "Should I go to college?",
+      "m": "college",
+      "zh": "我該上大學嗎？",
+      "id": 758595
+     }
+    ]
+   },
+   "interest": {
+    "ss": [
+     {
+      "t": "Does that really not interest you?",
+      "m": "interest",
+      "zh": "這真的不讓你感興趣嗎？",
+      "id": 12615434
+     },
+     {
+      "t": "This is of interest to me.",
+      "m": "interest",
+      "zh": "我對此感興趣。",
+      "id": 3754631
+     },
+     {
+      "t": "Tom has no interest in science.",
+      "m": "interest",
+      "zh": "湯姆對科學不感興趣。",
+      "id": 2915279
+     }
+    ]
+   },
+   "death": {
+    "ss": [
+     {
+      "t": "Time turns, death strikes.",
+      "m": "death",
+      "zh": "時光流轉，死亡突降。",
+      "id": 11907743
+     },
+     {
+      "t": "Death is like dreaming.",
+      "m": "Death",
+      "zh": "死亡就如同做夢一樣。",
+      "id": 9308602
+     },
+     {
+      "t": "What happens after death?",
+      "m": "death",
+      "zh": "人死了之後會怎麼樣？",
+      "id": 11464158
+     }
+    ]
+   },
+   "course": {
+    "ss": [
+     {
+      "t": "Well, of course, I did that.",
+      "m": "course",
+      "zh": "那當然，是我做的。",
+      "id": 9776649
+     },
+     {
+      "t": "Of course I love you.",
+      "m": "course",
+      "zh": "我當然愛你。",
+      "id": 5819678
+     },
+     {
+      "t": "Of course, I told her.",
+      "m": "course",
+      "zh": "我當然告訴了她。",
+      "id": 3905367
+     }
+    ]
+   },
+   "someone": {
+    "ss": [
+     {
+      "t": "Someone always finds time.",
+      "m": "Someone",
+      "zh": "總有人能擠出時間。",
+      "id": 12883010
+     },
+     {
+      "t": "Someone called my name.",
+      "m": "Someone",
+      "zh": "有人喊我的名字。",
+      "id": 10891016
+     },
+     {
+      "t": "I heard someone singing.",
+      "m": "someone",
+      "zh": "我聽到有人在唱歌。",
+      "id": 9756115
+     }
+    ]
+   },
+   "experience": {
+    "ss": [
+     {
+      "t": "It was an amazing experience.",
+      "m": "experience",
+      "zh": "這是一次很棒的經歷。",
+      "id": 4529766
+     },
+     {
+      "t": "I don't have any experience.",
+      "m": "experience",
+      "zh": "我什麼經驗都沒有。",
+      "id": 6264986
+     },
+     {
+      "t": "Do you have work experience?",
+      "m": "experience",
+      "zh": "你有工作經驗嗎?",
+      "id": 508311
+     }
+    ]
+   }
+  }
+ }
+}

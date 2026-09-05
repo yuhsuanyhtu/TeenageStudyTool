@@ -1,124 +1,148 @@
 {
-"_note": "克漏字題庫（原創短文，v2.40）。text 內 {1}~{4} 為挖空；每格 4 選 1，a 為正解索引，why 為中文解析。只用謙恩已學過的字。",
+"_note": "克漏字題庫 v2.41。短文取自 VOA Learning English《Let's Learn English》各課對話（美國之音，公共財，節錄／輕度改編）。挖空、選項與中文解析為本系統編寫。Source: VOA Learning English (learningenglish.voanews.com), public domain.",
+"_attribution": "Passages excerpted/adapted from “Let's Learn English” Level 1, VOA Learning English (learningenglish.voanews.com), public domain. Blanks, options and Chinese explanations © this project.",
 "passages": [
 {
-"id": "u1-a", "unit": "二上 Unit 1", "title": "A Cold Winter Trip", "zh": "寒假的日本之旅",
-"text": "Last winter, my family went to Japan. It was very cold, and it {1} every day. The ground was all white. I wore a heavy jacket and gloves, {2} I still felt cold. One day, the {3} was strong, and my hat flew away! Dad caught it, and we all laughed. It was a {4} trip, and I want to go again.",
+"id": "u1-voa9", "unit": "二上 Unit 1", "title": "Is It Cold?", "zh": "今天冷嗎？（VOA 第 9 課）", "src": "VOA Let's Learn English 1-09",
+"text": "Anna: Here in Washington, D.C., the {1} changes often. One day is cold and {2}. But the next day is warm and sunny! So every day I check the forecast. Hello, Phone? Is it {3} today?\nPhone: No, Anna. It is not. There is no rain today.\nAnna: Is it sunny today?\nPhone: Yes, Anna. It is sunny.\nAnna: Great! Today the weather is warm and sunny — {4} for seeing Washington, D.C.!",
+"notes": ["forecast＝天氣預報", "Washington, D.C.＝美國首都華盛頓"],
 "blanks": [
-{"n":1, "opts":["snowed","snows","is snowing","will snow"], "a":0, "why":"Last winter（去年冬天）是過去的事 → 動詞用過去式 snowed"},
-{"n":2, "opts":["but","so","or","because"], "a":0, "why":"穿了外套和手套「卻還是」冷 → 語氣轉折用 but"},
-{"n":3, "opts":["wind","sun","cloud","season"], "a":0, "why":"帽子被吹走了 → 是「風」很強：wind"},
-{"n":4, "opts":["fun","terrible","heavy","rainy"], "a":0, "why":"最後說「還想再去一次」→ 是好玩的旅行：fun"}
+{"n":1, "opts":["weather","season","cloud","wind"], "oz":["天氣","季節","雲","風"], "a":0, "why":"一下冷一下暖、每天要查預報的是「天氣」→ weather（season 季節不會一天一變）"},
+{"n":2, "opts":["windy","sunny","warm","lovely"], "oz":["風大的","晴朗的","溫暖的","可愛的"], "a":0, "why":"and 前後是同一組壞天氣：cold and ___。後面說 But…warm and sunny（好天氣）→ 這裡要跟 cold 一國的 windy"},
+{"n":3, "opts":["rainy","snowy","cloudy","cool"], "oz":["下雨的","下雪的","多雲的","涼爽的"], "a":0, "why":"Phone 回答 There is no rain today（今天沒有雨）→ Anna 問的是 rainy"},
+{"n":4, "opts":["great","terrible","heavy","strange"], "oz":["很棒","糟糕的","厚重的","奇怪的"], "a":0, "why":"又暖又晴 → 是逛華盛頓的「好」天氣：great for + V-ing"}
 ]
 },
 {
-"id": "u1-b", "unit": "二上 Unit 1", "title": "Four Seasons in Taiwan", "zh": "臺灣的四季",
-"text": "Taiwan has four {1}. In spring, it often rains, and everything grows. Summer is very hot and sunny, so many people go to the beach. In autumn, the weather turns {2}, and the leaves fall. Winter here is not very cold, and it almost never {3}. Many people love Taiwan's winter {4} it is short and warm.",
+"id": "u1-voa46", "unit": "二上 Unit 1", "title": "May I Borrow That?", "zh": "可以借我嗎？（VOA 第 46 課）", "src": "VOA Let's Learn English 1-46",
+"text": "Anna: I forgot Marsha's birthday! I'll make her a gift. I'll just have to {1} a couple of things. Amelia, may I borrow your stapler?\nAmelia: Sure. I can {2} you my stapler, Anna. But please {3} it. It's my favorite stapler.\nAnna: You can trust me.\nJonathan: I can lend you my scissors too, {4} you must bring them back.\nAnna: I will be very careful, and I'll bring them back tomorrow!",
+"notes": ["stapler＝釘書機", "scissors＝剪刀", "trust＝信任"],
 "blanks": [
-{"n":1, "opts":["seasons","weathers","winds","clouds"], "a":0, "why":"春夏秋冬是四個「季節」→ seasons"},
-{"n":2, "opts":["cool","hot","heavy","lovely"], "a":0, "why":"秋天天氣「轉涼」→ cool"},
-{"n":3, "opts":["snows","snowed","snowing","snow"], "a":0, "why":"講臺灣冬天的「習慣事實」用現在式；主詞 it 是第三人稱單數 → snows"},
-{"n":4, "opts":["because","but","or","until"], "a":0, "why":"「因為」冬天又短又暖，所以大家喜歡 → because"}
+{"n":1, "opts":["borrow","lend","send","give"], "oz":["借（入）","借（出）","寄；送","給"], "a":0, "why":"Anna 要「跟別人借東西進來」→ borrow（借入）；lend 是借「出去」給別人"},
+{"n":2, "opts":["lend","borrow","hate","call"], "oz":["借（出）","借（入）","討厭","打電話"], "a":0, "why":"Amelia 把自己的釘書機「借出去」給 Anna → lend＋人＋物；borrow 方向相反"},
+{"n":3, "opts":["return","keep","break","buy"], "oz":["歸還","保留","打破","買"], "a":0, "why":"最愛的釘書機借你，「但是請『還』它」→ return（keep 保留就拿不回來了）"},
+{"n":4, "opts":["but","or","because","so"], "oz":["但是","或者","因為","所以"], "a":0, "why":"可以借你「但是」必須帶回來 → 條件轉折用 but"}
 ]
 },
 {
-"id": "u2-a", "unit": "二上 Unit 2", "title": "The Science Club", "zh": "加入科學社",
-"text": "Last month, our school had a club day. I could not make up my mind: the science club or the soccer club? My best friend said, \"Join the science club with me! Our teacher shows us many {1} things.\" So I {2} up for it. Now we do fun tests every Wednesday. Last week, we made a small robot, and it really walked! I was so happy {3} I saw it move. I made the right {4}.",
+"id": "u2-voa50", "unit": "二上 Unit 2", "title": "Back to School", "zh": "重返校園（VOA 第 50 課）", "src": "VOA Let's Learn English 1-50",
+"text": "Taylor: I have been writing and re-writing my report since last night! The {1} is really interesting to me.\nSarah: Me too! I have been studying this topic for a long time.\nAnna: Am I {2}?\nSarah: A little. But don't worry. The professor isn't here yet.\nAnna: Oh no! I forgot my pencil sharpener. {3} me, do you have one I can {4}?\nTaylor: No, sorry.\nAnna: Oh wait. I found my extra one!",
+"notes": ["report＝報告", "professor＝教授", "pencil sharpener＝削鉛筆機", "topic＝主題"],
 "blanks": [
-{"n":1, "opts":["interesting","difficult","wrong","poor"], "a":0, "why":"朋友在推薦社團，當然是說老師會展示「有趣的」東西 → interesting"},
-{"n":2, "opts":["signed","sign","signs","signing"], "a":0, "why":"上個月報名，是過去的事 → 過去式 signed（sign up 報名）"},
-{"n":3, "opts":["when","before","until","or"], "a":0, "why":"「當」我看到機器人動起來的那一刻很開心 → when"},
-{"n":4, "opts":["choice","subject","lesson","club"], "a":0, "why":"make the right choice＝做了正確的「選擇」"}
+{"n":1, "opts":["subject","lesson","club","choice"], "oz":["主題；學科","課程","社團","選擇"], "a":0, "why":"下一句 Sarah 說 this topic（這個主題）→ 這裡指報告的「主題」：subject"},
+{"n":2, "opts":["late","free","poor","wrong"], "oz":["遲到的","有空的；免費的","不佳的","錯誤的"], "a":0, "why":"回答是「有一點，但教授也還沒到」→ Anna 問自己是不是「遲到」了：late"},
+{"n":3, "opts":["Excuse","Tell","Call","Help"], "oz":["（Excuse me）不好意思","告訴","打電話","幫助"], "a":0, "why":"開口請問別人之前的禮貌語 → Excuse me"},
+{"n":4, "opts":["borrow","lend","teach","design"], "oz":["借（入）","借（出）","教","設計"], "a":0, "why":"跟同學「借」削鉛筆機（借入）→ borrow"}
 ]
 },
 {
-"id": "u2-b", "unit": "二上 Unit 2", "title": "A Phone Call", "zh": "一通電話",
-"text": "(The phone rings.) Amy: Hello. This is Amy. May I speak to Lisa? Mom: {1}, please. I will get her. Lisa: Hi, Amy. {2}? Amy: Our history teacher is sick, so there is no test tomorrow! Lisa: Really? That is great news! Amy: Also, don't forget to {3} your workbook to school. Ms. Wang wants to see it. Lisa: Thank you for {4} me. See you tomorrow.",
+"id": "u2-voa21", "unit": "二上 Unit 2", "title": "Can You Come to the Party?", "zh": "你能來派對嗎？（VOA 第 21 課）", "src": "VOA Let's Learn English 1-21",
+"text": "Marsha: Hey, Anna, my friend is having a party on Saturday. Can you come with me?\nAnna: Sorry, I can't. I have to take a test on the computer.\nMarsha: But the party is at night. Everyone has to bring something or do something. You can bring food, or you can {1}.\nAnna: Really? I can sing! Then I can come {2} the test!\nMarsha: That's it! You can sing at the party. Now I have to go {3} for food. Can you help me?\nAnna: {4}! I'm not busy right now.",
+"notes": ["test＝考試（這裡指路考的筆試）"],
 "blanks": [
-{"n":1, "opts":["Hold on","Sign up","Miss out","Look out"], "a":0, "why":"電話用語「稍等一下」→ Hold on"},
-{"n":2, "opts":["What's up","Who is that","How much","Whose is it"], "a":0, "why":"接起電話問「怎麼了？有什麼事？」→ What's up?"},
-{"n":3, "opts":["bring","borrow","lend","leave"], "a":0, "why":"把習作「帶來」學校 → bring；borrow 是借入、lend 是借出、leave 是留下"},
-{"n":4, "opts":["telling","teaching","calling","asking"], "a":0, "why":"謝謝你「告訴」我這件事 → thank you for telling me"}
+{"n":1, "opts":["perform","finish","worry","move"], "oz":["表演","完成","擔心","搬動"], "a":0, "why":"帶食物「或者表演節目」（下一句 Anna 說她可以唱歌）→ perform"},
+{"n":2, "opts":["after","before","until","during"], "oz":["在…之後","在…之前","直到","在…期間"], "a":0, "why":"考試在白天、派對在晚上 → 考「完」之後再來：after the test"},
+{"n":3, "opts":["shopping","jogging","surfing","sailing"], "oz":["購物","慢跑","衝浪","航行"], "a":0, "why":"要為派對準備食物 → go shopping 去採買"},
+{"n":4, "opts":["Sure","Never","Wrong","Almost"], "oz":["當然好","從不","錯誤的","幾乎"], "a":0, "why":"答應幫忙的口語 → Sure!（當然好）"}
 ]
 },
 {
-"id": "u3-a", "unit": "二上 Unit 3", "title": "Busy Saturday Morning", "zh": "忙碌的星期六早上",
-"text": "Last Saturday morning, everyone in my family was busy. Mom was mopping the floor, and Dad was wiping the windows. My sister was doing the dishes in the kitchen. And me? At that moment, I {1} my dog a bath in the bathroom. At noon, the house was clean and bright. We hung the wet {2} outside, ate lunch, and then took a {3}. Housework is hard, {4} a clean house made us all happy.",
+"id": "u3-voa36", "unit": "二上 Unit 3", "title": "I Can Fix This", "zh": "我搞得定（VOA 第 36 課）", "src": "VOA Let's Learn English 1-36",
+"text": "Anna: I just need a couple of ingredients. Marsha, please hand me the flour.\nMarsha: Anna, where is the flour? It's not in the cabinets.\nAnna: I put the flour {1} the refrigerator. It's cold and dry there! Okay, now please hand me the eggs.\nMarsha: Where are the eggs?\nAnna: The eggs are in the cabinet {2} the sink.\nMarsha: Anna, why are the eggs in here?!\nAnna: Okay, okay. You {3} the living room. I will make dinner.\nMarsha: Okay, the apartment is clean now. The kitchen is not. What are you cooking?\nAnna: I made my favorite recipe! Sometimes when something goes wrong with your plan, just {4} the plan!",
+"notes": ["ingredients＝食材", "flour＝麵粉", "cabinet＝櫥櫃", "sink＝水槽", "recipe＝食譜"],
 "blanks": [
-{"n":1, "opts":["was giving","gave","give","giving"], "a":0, "why":"At that moment（就在那時，動作進行中）配合前面 was mopping / was wiping → 過去進行式 was giving"},
-{"n":2, "opts":["clothes","drawers","stairs","floors"], "a":0, "why":"洗完「掛在外面晾」的是濕「衣服」→ clothes"},
-{"n":3, "opts":["break","half","hole","tip"], "a":0, "why":"take a break＝休息一下"},
-{"n":4, "opts":["but","because","before","until"], "a":0, "why":"家事很累「但是」乾淨的家讓大家開心 → 轉折 but"}
+{"n":1, "opts":["inside","past","through","along"], "oz":["在…裡面","經過","穿過","沿著"], "a":0, "why":"下一句說「那裡又冷又乾」→ 麵粉被放「進」冰箱裡面：inside"},
+{"n":2, "opts":["under","on","over","off"], "oz":["在…下面","在…上面","在…上方","離開"], "a":0, "why":"雞蛋在「水槽下面」的櫥櫃 → under the sink"},
+{"n":3, "opts":["clean","sweep","wipe","mop"], "oz":["打掃","掃（地）","擦拭","拖（地）"], "a":0, "why":"下文說 the apartment is clean now → 這裡是整個客廳的「打掃」：clean（sweep／wipe／mop 是特定動作）"},
+{"n":4, "opts":["change","fix","catch","feed"], "oz":["改變","修理","接住","餵"], "a":0, "why":"計畫出錯就「改」計畫 → change the plan"}
 ]
 },
 {
-"id": "u3-b", "unit": "二上 Unit 3", "title": "A Strange Sound at Night", "zh": "半夜的怪聲音",
-"text": "Last night, I was sleeping when I heard a strange sound. Someone was walking past my door! I was so {1} that I could not move. Then the door opened slowly... It was my brother! He was {2} again. He walked through the living room and went back to his bed. The next morning, I told Mom about it. She said, \"Take it easy. He does that {3} he is too tired.\" {4}, I still want to put a monitor at his door.",
+"id": "u3-voa42", "unit": "二上 Unit 3", "title": "I Was Minding My Own Business", "zh": "我本來只是路過（VOA 第 42 課）", "src": "VOA Let's Learn English 1-42",
+"text": "Guy: Anna, what did you see?\nAnna: I left work to get some lunch. Then suddenly, I {1} a woman yelling, \"Help! Help!\" Two robbers {2} grabbing her bag.\nGuy: Were you afraid?\nAnna: I had no time to be afraid! The robbers ran away, so I ran after them. {3} I was running, I tripped and fell.\nGuy: And that is when you {4} your arm?\nAnna: While I was lying on the ground, someone stepped on my arm!",
+"notes": ["robber＝搶匪", "grab＝抓住；搶", "yell＝大喊", "trip＝絆倒", "step on＝踩到"],
 "blanks": [
-{"n":1, "opts":["scared","close","dry","terrible"], "a":0, "why":"嚇到「不敢動」→ 我很「害怕」：scared（terrible 是形容事物很糟，不是人在害怕）"},
-{"n":2, "opts":["sleepwalking","sweeping","moving","feeding"], "a":0, "why":"半夜邊睡邊走 → 他又在「夢遊」：was sleepwalking"},
-{"n":3, "opts":["when","until","before","so"], "a":0, "why":"「當」他太累的時候就會夢遊 → when"},
-{"n":4, "opts":["However","Finally","Almost","Through"], "a":0, "why":"媽媽說沒事，「然而」我還是想裝監視器 → 轉折 However"}
+{"n":1, "opts":["heard","hear","hears","hearing"], "oz":["聽見（過去式）","聽見（原形）","聽見（三單）","聽見（V-ing）"], "a":0, "why":"整段在講「昨天發生的事」→ 過去式 heard（hear 的不規則變化）"},
+{"n":2, "opts":["were","was","are","is"], "oz":["（過去、複數）","（過去、單數）","（現在、複數）","（現在、單數）"], "a":0, "why":"過去進行式「正在搶」：主詞 Two robbers 是複數、事情發生在過去 → were + grabbing"},
+{"n":3, "opts":["While","Before","Until","However"], "oz":["當…的時候","在…之前","直到","然而"], "a":0, "why":"「正在跑的『當下』」絆倒了 → While + 過去進行式"},
+{"n":4, "opts":["hurt","fixed","saved","caught"], "oz":["弄傷","修理","拯救","接住"], "a":0, "why":"記者問「你就是那時弄『傷』手臂的嗎」→ hurt your arm"}
 ]
 },
 {
-"id": "u4-a", "unit": "二上 Unit 4", "title": "My Future Dream", "zh": "我的未來夢想",
-"text": "What do you want to be in the {1}? Everyone has different ideas. My cousin wants to be a {2}; she loves teeth and wants everyone to have a healthy smile. My brother hopes to become a reporter, so he can {3} famous people and write news. And me? I want to be a successful farmer! I will use science to {4} the best rice in Taiwan. Dad laughs, but I will not give up my dream.",
+"id": "u4-voa34", "unit": "二上 Unit 4", "title": "What Will I Do?", "zh": "我會怎麼樣呢？（VOA 第 34 課）", "src": "VOA Let's Learn English 1-34",
+"text": "Rebecca: Okay, tell me what I am thinking.\nAnna: Sure! First, what do you do?\nRebecca: I {1}. I'm a junior in college.\nAnna: What do you study?\nRebecca: I study journalism.\nAnna: You are thinking... you {2} graduate from college in about one year. And you are thinking... you might get a {3} writing the news.\nRebecca: I MIGHT get a job? That means I might not! And I'm studying really hard!\nAnna: No, no! You {4} get a job writing the news. You WILL!",
+"notes": ["junior＝大三學生", "college＝大學", "journalism＝新聞學", "graduate＝畢業"],
 "blanks": [
-{"n":1, "opts":["future","factory","country","grade"], "a":0, "why":"in the future＝在「未來」你想做什麼"},
-{"n":2, "opts":["dentist","lawyer","soldier","salesman"], "a":0, "why":"喜歡牙齒、希望大家有健康的笑容 → 牙醫 dentist"},
-{"n":3, "opts":["interview","deliver","believe","worry"], "a":0, "why":"記者「採訪」名人寫新聞 → interview"},
-{"n":4, "opts":["grow","act","drive","find"], "a":0, "why":"農夫用科學「種」出最好的米 → grow"}
+{"n":1, "opts":["study","act","grow","drive"], "oz":["讀書；唸書","表演","種植","開車"], "a":0, "why":"她是大學生，下一句也說 I study journalism → study"},
+{"n":2, "opts":["will","did","were","have"], "oz":["將會","（過去式助動詞）","（過去 be 動詞）","已經"], "a":0, "why":"in about one year（大約一年後）是未來 → will graduate"},
+{"n":3, "opts":["job","dream","plan","right"], "oz":["工作","夢想","計畫","權利"], "a":0, "why":"get a job＝找到一份「工作」（寫新聞的工作）"},
+{"n":4, "opts":["will","might","must","should"], "oz":["一定會","可能會","必須","應該"], "a":0, "why":"Rebecca 抗議 might（可能）聽起來不確定 → Anna 改口保證「一定會」：WILL"}
 ]
 },
 {
-"id": "u4-b", "unit": "二上 Unit 4", "title": "A Successful Man", "zh": "一位成功的人",
-"text": "Mr. Lin was born in a poor family. His father was a {1} and caught fish for the market every day. Little Lin studied hard because he wanted to {2} a lawyer. His teachers believed in him, but some kids made fun {3} him. He did not give up. Twenty years later, he is famous {4} the country, and he helps poor children go to school.",
+"id": "u4-voa18", "unit": "二上 Unit 4", "title": "Just the Facts", "zh": "只要事實（VOA 第 18 課）", "src": "VOA Let's Learn English 1-18",
+"text": "Caty: Okay, let's try the first story! And... go!\nAnna: Hello, and welcome to The News. A new book is very popular with children and families. It is about a {1} duckling. The duck's mother cannot {2} him.\nCaty: Stop! Anna, when you say \"duckling,\" you look really sad.\nAnna: This story is very sad!\nCaty: Anna, happy and sad are feelings. You can't have feelings in The News!\nAnna: In Indiana, a grandmother {3} the first 80-year-old woman to win the car race. She rarely talks to {4}. But when she does, she often says, \"Nothing can stop me now!\"",
+"notes": ["duckling＝小鴨", "popular＝受歡迎的", "feelings＝情緒", "rarely＝很少"],
 "blanks": [
-{"n":1, "opts":["fisherman","farmer","boss","secretary"], "a":0, "why":"每天「抓魚」到市場賣 → 漁夫 fisherman"},
-{"n":2, "opts":["become","keep","act","interview"], "a":0, "why":"想「成為」律師 → become a lawyer"},
-{"n":3, "opts":["of","at","on","for"], "a":0, "why":"make fun of＝取笑（固定片語）"},
-{"n":4, "opts":["all over","across from","along","through"], "a":0, "why":"famous all over the country＝「全國」有名"}
+{"n":1, "opts":["lost","scared","successful","funny"], "oz":["迷路的；走失的","害怕的","成功的","滑稽的"], "a":0, "why":"下一句「鴨媽媽找不到牠」→ 是一隻「走失的」小鴨：lost"},
+{"n":2, "opts":["find","believe","interview","teach"], "oz":["找到","相信","採訪","教"], "a":0, "why":"cannot ___ him＝「找」不到牠 → find"},
+{"n":3, "opts":["is","are","be","were"], "oz":["（單數）是","（複數）是","（原形）是","（過去複數）是"], "a":0, "why":"主詞 a grandmother 是單數、新聞報導用現在式 → is the first"},
+{"n":4, "opts":["reporters","farmers","soldiers","dentists"], "oz":["記者","農夫","士兵","牙醫"], "a":0, "why":"贏得比賽的人很少「接受記者訪問」→ talks to reporters"}
 ]
 },
 {
-"id": "u5-a", "unit": "二上 Unit 5", "title": "How Do I Get There?", "zh": "請問怎麼走？",
-"text": "Tom is new in the city, and he is lost. Tom: {1}, sir. How can I get to the train station? Man: Go {2} for three blocks — don't turn — and then turn left at the bank. The station is {3} the post office; you can see it easily. Tom: Should I walk there? Man: It is a little far. You can take the {4} — it comes every five minutes, and there is a stop right here. Tom: Thank you so much!",
+"id": "u5-voa11", "unit": "二上 Unit 5", "title": "This Is My Neighborhood", "zh": "我的社區（VOA 第 11 課）", "src": "VOA Let's Learn English 1-11",
+"text": "Anna: I need to return three books to the library. Where is the library?\nMarsha: It is on this street, on the {1}.\nAnna: And is there a {2} near here? I have four letters for my family!\nMarsha: No, it is far from here. But there is a mailbox {3} the store.\nAnna: Now I need to buy stamps. Do I have cash? No! Is there a {4} near here?\nMarsha: There is one behind you.\nAnna: Thanks, Marsha. You know our neighborhood so well!",
+"notes": ["mailbox＝郵筒", "stamp＝郵票", "neighborhood＝社區；鄰里"],
 "blanks": [
-{"n":1, "opts":["Excuse me","What's up","Hold on","Take it easy"], "a":0, "why":"開口問路的禮貌用語 →「不好意思，請問…」Excuse me"},
-{"n":2, "opts":["straight","right","along","around"], "a":0, "why":"「don't turn（不要轉彎）」→ 直直走：go straight"},
-{"n":3, "opts":["across from","all over","close","next"], "a":0, "why":"車站在郵局「對面」→ across from（close 後面要加 to、next 要加 to 才能接名詞）"},
-{"n":4, "opts":["metro","taxi","ship","scooter"], "a":0, "why":"每五分鐘一班、有固定站牌 → 大眾運輸「捷運」metro"}
+{"n":1, "opts":["corner","block","ground","floor"], "oz":["轉角","街區","地面","地板"], "a":0, "why":"圖書館「在這條街的轉角上」→ on the corner"},
+{"n":2, "opts":["post office","fire station","supermarket","bus stop"], "oz":["郵局","消防局","超市","公車站"], "a":0, "why":"她有四封信要寄 → 找「郵局」post office"},
+{"n":3, "opts":["across from","along","through","past"], "oz":["在…對面","沿著","穿過","經過"], "a":0, "why":"郵筒「在商店對面」→ across from the store"},
+{"n":4, "opts":["bank","hospital","pool","toy"], "oz":["銀行","醫院","水池","玩具"], "a":0, "why":"沒有現金（cash）→ 要找「銀行」領錢：bank"}
 ]
 },
 {
-"id": "u5-b", "unit": "二上 Unit 5", "title": "A Wonderful Sunday", "zh": "美好的星期天",
-"text": "Last Sunday was sunny. In the morning, Dad went {1} along the river before breakfast. Mom took the metro to the city and went shopping. In the afternoon, we all rode our bikes to the sea. We watched people go {2} on the water; standing on a board looks so cool! On the way home, the sky turned dark, so we came back fast {3} bike. What a {4} day!",
+"id": "u5-voa6", "unit": "二上 Unit 5", "title": "Where Is the Gym?", "zh": "健身房在哪裡？（VOA 第 6 課）", "src": "VOA Let's Learn English 1-06",
+"text": "Anna: Pete, I want to work out. Where is the gym?\nPete: The gym is {1} the lounge. It's next to the mailroom. Go that way.\nAnna: Thanks, Pete!\nPete: No, Anna! Not that way! Go {2} way!\nAnna: Oh, Pete. This is not the gym.\nPete: That's {3}, Anna. This is the mailroom.\nAnna: Pete! This is not the gym! This is a parking garage!\nAnna: I am {4} in my own office building. This is a rooftop!",
+"notes": ["gym＝健身房", "lounge＝交誼廳", "mailroom＝收發室", "parking garage＝停車場", "rooftop＝屋頂"],
 "blanks": [
-{"n":1, "opts":["jogging","surfing","sailing","shopping"], "a":0, "why":"早餐前沿著河邊運動 → 慢跑 go jogging（shopping 是媽媽後來做的事）"},
-{"n":2, "opts":["surfing","jogging","biking","sightseeing"], "a":0, "why":"站在板子上、在水上 → 衝浪 go surfing"},
-{"n":3, "opts":["by","on","at","in"], "a":0, "why":"by＋交通工具＝搭乘／騎乘：by bike"},
-{"n":4, "opts":["wonderful","terrible","lost","low"], "a":0, "why":"全家出遊玩了一整天 →「美好的」一天：wonderful"}
+{"n":1, "opts":["across from","on foot","by","around"], "oz":["在…對面","步行","搭乘","大約"], "a":0, "why":"說位置：健身房「在交誼廳對面」→ across from"},
+{"n":2, "opts":["that","what","whose","which"], "oz":["那個","什麼","誰的","哪一個"], "a":0, "why":"皮特指著另一邊：「走『那』邊！」→ Go that way"},
+{"n":3, "opts":["right","wrong","fast","low"], "oz":["對的","錯的","快的","低的"], "a":0, "why":"Anna 說這不是健身房，皮特說「沒『錯』，這是收發室」→ That's right（你說對了）"},
+{"n":4, "opts":["lost","late","scared","free"], "oz":["迷路的","遲到的","害怕的","自由的"], "a":0, "why":"在自己公司大樓裡繞到屋頂 → 「迷路了」：lost"}
 ]
 },
 {
-"id": "u6-a", "unit": "二上 Unit 6", "title": "At the Night Market", "zh": "夜市買帽子",
-"text": "Ben and his mom are at the night market. Ben: Look at that baseball cap! How much does it {1}? Shopkeeper: Two hundred dollars, young man. Ben: That is too {2}. I only have one hundred and fifty. Shopkeeper: OK, OK. For you, one hundred and forty. Ben: Great! Here are one hundred and fifty dollars. Shopkeeper: And here is ten dollars — your {3}. Ben: Thanks! I {4} wear it to the ball game tomorrow!",
+"id": "u6-voa14a", "unit": "二上 Unit 6", "title": "How About This? (1)", "zh": "這件如何？（VOA 第 14 課・上）", "src": "VOA Let's Learn English 1-14",
+"text": "Anna: Tonight I am going to the theater with my friends. But I don't know what {1} to wear!\nGenie: I am Genie! I am here to help you find the right clothes!\nAnna: Awesome! How about jeans and a {2}?\nGenie: No! Jeans and a T-shirt are too casual. How about something more formal?\nAnna: Wow! Genie, this {3} is beautiful. But it's not the right size. It's too {4}.\nGenie: Yes, it is. But green looks great on you! Let's try a green shirt and a skirt.",
+"notes": ["casual＝休閒的", "formal＝正式的", "size＝尺寸", "theater＝劇院"],
 "blanks": [
-{"n":1, "opts":["cost","spend","pay","take"], "a":0, "why":"問「東西」多少錢用 cost（主詞是物品）；spend／pay 的主詞是人"},
-{"n":2, "opts":["expensive","cheap","low","ugly"], "a":0, "why":"錢不夠 → 太「貴」了：expensive"},
-{"n":3, "opts":["change","cash","price","total"], "a":0, "why":"付一百五、東西一百四，找回十元 →「找零」change"},
-{"n":4, "opts":["will","did","do","was"], "a":0, "why":"tomorrow（明天）是未來 → 用 will"}
+{"n":1, "opts":["clothes","glasses","shorts","socks"], "oz":["衣服","眼鏡","短褲","襪子"], "a":0, "why":"不知道要「穿什麼衣服」→ what clothes to wear（去劇院要整套打扮，不是只挑襪子）"},
+{"n":2, "opts":["T-shirt","tie","belt","ring"], "oz":["T恤","領帶","腰帶","戒指"], "a":0, "why":"下一句 Genie 說 Jeans and a T-shirt are too casual → 空格是 T-shirt"},
+{"n":3, "opts":["dress","cap","sock","shoe"], "oz":["洋裝","棒球帽","襪子","鞋"], "a":0, "why":"去劇院的正式服裝、之後改試 shirt and skirt → 這裡試穿的是「洋裝」dress"},
+{"n":4, "opts":["small","cheap","ugly","high"], "oz":["小的","便宜的","醜的","高的"], "a":0, "why":"尺寸不對（not the right size）→ 太「小」：too small"}
 ]
 },
 {
-"id": "u6-b", "unit": "二上 Unit 6", "title": "New Clothes for the Party", "zh": "為派對買新衣",
-"text": "Tomorrow is the school party, and Tina has nothing special to wear. Mom takes her to the store. Tina tries on a yellow dress, {1} it is too long for her. Then she sees a white skirt. It is on {2} today — half price, only ninety dollars! Tina says, \"I love it! What's {3}, it goes well with my new shoes.\" Mom pays at the checkout with {4}, and they go home happy.",
+"id": "u6-voa14b", "unit": "二上 Unit 6", "title": "How About This? (2)", "zh": "這件如何？（VOA 第 14 課・下）", "src": "VOA Let's Learn English 1-14",
+"text": "Anna: These clothes are formal: a suit jacket, a dress shirt and a {1}! They look great!\nGenie: Those clothes look great... for a man! Let's try again.\nGenie: Oh! Now these clothes look great on you!\nAnna: They do! Um, Genie, can you put on a gold {2}?\nGenie: Sure! That looks great.\nAnna: I love the jacket! How about a hat?\nGenie: Why not?\nGenie: Mm, {3} the hat. That's better.\nAnna: Genie, these clothes look and feel great! {4} more, they are the right size!",
+"notes": ["suit＝西裝", "gold＝金色的"],
 "blanks": [
-{"n":1, "opts":["but","so","because","or"], "a":0, "why":"試穿了洋裝「但是」太長 → 轉折 but"},
-{"n":2, "opts":["sale","fashion","hand","foot"], "a":0, "why":"on sale＝特價中（半價！）"},
-{"n":3, "opts":["more","up","wrong","high"], "a":0, "why":"what's more＝而且（補充另一個優點）"},
-{"n":4, "opts":["cash","change","truth","environment"], "a":0, "why":"在結帳處用「現金」付錢 → cash"}
+{"n":1, "opts":["tie","skirt","dress","sweater"], "oz":["領帶","裙子","洋裝","毛衣"], "a":0, "why":"男士正式穿著三件組：西裝外套＋襯衫＋「領帶」→ tie（後面也說這套適合男生）"},
+{"n":2, "opts":["belt","sock","shoe","glove"], "oz":["腰帶","襪子","鞋","手套"], "a":0, "why":"金「腰帶」配洋裝 → a gold belt"},
+{"n":3, "opts":["take off","put on","turn left","get off"], "oz":["脫下","穿上","左轉","下車"], "a":0, "why":"帽子不好看 → 「脫掉」帽子比較好：take off the hat"},
+{"n":4, "opts":["What's","Who's","Where's","How's"], "oz":["（what's more）而且","誰是","哪裡是","如何是"], "a":0, "why":"補充另一個優點「而且尺寸剛好」→ What's more"}
+]
+},
+{
+"id": "fest-voa34", "unit": "二上 Festival", "title": "Halloween Is Coming!", "zh": "萬聖夜來了！（VOA 第 34 課）", "src": "VOA Let's Learn English 1-34",
+"text": "Anna: Hello! {1} is very popular in the United States. Children go trick-or-treating. They ask people for {2}. Children and adults wear {3} and go to parties! In fact, there is a party tonight. I don't have a costume. Can you help me, Genie?\nGenie: Dress as a genie!\nAnna: Great idea! Hey, look! I'm a genie! This is going to be {4}!",
+"notes": ["adults＝大人", "genie＝（阿拉丁神燈裡的）精靈"],
+"blanks": [
+{"n":1, "opts":["Halloween","Christmas","New Year","Birthday"], "oz":["萬聖夜","聖誕節","新年","生日"], "a":0, "why":"小孩去 trick-or-treating（不給糖就搗蛋）的節日 → Halloween"},
+{"n":2, "opts":["candy","money","water","books"], "oz":["糖果","錢","水","書"], "a":0, "why":"萬聖夜挨家挨戶要的是「糖果」→ ask people for candy"},
+{"n":3, "opts":["costumes","sweaters","uniforms","coats"], "oz":["道具服","毛衣","制服","外套"], "a":0, "why":"萬聖夜大人小孩都穿「道具服」參加派對 → costumes"},
+{"n":4, "opts":["fun","scary","terrible","ugly"], "oz":["好玩的","嚇人的","糟糕的","醜的"], "a":0, "why":"打扮好要去派對，Anna 很期待 → This is going to be fun!"}
 ]
 }
 ]

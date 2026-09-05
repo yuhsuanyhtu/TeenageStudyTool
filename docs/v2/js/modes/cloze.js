@@ -1,13 +1,14 @@
-// modes/cloze.js — 🧩 克漏字：短文挖空，每格 4 選 1（v2.40）
+// modes/cloze.js — 🧩 克漏字：短文挖空，每格 4 選 1（v2.40，v2.41 全面改版）
 //
-// 老師建議的段考題型（2026-09-05 家長轉達）：
-//   一篇短文 3~5 個空格，考時態、連接詞、介系詞與課內字彙的「上下文判斷」。
+// v2.41（家長 2026-09-05 要求）：
+//   1. 短文不再原創 → 全部節錄自 VOA Learning English《Let's Learn English》課文對話
+//      （美國之音，公共財；資料檔含出處與授權標註）。挖空、選項與中文解析仍為本系統編寫。
+//   2. 答錯完整解釋：每個選項都附中文字義（oz），答錯時顯示「你選的 X（意思）」＋為什麼是正解。
+//   3. 段落下方附「詞彙註解」（notes）：課文裡超出範圍的字先給中文，看不懂不用怕。
 //
-// 題庫：data/cloze-*.json（原創短文，text 內 {1}~{n} 為挖空）。
-// 流程：選一篇 → 短文 + 全部空格一次呈現（跟考卷一樣）→ 每格先選（可改）
-//        → 全部選完才能送出 → 逐格顯示對錯 + 中文解析，短文空格填回正解。
-// 焦慮緩衝：答錯暖橘不紅；解析用「為什麼是這個」的教學語氣；可中途離開。
-// 不寫 SRS（考的是文法與語感，不是單一單字的記憶）。
+// 流程：選一篇 → 對話短文 + 全部空格一次呈現 → 每格先選（可改）→ 全部選完才能送出
+//        → 逐格顯示對錯 + 解析，短文空格填回正解，可聽整篇。
+// 不寫 SRS（考文法與語感）。選文頁按返回 → silent 返回題型選單（不記錄）。
 
 import { speak } from '../tts.js';
 
@@ -26,7 +27,7 @@ export function startClozeMode({ root, passages, onComplete }) {
     root.innerHTML = `
       <button class="back" id="back">← 回題型選單</button>
       <h2>🧩 克漏字</h2>
-      <p class="muted">選一篇短文（跟段考題組一樣：讀短文，每個空格選出最適合的答案）</p>
+      <p class="muted">選一篇（跟段考題組一樣：讀短文，每個空格選出最適合的答案）</p>
       <div class="bookshelf">
         ${passages.map((p, i) => `
           <button class="book-card" data-i="${i}">
@@ -35,6 +36,7 @@ export function startClozeMode({ root, passages, onComplete }) {
           </button>
         `).join('')}
       </div>
+      <p class="muted small">短文出自 VOA Learning English《Let's Learn English》（公共財教材）。</p>
     `;
     root.querySelector('#back').addEventListener('click', () => {
       onComplete({ sessionCorrect: 0, totalQuestions: 0, aborted: true, silent: true, message: '', usedWords: [] });
@@ -45,12 +47,13 @@ export function startClozeMode({ root, passages, onComplete }) {
   }
 
   function startPassage(passage) {
-    // 每格選項洗牌一次（進來重玩順序會不同，防背位置）
+    // 每格選項洗牌（重玩順序不同，防背位置）；oz（中文字義）跟著選項走
     const qs = passage.blanks.map(b => {
       const order = shuffle(b.opts.map((_, i) => i));
       return {
         n: b.n,
         opts: order.map(i => b.opts[i]),
+        oz: order.map(i => (b.oz || [])[i] || ''),
         correctIdx: order.indexOf(b.a),
         why: b.why || '',
         selected: null,
@@ -71,15 +74,22 @@ export function startClozeMode({ root, passages, onComplete }) {
             `<span class="vocab-blank">＿＿＿</span><span class="cloze-no">${circled(q.n)}</span>`);
         }
       }
-      return html;
+      return html.replace(/\n/g, '<br>');
+    }
+
+    function notesHtml() {
+      if (!Array.isArray(passage.notes) || passage.notes.length === 0) return '';
+      return `<p class="muted small cloze-notes">📖 詞彙註解：${passage.notes.map(escapeHtml).join('　')}</p>`;
     }
 
     function render() {
+      const allPicked = qs.every(q => q.selected !== null);
       root.innerHTML = `
         <button class="back" id="back">← 中途離開</button>
         <h2>🧩 克漏字</h2>
         <p class="muted">「${escapeHtml(passage.title)}」${passage.zh ? '（' + escapeHtml(passage.zh) + '）' : ''}　·　每格都選好才能送出，選了還可以改</p>
         <div class="sentence-card cloze-text" style="text-align:left; display:block;">${textHtml(false)}</div>
+        ${notesHtml()}
         ${qs.map((q, qi) => `
           <div class="cloze-q" data-qi="${qi}">
             <p style="margin:14px 0 6px;"><b>${circled(q.n)}</b></p>
@@ -88,7 +98,7 @@ export function startClozeMode({ root, passages, onComplete }) {
             </div>
           </div>
         `).join('')}
-        <button id="submit" ${qs.every(q => q.selected !== null) ? '' : 'disabled'}>送出答案${qs.every(q => q.selected !== null) ? '' : `（還有 ${qs.filter(q => q.selected === null).length} 格沒選）`}</button>
+        <button id="submit" ${allPicked ? '' : 'disabled'}>送出答案${allPicked ? '' : `（還有 ${qs.filter(q => q.selected === null).length} 格沒選）`}</button>
       `;
       root.querySelector('#back').addEventListener('click', abortRound);
       root.querySelectorAll('.choice').forEach(el => {
@@ -114,6 +124,7 @@ export function startClozeMode({ root, passages, onComplete }) {
         <h2>🧩 克漏字</h2>
         <p class="muted">「${escapeHtml(passage.title)}」　·　${passage.blanks.length} 格答對 ${correct} 格</p>
         <div class="sentence-card cloze-text" style="text-align:left; display:block;">${textHtml(true)}</div>
+        ${notesHtml()}
         <button class="speak-btn" id="speak-all" style="margin:4px 0 10px;">🔊 聽整篇（填好答案的版本）</button>
         ${qs.map(q => {
           const good = q.selected === q.correctIdx;
@@ -125,20 +136,22 @@ export function startClozeMode({ root, passages, onComplete }) {
                   const cls = ['choice'];
                   if (oi === q.correctIdx) cls.push('correct');
                   else if (oi === q.selected && !good) cls.push('wrong');
-                  return `<button class="${cls.join(' ')}" disabled>${escapeHtml(o)}</button>`;
+                  return `<button class="${cls.join(' ')}" disabled>${escapeHtml(o)}${q.oz[oi] ? ` <span class="choice-zh">${escapeHtml(q.oz[oi])}</span>` : ''}</button>`;
                 }).join('')}
               </div>
-              ${q.why ? `<p class="muted small" style="margin:6px 2px 0;">💡 ${escapeHtml(q.why)}</p>` : ''}
+              ${!good ? `<p class="muted small" style="margin:6px 2px 0;">🔍 你選的「${escapeHtml(q.opts[q.selected])}」是「${escapeHtml(q.oz[q.selected] || '')}」的意思，放進這格句子就不通了。</p>` : ''}
+              ${q.why ? `<p class="muted small" style="margin:4px 2px 0;">💡 ${escapeHtml(q.why)}</p>` : ''}
             </div>
           `;
         }).join('')}
+        <p class="muted small">${escapeHtml(passage.src || '')} · VOA Learning English（公共財）</p>
         <button id="done">看結果</button>
       `;
       root.querySelector('#back').addEventListener('click', abortRound);
       root.querySelector('#speak-all').addEventListener('click', () => {
         let full = passage.text;
         for (const q of qs) full = full.replace(`{${q.n}}`, q.opts[q.correctIdx]);
-        speak(full.replace(/\([^)]*\)/g, ''));
+        speak(full.replace(/^[A-Z][A-Za-z.'’ ]{0,18}:\s*/gm, '').replace(/\([^)]*\)/g, ''));
       });
       root.querySelector('#done').addEventListener('click', () => {
         onComplete({

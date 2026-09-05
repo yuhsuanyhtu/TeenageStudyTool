@@ -26,7 +26,8 @@
       "id": "cefr-a1",
       "name": "A1 入門",
       "icon": "🌱",
-      "files": ["cefr-a1.json"]
+      "files": ["cefr-a1.json"],
+      "sentences": "sentences-a1.json"
     },
     {
       "id": "cefr-a2",

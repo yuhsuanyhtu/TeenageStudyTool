@@ -952,3 +952,11 @@ button.back:hover { background: transparent; text-decoration: underline; }
 @media (max-width: 480px) {
   .cloze-q .en2zh-choices { grid-template-columns: 1fr; }
 }
+
+/* v2.41：選項後的中文小字（答案揭曉時）＋ 答錯解釋卡 ＋ 克漏字詞彙註解 */
+.choice-zh { font-size: 13px; color: #8a8378; margin-left: 6px; font-weight: 400; }
+.choice.correct .choice-zh { color: #2d5a3d; }
+.choice.wrong .choice-zh { color: #8a5a1a; }
+.vocab-explain { margin-top: 12px; }
+.vocab-explain p { margin: 4px 0; }
+.cloze-notes { margin: -6px 0 8px; line-height: 1.8; }

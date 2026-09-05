@@ -95,7 +95,8 @@ export async function loadAll() {
       if (sentData && sentData.units) {
         for (const [u, m] of Object.entries(sentData.units)) {
           sentencesByUnit[u] = {};
-          for (const [en, o] of Object.entries(m)) sentencesByUnit[u][en] = o.s;
+          // v2.41：每字一個例句陣列 [{t,zh,m,id}, ...]（Tatoeba 語料，多句輪換）
+          for (const [en, o] of Object.entries(m)) sentencesByUnit[u][en] = o.ss || [];
         }
       }
       const clozeData = cat.cloze && fileMap[cat.cloze];

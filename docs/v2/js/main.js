@@ -511,6 +511,26 @@ function handleReadingComplete(result) {
   root.querySelector('#home').addEventListener('click', refreshAndRenderHome);
 }
 
+// v2.41：A1 基礎字池（給文意字彙當「向下相容」干擾選項）。
+// zh 用 meanings 第一義（避開 ECDICT 主要意思取錯的已知問題，如 one=一致的）。
+let _a1PoolCache = null;
+function buildA1Pool() {
+  if (_a1PoolCache) return _a1PoolCache;
+  const pool = [];
+  for (const [unitName, list] of Object.entries(appData.units || {})) {
+    if (!unitName.startsWith('A1 ')) continue;
+    for (const e of list) {
+      if (!e.en) continue;
+      const zh = (Array.isArray(e.meanings) && e.meanings.length > 0)
+        ? e.meanings[0].zh
+        : e.zh;
+      if (zh) pool.push({ en: e.en, zh });
+    }
+  }
+  _a1PoolCache = pool;
+  return pool;
+}
+
 // 追蹤目前進行中的 mode，給 pagehide listener 用
 // （孩子直接關瀏覽器時，Sheet 至少能留一筆「沒完成」紀錄）
 let currentModeMeta = null;
@@ -538,9 +558,11 @@ function startMode(mode) {
     startReviewMode({ root, words, onComplete });
   } else if (mode === 'vocab') {
     // v2.40：文意字彙 — 例句庫（sentencesByUnit）優先，沒有的字退回 API 例句／中文提示
+    // v2.41：extraPool 傳 A1 基礎字池 → 選項「向下相容」混入 A1 字（家長要求）
     startVocabMode({
       root, words, seenSet, onComplete, allWords: words, wordStats, roundSize,
       sentenceMap: (appData.sentencesByUnit && appData.sentencesByUnit[currentUnit]) || {},
+      extraPool: buildA1Pool(),
     });
   } else if (mode === 'cloze') {
     // v2.40：克漏字 — 只有題庫有這個單元的短文時，題型卡才會出現
