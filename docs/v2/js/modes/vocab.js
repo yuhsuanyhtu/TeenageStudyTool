@@ -58,7 +58,7 @@ export function startVocabMode({ root, words, onComplete, allWords, seenSet, wor
     const html = esc.replace(re, '<span class="vocab-blank">＿＿＿＿</span>');
     const revealHtml = esc.replace(re, m => `<span class="sentence-target">${m}</span>`);
     const plainLower = pick.t.toLowerCase().split(pick.m.toLowerCase()).join(' ');
-    return { html, revealHtml, plainLower, zh: pick.zh || null, kind: 'bank' };
+    return { html, revealHtml, plainLower, plain: pick.t, zh: pick.zh || null, kind: 'bank' };
   }
 
   function buildFromApi(w, dict) {
@@ -76,7 +76,7 @@ export function startVocabMode({ root, words, onComplete, allWords, seenSet, wor
       '<span class="sentence-target">$1</span>'
     );
     const plainLower = ex.text.toLowerCase().replace(re, ' ');
-    return { html, revealHtml, plainLower, zh: null, kind: 'api' };
+    return { html, revealHtml, plainLower, plain: ex.text, zh: null, kind: 'api' };
   }
 
   function buildZhHint(w) {
@@ -222,7 +222,8 @@ export function startVocabMode({ root, words, onComplete, allWords, seenSet, wor
         <div>${escapeHtml(w.en)}</div>
         <div class="muted" style="font-size:16px; font-weight:400; margin-top:6px;">${escapeHtml(w.zh)}</div>
         <div class="speak-row">
-          <button class="speak-btn" id="speak">🔊 聽發音</button>
+          ${state.q.plain ? `<button class="speak-btn" id="speak-sent">🔊 聽整句</button>` : ''}
+          <button class="speak-btn" id="speak">🔊 ${state.q.plain ? '聽單字' : '聽發音'}</button>
         </div>
       </div>
       <div class="en2zh-choices">
@@ -238,11 +239,14 @@ export function startVocabMode({ root, words, onComplete, allWords, seenSet, wor
     `;
     root.querySelector('#back').addEventListener('click', () => abortRound());
     root.querySelector('#speak').addEventListener('click', () => speak(w.en));
+    const sentBtn = root.querySelector('#speak-sent');
+    if (sentBtn) sentBtn.addEventListener('click', () => speak(state.q.plain));
     root.querySelector('#next').addEventListener('click', () => {
       state.idx++;
       renderQuestion();
     });
-    speak(w.en);
+    // v2.43.2：謙恩要求——揭曉後唸整句（有例句才唸整句，沒例句退回唸單字）
+    speak(state.q.plain || w.en);
   }
 
   function abortRound() {
