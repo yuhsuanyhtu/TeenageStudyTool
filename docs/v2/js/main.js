@@ -22,6 +22,7 @@ import { logEvent, logEventBeacon } from './logger.js';
 import { renderRules } from './rules.js';
 import { fetchV2Events, recomputeFromEvents } from './sync.js';
 import { startPayoutMode } from './modes/payout.js';
+import { dictionaryStatus } from './dictionary.js';   // v2.43：主畫面顯示字典 API 狀態
 import * as srs from './srs.js';
 
 const root = document.getElementById('app');
@@ -33,9 +34,15 @@ let currentUnit = null;
 let syncStatus = 'idle';  // idle | syncing | done | failed
 let syncMessage = '';
 
+// v2.43：效能量測（主畫面底下顯示「載入 N ms」，讓媽媽在 iPad 上一眼看得出快慢）
+const perf = { start: performance.now(), loadMs: 0, cached: false };
+let updateAvailable = false;   // Service Worker 發現新版本 → 回主畫面時顯示提示條
+
 (async function init() {
   try {
     appData = await loadAll();
+    perf.loadMs = Math.round(performance.now() - perf.start);
+    perf.cached = !!(navigator.serviceWorker && navigator.serviceWorker.controller);
     // 第一次開：先讓使用者命名這台裝置
     if (!state.getDeviceName()) {
       renderNameDevice();
@@ -137,6 +144,25 @@ if (typeof document !== 'undefined') {
     if (Date.now() - lastSyncAt < MIN_RESYNC_INTERVAL_MS) return;
     syncInBackground();
   });
+}
+
+// v2.43：Service Worker 背景抓到新版本 → 通知。作答中不打擾，回主畫面才顯示。
+if (typeof navigator !== 'undefined' && navigator.serviceWorker) {
+  navigator.serviceWorker.addEventListener('message', (ev) => {
+    if (!ev.data || ev.data.type !== 'sv2-updated') return;
+    updateAvailable = true;
+    if (!currentModeMeta && document.querySelector('.unit-btn')) showUpdateBar();
+  });
+}
+
+function showUpdateBar() {
+  if (document.getElementById('update-bar')) return;
+  const bar = document.createElement('div');
+  bar.id = 'update-bar';
+  bar.className = 'update-bar';
+  bar.innerHTML = `🆕 有新版本 <button id="update-now">更新</button>`;
+  root.prepend(bar);
+  bar.querySelector('#update-now').addEventListener('click', () => window.location.reload());
 }
 
 function updateSyncIndicator() {
@@ -271,11 +297,13 @@ function renderHome() {
       v2 · ${state.today()} · 本機名：<b>${escapeHtml(state.getDeviceName() || '(未命名)')}</b>
       <a href="#" id="rename" style="margin-left:8px; color:#888;">改名</a>
     </p>
+    <p class="muted small center perf-row">⚡ 載入 ${perf.loadMs} ms${perf.cached ? '（本機快取）' : ''}${dictLabel()}</p>
     <p class="muted small center sync-row">
       <span id="sync-indicator" class="sync-indicator sync-${syncStatus}">${syncStatus === 'done' ? `✓ 已同步（${escapeHtml(syncMessage)}）` : syncStatus === 'failed' ? `⚠ 離線（${escapeHtml(syncMessage)}）` : syncStatus === 'syncing' ? '🔄 同步中…' : ''}</span>
       <a href="#" id="resync" style="margin-left:8px;">重新同步</a>
     </p>
   `;
+  if (updateAvailable) showUpdateBar();
   root.querySelector('#rename').addEventListener('click', e => {
     e.preventDefault();
     state.setDeviceName('');  // 清空就會觸發命名頁
@@ -314,6 +342,14 @@ function renderHome() {
   });
   // v2.21：拿掉 lastCategoryId 追蹤 — 改用 units-meta.json 的 `current: true` flag
   //         所見即所得：永遠展開當期分類，不會被「某次手滑點到」綁架
+}
+
+// v2.43：字典 API 狀態小字（只在有異常時顯示，平常不佔版面）
+function dictLabel() {
+  const d = dictionaryStatus();
+  if (d.breakerOpen) return ` · 字典 API 暫停 ${d.breakerSecondsLeft}s（題目照出）`;
+  if (d.timeouts > 0) return ` · 字典 API 逾時 ${d.timeouts} 次`;
+  return '';
 }
 
 // v2.26：題數選項（給 en2zh / zh2en 用，match 用 6 對固定，review 一律全部）
@@ -549,20 +585,22 @@ function startMode(mode) {
     currentModeMeta = null;
     handleComplete(mode, result);
   };
+  // v2.43：英翻中／從頭複習也吃本地例句庫（零等待），字典 API 退居補充
+  const sentenceMap = (appData.sentencesByUnit && appData.sentencesByUnit[currentUnit]) || {};
   if (mode === 'match') {
     startMatchMode({ root, words, seenSet, onComplete, wordStats });
   } else if (mode === 'en2zh') {
-    startEn2ZhMode({ root, words, seenSet, onComplete, allWords: words, wordStats, roundSize });
+    startEn2ZhMode({ root, words, seenSet, onComplete, allWords: words, wordStats, roundSize, sentenceMap });
   } else if (mode === 'zh2en') {
     startZh2EnMode({ root, words, seenSet, onComplete, wordStats, roundSize });
   } else if (mode === 'review') {
-    startReviewMode({ root, words, onComplete });
+    startReviewMode({ root, words, onComplete, sentenceMap });
   } else if (mode === 'vocab') {
     // v2.40：文意字彙 — 例句庫（sentencesByUnit）優先，沒有的字退回 API 例句／中文提示
     // v2.41：extraPool 傳 A1 基礎字池 → 選項「向下相容」混入 A1 字（家長要求）
     startVocabMode({
       root, words, seenSet, onComplete, allWords: words, wordStats, roundSize,
-      sentenceMap: (appData.sentencesByUnit && appData.sentencesByUnit[currentUnit]) || {},
+      sentenceMap,
       extraPool: buildA1Pool(),
     });
   } else if (mode === 'cloze') {

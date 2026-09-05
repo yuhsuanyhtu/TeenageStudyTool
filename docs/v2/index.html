@@ -6,11 +6,42 @@
   <meta name="theme-color" content="#6b9080">
   <title>謙恩的英文 v2</title>
   <link rel="stylesheet" href="css/style.css">
+  <!-- v2.43 效能：把 20 個 ES module 一次預載（以前一層一層抓要 6 層、2–3 秒）。
+       新增 js 檔記得加一行；漏加只是那個檔慢一點，不會壞。 -->
+  <link rel="modulepreload" href="js/main.js">
+  <link rel="modulepreload" href="js/state.js">
+  <link rel="modulepreload" href="js/tts.js">
+  <link rel="modulepreload" href="js/reward.js">
+  <link rel="modulepreload" href="js/data-loader.js">
+  <link rel="modulepreload" href="js/dictionary.js">
+  <link rel="modulepreload" href="js/srs.js">
+  <link rel="modulepreload" href="js/logger.js">
+  <link rel="modulepreload" href="js/sync.js">
+  <link rel="modulepreload" href="js/rules.js">
+  <link rel="modulepreload" href="js/dexbook.js">
+  <link rel="modulepreload" href="js/modes/match.js">
+  <link rel="modulepreload" href="js/modes/en2zh.js">
+  <link rel="modulepreload" href="js/modes/zh2en.js">
+  <link rel="modulepreload" href="js/modes/review.js">
+  <link rel="modulepreload" href="js/modes/reading.js">
+  <link rel="modulepreload" href="js/modes/vocab.js">
+  <link rel="modulepreload" href="js/modes/cloze.js">
+  <link rel="modulepreload" href="js/modes/payout.js">
+  <!-- 字庫 JSON 也先開始抓（跟 JS 平行，不用等 main.js 跑到 loadAll 才開始） -->
+  <link rel="preload" href="data/units-meta.json" as="fetch" crossorigin>
 </head>
 <body>
   <div id="app" class="container">
     <p class="muted center">載入中…</p>
   </div>
   <script type="module" src="js/main.js"></script>
+  <script>
+    // v2.43：Service Worker — 第二次開始秒開、離線也能練（見 sw.js）
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>

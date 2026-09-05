@@ -10,13 +10,16 @@
 //   - 字若有 meanings 陣列（CEFR 字庫）→ 顯示全部 POS 意思（adj/n/v 分行）
 //   - 從 Free Dictionary API 抓近義字 / 反義字 / 各 POS 的例句一起顯示
 //   - 舊 textbook 字庫只有 zh → 行為與之前相同，外加 API 補的資訊
+// v2.43（效能）：字典 API 有 3 秒 timeout／熔斷，「查字典中…」不會再無限等；
+//   例句改優先顯示本地 Tatoeba 例句庫（sentenceMap，附中文），字典例句當補充。
 //
 // 完成回呼帶 mode:'review' → main.handleComplete 會 dispatch 到 calcReviewReward
 
 import { speak, speakSpell } from '../tts.js';
-import { fetchDictionary, highlightWord, ecdictPosToApi } from '../dictionary.js';
+import { fetchDictionary, prefetchDictionary, highlightWord, highlightSurface, ecdictPosToApi } from '../dictionary.js';
 
-export function startReviewMode({ root, words, onComplete }) {
+export function startReviewMode({ root, words, onComplete, sentenceMap }) {
+  sentenceMap = sentenceMap || {};
   const list = (words || []).filter(w => w.en && w.zh);
   if (list.length === 0) {
     onComplete({
@@ -27,7 +30,8 @@ export function startReviewMode({ root, words, onComplete }) {
   }
 
   // v2.23：先非阻塞地預抓全部字典資料，每張卡 cache hit 就秒開
-  Promise.all(list.map(w => fetchDictionary(w.en).catch(() => null)));
+  // v2.43：改兩條線慢慢抓（不一次射幾十發被限流），有 timeout／熔斷
+  prefetchDictionary(list);
 
   const state = { idx: 0 };
 
@@ -106,14 +110,40 @@ export function startReviewMode({ root, words, onComplete }) {
     setTimeout(() => speak(w.en), 150);
 
     // async 補字典資料
+    // v2.43：本地例句庫先上（零等待），字典回來（最多 3 秒）再補同反義字
+    const bank = pickBankSentences(w);
+    const liveNow = document.getElementById('review-extra');
+    if (bank.length && liveNow && liveNow.dataset.target === w.en.toLowerCase()) {
+      liveNow.innerHTML = renderBankBlock(w, bank) + '<div class="review-extra-loading">查字典中…</div>';
+    }
     const dict = await fetchDictionary(w.en).catch(() => ({ examples: [], synonyms: [], antonyms: [] }));
     const live = document.getElementById('review-extra');
     if (!live || !live.isConnected) return;
     if (live.dataset.target !== w.en.toLowerCase()) return;  // 換卡了，不更新舊卡
-    live.innerHTML = renderExtraBlock(w, dict);
+    live.innerHTML = renderBankBlock(w, bank) + renderExtraBlock(w, dict, bank.length > 0);
   }
 
   render();
+
+  // v2.43：本地例句庫最多拿 2 句（隨機）
+  function pickBankSentences(w) {
+    const list = sentenceMap[w.en] || sentenceMap[String(w.en).toLowerCase()];
+    if (!Array.isArray(list) || list.length === 0) return [];
+    const a = [...list];
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a.slice(0, 2).filter(x => x && x.t);
+  }
+}
+
+// v2.43：例句庫區塊（英文句＋中文翻譯）
+function renderBankBlock(w, bank) {
+  if (!bank || bank.length === 0) return '';
+  return `
+    <div class="review-extra-section">
+      <div class="review-extra-label">例句</div>
+      ${bank.map(b => `<div class="review-example">${highlightSurface(b.t, b.m, w.en)}${b.zh ? `<div class="muted small">${escapeHtml(b.zh)}</div>` : ''}</div>`).join('')}
+    </div>
+  `;
 }
 
 // 主要意思區塊：有 meanings 就分行列全部，沒有就單行 zh
@@ -129,11 +159,12 @@ function renderMeaningsBlock(w) {
 }
 
 // API 補的資訊：每個 POS 的例句、同義字、反義字
-function renderExtraBlock(w, dict) {
+// v2.43：hasBank=true（已有例句庫的句子）時不再重複列字典例句
+function renderExtraBlock(w, dict, hasBank) {
   const blocks = [];
 
   // 例句：每個 POS 配一個例句（如果有）
-  if (dict.examples.length > 0) {
+  if (!hasBank && dict.examples.length > 0) {
     // 依字本身的 POS 順序排例句；textbook 字無 meanings → 直接放 API 順序
     const examplesByPos = new Map();
     for (const ex of dict.examples) {

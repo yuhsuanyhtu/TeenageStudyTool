@@ -12,15 +12,21 @@
 //        動態挑「對的中文意思」當正解。例：well 例句說 "I'm well now" → 正解=健康的；
 //        例句說 "the well ran dry" → 正解=井。答案頁加「其他意思」expandable 區塊。
 //        舊 textbook 字庫只有 zh、沒 meanings → 行為與 v2.22 相同。
+// v2.43（效能）：字典 API 不再擋出題。
+//        - 例句優先用本地 Tatoeba 例句庫（sentenceMap，v2.41 起就載好了，零等待）
+//        - 沒有例句庫的字才用字典 API，而且題目先出、例句回來再補（不再 await）
+//        - 正解一律用主要意思（meanings[0] / zh），不再靠 API 例句的 POS 決定
+//          （對還在打底的孩子，同一個字每次答案一致比較不混亂；A1/A2 例句庫本來就照主要意思選句）
 
 import { speak, speakSpell } from '../tts.js';
-import { fetchDictionary, highlightWord, ecdictPosToApi } from '../dictionary.js';
+import { fetchDictionary, prefetchDictionary, highlightSurface, ecdictPosToApi } from '../dictionary.js';
 import { pickPreferLearning } from '../srs.js';
 
 const QUESTIONS_PER_ROUND = 8;
 const MIN_DISTRACTORS_NEEDED = 4;
 
-export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wordStats, roundSize }) {
+export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wordStats, roundSize, sentenceMap }) {
+  sentenceMap = sentenceMap || {};
   const usable = words.filter(w => w.en && w.zh);
   if (usable.length < MIN_DISTRACTORS_NEEDED) {
     onComplete({
@@ -42,8 +48,8 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wor
     ? allWords.filter(w => w.en && w.zh)
     : usable;
 
-  // v2.23 prefetch：開場時一次背景抓所有題目的字典，後續 renderQuestion cache hit
-  Promise.all(round.map(w => fetchDictionary(w.en).catch(() => null)));
+  // v2.23 prefetch：開場背景抓題目的字典（v2.43：改兩條線慢慢抓，有 timeout／熔斷，不會卡）
+  prefetchDictionary(round);
 
   const state = { idx: 0, correct: 0, selected: null, answered: false };
 
@@ -57,33 +63,40 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wor
     return shuffle(pool).slice(0, 3).map(w => w.zh);
   }
 
-  // 根據 API 抓到的例句，挑「對的」中文意思當正解
-  // 沒例句 / 沒 meanings → 退回 w.zh（=主要意思）
-  function decideCorrect(w, dict) {
-    let correctMeaning = null;
-    let example = null;
-    if (Array.isArray(w.meanings) && w.meanings.length > 0 && dict.examples.length > 0) {
-      for (const m of w.meanings) {
-        const apiPos = ecdictPosToApi(m.pos);
-        const matched = dict.examples.find(e => (e.pos || '').toLowerCase() === apiPos);
-        if (matched) {
-          correctMeaning = m;
-          example = matched;
-          break;
-        }
-      }
-    }
-    if (!correctMeaning) {
-      correctMeaning = { pos: '', zh: w.zh };
-      // 沒 POS 配對成功 → 退回任一例句（前提：textbook 模式沒 meanings 時可顯示任何例句）
-      if (!Array.isArray(w.meanings) && dict.examples.length > 0) {
-        example = dict.examples[0];
-      }
-    }
-    return { correctZh: correctMeaning.zh, correctPos: correctMeaning.pos, example };
+  // v2.43：正解 = 主要意思（有 meanings 用第一義，否則 zh）
+  function primaryZh(w) {
+    if (Array.isArray(w.meanings) && w.meanings.length > 0 && w.meanings[0].zh) return w.meanings[0].zh;
+    return w.zh;
   }
 
-  async function renderQuestion() {
+  // v2.43：本地例句庫（Tatoeba）隨機挑一句；沒有 → null
+  function pickBankSentence(w) {
+    const list = sentenceMap[w.en] || sentenceMap[String(w.en).toLowerCase()];
+    if (!Array.isArray(list) || list.length === 0) return null;
+    const pick = list[Math.floor(Math.random() * list.length)];
+    if (!pick || !pick.t) return null;
+    return { text: pick.t, surface: pick.m || '', zh: pick.zh || '' };
+  }
+
+  // 字典 API 例句：有 meanings 的字只接受「跟正解同詞性」的例句（避免例句是另一個意思誤導）
+  function pickApiExample(w, dict, correctZh) {
+    const examples = (dict && dict.examples) || [];
+    if (examples.length === 0) return null;
+    if (Array.isArray(w.meanings) && w.meanings.length > 0) {
+      const m = w.meanings.find(x => x.zh === correctZh) || w.meanings[0];
+      const apiPos = ecdictPosToApi(m.pos);
+      const matched = examples.find(e => (e.pos || '').toLowerCase() === apiPos);
+      return matched ? { text: matched.text, surface: '' } : null;
+    }
+    return { text: examples[0].text, surface: '' };
+  }
+
+  function sentenceCardHtml(example, w) {
+    if (!example) return `<div class="sentence-card empty" id="sentence-card"></div>`;
+    return `<div class="sentence-card" id="sentence-card">${highlightSurface(example.text, example.surface, w.en)}</div>`;
+  }
+
+  function renderQuestion() {
     if (state.idx >= round.length) {
       onComplete({
         sessionCorrect: state.correct,
@@ -96,26 +109,15 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wor
     }
     const w = round[state.idx];
 
-    // 先顯示骨架，等字典回來再填細節（cache hit 通常 <5ms 不會閃）
-    root.innerHTML = `
-      <button class="back" id="back">← 中途離開</button>
-      <h2>🇬🇧 → 🇹🇼 英翻中</h2>
-      <p class="muted">第 ${state.idx + 1} / ${round.length} 題</p>
-      <p class="muted center" id="loading-hint">準備題目中…</p>
-    `;
-    root.querySelector('#back').addEventListener('click', () => abortRound());
-
-    const dict = await fetchDictionary(w.en).catch(() => ({ examples: [], synonyms: [], antonyms: [] }));
-    // 若使用者中途離開，state.idx 會被 onComplete 帶走 → 不再 render 後續
-    if (state.idx >= round.length || round[state.idx] !== w) return;
-
-    const { correctZh, example } = decideCorrect(w, dict);
+    // v2.43：題目立刻出。例句：本地例句庫優先；沒有就先留空，字典回來再補。
+    const correctZh = primaryZh(w);
+    const example = pickBankSentence(w);
     const choices = shuffle([correctZh, ...pickDistractors(correctZh, w)]);
     state.choices = choices;
     state.currentWord = w;
     state.correctZh = correctZh;
     state.example = example;
-    state.dict = dict;
+    state.dict = { examples: [], synonyms: [], antonyms: [] };
     state.selected = null;
     state.answered = false;
 
@@ -123,9 +125,7 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wor
       <button class="back" id="back">← 中途離開</button>
       <h2>🇬🇧 → 🇹🇼 英翻中</h2>
       <p class="muted">第 ${state.idx + 1} / ${round.length} 題</p>
-      ${example
-        ? `<div class="sentence-card">${highlightWord(example.text, w.en)}</div>`
-        : `<div class="sentence-card empty"></div>`}
+      ${sentenceCardHtml(example, w)}
       <div class="en2zh-word">
         <div>${escapeHtml(w.en)}</div>
         <div class="speak-row">
@@ -138,10 +138,6 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wor
       </div>
       <button id="submit">送出答案</button>
     `;
-    // 預抓下一題（fire-and-forget，cache）
-    const nextW = round[state.idx + 1];
-    if (nextW) fetchDictionary(nextW.en).catch(() => null);
-
     root.querySelector('#back').addEventListener('click', () => abortRound());
     root.querySelector('#speak').addEventListener('click', () => speak(w.en));
     root.querySelector('#spell').addEventListener('click', () => speakSpell(w.en));
@@ -156,6 +152,23 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wor
     root.querySelector('#submit').addEventListener('click', handleSubmit);
 
     setTimeout(() => speak(w.en), 200);
+
+    // 字典資料（同反義字、沒例句庫時的例句）背景補上，不擋題目；3 秒沒回就算了
+    fetchDictionary(w.en).then(dict => {
+      if (state.currentWord !== w) return;   // 已經換題
+      state.dict = dict || state.dict;
+      if (!state.example) {
+        const ex = pickApiExample(w, dict, correctZh);
+        if (ex) {
+          state.example = ex;
+          const card = root.querySelector('#sentence-card');
+          if (card && !state.answered) {
+            card.className = 'sentence-card';
+            card.innerHTML = highlightSurface(ex.text, '', w.en);
+          }
+        }
+      }
+    }).catch(() => {});
   }
 
   function abortRound() {
@@ -192,9 +205,7 @@ export function startEn2ZhMode({ root, words, onComplete, allWords, seenSet, wor
       <button class="back" id="back">← 中途離開</button>
       <h2>🇬🇧 → 🇹🇼 英翻中</h2>
       <p class="muted">第 ${state.idx + 1} / ${round.length} 題　·　${isCorrect ? '答對了' : '看答案'}</p>
-      ${state.example
-        ? `<div class="sentence-card">${highlightWord(state.example.text, w.en)}</div>`
-        : `<div class="sentence-card empty"></div>`}
+      ${sentenceCardHtml(state.example, w)}
       <div class="en2zh-word">
         <div>${escapeHtml(w.en)}</div>
         <div class="speak-row">
