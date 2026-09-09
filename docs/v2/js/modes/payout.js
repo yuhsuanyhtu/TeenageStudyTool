@@ -180,17 +180,17 @@ export function startPayoutMode({ root, onBack }) {
       <h2 style="margin-top:28px;">⚡ 練習量模式（英文）</h2>
       <div class="card penalty-card">
         <p class="muted small" style="margin-top:0;">
-          「加練」＝砍被動、保主動：從頭複習 $25→$10/天、連連看 $5→$2/場、
-          基礎獎金 $10 的門檻從答對 5 題提高到 <b>10 題</b>。
-          答對一題 $2、閱讀獎金、<b>連勝門檻（5 題保連勝）都不變</b>。
-          滿 $100 從約 25 題 → 約 40 題。改了會同步到所有裝置，規則頁自動顯示新數字，隨時可調回。
+          「加練」＝砍被動、保主動：從頭複習 $12→$5/天、連連看 $2→$1/場、
+          基礎獎金 $${REWARD_CONFIG.base} 的門檻從答對 5 題提高到 <b>10 題</b>。
+          答對一題、閱讀獎金、<b>連勝門檻（5 題保連勝）都不變</b>。
+          （v2.46 起全站金額減半，這裡的數字已經是減半後的。）改了會同步到所有裝置，規則頁自動顯示新數字，隨時可調回。
         </p>
         <p class="muted small">目前：<b>${currentPractice === 1 ? '⚡ 加練模式' : '標準'}</b></p>
         <label class="penalty-field">
           <span>模式</span>
           <select id="practice-mode">
-            <option value="0" ${currentPractice === 0 ? 'selected' : ''}>標準（複習 $25、連連看 $5、基礎 5 題）</option>
-            <option value="1" ${currentPractice === 1 ? 'selected' : ''}>⚡ 加練（複習 $10、連連看 $2、基礎 10 題）</option>
+            <option value="0" ${currentPractice === 0 ? 'selected' : ''}>標準（複習 $12、連連看 $2、基礎 5 題）</option>
+            <option value="1" ${currentPractice === 1 ? 'selected' : ''}>⚡ 加練（複習 $5、連連看 $1、基礎 10 題）</option>
           </select>
         </label>
         <button id="practice-btn" class="penalty-btn">套用模式</button>
@@ -410,7 +410,7 @@ async function postPracticeMode(mode) {
     correct: '',
     prediction: '',
     amount: mode,
-    note: `家長切換練習量模式為「${mode === 1 ? '加練（複習$10/連連看$2/基礎10題）' : '標準'}」`,
+    note: `家長切換練習量模式為「${mode === 1 ? '加練（複習$5/連連看$1/基礎10題）' : '標準'}」`,
     money: '',
     totalPaid: '',
     streak: '',

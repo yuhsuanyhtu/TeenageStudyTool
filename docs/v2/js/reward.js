@@ -1,27 +1,30 @@
 // reward.js — 獎金計算與連勝管理
 // 設計依據：第一階段研究報告（三層混合制 + 階梯加成 + Streak Freeze）
 //
-// 規則：
-//   - 基礎 10 元（當日答對 ≥ 5 個才有，避免無門檻）
-//   - 每答對 1 個 +2 元
-//   - 每日基礎+按字數的「pre-multiplier」上限 30 元
+// 規則（v2.46 全面減半——謙恩自己要求「獎金少一半才有挑戰」，媽媽同意）：
+//   - 基礎 5 元（當日答對 ≥ 5 個才有，避免無門檻）
+//   - 每答對 1 個 +1 元（文意字彙／克漏字 +2）
+//   - 每日基礎+按字數的「pre-multiplier」上限 50 元
+//   ※ 減半的是「金額」，不是「門檻」與「連勝倍率」——做多少事拿到上限的界線跟以前一樣
 //   - 連勝倍率：7 天 ×1.2、14 天 ×1.4、30 天 ×1.6（封頂）
 //   - 連勝中斷：先扣保護卡，沒卡的話只降一階不歸零
 //   - 每月 3 張保護卡
 
 export const REWARD_CONFIG = {
-  base: 10,
-  perCorrect: 2,
+  base: 5,                        // v2.46：10→5（全面減半）
+  perCorrect: 1,                  // v2.46：2→1
   // v2.44：依題型難度分級（媽媽決定）：英翻中／中翻英 $2、文意字彙 $3、克漏字每格 $3
-  perCorrectByMode: { vocab: 3, cloze: 3 },
-  dailyCapPreMultiplier: 100,     // 每日「基礎+按字數」封頂（連勝倍率不算在內）
+  // v2.46：全面減半 → 英翻中／中翻英 $1、文意字彙／克漏字 $2（難題仍是簡單題的兩倍）
+  perCorrectByMode: { vocab: 2, cloze: 2 },
+  dailyCapPreMultiplier: 50,      // 每日「基礎+按字數」封頂（連勝倍率不算在內）v2.46：100→50，
+                                  //   跟著費率一起減半 → 「做多少題會碰到上限」維持不變
   minCorrectForBase: 5,
-  reviewBase: 25,                 // v2.28：20→25（投入產出比合理化）
-  reviewDailyCap: 25,             // v2.28：從頭複習一天上限，防刷
-  matchReward: 5,                 // 連連看一輪固定獎金 — v2.15 防 brute force
-  readingPerCorrect: 5,           // v2.30：理解測驗答對 1 題 +$5（每篇 3 題 = 最多 $15）
+  reviewBase: 12,                 // v2.28：20→25；v2.46：25→12（全面減半）
+  reviewDailyCap: 12,             // 從頭複習一天上限，防刷（v2.46：25→12）
+  matchReward: 2,                 // 連連看一輪固定獎金 — v2.15 防 brute force（v2.46：5→2）
+  readingPerCorrect: 3,           // v2.30：理解測驗答對 1 題（v2.46：$5→$3，每篇 3 題 = 最多 $9）
   // readingReward (v2.28): 已被 readingPerCorrect 取代，先留變數防舊資料報錯
-  readingReward: 15,
+  readingReward: 8,
   payoutUnit: 100,
   streakTiers: [
     { days: 7,  multiplier: 1.2 },
@@ -40,13 +43,14 @@ export function effectiveDailyCap(dailyCap) {
 // v2.42：練習量模式（家長頁可切，v2_config_practice 事件跨裝置同步）。
 //   標準（0）＝原費率。
 //   加練（1）＝「砍被動、保主動」：升國二練習量要跟上——
-//     從頭複習 $25→$10（日上限同步 $25→$10）、連連看 $5→$2、
+//     從頭複習 $12→$5（日上限同步）、連連看 $2→$1、
 //     基礎獎金門檻 答對 5 題→10 題。
-//   答對一題 $2、閱讀 $5/題「不動」（錢流向真測驗）；
+//   答對一題、閱讀「不動」（錢流向真測驗）；
+//   v2.46：這裡的金額跟著全面減半，比例維持原設計；
 //   連勝門檻也「不動」（照舊答對 5 題就保住連勝——連勝是他最在乎的，不拿來加壓）。
 export function effectiveTuning(practiceMode) {
   if (Number(practiceMode) === 1) {
-    return { reviewBase: 10, reviewDailyCap: 10, matchReward: 2, minCorrectForBase: 10, label: '加練模式' };
+    return { reviewBase: 5, reviewDailyCap: 5, matchReward: 1, minCorrectForBase: 10, label: '加練模式' };
   }
   const cfg = REWARD_CONFIG;
   return { reviewBase: cfg.reviewBase, reviewDailyCap: cfg.reviewDailyCap, matchReward: cfg.matchReward, minCorrectForBase: cfg.minCorrectForBase, label: '標準' };

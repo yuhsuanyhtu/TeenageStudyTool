@@ -364,12 +364,17 @@ function dictLabel() {
   return '';
 }
 
-// v2.26：題數選項（給 en2zh / zh2en 用，match 用 6 對固定，review 一律全部）
-//   - 預設 8 題：快練、暖身
+// v2.26：題數選項（給 en2zh / zh2en / vocab 用，match 用 6 對固定，review 一律全部）
+//   - 快練：暖身用（英翻中／中翻英 8 題）
 //   - 半套：考前複習中量
 //   - 全套：考前完整複習
+// v2.46（謙恩 2026-09-08 要求「句子的題目要多一點，四題不夠練習」）：
+//   📝 文意字彙的「快練」= 12 題（句子題要讀句子，8 題練不到手感）。
+//   英翻中／中翻英維持 8 題——那兩個模式一回合太長會拉高「做不完就關掉」的風險。
+const SMALL_SIZE = 8;
+const SMALL_SIZE_VOCAB = 12;
 const QUIZ_SIZE_LABELS = [
-  { id: 'small', label: '8 題（快練）', calc: total => Math.min(8, total) },
+  { id: 'small', label: '快練', calc: (total, mode) => Math.min(mode === 'vocab' ? SMALL_SIZE_VOCAB : SMALL_SIZE, total) },
   { id: 'half', label: '半套', calc: total => Math.max(8, Math.ceil(total / 2)) },
   { id: 'all', label: '全套', calc: total => total },
 ];
@@ -379,7 +384,7 @@ function renderModePicker() {
   const words = appData.units[currentUnit];
   // 算每個 size 對應幾題（顯示給孩子看）
   const sizeButtons = QUIZ_SIZE_LABELS.map(s => {
-    const n = s.calc(words.length);
+    const n = s.calc(words.length, 'en2zh');
     const label = s.id === 'small' ? s.label : `${s.label}（${n} 題）`;
     return `<button class="quiz-size-btn ${s.id === selectedQuizSizeId ? 'active' : ''}" data-size="${s.id}">${escapeHtml(label)}</button>`;
   }).join('');
@@ -406,6 +411,7 @@ function renderModePicker() {
       <span class="quiz-size-label">英翻中／中翻英／文意字彙 題數：</span>
       ${sizeButtons}
     </div>
+    <p class="muted small" style="margin-top:-4px;">快練＝英翻中／中翻英 ${Math.min(SMALL_SIZE, words.length)} 題、📝 文意字彙 ${Math.min(SMALL_SIZE_VOCAB, words.length)} 題（句子題目多練幾題）。半套／全套三種題型一樣。</p>
 
     <button class="mode-card" data-mode="review">
       <div class="mode-title">📖 從頭複習</div>
@@ -423,7 +429,7 @@ function renderModePicker() {
     </button>
     <button class="mode-card" data-mode="vocab">
       <div class="mode-title">📝 文意字彙</div>
-      <div class="mode-desc">看句子選字（4 選 1）。跟段考第一大題一樣：句子挖空，選出最適合的英文字。</div>
+      <div class="mode-desc">看句子選字（4 選 1）。跟段考第一大題一樣：句子挖空，選出最適合的英文字。這回 ${QUIZ_SIZE_LABELS.find(x => x.id === selectedQuizSizeId).calc(words.length, 'vocab')} 題。</div>
       ${paidLine('vocab')}
     </button>
     ${(appData.clozeByUnit && appData.clozeByUnit[currentUnit] && appData.clozeByUnit[currentUnit].length > 0) ? `
@@ -607,7 +613,7 @@ function startMode(mode) {
   const wordStats = s.wordStats || {};
   // v2.26：依使用者選的題數規模計算 roundSize（en2zh / zh2en 才用得到）
   const sizeSpec = QUIZ_SIZE_LABELS.find(x => x.id === selectedQuizSizeId) || QUIZ_SIZE_LABELS[0];
-  const roundSize = sizeSpec.calc(words.length);
+  const roundSize = sizeSpec.calc(words.length, mode);   // v2.46：文意字彙的「快練」是 12 題
   root.innerHTML = '';
   currentModeMeta = { mode, unit: currentUnit, totalQuestions: words.length, startedAt: Date.now() };
   const onComplete = (result) => {

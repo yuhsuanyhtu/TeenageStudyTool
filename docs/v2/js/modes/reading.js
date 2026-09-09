@@ -17,6 +17,7 @@
 //   - 點到 vocab 沒有的字 → fallback API 顯示英文定義
 
 import { fetchDictionary } from '../dictionary.js';
+import { REWARD_CONFIG } from '../reward.js';   // v2.46：獎金金額不再硬寫在畫面上
 
 export function startReadingMode({ root, story, onComplete }) {
   const lookedUp = new Set();       // 查過的字（lowercased en）
@@ -82,7 +83,7 @@ export function startReadingMode({ root, story, onComplete }) {
         root.innerHTML = `
           <button class="back" id="back">← 中途離開</button>
           <h2>📖 ${escapeHtml(story.title)}</h2>
-          <p class="muted">理解測驗 ${idx + 1} / ${qs.length}　·　答對 1 題 +$5</p>
+          <p class="muted">理解測驗 ${idx + 1} / ${qs.length}　·　答對 1 題 +$${REWARD_CONFIG.readingPerCorrect}</p>
           <div class="comp-q">${escapeHtml(q.q)}</div>
           <div class="comp-choices">
             ${shuffled.map((c, i) => {
