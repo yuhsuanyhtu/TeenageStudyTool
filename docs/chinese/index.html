@@ -388,7 +388,7 @@ const SEMS=[{name:"2上",list:LESSONS},{name:"3上",list:LESSONS3}];
 const PAY_URL="https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
 /* v2.39：國文日上限家長可分科設定（提領頁 ⚙️，事件 v2_config_daily_cap_cn，最後一筆生效）。
    CN_CAP 為 let，cnFetchState() 每次結算前從 Sheet 讀最新值；沒設定＝預設 100。 */
-let CN_CAP=100; const CN_BASE=10, CN_PER=2, CN_MIN=5;
+let CN_CAP=100, CN_BASE=10, CN_PER=2; const CN_MIN=5;   // v2.48：上限與費率改由家長頁設定（wallet.js），這裡只是預設
 const CN_TIERS=[[7,1.2],[14,1.4],[30,1.6]];
 function cnToday(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function cnMul(st){let m=1;for(const[d,x]of CN_TIERS)if(st>=d)m=x;return m;}
@@ -403,45 +403,47 @@ function cnDevice(){
     return n;
   }catch(e){return '(未命名)';}
 }
+/* v2.48：錢包算法改用共用的 v2/js/wallet.js（上限／費率由家長頁設定、比較乘倍率前金額、全科總上限）。
+   為了不讓孩子每輪結算都等 2–3 秒：開始練習時就先抓（cnPrefetch），結算時用抓好的狀態，
+   再用這個分頁今天已結算的輪次（cnTab）補上 Sheet 還沒寫進去的部分：
+   今日已賺 = max(Sheet 值, 分頁第一次抓到的值 + 分頁已結算)——只會多算不會少算，不會超過上限。 */
+let cnStatePromise=null, cnTab={day:'', s0:null, s0All:0, pre:0, base:false};
+function cnPrefetch(){ cnStatePromise=cnFetchState().catch(()=>null); }
 async function cnFetchState(){
-  // 從 Sheet 重算國文今日已賺/基礎是否已給/連勝（以人計＝所有裝置）
+  // 從 Sheet 重算國文今日已賺（乘倍率前）/基礎是否已給/連勝（以人計＝所有裝置，排除測試裝置）
+  const W=await import('../v2/js/wallet.js?v=2.48');
   const res=await fetch(`${PAY_URL}?action=v2_events`,{mode:'cors',cache:'no-cache'});
   const data=await res.json();
   if(!data||!data.ok||!Array.isArray(data.events)) throw new Error('API');
-  const t=cnToday(); let today=0, baseGiven=false; const days=new Set();
+  const t=cnToday(); const w=W.computeWallet(data.events,t);
+  CN_CAP=w.cfg['cap.cn']; CN_BASE=w.cfg['rate.cn.base']; CN_PER=w.cfg['rate.cn.per'];
+  let baseGiven=false; const days=new Set();
   for(const ev of data.events){
     const name=String(ev.event||'');
-    if(name==='v2_config_daily_cap_cn'){                       // v2.39：家長設定的國文上限（最後一筆生效）
-      const v=Math.floor(Number(ev.amount)||0);
-      if(v>=10&&v<=1000) CN_CAP=v;
-      continue;
-    }
-    if(!name.startsWith('v2_cn_')||!name.endsWith('_paid'))continue;
+    if(W.earnSubject(name)!=='cn'||W.isTestDevice(ev.device))continue;
     const date=String(ev.timestamp||'').slice(0,10);
-    const amt=Number(ev.amount)||0, ft=Number(ev.correct)||0;
-    if(amt>0&&date===t)today+=amt;
+    const ft=Number(ev.correct)||0;
     if(date===t&&String(ev.note||'').includes('base'))baseGiven=true;
     if(ft>=CN_MIN)days.add(date);
   }
-  if(today>CN_CAP)today=CN_CAP;
   // streak：從今天往回連續打卡天數（今天沒完成則從昨天起算）
   let st=0; let d=new Date();
   const fmt=x=>`${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`;
   if(!days.has(fmt(d)))d.setDate(d.getDate()-1);
   while(days.has(fmt(d))){st++;d.setDate(d.getDate()-1);}
-  return {today,baseGiven,streak:st};
+  return {W, cfg:w.cfg, today:w.today.cn.pre, todayAll:w.todayPreAll, baseGiven, streak:st, day:t};
 }
 function cnCalc(ft,stx){
   // ft=一次答對題數；stx={today,baseGiven,streak}
   const base=(!stx.baseGiven&&ft>=CN_MIN)?CN_BASE:0;
   const per=ft*CN_PER;
   const raw=base+per;
-  const remain=Math.max(0,CN_CAP-stx.today);
+  const remain=stx.W.remainingPre(stx.cfg,'cn',stx.today,stx.todayAll);   // v2.48：本科上限與全科總上限取小
   const pre=Math.min(raw,remain);
   const mul=cnMul(stx.streak);
   const fin=Math.round(pre*mul);
   let txt;
-  if(pre===0){ txt= ft>0?`國文今天已達 $${CN_CAP} 上限，明天再來！`:`這輪沒有一次答對的題目，沒有獎金（多練就有）`; }
+  if(pre===0){ txt= ft>0?`國文今天的獎金已經到上限了，明天再來！`:`這輪沒有一次答對的題目，沒有獎金（多練就有）`; }
   else{
     const b=base>0?`基礎 $${base}＋`:'';
     const m=mul>1?`×${mul.toFixed(1)}（連勝 ${stx.streak} 天）`:'';
@@ -462,14 +464,23 @@ function cnPost(ev){
 async function cnSettle(modeName,unit,total){
   // 回傳結算 HTML；同時把事件寫進 Sheet
   try{
-    const stx=await cnFetchState();
+    let base=cnStatePromise?await cnStatePromise:null;
+    if(!base||base.day!==cnToday()) base=await cnFetchState();
+    if(cnTab.day!==base.day) cnTab={day:base.day, s0:null, s0All:0, pre:0, base:false};
+    if(cnTab.s0===null){ cnTab.s0=base.today; cnTab.s0All=base.todayAll; }
+    const stx={...base,
+      today:Math.max(base.today, cnTab.s0+cnTab.pre),
+      todayAll:Math.max(base.todayAll, cnTab.s0All+cnTab.pre),
+      baseGiven:base.baseGiven||cnTab.base};
     const r=cnCalc(firstTry,stx);
     cnPost({event:`v2_cn_${modeName}_paid`,unit,quizSize:total,correct:firstTry,amount:r.fin,
-            note:(r.base>0?'base;':'')+`stars=${stars}`,streak:stx.streak});
-    const newToday=Math.min(CN_CAP,stx.today+r.pre);
+            note:(r.base>0?'base;':'')+`#pre:${r.pre};stars=${stars}`,streak:stx.streak});
+    cnTab.pre+=r.pre; if(r.base>0)cnTab.base=true;
+    const newToday=stx.today+r.pre;
     return `💰 這一輪賺進 <b>$${r.fin}</b><br><span style="font-size:13px">${r.txt}</span><br><span style="font-size:13px">國文今日 $${newToday} ／ 上限 $${CN_CAP}</span>`;
   }catch(e){
-    return `💰 現在連不上錢包，本輪成績已記在星星上，連線後的下一輪會一起算錢`;
+    // v2.48：以前這裡說「連線後的下一輪會一起算錢」，但其實沒有補算——改成實話
+    return `💰 現在連不上錢包，這一輪的獎金沒有記到。星星照樣算，連上網路後再練一輪就能賺！`;
   }
 }
 
@@ -571,7 +582,7 @@ function startMode(m){
   if(m==='list'){ renderList(); show('play'); $('starbar').textContent=''; $('prog').textContent='生字表'; return; }
   render();
 }
-function beginRun(mx){ idx=0; stars=0; firstTry=0; maxStars=mx; show('play'); updStar(); }
+function beginRun(mx){ idx=0; stars=0; firstTry=0; maxStars=mx; show('play'); updStar(); cnPrefetch(); }
 function updStar(){ $('starbar').textContent=`⭐ ${stars} / ${maxStars}`; }
 function earn(attempts){ const e=starsFor(attempts); stars+=e; if(attempts<=1)firstTry++; updStar(); return e; }
 function render(){

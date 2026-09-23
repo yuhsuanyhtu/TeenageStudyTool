@@ -44,47 +44,39 @@
     <footer>TeenageStudyTool</footer>
   </div>
 
-<script>
+<script type="module">
 // 錢包真相來源＝Google Sheet（與英文 v2 同一個 Apps Script API，唯讀）
+// v2.48：算法改用共用的 v2/js/wallet.js（錢包綁人、上限／費率由家長頁設定）。
+//   先顯示上次成功同步的快照（標「更新中」），背景拿到新資料再覆蓋——Apps Script 要 2–3 秒。
+//   ⚠️ 快照只給畫面顯示，不拿來算錢（見 wallet.js saveSnapshot 的說明）。
+import { computeWallet, saveSnapshot, loadSnapshot } from './v2/js/wallet.js?v=2.48';
 const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
-
 function todayStr(){
   const d=new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-
+const B=document.getElementById('balance'), T=document.getElementById('today'), S=document.getElementById('status');
+function show(w, t){
+  const today = w.day === undefined || w.day === t ? w.today : { en:{pre:0,fin:0}, cn:{pre:0,fin:0} };
+  const cfg=w.cfg, capAll=Number(cfg['cap.all'])||0;
+  B.textContent=`$${w.available}`;
+  T.innerHTML=`今天：英文 <b>$${today.en.fin}</b>（上限 ${cfg['cap.en']}）　＋　國文 <b>$${today.cn.fin}</b>（上限 ${cfg['cap.cn']}）`
+    + `<br>${capAll>0 ? `全科一天最多 $${capAll}` : `兩科都完成，一天最多 $${cfg['cap.en']+cfg['cap.cn']}`}（連勝加成另外算）`;
+}
 async function loadWallet(){
-  const B=document.getElementById('balance'), T=document.getElementById('today'), S=document.getElementById('status');
+  const t=todayStr();
+  const snap=loadSnapshot();
+  if(snap && snap.cfg){ show(snap, t); S.textContent='更新中…（先顯示上次的數字）'; }
   try{
     const res=await fetch(`${LOG_WEBAPP_URL}?action=v2_events`,{mode:'cors',cache:'no-cache'});
     const data=await res.json();
     if(!data||!data.ok||!Array.isArray(data.events)) throw new Error('API 未就緒');
-    // 合計口徑：所有裝置加總（錢包屬於謙恩本人，不分裝置）
-    // 每科上限：家長可在提領頁分科設定（v2_config_daily_cap＝英文、v2_config_daily_cap_cn＝國文），
-    // events 按時間排序，最後一筆生效；沒設定用預設 100。
-    let earned=0, withdrawn=0, penalty=0, todayEn=0, todayCn=0, capEn=100, capCn=100;
-    const t=todayStr();
-    for(const ev of data.events){
-      const name=String(ev.event||''); const amt=Number(ev.amount)||0;
-      const date=String(ev.timestamp||'').slice(0,10);
-      if(name==='v2_config_daily_cap'){ const v=Math.floor(amt); if(v>=10&&v<=1000) capEn=v; }
-      else if(name==='v2_config_daily_cap_cn'){ const v=Math.floor(amt); if(v>=10&&v<=1000) capCn=v; }
-      else if(name.startsWith('v2_cn_') && name.endsWith('_paid') && amt>0){
-        earned+=amt;                            // 國文獎金（同一個錢包）
-        if(date===t) todayCn+=amt;
-      }else if(name.endsWith('_done') && amt>0){
-        earned+=amt;                            // 英文獎金
-        if(date===t) todayEn+=amt;
-      }else if(name==='v2_payout'){ withdrawn+=Math.abs(amt); }
-      else if(name==='v2_penalty'){ penalty+=Math.abs(amt); }
-    }
-    const avail=Math.max(0, earned-withdrawn-penalty);
-    if(todayEn>capEn) todayEn=capEn;  // 各科日上限（家長可分科調整）
-    if(todayCn>capCn) todayCn=capCn;
-    B.textContent=`$${avail}`;
-    T.innerHTML=`今天：英文 <b>$${todayEn}</b>／${capEn}　＋　國文 <b>$${todayCn}</b>／${capCn}<br>兩科都完成，一天最多 $${capEn+capCn}！`;
+    const w=computeWallet(data.events, t);
+    show(w, t);
+    saveSnapshot(w, t);
     S.textContent=`資料來源：Google Sheet（${new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})} 更新）`;
   }catch(e){
+    if(snap && snap.cfg){ S.textContent='現在連不上錢包，上面是上次的數字'; return; }
     B.textContent='—';
     T.textContent='現在連不上錢包資料，先開始練習也沒關係！';
     S.textContent='（連上網路後重新整理即可）';

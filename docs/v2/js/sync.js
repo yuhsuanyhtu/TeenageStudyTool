@@ -29,7 +29,7 @@ export async function fetchV2Events() {
   }
 }
 
-// 從事件流水帳重算狀態（v2.9 起：每台裝置只算自己的紀錄）
+// 從事件流水帳重算狀態（v2.9–v2.47：每台裝置只算自己的紀錄；v2.48 起所有裝置合計，見下方）
 // 規則：
 //   - 只計入 device 等於當前裝置名的事件（不跨裝置加總）
 //   - 只算事件名 endsWith('_done')
@@ -41,6 +41,7 @@ export async function fetchV2Events() {
 //
 // myDevice：當前裝置名（從 state.getDeviceName 傳入）。null/空 → 不算任何事件
 import { REWARD_CONFIG, effectiveDailyCap } from './reward.js';
+import { parseConfig, isTestDevice, preOf, earnSubject } from './wallet.js';
 
 // v2.35：從全部事件（不分裝置）找家長最後一次設定的每日上限。
 // v2_config_daily_cap 事件由家長頁寫入，amount = 新上限。events 已按時間排序，最後一筆生效。
@@ -82,12 +83,14 @@ export function extractPracticeMode(events) {
   return mode;
 }
 
+// v2.48：錢包綁人（家長 2026-09-23 決定）——不再只算本機裝置，所有裝置合計（排除測試裝置）。
+//   myDevice 參數保留只為相容舊呼叫端，已不影響結果。
+//   今日上限狀態改用「乘連勝倍率前」的金額（note 的 #pre:N；舊事件退回 amount）——
+//   以前拿乘後金額去扣乘前上限，連勝越高越早碰頂（v2.48 修正）。
 export function recomputeFromEvents(events, todayStr, myDevice) {
-  const dev = String(myDevice || '').trim();
-  const real = (events || []).filter(ev =>
-    dev && String(ev.device || '') === dev
-  );
-  const dailyCap = extractDailyCap(events);
+  const real = (events || []).filter(ev => !isTestDevice(ev.device));
+  const cfg = parseConfig(events).values;
+  const dailyCap = cfg['cap.en'];
   const practiceMode = extractPracticeMode(events);
   // v2.42：加練模式下基礎獎金門檻 5→10，偵測「今天基礎已給」要用同一把尺
   const effMinForBase = practiceMode === 1 ? 10 : REWARD_CONFIG.minCorrectForBase;
@@ -96,6 +99,8 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
   let totalWithdrawn = 0;
   let totalPenalty = 0;
   let todayEarned = 0;
+  let todayPreEarned = 0;   // v2.48：英文今日（乘倍率前）
+  let todayPreCn = 0;       // v2.48：國文今日（乘倍率前），給全科總上限用
   // v2.35：每日上限相關的「今日狀態」也從事件重算，
   // 換瀏覽器／清資料／殭屍分頁都繞不過每日上限（2026-07-10 的複習 $25 領兩次 bug）
   let todayReviewEarned = 0;
@@ -112,13 +117,17 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
     const correct = Number(ev.correct) || 0;
     const date = formatDate(ev.timestamp);
 
+    if (earnSubject(event) === 'cn') {
+      if (date === todayStr && amount > 0) todayPreCn += preOf(ev);
+      continue;   // 國文的錢包金額由 wallet.computeWallet 算；這裡只為全科總上限記今日
+    }
     if (event.endsWith('_done')) {
       if (amount > 0) {
         totalEarned += amount;
-        if (date === todayStr) todayEarned += amount;
+        if (date === todayStr) { todayEarned += amount; todayPreEarned += preOf(ev); }
       }
       if (date === todayStr && amount > 0) {
-        if (event === 'v2_review_done') todayReviewEarned += amount;
+        if (event === 'v2_review_done') todayReviewEarned += preOf(ev);
         // 基礎獎金只可能在「真測驗」模式答對 ≥5 時發出（一天一次）
         // v2.40：文意字彙／克漏字也走 calcSessionReward，可能發基礎獎金 → 一併認
         if ((event === 'v2_en2zh_done' || event === 'v2_zh2en_done' || event === 'v2_vocab_done' || event === 'v2_cloze_done') && correct >= effMinForBase) {
@@ -153,11 +162,17 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
   }
 
   const streak = computeStreak(completedDays, todayStr);
+  const todayCompleted = completedDays.has(todayStr);   // v2.48：給 main.js 同步 lastDate 用
 
   // v2.10：套用日上限（v2.35：改用家長設定的有效上限）
   const rawTodayEarned = todayEarned;
   const cap = effectiveDailyCap(dailyCap);
   if (todayEarned > cap) todayEarned = cap;
+
+  // v2.48：錢包是同一個——可提領要把國文收入也算進來（以前英文畫面漏算國文）
+  let cnEarned = 0;
+  for (const ev of real) if (earnSubject(ev.event) === 'cn' && Number(ev.amount) > 0) cnEarned += Number(ev.amount);
+  totalEarned += cnEarned;   // main.js 用 totalEarned 重算可提領，所以併進來
 
   // v2.16：可提領 = 累計賺 - 已提領；v2.34：再扣掉生活習慣扣款。不能小於 0。
   //   註：totalPenalty 是累計值，就算一時超過餘額（顯示壓回 0），日後再賺錢時
@@ -170,8 +185,11 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
     totalPenalty,
     availableToWithdraw,
     todayEarned,
-    todayPreEarned: todayEarned,
+    todayPreEarned,
+    todayPreAll: todayPreEarned + todayPreCn,   // v2.48：全科總上限用
+    cfg,                                        // v2.48：家長設定（上限／費率）
     streak,
+    todayCompleted,
     eventCount: real.length,
     completedDayCount: completedDays.size,
     rawTodayEarned,

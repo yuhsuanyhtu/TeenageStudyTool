@@ -129,8 +129,8 @@ export function renderRules(root, onBack) {
 
     <div class="card">
       <h3>🏦 提領零用金</h3>
-      <p>媽媽用特殊網址進「家長提領頁」，每次以 <b>$${cfg.payoutUnit}</b> 為單位。</p>
-      <p class="muted small">提領後「可提領」會減少、「已提領」會增加。Google Sheet 也會留紀錄，多裝置會自動同步。</p>
+      <p>媽媽用特殊網址進「家長提領頁」提領，金額由媽媽決定。</p>
+      <p class="muted small">所有裝置、所有科目（英文＋國文）是<b>同一個錢包</b>：在哪一台練、練哪一科，錢都加在一起。提領後「可提領」會減少、「已提領」會增加，Google Sheet 也會留紀錄。</p>
     </div>
 
     <div class="card">

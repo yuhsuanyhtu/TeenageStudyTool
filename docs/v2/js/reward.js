@@ -33,6 +33,36 @@ export const REWARD_CONFIG = {
   ],
 };
 
+// v2.48：費率與英文上限改由家長頁設定（wallet.js 的 parseConfig，事件 v2_config_set）。
+//   REWARD_CONFIG 上面的數字只剩「家長沒設定時的預設值」；sync 完成後 main.js 呼叫 applyConfig 覆蓋。
+export function applyConfig(cfg) {
+  if (!cfg) return;
+  const c = REWARD_CONFIG;
+  const num = (k, fallback) => (Number.isFinite(Number(cfg[k])) ? Number(cfg[k]) : fallback);
+  c.base = num('rate.en.base', c.base);
+  c.perCorrect = num('rate.en.per', c.perCorrect);
+  c.perCorrectByMode = { vocab: num('rate.en.vocab', c.perCorrectByMode.vocab), cloze: num('rate.en.cloze', c.perCorrectByMode.cloze) };
+  c.reviewBase = num('rate.en.review', c.reviewBase);
+  c.reviewDailyCap = num('rate.en.reviewCap', c.reviewDailyCap);
+  c.matchReward = num('rate.en.match', c.matchReward);
+  c.readingPerCorrect = num('rate.en.reading', c.readingPerCorrect);
+  c.dailyCapPreMultiplier = num('cap.en', c.dailyCapPreMultiplier);
+}
+
+// v2.48：全科總上限另外傳 allRemaining（wallet.remainingPre 算好的「全科還剩多少」）；沒傳＝不限
+function leftToday(cap, todayPreEarned, allRemaining) {
+  const subj = Math.max(0, cap - (todayPreEarned || 0));
+  const all = Number.isFinite(Number(allRemaining)) ? Math.max(0, Number(allRemaining)) : Infinity;
+  return Math.min(subj, all);
+}
+
+// v2.48：碰頂訊息——卡住的是全科總上限時，不能說「英文每天 X 元封頂」
+function capText(cap, todayPreEarned, allRemaining) {
+  const subjLeft = Math.max(0, cap - (todayPreEarned || 0));
+  const byAll = Number.isFinite(Number(allRemaining)) && Number(allRemaining) < subjLeft;
+  return byAll ? '今天全部科目加起來的獎金已經到上限了' : `今天已達上限（每天 ${cap} 元封頂）`;
+}
+
 // v2.35：家長可在家長頁調整每日上限（v2_config_daily_cap 事件，從 Sheet 同步）。
 // 各 calc 函式接受可選的 dailyCap 參數；沒給（null/undefined/0）就用預設 100。
 export function effectiveDailyCap(dailyCap) {
@@ -50,7 +80,8 @@ export function effectiveDailyCap(dailyCap) {
 //   連勝門檻也「不動」（照舊答對 5 題就保住連勝——連勝是他最在乎的，不拿來加壓）。
 export function effectiveTuning(practiceMode) {
   if (Number(practiceMode) === 1) {
-    return { reviewBase: 5, reviewDailyCap: 5, matchReward: 1, minCorrectForBase: 10, label: '加練模式' };
+    const c = REWARD_CONFIG;   // v2.48：費率可設定後，加練的金額不可高於標準
+    return { reviewBase: Math.min(5, c.reviewBase), reviewDailyCap: Math.min(5, c.reviewDailyCap), matchReward: Math.min(1, c.matchReward), minCorrectForBase: 10, label: '加練模式' };
   }
   const cfg = REWARD_CONFIG;
   return { reviewBase: cfg.reviewBase, reviewDailyCap: cfg.reviewDailyCap, matchReward: cfg.matchReward, minCorrectForBase: cfg.minCorrectForBase, label: '標準' };
@@ -79,7 +110,7 @@ export function perCorrectFor(mode) {
 //   mode            — 題型（決定每題獎金：perCorrectFor）
 //   alreadyRewarded — 克漏字同一篇今天已領過 → 這回合 $0（可以練，獎金明天再領）
 //   paidCorrect     — v2.45：本回合答對的字裡，今天已經付過錢的個數（同字同題型一天一次）→ 不再計錢，但仍算「答對題數」
-export function calcSessionReward({ sessionCorrect, streak, todayPreEarned, baseGivenToday, dailyCap, practiceMode, mode, alreadyRewarded, paidCorrect }) {
+export function calcSessionReward({ sessionCorrect, streak, todayPreEarned, baseGivenToday, dailyCap, practiceMode, mode, alreadyRewarded, paidCorrect, allRemaining }) {
   const cfg = REWARD_CONFIG;
   const cap = effectiveDailyCap(dailyCap);
   const tune = effectiveTuning(practiceMode);   // v2.42：加練模式門檻 5→10
@@ -103,7 +134,7 @@ export function calcSessionReward({ sessionCorrect, streak, todayPreEarned, base
   const sessionRawPre = eligibleBase + perWord;
 
   // 受日上限限制（v2.35：家長可調）
-  const remainingCap = Math.max(0, cap - todayPreEarned);
+  const remainingCap = leftToday(cap, todayPreEarned, allRemaining);
   const sessionPre = Math.min(sessionRawPre, remainingCap);
 
   const mul = streakMultiplier(streak);
@@ -114,7 +145,7 @@ export function calcSessionReward({ sessionCorrect, streak, todayPreEarned, base
     breakdown = sessionCorrect > 0
       ? (payableCorrect === 0 && paidN > 0
           ? `答對 ${sessionCorrect} 個，但這些字今天都已經領過了（同一個字一天領一次）。換個單元或題型，錢就在那裡！`
-          : `今天已達上限（每天 ${cap} 元封頂），明天再來！`)
+          : `${capText(cap, todayPreEarned, allRemaining)}，明天再來！`)
       : `本回合沒答對，沒有獎金`;
   } else {
     const baseTxt = eligibleBase > 0 ? `基礎 ${eligibleBase}` : `（未達 ${tune.minCorrectForBase} 個正確，無基礎）`;
@@ -143,7 +174,7 @@ export function calcSessionReward({ sessionCorrect, streak, todayPreEarned, base
 // 設計：連連看可 brute force 刷對，所以不依賴 sessionCorrect，固定獎金防漏洞
 // 不影響 baseGivenToday flag（base 留給其他真正考能力的模式）
 // v2.45：alreadyRewarded = 這個單元今天已付過一場 → $0（可以再練）
-export function calcMatchReward({ todayPreEarned, dailyCap, practiceMode, alreadyRewarded }) {
+export function calcMatchReward({ todayPreEarned, dailyCap, practiceMode, alreadyRewarded, allRemaining }) {
   const cfg = REWARD_CONFIG;
   const cap = effectiveDailyCap(dailyCap);
   const tune = effectiveTuning(practiceMode);   // v2.42：加練模式 $5→$2
@@ -154,14 +185,14 @@ export function calcMatchReward({ todayPreEarned, dailyCap, practiceMode, alread
       gaveBaseThisSession: false,
     };
   }
-  const remainingCap = Math.max(0, cap - todayPreEarned);
+  const remainingCap = leftToday(cap, todayPreEarned, allRemaining);
   const sessionPre = Math.min(tune.matchReward, remainingCap);
   // 不乘 streak 倍率（金額小，乘了也沒意義；保持簡單）
   const sessionFinal = sessionPre;
 
   let breakdown;
   if (sessionPre === 0) {
-    breakdown = `今天獎金已達上限（${cap} 元封頂）。連連看仍可練習，明天再來領！`;
+    breakdown = `${capText(cap, todayPreEarned, allRemaining)}。連連看仍可練習，明天再來領！`;
   } else {
     breakdown = `連連看一輪 +$${sessionPre}（連連看可刷，獎金固定 $${tune.matchReward}）`;
   }
@@ -179,14 +210,14 @@ export function calcMatchReward({ todayPreEarned, dailyCap, practiceMode, alread
 // 從頭複習一輪的獎金
 //   v2.28：加 reviewDailyCap（一天最多 $25），第二次以後 $0 防刷
 //          仍受 dailyCapPreMultiplier 全日上限影響，仍乘 streak 倍率
-export function calcReviewReward({ streak, todayPreEarned, reviewEarnedToday, dailyCap, practiceMode }) {
+export function calcReviewReward({ streak, todayPreEarned, reviewEarnedToday, dailyCap, practiceMode, allRemaining }) {
   const cfg = REWARD_CONFIG;
   const cap = effectiveDailyCap(dailyCap);
   const tune = effectiveTuning(practiceMode);   // v2.42：加練模式 $25→$10
   reviewEarnedToday = reviewEarnedToday || 0;
   // 兩個 cap 都要受：今日複習額度 & 全日總額度
   const reviewRemaining = Math.max(0, tune.reviewDailyCap - reviewEarnedToday);
-  const globalRemaining = Math.max(0, cap - todayPreEarned);
+  const globalRemaining = leftToday(cap, todayPreEarned, allRemaining);
   const sessionPre = Math.min(tune.reviewBase, reviewRemaining, globalRemaining);
   const mul = streakMultiplier(streak);
   const sessionFinal = Math.round(sessionPre * mul);
@@ -196,7 +227,7 @@ export function calcReviewReward({ streak, todayPreEarned, reviewEarnedToday, da
     if (reviewRemaining === 0) {
       breakdown = `從頭複習今天的 $${tune.reviewDailyCap} 已經拿過了，再做沒獎金（但複習本身有用）。`;
     } else {
-      breakdown = `今天獎金已達總上限（${cap} 元）。明天再來領！`;
+      breakdown = `${capText(cap, todayPreEarned, allRemaining)}。明天再來領！`;
     }
   } else {
     const mulTxt = mul > 1 ? `　×${mul.toFixed(1)}（連勝 ${streak} 天）` : '';
@@ -218,7 +249,7 @@ export function calcReviewReward({ streak, todayPreEarned, reviewEarnedToday, da
 //   - 答錯不扣（焦慮型設計）
 //   - 受 dailyCapPreMultiplier 全日上限影響
 //   - 仍乘 streak 倍率
-export function calcReadingReward({ streak, todayPreEarned, storyId, readingDoneToday, comprehensionCorrect, dailyCap }) {
+export function calcReadingReward({ streak, todayPreEarned, storyId, readingDoneToday, comprehensionCorrect, dailyCap, allRemaining }) {
   const cfg = REWARD_CONFIG;
   const cap = effectiveDailyCap(dailyCap);
   readingDoneToday = readingDoneToday || [];
@@ -240,14 +271,14 @@ export function calcReadingReward({ streak, todayPreEarned, storyId, readingDone
   }
 
   const rawPre = comprehensionCorrect * cfg.readingPerCorrect;
-  const globalRemaining = Math.max(0, cap - todayPreEarned);
+  const globalRemaining = leftToday(cap, todayPreEarned, allRemaining);
   const sessionPre = Math.min(rawPre, globalRemaining);
   const mul = streakMultiplier(streak);
   const sessionFinal = Math.round(sessionPre * mul);
 
   let breakdown;
   if (sessionPre === 0) {
-    breakdown = `今天獎金已達總上限（${cap} 元）。閱讀仍有用，明天再讀新篇可以領！`;
+    breakdown = `${capText(cap, todayPreEarned, allRemaining)}。閱讀仍有用，明天再讀新篇可以領！`;
   } else {
     const mulTxt = mul > 1 ? `　×${mul.toFixed(1)}（連勝 ${streak} 天）` : '';
     const capNote = sessionPre < rawPre ? `（受日上限影響，採計 ${sessionPre}）` : '';

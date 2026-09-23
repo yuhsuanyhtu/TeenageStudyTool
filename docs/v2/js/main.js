@@ -40,8 +40,16 @@ let syncMessage = '';
 const perf = { start: performance.now(), loadMs: 0, cached: !!(navigator.serviceWorker && navigator.serviceWorker.controller) };
 let updateAvailable = false;   // Service Worker 發現新版本 → 回主畫面時顯示提示條
 
+// v2.48：全科總上限還剩多少（乘倍率前）；家長沒設（cap.all=0）→ undefined＝不限
+function allRemaining() {
+  const capAll = Number(s.cfg && s.cfg['cap.all']) || 0;
+  if (capAll <= 0) return undefined;
+  return Math.max(0, capAll - (s.todayPreAll || 0));
+}
+
 (async function init() {
   try {
+    if (s && s.cfg) reward.applyConfig(s.cfg);   // v2.48：先用上次同步到的家長設定，sync 完再更新
     appData = await loadAll();
     perf.loadMs = Math.round(performance.now() - perf.start);
     // 第一次開：先讓使用者命名這台裝置
@@ -90,7 +98,7 @@ async function syncInBackground() {
     updateSyncIndicator();
     return;
   }
-  // v2.9：每台裝置只算自己的紀錄
+  // v2.48 起：所有裝置合計（錢包綁人）；v2.9–v2.47 是每台裝置只算自己的紀錄
   const computed = recomputeFromEvents(result.events, state.today(), state.getDeviceName());
   // v2.35：Sheet 為唯一真相（取代 v2.20 的 MAX 語意）。
   //
@@ -111,14 +119,19 @@ async function syncInBackground() {
   }
   const r0 = state.refreshDailyState(s);
   s = r0.state;
-  const todayDelta = Math.max(0, (s.todayEarned || 0) - computed.todayEarned);
+  // v2.48：跟「未壓上限」的伺服器今日金額比——上限改比乘前金額後，乘後金額本來就可能超過上限，
+  //   拿壓過的值比會把超出的部分誤當成「本地未入帳」再加一次（reviewer H1）
+  const todayDelta = Math.max(0, (s.todayEarned || 0) - (computed.rawTodayEarned ?? computed.todayEarned));
   s.totalEarned = computed.totalEarned + todayDelta;
   s.totalWithdrawn = computed.totalWithdrawn;          // 信任 server（只有家長頁能寫）
   s.totalPenalty = computed.totalPenalty || 0;         // v2.34：信任 server
   s.availableToWithdraw = Math.max(0, s.totalEarned - s.totalWithdrawn - (s.totalPenalty || 0));
   s.todayEarned = Math.max(s.todayEarned || 0, computed.todayEarned);
   s.todayPreEarned = Math.max(s.todayPreEarned || 0, computed.todayPreEarned);
+  s.todayPreAll = Math.max(s.todayPreAll || 0, computed.todayPreAll || 0);   // v2.48
   s.streak = Math.max(s.streak || 0, computed.streak);
+  // v2.48：錢包綁人後連勝也是跨裝置算。別台今天已打卡 → 這台不要再 +1（reviewer M1）
+  if (computed.todayCompleted) s.lastDate = state.today();
   s.reviewEarnedToday = Math.max(s.reviewEarnedToday || 0, computed.todayReviewEarned || 0);
   s.baseGivenToday = !!s.baseGivenToday || !!computed.todayBaseGiven;
   if (Array.isArray(computed.todayReadingDone) && computed.todayReadingDone.length) {
@@ -135,11 +148,13 @@ async function syncInBackground() {
   if (Array.isArray(computed.todayMatchPaidUnits) && computed.todayMatchPaidUnits.length) {
     s.matchPaidUnitsToday = [...new Set([...(s.matchPaidUnitsToday || []), ...computed.todayMatchPaidUnits])];
   }
-  s.dailyCap = computed.dailyCap;                      // v2.35：家長設定的每日上限（null = 預設）
+  s.dailyCap = computed.dailyCap;                      // v2.35：家長設定的每日上限（v2.48 起由 wallet.parseConfig 決定）
+  s.cfg = computed.cfg;                                // v2.48：家長設定（上限／費率）
+  reward.applyConfig(s.cfg);
   s.practiceMode = computed.practiceMode || 0;         // v2.42：練習量模式（家長頁設定，跨裝置同步）
   state.save(s);
   syncStatus = 'done';
-  syncMessage = `本機 ${computed.eventCount} 筆、${computed.completedDayCount} 天`;
+  syncMessage = `錢包 ${computed.eventCount} 筆、${computed.completedDayCount} 天`;
   updateSyncIndicator();
   // 若還在 home，重 render 反映新數字
   if (document.querySelector('.unit-btn')) {
@@ -517,9 +532,11 @@ function handleReadingComplete(result) {
       readingDoneToday: s.readingDoneToday || [],
       comprehensionCorrect: compCorrect,
       dailyCap: s.dailyCap,   // v2.35：家長可調每日上限
+      allRemaining: allRemaining(),   // v2.48
     });
     if (readingCalc.sessionPre > 0) {
       s.todayPreEarned = (s.todayPreEarned || 0) + readingCalc.sessionPre;
+      s.todayPreAll = (s.todayPreAll || 0) + readingCalc.sessionPre;   // v2.48
       s.todayEarned = (s.todayEarned || 0) + readingCalc.sessionFinal;
       s.totalEarned = (s.totalEarned || 0) + readingCalc.sessionFinal;
       s.availableToWithdraw = Math.max(0, (s.totalEarned || 0) - (s.totalWithdrawn || 0) - (s.totalPenalty || 0));
@@ -536,7 +553,7 @@ function handleReadingComplete(result) {
     quizSize: compTotal,
     correct: compCorrect,
     amount: readingCalc.sessionFinal || '',
-    note: `v2 閱讀「${story.title || ''}」理解測驗 ${compCorrect}/${compTotal} 對、查 ${looked.length} 字${readingCalc.sessionFinal ? `（+$${readingCalc.sessionFinal}）` : ''}`,
+    note: `v2 閱讀${readingCalc.sessionFinal ? ` #pre:${readingCalc.sessionPre}` : ''}「${story.title || ''}」理解測驗 ${compCorrect}/${compTotal} 對、查 ${looked.length} 字${readingCalc.sessionFinal ? `（+$${readingCalc.sessionFinal}）` : ''}`,
   }, s);
 
   // 把查過的字轉成有 zh 的 word objects（從 story.vocab 撈）
@@ -706,6 +723,7 @@ function handleComplete(mode, result) {
       reviewEarnedToday: s.reviewEarnedToday || 0,   // v2.28：傳今日已賺複習額度做 cap
       dailyCap: s.dailyCap,                          // v2.35：家長可調每日上限
       practiceMode: s.practiceMode || 0,             // v2.42：加練模式（複習 $25→$10）
+      allRemaining: allRemaining(),                  // v2.48
     });
   } else if (mode === 'match') {
     // v2.15：連連看固定獎金，不依 sessionCorrect 計算（防 brute force 刷錢）
@@ -715,6 +733,7 @@ function handleComplete(mode, result) {
       dailyCap: s.dailyCap,
       practiceMode: s.practiceMode || 0,             // v2.42：加練模式（$5→$2）
       alreadyRewarded: matchRepeat,
+      allRemaining: allRemaining(),                  // v2.48
     });
     if (!matchRepeat && calc.sessionPre > 0) {
       if (!s.matchPaidUnitsToday) s.matchPaidUnitsToday = [];
@@ -738,6 +757,7 @@ function handleComplete(mode, result) {
       mode,                                 // v2.44：題型分級（文意字彙 $3、克漏字 $3）
       alreadyRewarded: clozeRepeat,
       paidCorrect,                          // v2.45
+      allRemaining: allRemaining(),         // v2.48
     });
     if (['en2zh', 'zh2en', 'vocab'].includes(mode) && newlyPaidEns.length && calc.sessionPre > 0) {
       state.markPaid(s, mode, newlyPaidEns);
@@ -751,6 +771,7 @@ function handleComplete(mode, result) {
 
   if (!result.aborted) {
     s.todayPreEarned = (s.todayPreEarned || 0) + calc.sessionPre;
+    s.todayPreAll = (s.todayPreAll || 0) + calc.sessionPre;   // v2.48
     s.todayEarned = (s.todayEarned || 0) + calc.sessionFinal;
     s.todayCorrect = (s.todayCorrect || 0) + sessionCorrect;
     s.totalEarned = (s.totalEarned || 0) + calc.sessionFinal;
@@ -790,7 +811,7 @@ function handleComplete(mode, result) {
     amount: calc.sessionFinal,
     note: result.aborted
       ? `v2 ${modeLabel} 中途離開（做到 ${sessionCorrect}/${totalQuestions}）${result.passageTitle ? `「${result.passageTitle}」` : ''}`
-      : `v2 ${modeLabel}${result.passageTitle ? `「${result.passageTitle}」` : ''}${mode === 'cloze' && result.passageId ? ` #${result.passageId}` : ''}${Array.isArray(result._paidNow) && result._paidNow.length ? ` #paid:${result._paidNow.join('|')}` : ''}`,
+      : `v2 ${modeLabel}${calc.sessionFinal > 0 ? ` #pre:${calc.sessionPre}` : ''}${result.passageTitle ? `「${result.passageTitle}」` : ''}${mode === 'cloze' && result.passageId ? ` #${result.passageId}` : ''}${Array.isArray(result._paidNow) && result._paidNow.length ? ` #paid:${result._paidNow.join('|')}` : ''}`,
   }, s);
 
   renderResult({ mode, result, calc, streakChanged });

@@ -1,20 +1,33 @@
-// modes/payout.js — 家長提領頁
+// modes/payout.js — 家長頁（提領／扣款／上限與費率／練習量）
 //
 // 設計：
-//   - 跨裝置：列所有裝置的累計賺 / 已提領 / 可提領
-//   - 提領前必先 fresh sync 防 double-spend（媽媽在 A 機提了，B 機也想提就要先 sync）
-//   - 每筆 $100 一單位
-//   - POST v2_payout 事件，amount=-100
-//   - 信任制（家庭用，不做密碼）— 如需防孩子自助，未來加 PIN
+//   - v2.48：錢包綁人（家長 2026-09-23 決定）——所有裝置合計成一個錢包，提領與扣款都從這個錢包扣。
+//     以前按裝置分開，家長只能「從某台提 $100」，零頭只好借扣款記帳；現在提領可填任意金額。
+//   - 提領前必先 fresh sync 防 double-spend
+//   - v2.48：上限與費率都在這裡設定（wallet.js 的 CONFIG_KEYS），寫 v2_config_set 事件，最後一筆生效
+//   - 信任制（家庭用，不做密碼）
 //
 // 完成後家長按「回主畫面」即可
 
-import { REWARD_CONFIG, effectiveDailyCap, effectiveTuning } from '../reward.js';
-import { fetchV2Events, computeAllDevices, extractDailyCap, extractDailyCapCn, extractPracticeMode } from '../sync.js';
-import { logEvent } from '../logger.js';
+import { REWARD_CONFIG } from '../reward.js';
+import { fetchV2Events, computeAllDevices, extractPracticeMode } from '../sync.js';
+import { computeWallet, configSpec, isTestDevice } from '../wallet.js';
 
-// v2.34：生活習慣扣款預設金額（媽媽跟謙恩約定：提醒過仍沒做到一次扣 $10）
-const DEFAULT_PENALTY = 10;
+const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
+const DEFAULT_PENALTY = 10;      // v2.34：約定好、提醒過仍沒做到一次扣 $10
+const WALLET_OWNER = '謙恩';     // v2.48：提領／扣款事件的「裝置」欄（錢包屬於人）
+
+// 設定卡分組（key 對應 wallet.CONFIG_KEYS）
+const GROUPS = [
+  { title: '每日上限（乘連勝倍率前）', keys: ['cap.en', 'cap.cn', 'cap.all'] },
+  { title: '英文費率', keys: ['rate.en.base', 'rate.en.per', 'rate.en.vocab', 'rate.en.cloze', 'rate.en.review', 'rate.en.reviewCap', 'rate.en.match', 'rate.en.reading'] },
+  { title: '國文費率', keys: ['rate.cn.base', 'rate.cn.per'] },
+];
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
 
 export function startPayoutMode({ root, onBack }) {
   let busy = false;
@@ -22,7 +35,7 @@ export function startPayoutMode({ root, onBack }) {
   async function load() {
     root.innerHTML = `
       <button class="back" id="back">← 回主畫面</button>
-      <h1>🏦 家長提領</h1>
+      <h1>🏦 家長頁</h1>
       <p class="muted">同步中…請稍候</p>
     `;
     root.querySelector('#back').addEventListener('click', onBack);
@@ -31,7 +44,7 @@ export function startPayoutMode({ root, onBack }) {
     if (!result.ok) {
       root.innerHTML = `
         <button class="back" id="back">← 回主畫面</button>
-        <h1>🏦 家長提領</h1>
+        <h1>🏦 家長頁</h1>
         <div class="card">
           <p>⚠ 無法連線到 Google Sheet</p>
           <p class="muted small">${escapeHtml(result.error || '')}</p>
@@ -43,391 +56,197 @@ export function startPayoutMode({ root, onBack }) {
       root.querySelector('#retry').addEventListener('click', load);
       return;
     }
-
-    renderList(result.events);
+    render(result.events);
   }
 
-  function renderList(events) {
-    // v2.39：每科各自的每日上限（家長設定 or 預設 100）
-    const customCapEn = extractDailyCap(events);
-    const currentCapEn = effectiveDailyCap(customCapEn);
-    const customCapCn = extractDailyCapCn(events);
-    const currentCapCn = effectiveDailyCap(customCapCn);
-    // v2.42：練習量模式
+  function render(events) {
+    const w = computeWallet(events, todayStr());
     const currentPractice = extractPracticeMode(events);
-    const map = computeAllDevices(events);
-    // 排序：可提領金額 desc
-    const allDevices = [...map.entries()].sort((a, b) =>
-      b[1].availableToWithdraw - a[1].availableToWithdraw
-    );
-    // v2.39：明細只列「可提領 > 0」的裝置（謙恩改裝置名留下太多 $0 殭屍項目）
-    const devices = allDevices.filter(([, m]) => m.availableToWithdraw > 0);
-    const hiddenCount = allDevices.length - devices.length;
-
+    const spec = Object.fromEntries(configSpec().map(x => [x.key, x]));
     const unit = REWARD_CONFIG.payoutUnit;
-    let totalAvailable = 0;
-    let totalEarnedAll = 0;
-    let totalWithdrawnAll = 0;
-    for (const [, m] of map) {
-      totalAvailable += m.availableToWithdraw;
-      totalEarnedAll += m.totalEarned;
-      totalWithdrawnAll += m.totalWithdrawn;
-    }
+    // 參考用：各裝置賺了多少（錢包已合併，這裡只給家長對帳）
+    const devices = [...computeAllDevices(events).entries()]
+      .filter(([dev, m]) => !isTestDevice(dev) && (m.totalEarned || m.totalWithdrawn || m.totalPenalty))
+      .sort((a, b) => b[1].totalEarned - a[1].totalEarned);
+    const ledger = w.totalEarned - w.totalWithdrawn - w.totalPenalty;
 
-    // v2.34：生活習慣扣款用的裝置選單（沿用提領頁已抓到的裝置清單）
-    const deviceNames = devices.map(([dev]) => dev);
-    const penaltyDeviceOptions = deviceNames.length
-      ? deviceNames.map(d => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join('')
-      : '<option value="">（尚無裝置紀錄）</option>';
+    const field = (key) => {
+      const s = spec[key];
+      return `
+        <label class="penalty-field">
+          <span>${escapeHtml(s.label)}${w.fromParent[key] ? '' : '<small class="muted">（預設）</small>'}</span>
+          <input class="cfg-input" data-key="${key}" type="number" value="${w.cfg[key]}" min="${s.lo}" max="${s.hi}" step="1" />
+        </label>`;
+    };
 
     root.innerHTML = `
       <button class="back" id="back">← 回主畫面</button>
-      <h1>🏦 家長提領</h1>
-      <p class="muted">每筆提領以 $${unit} 為單位，按下提領會寫到 Google Sheet</p>
+      <h1>🏦 家長頁</h1>
 
       <div class="stats">
-        <div class="stat">
-          <div class="stat-num">$${totalEarnedAll}</div>
-          <div class="stat-label">所有裝置累計</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">$${totalWithdrawnAll}</div>
-          <div class="stat-label">已提領總額</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">$${totalAvailable}</div>
-          <div class="stat-label">可提領總額</div>
-        </div>
+        <div class="stat"><div class="stat-num">$${w.totalEarned}</div><div class="stat-label">累計賺（英＋國）</div></div>
+        <div class="stat"><div class="stat-num">$${w.totalWithdrawn}</div><div class="stat-label">已提領</div></div>
+        <div class="stat"><div class="stat-num">$${w.available}</div><div class="stat-label">可提領</div></div>
       </div>
+      ${w.totalPenalty ? `<p class="muted small">習慣扣款累計 −$${w.totalPenalty}（已從可提領扣除）</p>` : ''}
+      ${ledger < 0 ? `<p class="muted small">⚠ 帳面是 −$${-ledger}（提領＋扣款超過累計），畫面顯示 $0，之後賺的錢會先補這個差額。</p>` : ''}
 
-      <h2>各裝置明細</h2>
-      ${devices.length === 0 ? '<p class="muted">目前沒有可提領的裝置</p>' :
-        devices.map(([dev, m]) => `
-          <div class="card payout-card">
-            <div class="payout-dev">${escapeHtml(dev)}</div>
-            <div class="payout-row">
-              <span>累計賺</span><b>$${m.totalEarned}</b>
-            </div>
-            <div class="payout-row">
-              <span>已提領</span><b>$${m.totalWithdrawn}</b>
-            </div>
-            ${m.totalPenalty ? `
-            <div class="payout-row">
-              <span>習慣扣款</span><b>−$${m.totalPenalty}</b>
-            </div>` : ''}
-            <div class="payout-row payout-avail">
-              <span>可提領</span><b>$${m.availableToWithdraw}</b>
-            </div>
-            <button class="payout-btn" data-dev="${escapeHtml(dev)}"
-              data-avail="${m.availableToWithdraw}"
-              ${m.availableToWithdraw < unit ? 'disabled' : ''}>
-              提領 $${unit}${m.availableToWithdraw < unit ? '（不足）' : ''}
-            </button>
-          </div>
-        `).join('')}
-      ${hiddenCount > 0 ? `<p class="muted small">另有 ${hiddenCount} 台裝置可提領 $0，已隱藏（累計與已提領仍算進上方總額）</p>` : ''}
-
-      <p class="muted small" style="margin-top:16px;">
-        ⚠ 提領前會自動同步 Sheet，避免兩台裝置同時提領造成超領
-      </p>
+      <h2>💵 提領</h2>
+      <div class="card penalty-card">
+        <p class="muted small" style="margin-top:0;">所有裝置合計成一個錢包（v2.48）。金額可自由填，預設 $${unit}。</p>
+        <label class="penalty-field">
+          <span>金額</span>
+          <input id="pay-amount" type="number" value="${Math.min(unit, w.available) || unit}" min="1" step="1" />
+        </label>
+        <button id="pay-btn" class="payout-btn" ${w.available > 0 ? '' : 'disabled'}>提領</button>
+        <p class="muted small" id="pay-msg" style="margin-bottom:0;"></p>
+      </div>
 
       <h2 style="margin-top:28px;">➖ 生活習慣扣款</h2>
       <div class="card penalty-card">
         <p class="muted small" style="margin-top:0;">
-          約定好、提醒過仍沒做到的事，一次 $${DEFAULT_PENALTY}。
-          只會減少「可提領」，不會動到他的學習累計與連勝。
-          扣款原因會記到 Google Sheet 的「備註」欄。
+          約定好、提醒過仍沒做到的事，一次 $${DEFAULT_PENALTY}。只減「可提領」，不動學習累計與連勝。
+          原因會記到 Google Sheet 的「備註」欄。<b>給現金請用上面的「提領」</b>，不要記成扣款。
         </p>
         <label class="penalty-field">
-          <span>裝置</span>
-          <select id="pen-dev">${penaltyDeviceOptions}</select>
-        </label>
-        <label class="penalty-field">
           <span>原因（必填）</span>
-          <input id="pen-reason" type="text" maxlength="60"
-            placeholder="例如：提醒了還是沒把碗放進水槽" />
+          <input id="pen-reason" type="text" maxlength="60" placeholder="例如：提醒了還是沒把碗放進水槽" />
         </label>
         <label class="penalty-field">
           <span>金額</span>
           <input id="pen-amount" type="number" value="${DEFAULT_PENALTY}" min="1" step="1" />
         </label>
-        <button id="pen-btn" class="penalty-btn" ${deviceNames.length ? '' : 'disabled'}>扣款</button>
+        <button id="pen-btn" class="penalty-btn">扣款</button>
         <p class="muted small" id="pen-msg" style="margin-bottom:0;"></p>
       </div>
 
-      <h2 style="margin-top:28px;">⚙️ 每科每日獎金上限</h2>
+      <h2 style="margin-top:28px;">⚙️ 上限與費率</h2>
       <div class="card penalty-card">
         <p class="muted small" style="margin-top:0;">
-          每科分開設定、分開套用（英文和國文各自封頂，互不影響）。
-          改了會同步到所有裝置：首頁、孩子的規則頁、各科結算都會用新數字。
+          改了會同步到所有裝置，下一輪結算就用新數字。上限比的是「乘連勝倍率前」的金額。
+          全科總上限填 0 ＝ 不另設（只看各科上限）。
         </p>
-        <p class="muted small">
-          目前：英文 <b>$${currentCapEn}</b>${customCapEn === null ? '（預設）' : '（家長設定）'}
-          ／ 國文 <b>$${currentCapCn}</b>${customCapCn === null ? '（預設）' : '（家長設定）'}
-        </p>
-        <label class="penalty-field">
-          <span>英文上限</span>
-          <input id="cap-amount-en" type="number" value="${currentCapEn}" min="10" max="1000" step="10" />
-        </label>
-        <label class="penalty-field">
-          <span>國文上限</span>
-          <input id="cap-amount-cn" type="number" value="${currentCapCn}" min="10" max="1000" step="10" />
-        </label>
-        <button id="cap-btn" class="penalty-btn">儲存上限</button>
-        <p class="muted small" id="cap-msg" style="margin-bottom:0;"></p>
+        ${GROUPS.map(g => `<h3 class="small" style="margin:14px 0 4px;">${escapeHtml(g.title)}</h3>${g.keys.map(field).join('')}`).join('')}
+        <button id="cfg-btn" class="penalty-btn" style="margin-top:10px;">儲存變更</button>
+        <p class="muted small" id="cfg-msg" style="margin-bottom:0;"></p>
       </div>
 
       <h2 style="margin-top:28px;">⚡ 練習量模式（英文）</h2>
       <div class="card penalty-card">
         <p class="muted small" style="margin-top:0;">
-          「加練」＝砍被動、保主動：從頭複習 $12→$5/天、連連看 $2→$1/場、
-          基礎獎金 $${REWARD_CONFIG.base} 的門檻從答對 5 題提高到 <b>10 題</b>。
+          「加練」＝砍被動、保主動：從頭複習最多 $5/天、連連看最多 $1/場、基礎獎金門檻從答對 5 題提高到 <b>10 題</b>。
           答對一題、閱讀獎金、<b>連勝門檻（5 題保連勝）都不變</b>。
-          （v2.46 起全站金額減半，這裡的數字已經是減半後的。）改了會同步到所有裝置，規則頁自動顯示新數字，隨時可調回。
         </p>
         <p class="muted small">目前：<b>${currentPractice === 1 ? '⚡ 加練模式' : '標準'}</b></p>
         <label class="penalty-field">
           <span>模式</span>
           <select id="practice-mode">
-            <option value="0" ${currentPractice === 0 ? 'selected' : ''}>標準（複習 $12、連連看 $2、基礎 5 題）</option>
-            <option value="1" ${currentPractice === 1 ? 'selected' : ''}>⚡ 加練（複習 $5、連連看 $1、基礎 10 題）</option>
+            <option value="0" ${currentPractice === 0 ? 'selected' : ''}>標準</option>
+            <option value="1" ${currentPractice === 1 ? 'selected' : ''}>⚡ 加練</option>
           </select>
         </label>
         <button id="practice-btn" class="penalty-btn">套用模式</button>
         <p class="muted small" id="practice-msg" style="margin-bottom:0;"></p>
       </div>
+
+      <details style="margin-top:28px;">
+        <summary class="muted small">各裝置明細（對帳參考，錢包已合併）</summary>
+        ${devices.map(([dev, m]) => `<p class="muted small">${escapeHtml(dev)}：賺 $${m.totalEarned}、提領 $${m.totalWithdrawn}${m.totalPenalty ? `、扣款 $${m.totalPenalty}` : ''}</p>`).join('') || '<p class="muted small">（無）</p>'}
+      </details>
     `;
     root.querySelector('#back').addEventListener('click', onBack);
-    root.querySelectorAll('.payout-btn').forEach(btn => {
-      btn.addEventListener('click', () => handlePayout(btn.dataset.dev, +btn.dataset.avail));
-    });
-    const penBtn = root.querySelector('#pen-btn');
-    if (penBtn) penBtn.addEventListener('click', handlePenalty);
-    const capBtn = root.querySelector('#cap-btn');
-    if (capBtn) capBtn.addEventListener('click', () => handleDailyCap(currentCapEn, currentCapCn));
-    const practiceBtn = root.querySelector('#practice-btn');
-    if (practiceBtn) practiceBtn.addEventListener('click', () => handlePractice(currentPractice));
+    root.querySelector('#pay-btn').addEventListener('click', () => handlePayout(w.available));
+    root.querySelector('#pen-btn').addEventListener('click', handlePenalty);
+    root.querySelector('#cfg-btn').addEventListener('click', () => handleConfig(w.cfg, spec));
+    root.querySelector('#practice-btn').addEventListener('click', () => handlePractice(currentPractice));
   }
 
-  // v2.42：切換練習量模式 — POST v2_config_practice（amount 0/1），最後一筆生效
-  async function handlePractice(currentPractice) {
+  const msgFn = (id) => (t) => { const el = root.querySelector(id); if (el) el.textContent = t; };
+
+  async function handlePayout(available) {
     if (busy) return;
-    const mode = Math.floor(Number(root.querySelector('#practice-mode')?.value));
-    const msg = root.querySelector('#practice-msg');
-    const showMsg = (t) => { if (msg) msg.textContent = t; };
-    if (mode !== 0 && mode !== 1) { showMsg('模式選擇有誤'); return; }
-    if (mode === currentPractice) { showMsg('跟目前的模式一樣，不用改'); return; }
-    const label = mode === 1 ? '⚡ 加練模式' : '標準模式';
-    if (!confirm(`確定切換為「${label}」？\n\n（會同步到所有裝置，孩子的規則頁會自動顯示新數字）`)) return;
-    busy = true;
-    showMsg('儲存中…');
-    await postPracticeMode(mode);
-    busy = false;
-    load();
-  }
-
-  // v2.35 → v2.39：家長調整每科每日上限
-  //   英文 → v2_config_daily_cap（沿用舊事件，歷史設定不失效）
-  //   國文 → v2_config_daily_cap_cn（新事件）
-  //   只 POST 有變動的科目
-  async function handleDailyCap(currentCapEn, currentCapCn) {
-    if (busy) return;
-    const amountEn = Math.floor(Number(root.querySelector('#cap-amount-en')?.value));
-    const amountCn = Math.floor(Number(root.querySelector('#cap-amount-cn')?.value));
-    const msg = root.querySelector('#cap-msg');
-    const showMsg = (t) => { if (msg) msg.textContent = t; };
-
-    const bad = (v) => !v || v < 10 || v > 1000;
-    if (bad(amountEn) || bad(amountCn)) { showMsg('上限要在 $10 ~ $1000 之間'); return; }
-    const changeEn = amountEn !== currentCapEn;
-    const changeCn = amountCn !== currentCapCn;
-    if (!changeEn && !changeCn) { showMsg('跟目前的上限一樣，不用改'); return; }
-    const lines = [];
-    if (changeEn) lines.push(`英文：$${currentCapEn} → $${amountEn}`);
-    if (changeCn) lines.push(`國文：$${currentCapCn} → $${amountCn}`);
-    if (!confirm(`確定調整每日獎金上限？\n\n${lines.join('\n')}\n\n（會同步到所有裝置，今天就生效）`)) return;
-
-    busy = true;
-    showMsg('儲存中…');
-    if (changeEn) await postDailyCap(amountEn, 'en');
-    if (changeCn) await postDailyCap(amountCn, 'cn');
-    busy = false;
-    load();
+    const showMsg = msgFn('#pay-msg');
+    const amount = Math.floor(Number(root.querySelector('#pay-amount')?.value));
+    if (!amount || amount <= 0) { showMsg('金額要大於 0'); return; }
+    if (amount > available) { showMsg(`可提領只有 $${available}`); return; }
+    if (!confirm(`確定提領 $${amount}？\n\n提領後「可提領」會從 $${available} 變成 $${available - amount}。`)) return;
+    busy = true; showMsg('提領中…');
+    await postEvent({ event: 'v2_payout', amount: -amount, note: `家長提領 $${amount}`, totalPaid: amount, user: WALLET_OWNER });
+    busy = false; load();
   }
 
   async function handlePenalty() {
     if (busy) return;
-    const dev = (root.querySelector('#pen-dev')?.value || '').trim();
+    const showMsg = msgFn('#pen-msg');
     const reason = (root.querySelector('#pen-reason')?.value || '').trim();
     const amount = Math.floor(Number(root.querySelector('#pen-amount')?.value));
-    const msg = root.querySelector('#pen-msg');
-    const showMsg = (t) => { if (msg) msg.textContent = t; };
-
-    if (!dev) { showMsg('請先選擇裝置'); return; }
     if (!reason) { showMsg('請填寫扣款原因（會記到 Google Sheet）'); return; }
     if (!amount || amount <= 0) { showMsg('金額要大於 0'); return; }
-    if (!confirm(`確定要從「${dev}」扣 $${amount}？\n\n原因：${reason}\n\n（會減少他的「可提領」，並記到 Google Sheet）`)) return;
-
-    busy = true;
-    showMsg('扣款中…');
-    await postPenalty(dev, amount, reason);
-    busy = false;
-    // 重新載入（會 re-sync，數字立刻反映）
-    load();
+    if (!confirm(`確定扣 $${amount}？\n\n原因：${reason}\n\n（會減少「可提領」，並記到 Google Sheet）`)) return;
+    busy = true; showMsg('扣款中…');
+    await postEvent({ event: 'v2_penalty', amount: -Math.abs(amount), note: `習慣扣款：${reason}`, user: WALLET_OWNER });
+    busy = false; load();
   }
 
-  async function handlePayout(deviceName, available) {
+  // v2.48：只寫有變動的 key。cap.en／cap.cn 另外寫舊事件，讓還沒更新的裝置（Service Worker 舊版）也讀得到
+  async function handleConfig(current, spec) {
     if (busy) return;
-    const unit = REWARD_CONFIG.payoutUnit;
-    if (available < unit) {
-      alert(`${deviceName} 可提領 $${available} 不夠一筆 $${unit}`);
-      return;
+    const showMsg = msgFn('#cfg-msg');
+    const changes = [];
+    for (const input of root.querySelectorAll('.cfg-input')) {
+      const key = input.dataset.key;
+      const v = Math.floor(Number(input.value));
+      const s = spec[key];
+      if (!Number.isFinite(v) || v < s.lo || v > s.hi) { showMsg(`「${s.label}」要在 ${s.lo} ~ ${s.hi} 之間`); return; }
+      if (v !== current[key]) changes.push({ key, from: current[key], to: v, label: s.label });
     }
-    if (!confirm(`確定要從「${deviceName}」提領 $${unit}？\n\n提領後該裝置「可提領」會少 $${unit}。`)) return;
+    if (!changes.length) { showMsg('沒有變更'); return; }
+    if (!confirm(`確定儲存？\n\n${changes.map(c => `${c.label}：${c.from} → ${c.to}`).join('\n')}\n\n（會同步到所有裝置，下一輪結算生效）`)) return;
+    busy = true; showMsg('儲存中…');
+    for (const c of changes) {
+      await postEvent({ event: 'v2_config_set', amount: c.to, note: `cfg:${c.key} 家長把「${c.label}」設為 ${c.to}` }, 0);
+      if (c.key === 'cap.en') await postEvent({ event: 'v2_config_daily_cap', amount: c.to, note: `家長把英文每日獎金上限調整為 $${c.to}` }, 0);
+      if (c.key === 'cap.cn') await postEvent({ event: 'v2_config_daily_cap_cn', amount: c.to, note: `家長把國文每日獎金上限調整為 $${c.to}` }, 0);
+    }
+    await new Promise(r => setTimeout(r, 1500));
+    busy = false; load();
+  }
 
-    busy = true;
-    // 直接 POST 一個 v2_payout 事件，amount=-100，device=被提領的那台
-    // 注意：getDeviceName() 取的是「當前操作的裝置」(媽媽 Mac)，
-    // 但 sheet 上「裝置」欄要記「被提領的那台」(謙恩 iPad)
-    // logger 預設用 getDeviceName()，這裡要 override。先改 payload 寫入方式。
-    //
-    // 簡化做法：直接 fetch POST 一個自訂 payload
-    await postPayout(deviceName, unit);
-    busy = false;
-    // 重新載入（會 re-sync）
-    load();
+  // v2.42：切換練習量模式 — v2_config_practice（amount 0/1），最後一筆生效
+  async function handlePractice(currentPractice) {
+    if (busy) return;
+    const showMsg = msgFn('#practice-msg');
+    const mode = Math.floor(Number(root.querySelector('#practice-mode')?.value));
+    if (mode !== 0 && mode !== 1) { showMsg('模式選擇有誤'); return; }
+    if (mode === currentPractice) { showMsg('跟目前的模式一樣，不用改'); return; }
+    const label = mode === 1 ? '⚡ 加練模式' : '標準模式';
+    if (!confirm(`確定切換為「${label}」？\n\n（會同步到所有裝置）`)) return;
+    busy = true; showMsg('儲存中…');
+    await postEvent({ event: 'v2_config_practice', amount: mode, note: `家長切換練習量模式為「${mode === 1 ? '加練' : '標準'}」` });
+    busy = false; load();
   }
 
   load();
 }
 
-// 直接 POST，自訂 device 欄位（不用 logger 因為 logger 強制用本機 device）
-async function postPayout(targetDevice, amount) {
-  const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
+// 直接 POST 一筆事件（不用 logger：logger 會強制帶本機裝置名與 money/streak 欄）
+//   Apps Script POST 是 fire-and-forget（no-cors 看不到回應）；預設等 1.5 秒讓 Sheet 寫入再 re-fetch
+async function postEvent({ event, amount, note, totalPaid = '', user }, waitMs = 1500) {
   const payload = {
-    event: 'v2_payout',
-    unit: '',
-    quizSize: '',
-    correct: '',
-    prediction: '',
-    amount: -amount,                     // 負值
-    note: `家長提領 $${amount}（對 ${targetDevice}）`,
-    money: '',
-    totalPaid: amount,                   // 給 Sheet 「累計已領」欄參考用
-    streak: '',
-    user: targetDevice,                  // 「裝置」欄寫被提領的裝置
+    event, unit: '', quizSize: '', correct: '', prediction: '',
+    amount, note, money: '', totalPaid, streak: '',
+    user: user || (() => { try { return localStorage.getItem('sv2.deviceName') || '(家長頁)'; } catch (e) { return '(家長頁)'; } })(),
   };
   try {
     await fetch(LOG_WEBAPP_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      keepalive: true,
+      method: 'POST', mode: 'no-cors', keepalive: true,
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload),
     });
   } catch (e) {
-    console.warn('payout post failed', e);
+    console.warn(`${event} post failed`, e);
   }
-  // Apps Script POST 是 fire-and-forget；等 1.5 秒讓 Sheet 寫入完成再 re-fetch
-  await new Promise(r => setTimeout(r, 1500));
-}
-
-// v2.34：生活習慣扣款 — POST 一個 v2_penalty 事件，amount 為負值，原因寫進 note（→ Sheet 備註欄）
-// 事件名以 v2_ 開頭，Apps Script 的 doPost 會原樣寫入、?action=v2_events 會原樣回傳，
-// 所以後端不用改；sync.js 會把它從「可提領」扣掉。
-async function postPenalty(targetDevice, amount, reason) {
-  const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
-  const payload = {
-    event: 'v2_penalty',
-    unit: '',
-    quizSize: '',
-    correct: '',
-    prediction: '',
-    amount: -Math.abs(amount),           // 負值
-    note: `習慣扣款：${reason}`,          // 原因記到 Sheet「備註」欄
-    money: '',
-    totalPaid: '',
-    streak: '',
-    user: targetDevice,                  // 「裝置」欄寫被扣款的裝置
-  };
-  try {
-    await fetch(LOG_WEBAPP_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      keepalive: true,
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload),
-    });
-  } catch (e) {
-    console.warn('penalty post failed', e);
-  }
-  // 等 1.5 秒讓 Sheet 寫入完成再 re-fetch
-  await new Promise(r => setTimeout(r, 1500));
-}
-
-// v2.35 → v2.39：家長調整每科每日上限 — POST v2_config_daily_cap（英文）或
-// v2_config_daily_cap_cn（國文），amount = 新上限。後端零改動；
-// extractDailyCap / extractDailyCapCn 掃全部事件取最後一筆生效。
-async function postDailyCap(amount, subject) {
-  const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
-  const isCn = subject === 'cn';
-  const payload = {
-    event: isCn ? 'v2_config_daily_cap_cn' : 'v2_config_daily_cap',
-    unit: '',
-    quizSize: '',
-    correct: '',
-    prediction: '',
-    amount: Math.abs(amount),
-    note: `家長把${isCn ? '國文' : '英文'}每日獎金上限調整為 $${amount}`,
-    money: '',
-    totalPaid: '',
-    streak: '',
-    user: (() => { try { return localStorage.getItem('sv2.deviceName') || '(家長頁)'; } catch (e) { return '(家長頁)'; } })(),
-  };
-  try {
-    await fetch(LOG_WEBAPP_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      keepalive: true,
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload),
-    });
-  } catch (e) {
-    console.warn('daily cap post failed', e);
-  }
-  // 等 1.5 秒讓 Sheet 寫入完成再 re-fetch
-  await new Promise(r => setTimeout(r, 1500));
-}
-
-// v2.42：練習量模式 — POST v2_config_practice 事件，amount = 0（標準）/ 1（加練）。
-// 後端零改動；sync.extractPracticeMode 掃全部事件取最後一筆生效。
-async function postPracticeMode(mode) {
-  const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
-  const payload = {
-    event: 'v2_config_practice',
-    unit: '',
-    quizSize: '',
-    correct: '',
-    prediction: '',
-    amount: mode,
-    note: `家長切換練習量模式為「${mode === 1 ? '加練（複習$5/連連看$1/基礎10題）' : '標準'}」`,
-    money: '',
-    totalPaid: '',
-    streak: '',
-    user: (() => { try { return localStorage.getItem('sv2.deviceName') || '(家長頁)'; } catch (e) { return '(家長頁)'; } })(),
-  };
-  try {
-    await fetch(LOG_WEBAPP_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      keepalive: true,
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload),
-    });
-  } catch (e) {
-    console.warn('practice mode post failed', e);
-  }
-  await new Promise(r => setTimeout(r, 1500));
+  if (waitMs) await new Promise(r => setTimeout(r, waitMs));
 }
 
 function escapeHtml(s) {
