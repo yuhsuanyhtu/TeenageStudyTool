@@ -25,6 +25,9 @@ CFG = {
     'math': {'file': '數學', 'col': '數學', 'n': 27, 'map': 'math_code_units.json', 'names': ['數學'],
              'code_re': r'()\b([NSGAFD]-[789]-\d+)', 'prefix': None, 'overrides': 'math_item_overrides.json',
              'stop': r'^第二部分：非選擇題'},
+    # 國文：編碼不分年級；依題型掛課（見 cn_code_units.json）。'free' 那一課＝不鎖的題，答錯不指定回去讀哪一課
+    'cn': {'file': '國文', 'col': '國文', 'n': 42, 'map': 'cn_code_units.json', 'names': ['國文'],
+           'code_re': r'()\b([A-E][a-f]-Ⅳ-\d+)', 'prefix': None, 'overrides': 'cn_item_overrides.json', 'free': '七上|1'},
 }[SUBJ]
 OUT = os.environ.get('CAP_OUT', os.path.join(B.REPO, 'docs', 'v2', 'cap', SUBJ))
 MAP = os.path.join(os.path.dirname(__file__), CFG['map'])
@@ -81,7 +84,17 @@ def markers(pages):
             if l['x0'] > B.LEFT_MAX:
                 continue
             if (m := re.search(r'回答第?\s*(\d{1,2})\s*[至～~-]\s*(\d{1,2})\s*題', t)):
-                out.append({'kind': 'g', 'page': pi, 'y': l['y0'], 'a': int(m.group(1)), 'b': int(m.group(2))})
+                # 題組導言可能好幾行，「回答 x～y 題」在最後一行（國文 114 第 36 題「五代十國是指…」）：
+                # 往上接緊貼的文字行（不是題號、不是選項）當題組起點，否則導言前幾行會被切進上一題
+                ls = B.content_lines(pg)
+                k = next(i for i, x in enumerate(ls) if x is l)
+                y0 = l['y0']
+                while k > 0:
+                    pv = ls[k - 1]
+                    if pv['y1'] < y0 - 6 or pv['x0'] > B.LEFT_MAX or re.match(r'^(\d{1,2}\.|\([A-D]\)|（[A-D]）)', pv['text'].strip()):
+                        break
+                    y0, k = pv['y0'], k - 1
+                out.append({'kind': 'g', 'page': pi, 'y': y0, 'a': int(m.group(1)), 'b': int(m.group(2))})
             elif (m := re.match(r'^(\d{1,2})\.(\s|$)', t)):
                 out.append({'kind': 'q', 'page': pi, 'y': l['y0'], 'n': int(m.group(1)), 'x': l['x0']})
     xs = [round(m['x']) for m in out if m['kind'] == 'q']
@@ -382,7 +395,8 @@ def build_year(year, lad, cmap, report):
             last = max(info[n]['codes'] or codes, key=lambda c: idx[s][unit_key(c, cmap)])
             qs.append({'n': n, 'id': f'{year}-{SUBJ}-{n:02d}', 'answer': ans[n], 'answerText': ch.get(ans[n]) if ch else None,
                        'goal': info[n]['goal'], 'pass': rates.get(n), 'codes': info[n]['codes'],
-                       'review': {'unit': lad[s][max(idx[s][unit_key(last, cmap)], ovi.get(n, -1))]['label'], 'words': []}})
+                       'review': None if CFG.get('free') and max(idx[s][unit_key(last, cmap)], ovi.get(n, -1)) == idx[s][CFG['free']]
+                       else {'unit': lad[s][max(idx[s][unit_key(last, cmap)], ovi.get(n, -1))]['label'], 'words': []}})
         imgs = None   # 下面整年一起依圖形位置裁切
         items.append({'id': iid, 'year': year, 'type': 'group' if len(nums) > 1 else 'single', 'strand': s,
                       'minUnit': lad[s][mu]['label'], 'minUnitIndex': mu, 'imgs': imgs, 'questions': qs,

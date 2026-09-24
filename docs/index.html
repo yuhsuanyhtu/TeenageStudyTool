@@ -42,6 +42,7 @@
     <a class="mod" href="chinese/"><span class="emoji">📖</span><span>國文<small>形音義・相似字・詞語（試玩中）</small></span></a>
     <a class="mod" href="v2/#hk=soc"><span class="emoji">🌏</span><span>社會<small>歷史・地理・公民 會考真題（選學校上到的那一課）</small></span></a>
     <a class="mod" href="v2/#hk=sci"><span class="emoji">🔬</span><span>自然<small>生物・理化・地科 會考真題（選學校上到的那一課）</small></span></a>
+    <a class="mod" href="v2/#hk=cn"><span class="emoji">📜</span><span>國文會考<small>會考真題（選學校上到的那一課；文言文、詩詞、應用文跟著課本進度）</small></span></a>
     <a class="mod" href="v2/#hk=math"><span class="emoji">📐</span><span>數學<small>會考選擇題真題（選學校上到的那一課）</small></span></a>
     <a class="mod" href="reading/"><span class="emoji">📚</span><span>英語閱讀<small>點字讀故事・挑戰拿點數（純閱讀，不算錢）</small></span></a>
     <footer>TeenageStudyTool</footer>
@@ -52,7 +53,7 @@
 // v2.48：算法改用共用的 v2/js/wallet.js（錢包綁人、上限／費率由家長頁設定）。
 //   先顯示上次成功同步的快照（標「更新中」），背景拿到新資料再覆蓋——Apps Script 要 2–3 秒。
 //   ⚠️ 快照只給畫面顯示，不拿來算錢（見 wallet.js saveSnapshot 的說明）。
-import { computeWallet, saveSnapshot, loadSnapshot, SUBJECTS } from './v2/js/wallet.js?v=2.49';
+import { computeWallet, saveSnapshot, loadSnapshot, SUBJECTS } from './v2/js/wallet.js?v=2.54';
 const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
 function todayStr(){
   const d=new Date();

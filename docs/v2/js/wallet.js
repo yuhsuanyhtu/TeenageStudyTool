@@ -39,7 +39,7 @@ export const CONFIG_KEYS = [
 //   ⚠️ 會考事件一律 v2_hk_<科>_paid，絕不以 _done 結尾（否則會被當成英文單字題型，吃英文連勝與基礎獎金邏輯）
 export const SUBJECTS = [
   { id: 'en',   label: '英文', match: e => /^v2_hk_en_paid$/.test(e) || (e.startsWith('v2_') && e.endsWith('_done')) },
-  { id: 'cn',   label: '國文', match: e => /^v2_cn_.*_paid$/.test(e) },
+  { id: 'cn',   label: '國文', match: e => /^v2_cn_.*_paid$/.test(e) || e === 'v2_hk_cn_paid' },   // v2.54：國文會考題算國文收入、吃國文上限
   { id: 'soc',  label: '社會', match: e => e === 'v2_hk_soc_paid' },
   { id: 'sci',  label: '自然', match: e => e === 'v2_hk_sci_paid' },
   { id: 'math', label: '數學', match: e => e === 'v2_hk_math_paid' },

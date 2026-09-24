@@ -90,7 +90,7 @@ function hkPayable(id) {
     // v2.9 起不再 log session_start（雜訊太多，每次刷新都會記一筆）
     // v2.17：URL 帶 #payout 直接進家長提領頁（隱藏入口，孩子在主畫面看不到按鈕）
     // v2.51：首頁「社會」→ v2/#hk=soc（共用錢包、同步、Service Worker）
-    const hkm = window.location.hash.match(/^#hk=(soc|sci|math)$/);
+    const hkm = window.location.hash.match(/^#hk=(soc|sci|math|cn)$/);
     if (hkm) {
       renderHkHome(hkm[1]);
       syncInBackground();
@@ -879,13 +879,14 @@ function renderCapResult({ ctx, result, correct, answered, pre, payable, nPaid, 
 }
 
 // v2.51：🌏 社會科會考題——選分科、選單元（七上～八下），點哪一課就出「這一課＋之前」的會考題
-// v2.51 社會／v2.52 自然：會考題首頁——選分科、選課（七上～八下），點哪一課就出「這一課＋之前」的會考題
+// v2.51 社會／v2.52 自然／v2.53 數學／v2.54 國文：會考題首頁——選分科、選課（七上～九下），點哪一課就出「這一課＋之前」的會考題
 const HK_HOME = {
   soc: { title: '🌏 社會 會考題', label: '社會科', strands: ['歷史', '地理', '公民'] },
   sci: { title: '🔬 自然 會考題', label: '自然科', strands: ['生物', '理化', '地科'] },
   math: { title: '📐 數學 會考題', label: '數學科', strands: ['數學'] },
+  cn: { title: '📜 國文 會考題', label: '國文科', strands: ['國文'] },
 };
-const HK_MAX_GRADE = ['七上', '七下', '八上', '八下'];   // 範圍上限：八年級（家長 09-24）
+const HK_MAX_GRADE = ['七上', '七下', '八上', '八下', '九上', '九下'];   // v2.54：做完整個國中（家長 09-24）
 const renderSocHome = (strand) => renderHkHome('soc', strand);
 async function renderHkHome(subject, strand) {
   const H = HK_HOME[subject];
@@ -926,7 +927,7 @@ async function renderHkHome(subject, strand) {
   root.querySelectorAll('.soc-unit').forEach(b => b.addEventListener('click', () => startCap({ subject, strand, unit: b.dataset.unit })));
 }
 function leaveHk() {
-  // 社會／自然／數學是從首頁進來的（v2/#hk=soc、#hk=sci、#hk=math）→ 回首頁
+  // 社會／自然／數學／國文是從首頁進來的（v2/#hk=soc、sci、math、cn）→ 回首頁
   window.location.href = '../';
 }
 
