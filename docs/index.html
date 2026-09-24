@@ -49,19 +49,23 @@
 // v2.48：算法改用共用的 v2/js/wallet.js（錢包綁人、上限／費率由家長頁設定）。
 //   先顯示上次成功同步的快照（標「更新中」），背景拿到新資料再覆蓋——Apps Script 要 2–3 秒。
 //   ⚠️ 快照只給畫面顯示，不拿來算錢（見 wallet.js saveSnapshot 的說明）。
-import { computeWallet, saveSnapshot, loadSnapshot } from './v2/js/wallet.js?v=2.48';
+import { computeWallet, saveSnapshot, loadSnapshot, SUBJECTS } from './v2/js/wallet.js?v=2.49';
 const LOG_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw1-aQQF4goCDF6X7_oIHEk4rVIbRrDADkq5ZQ1kopePXVehu9EGkkCNnj3Z4Hxd1aW7w/exec";
 function todayStr(){
   const d=new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 const B=document.getElementById('balance'), T=document.getElementById('today'), S=document.getElementById('status');
+// v2.49：照 wallet.js 的科目清單顯示；英文、國文一定列，其他科今天有賺才列（快照可能是舊版、少了新科目）
 function show(w, t){
-  const today = w.day === undefined || w.day === t ? w.today : { en:{pre:0,fin:0}, cn:{pre:0,fin:0} };
+  const sameDay = w.day === undefined || w.day === t;
   const cfg=w.cfg, capAll=Number(cfg['cap.all'])||0;
+  const fin = id => (sameDay && w.today && w.today[id] ? w.today[id].fin : 0);
+  const parts = SUBJECTS.filter(s => s.id==='en' || s.id==='cn' || fin(s.id)>0)
+    .map(s => `${s.label} <b>$${fin(s.id)}</b>${cfg['cap.'+s.id] ? `（上限 ${cfg['cap.'+s.id]}）` : ''}`);
   B.textContent=`$${w.available}`;
-  T.innerHTML=`今天：英文 <b>$${today.en.fin}</b>（上限 ${cfg['cap.en']}）　＋　國文 <b>$${today.cn.fin}</b>（上限 ${cfg['cap.cn']}）`
-    + `<br>${capAll>0 ? `全科一天最多 $${capAll}` : `兩科都完成，一天最多 $${cfg['cap.en']+cfg['cap.cn']}`}（連勝加成另外算）`;
+  T.innerHTML=`今天：${parts.join('　＋　')}`
+    + `<br>${capAll>0 ? `全科加起來一天最多 $${capAll}` : `英文＋國文一天最多 $${(cfg['cap.en']||0)+(cfg['cap.cn']||0)}`}（連勝加成另外算）`;
 }
 async function loadWallet(){
   const t=todayStr();

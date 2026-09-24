@@ -17,6 +17,9 @@ export const CONFIG_KEYS = [
   // key,               預設, 最小, 最大, 標籤
   ['cap.en',              50,  10, 1000, '英文每日上限'],
   ['cap.cn',             100,  10, 1000, '國文每日上限'],
+  ['cap.soc',             50,  10, 1000, '社會每日上限'],
+  ['cap.sci',             50,  10, 1000, '自然每日上限'],
+  ['cap.math',            50,  10, 1000, '數學每日上限'],
   ['cap.all',              0,   0, 3000, '全科每日總上限（0＝不另設）'],
   ['rate.en.base',         5,   0,  100, '英文基礎獎金（一天一次）'],
   ['rate.en.per',          1,   0,  100, '英翻中／中翻英 每題'],
@@ -28,6 +31,18 @@ export const CONFIG_KEYS = [
   ['rate.en.reading',      3,   0,  100, '英文閱讀理解 每題'],
   ['rate.cn.base',        10,   0,  100, '國文基礎獎金（一天一次）'],
   ['rate.cn.per',          2,   0,  100, '國文 每題一次答對'],
+  ['rate.hk.per',          2,   0,  100, '會考題 每題（同一題只付一次）'],
+];
+
+// v2.49：科目清單——錢包、首頁、家長頁、國文頁、sync.js 都從這裡產生，新增科目只改這裡。
+//   match：這個事件名算不算這科的收入。英文包含舊的 *_done 與會考題 v2_hk_en_paid。
+//   ⚠️ 會考事件一律 v2_hk_<科>_paid，絕不以 _done 結尾（否則會被當成英文單字題型，吃英文連勝與基礎獎金邏輯）
+export const SUBJECTS = [
+  { id: 'en',   label: '英文', match: e => /^v2_hk_en_paid$/.test(e) || (e.startsWith('v2_') && e.endsWith('_done')) },
+  { id: 'cn',   label: '國文', match: e => /^v2_cn_.*_paid$/.test(e) },
+  { id: 'soc',  label: '社會', match: e => e === 'v2_hk_soc_paid' },
+  { id: 'sci',  label: '自然', match: e => e === 'v2_hk_sci_paid' },
+  { id: 'math', label: '數學', match: e => e === 'v2_hk_math_paid' },
 ];
 const SPEC = Object.fromEntries(CONFIG_KEYS.map(([k, d, lo, hi, label]) => [k, { d, lo, hi, label }]));
 const LEGACY = { v2_config_daily_cap: 'cap.en', v2_config_daily_cap_cn: 'cap.cn' };
@@ -71,13 +86,17 @@ export function configSpec() { return CONFIG_KEYS.map(([key, d, lo, hi, label]) 
 export function isTestDevice(name) { return /測試|\[test\]/i.test(String(name || '')); }
 
 // 事件屬於哪一科的收入；不是收入回 null
-//   英文：*_done（v2.40 起的慣例）；國文：v2_cn_*_paid
+//   英文：*_done（v2.40 起的慣例）＋ v2_hk_en_paid；國文：v2_cn_*_paid；會考其他科：v2_hk_<科>_paid
 export function earnSubject(eventName) {
   const e = String(eventName || '');
-  if (/^v2_cn_.*_paid$/.test(e)) return 'cn';
-  if (e.startsWith('v2_') && e.endsWith('_done')) return 'en';
+  for (const s of SUBJECTS) if (s.match(e)) return s.id;
   return null;
 }
+
+// 會考題事件（v2_hk_<科>_paid）：不算打卡、不乘連勝、沒有基礎獎金
+export function isHkEvent(eventName) { return /^v2_hk_[a-z]+_paid$/.test(String(eventName || '')); }
+
+function emptyToday() { return Object.fromEntries(SUBJECTS.map(s => [s.id, { pre: 0, fin: 0 }])); }
 
 // 乘倍率前的金額：note 的 #pre:N；沒有（v2.47 以前的舊事件）退回 amount
 export function preOf(ev) {
@@ -92,7 +111,7 @@ export function dateOf(ts) { return ts ? String(ts).slice(0, 10) : ''; }
 export function computeWallet(events, todayStr) {
   const { values: cfg, fromParent } = parseConfig(events);
   let totalEarned = 0, totalWithdrawn = 0, totalPenalty = 0;
-  const today = { en: { pre: 0, fin: 0 }, cn: { pre: 0, fin: 0 } };
+  const today = emptyToday();
   for (const ev of events || []) {
     if (isTestDevice(ev.device)) continue;
     const name = String(ev.event || '');
@@ -109,7 +128,7 @@ export function computeWallet(events, todayStr) {
     else if (name === 'v2_penalty') totalPenalty += Math.abs(amount);
   }
   const available = Math.max(0, totalEarned - totalWithdrawn - totalPenalty);
-  const todayPreAll = today.en.pre + today.cn.pre;
+  const todayPreAll = SUBJECTS.reduce((sum, s) => sum + today[s.id].pre, 0);
   return { cfg, fromParent, totalEarned, totalWithdrawn, totalPenalty, available, today, todayPreAll };
 }
 

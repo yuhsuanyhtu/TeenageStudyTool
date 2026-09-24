@@ -411,7 +411,7 @@ let cnStatePromise=null, cnTab={day:'', s0:null, s0All:0, pre:0, base:false};
 function cnPrefetch(){ cnStatePromise=cnFetchState().catch(()=>null); }
 async function cnFetchState(){
   // 從 Sheet 重算國文今日已賺（乘倍率前）/基礎是否已給/連勝（以人計＝所有裝置，排除測試裝置）
-  const W=await import('../v2/js/wallet.js?v=2.48');
+  const W=await import('../v2/js/wallet.js?v=2.49');
   const res=await fetch(`${PAY_URL}?action=v2_events`,{mode:'cors',cache:'no-cache'});
   const data=await res.json();
   if(!data||!data.ok||!Array.isArray(data.events)) throw new Error('API');

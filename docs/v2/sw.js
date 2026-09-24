@@ -13,7 +13,8 @@
 //
 // 版本：只有在「快取格式」要換時才需要改 CACHE_NAME；一般改版不用動這裡。
 
-const CACHE_NAME = 'sv2-runtime-v3';   // v2.48：錢包綁人＋上限/費率改家長設定，舊快取作廢。
+const CACHE_NAME = 'sv2-runtime-v4';   // v2.49：錢包科目清單（會考題與新科目），舊快取作廢。
+                                       // v2.48：錢包綁人＋上限/費率改家長設定，舊快取作廢。
                                        // v2.46：獎金規則改了，舊快取一定要作廢——
                                        //   否則第一次開啟還會用舊費率算錢（staleWhileRevalidate 先給快取）
 const NAV_TIMEOUT_MS = 3000;

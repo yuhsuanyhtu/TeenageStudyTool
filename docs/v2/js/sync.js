@@ -41,7 +41,7 @@ export async function fetchV2Events() {
 //
 // myDevice：當前裝置名（從 state.getDeviceName 傳入）。null/空 → 不算任何事件
 import { REWARD_CONFIG, effectiveDailyCap } from './reward.js';
-import { parseConfig, isTestDevice, preOf, earnSubject } from './wallet.js';
+import { parseConfig, isTestDevice, preOf, earnSubject, isHkEvent } from './wallet.js';
 
 // v2.35：從全部事件（不分裝置）找家長最後一次設定的每日上限。
 // v2_config_daily_cap 事件由家長頁寫入，amount = 新上限。events 已按時間排序，最後一筆生效。
@@ -100,7 +100,7 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
   let totalPenalty = 0;
   let todayEarned = 0;
   let todayPreEarned = 0;   // v2.48：英文今日（乘倍率前）
-  let todayPreCn = 0;       // v2.48：國文今日（乘倍率前），給全科總上限用
+  let todayPreOther = 0;    // v2.48：英文以外各科今日（乘倍率前），給全科總上限用（v2.49 起含會考其他科）
   // v2.35：每日上限相關的「今日狀態」也從事件重算，
   // 換瀏覽器／清資料／殭屍分頁都繞不過每日上限（2026-07-10 的複習 $25 領兩次 bug）
   let todayReviewEarned = 0;
@@ -117,9 +117,18 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
     const correct = Number(ev.correct) || 0;
     const date = formatDate(ev.timestamp);
 
-    if (earnSubject(event) === 'cn') {
-      if (date === todayStr && amount > 0) todayPreCn += preOf(ev);
-      continue;   // 國文的錢包金額由 wallet.computeWallet 算；這裡只為全科總上限記今日
+    const subj = earnSubject(event);
+    if (subj && subj !== 'en') {
+      if (date === todayStr && amount > 0) todayPreOther += preOf(ev);
+      continue;   // 其他科的錢包金額在下面一起加；這裡只為全科總上限記今日
+    }
+    // v2.49：英文會考題（v2_hk_en_paid）算英文收入、吃英文上限，但不算打卡、不給基礎獎金、不進單字的 paid 桶
+    if (isHkEvent(event)) {
+      if (amount > 0) {
+        totalEarned += amount;
+        if (date === todayStr) { todayEarned += amount; todayPreEarned += preOf(ev); }
+      }
+      continue;
     }
     if (event.endsWith('_done')) {
       if (amount > 0) {
@@ -169,10 +178,10 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
   const cap = effectiveDailyCap(dailyCap);
   if (todayEarned > cap) todayEarned = cap;
 
-  // v2.48：錢包是同一個——可提領要把國文收入也算進來（以前英文畫面漏算國文）
-  let cnEarned = 0;
-  for (const ev of real) if (earnSubject(ev.event) === 'cn' && Number(ev.amount) > 0) cnEarned += Number(ev.amount);
-  totalEarned += cnEarned;   // main.js 用 totalEarned 重算可提領，所以併進來
+  // v2.48：錢包是同一個——可提領要把其他科收入也算進來（以前英文畫面漏算國文）
+  let otherEarned = 0;
+  for (const ev of real) { const sj = earnSubject(ev.event); if (sj && sj !== 'en' && Number(ev.amount) > 0) otherEarned += Number(ev.amount); }
+  totalEarned += otherEarned;   // main.js 用 totalEarned 重算可提領，所以併進來
 
   // v2.16：可提領 = 累計賺 - 已提領；v2.34：再扣掉生活習慣扣款。不能小於 0。
   //   註：totalPenalty 是累計值，就算一時超過餘額（顯示壓回 0），日後再賺錢時
@@ -186,7 +195,7 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
     availableToWithdraw,
     todayEarned,
     todayPreEarned,
-    todayPreAll: todayPreEarned + todayPreCn,   // v2.48：全科總上限用
+    todayPreAll: todayPreEarned + todayPreOther,   // v2.48：全科總上限用
     cfg,                                        // v2.48：家長設定（上限／費率）
     streak,
     todayCompleted,
@@ -219,9 +228,8 @@ export function computeAllDevices(events) {
     // v2.38：可提領要納入國文獎金（v2_cn_*_paid）。
     //   國文事件刻意不用 _done 結尾（避免污染英文的日上限/連勝重算，見 recomputeFromEvents），
     //   所以這裡（錢包/提領口徑）要明確把它加回來——錢包是同一個。
-    const isEnglishEarn = event.endsWith('_done');
-    const isChineseEarn = event.startsWith('v2_cn_') && event.endsWith('_paid');
-    if ((isEnglishEarn || isChineseEarn) && amount > 0) {
+    // v2.49：用 wallet 的科目清單判斷（以前手動列英文＋國文，新增科目就會漏——v2.38.1 踩過）
+    if (earnSubject(event) && amount > 0) {
       m.totalEarned += amount;
     } else if (event === 'v2_payout') {
       m.totalWithdrawn += Math.abs(amount);

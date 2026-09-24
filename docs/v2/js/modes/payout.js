@@ -19,9 +19,10 @@ const WALLET_OWNER = '謙恩';     // v2.48：提領／扣款事件的「裝置�
 
 // 設定卡分組（key 對應 wallet.CONFIG_KEYS）
 const GROUPS = [
-  { title: '每日上限（乘連勝倍率前）', keys: ['cap.en', 'cap.cn', 'cap.all'] },
+  { title: '每日上限（乘連勝倍率前）', keys: ['cap.en', 'cap.cn', 'cap.soc', 'cap.sci', 'cap.math', 'cap.all'] },
   { title: '英文費率', keys: ['rate.en.base', 'rate.en.per', 'rate.en.vocab', 'rate.en.cloze', 'rate.en.review', 'rate.en.reviewCap', 'rate.en.match', 'rate.en.reading'] },
   { title: '國文費率', keys: ['rate.cn.base', 'rate.cn.per'] },
+  { title: '會考題費率（英文會考題吃英文上限）', keys: ['rate.hk.per'] },
 ];
 
 function todayStr() {
@@ -84,7 +85,7 @@ export function startPayoutMode({ root, onBack }) {
       <h1>🏦 家長頁</h1>
 
       <div class="stats">
-        <div class="stat"><div class="stat-num">$${w.totalEarned}</div><div class="stat-label">累計賺（英＋國）</div></div>
+        <div class="stat"><div class="stat-num">$${w.totalEarned}</div><div class="stat-label">累計賺（全科）</div></div>
         <div class="stat"><div class="stat-num">$${w.totalWithdrawn}</div><div class="stat-label">已提領</div></div>
         <div class="stat"><div class="stat-num">$${w.available}</div><div class="stat-label">可提領</div></div>
       </div>
