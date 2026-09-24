@@ -21,6 +21,10 @@ CFG = {
             'code_re': r'([歷地公])\s*([A-Z][a-z]-Ⅳ-\d+)', 'prefix': {'歷': '歷史', '地': '地理', '公': '公民'}},
     'sci': {'file': '自然', 'col': '自然', 'n': 50, 'map': 'sci_code_units.json', 'names': ['生物', '理化', '地科'],
             'code_re': r'()\b([A-Z][a-z]-Ⅳ-\d+)', 'prefix': None, 'overrides': 'sci_item_overrides.json'},
+    # 數學：編碼中間是年級（N-8-1）；只收第一部分選擇題（非選擇題要手寫過程，不能自動改）
+    'math': {'file': '數學', 'col': '數學', 'n': 27, 'map': 'math_code_units.json', 'names': ['數學'],
+             'code_re': r'()\b([NSGAFD]-[789]-\d+)', 'prefix': None, 'overrides': 'math_item_overrides.json',
+             'stop': r'^第二部分：非選擇題'},
 }[SUBJ]
 OUT = os.environ.get('CAP_OUT', os.path.join(B.REPO, 'docs', 'v2', 'cap', SUBJ))
 MAP = os.path.join(os.path.dirname(__file__), CFG['map'])
@@ -94,7 +98,8 @@ def norm_label(t):
     return f'{m.group(1)}({m.group(2)})' if m else None
 
 
-CAP_FULL = re.compile(r'^\s*[圖表]\s*[\(（][一二三四五六七八九十0-9]{1,4}[\)）]\s*$')
+# 括號內可以有空白：數學科試題本排成「圖( 一)」
+CAP_FULL = re.compile(r'^\s*[圖表]\s*[\(（]\s*[一二三四五六七八九十0-9]{1,4}\s*[\)）]\s*$')
 
 
 def caption_spans(page):
@@ -111,7 +116,7 @@ def caption_spans(page):
             # 同一行裡的片段：單獨一個片段就是「圖(…)」
             for sp in spans:
                 t = sp['text']
-                m = re.search(r'([圖表]\s*[\(（][一二三四五六七八九十0-9]{1,4}[\)）])\s*$', t)
+                m = re.search(r'([圖表]\s*[\(（]\s*[一二三四五六七八九十0-9]{1,4}\s*[\)）])\s*$', t)
                 if m and t.strip() == m.group(1).strip():
                     out.append((fitz.Rect(sp['bbox']), m.group(1)))
     return out
@@ -326,6 +331,12 @@ def unit_key(c, cmap):
 def build_year(year, lad, cmap, report):
     pdf = os.path.join(B.DATA, str(year), f"{year}_{CFG['file']}.pdf")
     pages = B.bbox_pages(pdf)
+    if CFG.get('stop'):
+        # 第二部分（非選擇題）從新的一頁開始：那頁起整個不看，題號才不會重複、圖也不會歸到最後一題
+        cut = [pi for pi, pg in enumerate(pages) if any(re.match(CFG['stop'], l['text'].strip()) for l in pg['lines'])]
+        if not cut:
+            report.append(f'{year}: ✗ 找不到「第二部分」→ 整年不收'); return []
+        pages = pages[:cut[0]]
     ans = B.grid_column(os.path.join(B.DATA, str(year), f'{year}_參考答案.pdf'), lambda t: t == CFG['col'], r'[A-D]', 14)
     rates = {k: float(v) for k, v in B.grid_column(os.path.join(B.DATA, str(year), f'{year}_各題通過率.pdf'),
                                                    lambda t: t == CFG['col'], r'[01]\.\d{2}', 26).items()}
@@ -351,7 +362,7 @@ def build_year(year, lad, cmap, report):
         if any(info[n]['bad'] for n in nums) or not codes or (len(nums) == 1 and not info[nums[0]]['codes']):
             excluded.append(f'{iid}（有題目沒有課綱編碼）'); continue
         if len(strands) != 1:
-            excluded.append(f'{iid}（跨科 {"".join(sorted(strands))}）'); continue
+            excluded.append(f'{iid}（跨科 {"".join(sorted(strands))}）' if strands else f'{iid}（編碼沒有對照：{codes}）'); continue
         s = strands.pop()
         miss = [c for c in codes if c not in cmap]
         if miss:
@@ -389,7 +400,7 @@ def build_year(year, lad, cmap, report):
     for it in items:
         body = re.sub(r'\s', '', item_text[it['id']]).replace('（', '(').replace('）', ')')
         refs = set(re.findall(r'(?<![代發列])[圖表]\([一二三四五六七八九十0-9]{1,4}\)', body))   # 排除「代表(人)」這類
-        missing = refs - owned[it['id']]
+        missing = refs - {re.sub(r'\s', '', x) for x in owned[it['id']]}
         if missing:
             excluded.append(f"{it['id']}（圖說對不上：{sorted(missing)}）")
             it['imgs'] = []

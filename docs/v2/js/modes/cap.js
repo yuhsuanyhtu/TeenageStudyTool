@@ -18,6 +18,7 @@ export const CAP_SUBJECTS = {
   en:  { label: '英文', data: 'cap/en/index.v1.json',  img: 'cap/en/img/' },
   soc: { label: '社會', data: 'cap/soc/index.v1.json', img: 'cap/soc/img/' },
   sci: { label: '自然', data: 'cap/sci/index.v1.json', img: 'cap/sci/img/' },
+  math: { label: '數學', data: 'cap/math/index.v1.json', img: 'cap/math/img/' },
 };
 const cache = {};
 

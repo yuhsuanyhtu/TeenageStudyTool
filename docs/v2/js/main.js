@@ -90,7 +90,7 @@ function hkPayable(id) {
     // v2.9 起不再 log session_start（雜訊太多，每次刷新都會記一筆）
     // v2.17：URL 帶 #payout 直接進家長提領頁（隱藏入口，孩子在主畫面看不到按鈕）
     // v2.51：首頁「社會」→ v2/#hk=soc（共用錢包、同步、Service Worker）
-    const hkm = window.location.hash.match(/^#hk=(soc|sci)$/);
+    const hkm = window.location.hash.match(/^#hk=(soc|sci|math)$/);
     if (hkm) {
       renderHkHome(hkm[1]);
       syncInBackground();
@@ -883,6 +883,7 @@ function renderCapResult({ ctx, result, correct, answered, pre, payable, nPaid, 
 const HK_HOME = {
   soc: { title: '🌏 社會 會考題', label: '社會科', strands: ['歷史', '地理', '公民'] },
   sci: { title: '🔬 自然 會考題', label: '自然科', strands: ['生物', '理化', '地科'] },
+  math: { title: '📐 數學 會考題', label: '數學科', strands: ['數學'] },
 };
 const HK_MAX_GRADE = ['七上', '七下', '八上', '八下'];   // 範圍上限：八年級（家長 09-24）
 const renderSocHome = (strand) => renderHkHome('soc', strand);
@@ -898,7 +899,7 @@ async function renderHkHome(subject, strand) {
   const units = data.strands[strand] || [];
   const grades = data.strandGrades[strand] || [];
   // 不是正式課次的項目（入手方法、例題、圖像畫、統整、實驗…）不列出來——清單太長孩子找不到自己那一課（reviewer L5）
-  const NOT_LESSON = /入手方法|例題|圖像畫|統整|大剖析|大解密|大彙整|^\S+\s*實驗|入門先修|前情提要|【補充】|^\S+\s*主題-/;
+  const NOT_LESSON = /入手方法|例題|圖像畫|統整|大剖析|大解密|大彙整|^\S+\s*實驗|入門先修|前情提要|【補充】|^\S+\s*主題-|重點回顧|難題精選|有趣的數學|^\S+\s*計算機$/;
   const rows = units.map((u, i) => ({ u, g: grades[i] })).filter(r => HK_MAX_GRADE.includes(r.g) && !NOT_LESSON.test(r.u));
   const byGrade = HK_MAX_GRADE.map(g => ({ g, rows: rows.filter(r => r.g === g) }));
   const line = (u) => {
@@ -911,7 +912,7 @@ async function renderHkHome(subject, strand) {
     <button class="back" id="back">← 回主畫面</button>
     <h1>${H.title}</h1>
     <p class="muted small">歷屆國中教育會考真題（心測中心）。選你<b>學校上到的那一課</b>，就出「這一課＋之前」的題目。一卷最多 10 題，每題答對 $${(s.cfg && s.cfg['rate.hk.per']) ?? 2}，同一題只付一次。</p>
-    <div class="quiz-size-row">${H.strands.map(x => `<button class="quiz-size-btn ${x === strand ? 'active' : ''}" data-strand="${x}">${x}</button>`).join('')}</div>
+    <div class="quiz-size-row" ${H.strands.length > 1 ? '' : 'style="display:none"'}>${H.strands.map(x => `<button class="quiz-size-btn ${x === strand ? 'active' : ''}" data-strand="${x}">${x}</button>`).join('')}</div>
     ${rows.length ? '' : `<div class="card"><p>${escapeHtml(strand)}是${escapeHtml(later)}開始的內容，升上那個年級就會出現。</p></div>`}
     ${byGrade.map(({ g, rows }) => rows.length ? `
       <h2>${g}</h2>
@@ -925,7 +926,7 @@ async function renderHkHome(subject, strand) {
   root.querySelectorAll('.soc-unit').forEach(b => b.addEventListener('click', () => startCap({ subject, strand, unit: b.dataset.unit })));
 }
 function leaveHk() {
-  // 社會／自然是從首頁進來的（v2/#hk=soc、#hk=sci）→ 回首頁
+  // 社會／自然／數學是從首頁進來的（v2/#hk=soc、#hk=sci、#hk=math）→ 回首頁
   window.location.href = '../';
 }
 
