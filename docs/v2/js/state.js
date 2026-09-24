@@ -73,6 +73,7 @@ export function refreshDailyState(state) {
     state.todayDate = t;
     state.todayPreEarned = 0;
     state.todayPreAll = 0;         // v2.48：全科（英＋國）今日乘倍率前已賺，給全科總上限用
+    state.todayPreBy = {};         // v2.51：英文以外各科今日乘倍率前已賺（社會…）
     state.todayEarned = 0;
     state.todayCorrect = 0;
     state.todaySeenEns = {};  // 每天重置「今天練過的字」

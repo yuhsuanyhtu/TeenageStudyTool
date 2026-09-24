@@ -13,23 +13,29 @@
 // 完成回呼：onComplete({ results:[{id, correct, skipped}], flagged:[id], aborted })
 
 export const CAP_ROUND_MAX = 10;
-const DATA_URL = 'cap/en/index.v1.json';
-const IMG_BASE = 'cap/en/img/';
-let cache = null;
+// v2.51：多科目。題庫檔名帶版本（重建要換版本，Service Worker 才不會用舊答案）
+export const CAP_SUBJECTS = {
+  en:  { label: '英文', data: 'cap/en/index.v1.json',  img: 'cap/en/img/' },
+  soc: { label: '社會', data: 'cap/soc/index.v1.json', img: 'cap/soc/img/' },
+};
+const cache = {};
 
-export async function loadCapData() {
-  if (cache) return cache;
-  const res = await fetch(DATA_URL);
+export async function loadCapData(subject = 'en') {
+  if (cache[subject]) return cache[subject];
+  const res = await fetch(CAP_SUBJECTS[subject].data);
   if (!res.ok) throw new Error(`會考題庫讀取失敗（HTTP ${res.status}）`);
-  cache = await res.json();
-  return cache;
+  cache[subject] = await res.json();
+  return cache[subject];
 }
 
-// 這一課可以出的題目（item 陣列）；unit 不在課本單元清單（例：A1 Unit 3）→ 空
-export function eligibleItems(data, unit, flagged) {
-  const idx = data.units.indexOf(unit);
+// 這一課可以出的題目（item 陣列）
+//   英文：unit 是 app 的課本單元（不在清單，例：A1 Unit 3 → 空）
+//   社會：strand（歷史／地理／公民）＋ unit（升學王單元名），只看同一分科
+export function eligibleItems(data, unit, flagged, strand) {
+  const list = strand ? (data.strands[strand] || []) : data.units;
+  const idx = list.indexOf(unit);
   if (idx < 0) return [];
-  return data.items.filter(it => it.minUnitIndex <= idx && !it.questions.some(q => flagged.has(q.id)));
+  return data.items.filter(it => (!strand || it.strand === strand) && it.minUnitIndex <= idx && !it.questions.some(q => flagged.has(q.id)));
 }
 
 // 組一卷：可領錢的先、通過率高（簡單）的先；題組整組，總題數盡量不超過 max
@@ -54,7 +60,8 @@ export function pickRound(items, isPayable, max = CAP_ROUND_MAX) {
   return round;
 }
 
-export function startCapMode({ root, unit, round, onComplete, onAnswered }) {
+export function startCapMode({ root, unit, round, onComplete, onAnswered, subject = 'en' }) {
+  const IMG_BASE = CAP_SUBJECTS[subject].img;
   // 先把這一卷的圖片都載好（離線或網路慢時不會做到一半破圖）
   for (const it of round) for (const f of it.imgs) { const im = new Image(); im.src = IMG_BASE + encodeURIComponent(f); }
   const results = [];
@@ -147,7 +154,9 @@ export function startCapMode({ root, unit, round, onComplete, onAnswered }) {
       <div class="card vocab-explain">
         <p>✅ <b>正確答案：(${q.answer})</b>${q.answerText ? ` ${escapeHtml(q.answerText)}` : ''}</p>
         ${q.goal ? `<p class="muted small">這題考：${escapeHtml(q.goal.replace(/（[^）]*）$/, ''))}</p>` : ''}
-        ${q.review ? `<p class="muted small">📖 回去複習 <b>${escapeHtml(q.review.unit)}</b> 的 ${q.review.words.map(w => `<b>${escapeHtml(w.en)}</b>`).join('、')}（結算頁可以直接點過去）</p>` : ''}
+        ${q.review ? (q.review.words.length
+          ? `<p class="muted small">📖 回去複習 <b>${escapeHtml(q.review.unit)}</b> 的 ${q.review.words.map(w => `<b>${escapeHtml(w.en)}</b>`).join('、')}（結算頁可以直接點過去）</p>`
+          : `<p class="muted small">📖 回去讀 <b>${escapeHtml(q.review.unit)}</b>（升學王可以看這一課的影片）</p>`) : ''}
         <p class="muted small">🌱 這題過一陣子會再出現。還沒領過獎金的題，14 天後再答對就能領。</p>
       </div>`;
   }

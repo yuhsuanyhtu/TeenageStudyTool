@@ -101,6 +101,7 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
   let todayEarned = 0;
   let todayPreEarned = 0;   // v2.48：英文今日（乘倍率前）
   let todayPreOther = 0;    // v2.48：英文以外各科今日（乘倍率前），給全科總上限用（v2.49 起含會考其他科）
+  const todayPreBy = {};    // v2.51：各科今日（乘倍率前），給社會等科目自己的上限用
   // v2.35：每日上限相關的「今日狀態」也從事件重算，
   // 換瀏覽器／清資料／殭屍分頁都繞不過每日上限（2026-07-10 的複習 $25 領兩次 bug）
   let todayReviewEarned = 0;
@@ -130,7 +131,7 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
     }
     const subj = earnSubject(event);
     if (subj && subj !== 'en') {
-      if (date === todayStr && amount > 0) todayPreOther += preOf(ev);
+      if (date === todayStr && amount > 0) { todayPreOther += preOf(ev); todayPreBy[subj] = (todayPreBy[subj] || 0) + preOf(ev); }
       continue;   // 其他科的錢包金額在下面一起加；這裡只為全科總上限記今日
     }
     // v2.49：英文會考題（v2_hk_en_paid）算英文收入、吃英文上限，但不算打卡、不給基礎獎金、不進單字的 paid 桶
@@ -207,6 +208,7 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
     todayEarned,
     todayPreEarned,
     todayPreAll: todayPreEarned + todayPreOther,   // v2.48：全科總上限用
+    todayPreBy,                                    // v2.51：英文以外各科今日（乘倍率前）
     cfg,                                        // v2.48：家長設定（上限／費率）
     streak,
     todayCompleted,
