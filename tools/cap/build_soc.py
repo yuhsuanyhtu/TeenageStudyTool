@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""會考社會題庫建置（v2.51）：心測中心官方 PDF → docs/v2/cap/soc/
+"""會考社會／自然題庫建置（v2.51 社會、v2.52 自然）：心測中心官方 PDF → docs/v2/cap/<soc|sci>/
+用法：python3 tools/cap/build_soc.py [soc|sci]（預設 soc）
 
 沿用 build_en.py 的版面定位、答案表、裁圖函式。
 依單元出題（家長 2026-09-24）：每題的「學習內容」課綱編碼（官方試題分析）→ tools/cap/soc_code_units.json
@@ -13,12 +14,22 @@ import csv, json, os, re, subprocess, sys, tempfile
 sys.path.insert(0, os.path.dirname(__file__))
 import build_en as B  # noqa: E402
 
-OUT = os.environ.get('CAP_OUT', os.path.join(B.REPO, 'docs', 'v2', 'cap', 'soc'))
-MAP = os.path.join(os.path.dirname(__file__), 'soc_code_units.json')
+SUBJ = (sys.argv[1] if len(sys.argv) > 1 else 'soc')
+CFG = {
+    # 社會：編碼帶分科前綴（歷／地／公）；自然：沒有前綴，分科看對照表對到哪一科的單元
+    'soc': {'file': '社會', 'col': '社會', 'n': 54, 'map': 'soc_code_units.json', 'names': ['歷史', '地理', '公民'],
+            'code_re': r'([歷地公])\s*([A-Z][a-z]-Ⅳ-\d+)', 'prefix': {'歷': '歷史', '地': '地理', '公': '公民'}},
+    'sci': {'file': '自然', 'col': '自然', 'n': 50, 'map': 'sci_code_units.json', 'names': ['生物', '理化', '地科'],
+            'code_re': r'()\b([A-Z][a-z]-Ⅳ-\d+)', 'prefix': None, 'overrides': 'sci_item_overrides.json'},
+}[SUBJ]
+OUT = os.environ.get('CAP_OUT', os.path.join(B.REPO, 'docs', 'v2', 'cap', SUBJ))
+MAP = os.path.join(os.path.dirname(__file__), CFG['map'])
+OVR = {k: v for k, v in json.load(open(os.path.join(os.path.dirname(__file__), CFG['overrides']), encoding='utf-8')).items()
+       if not k.startswith('_')} if CFG.get('overrides') else {}
 SYLLABUS = os.environ.get('CAP_SYLLABUS', os.path.join(os.path.dirname(B.DATA), '升學王教材', '年級教材', '年級教材總表.csv'))
 YEARS = [int(y) for y in os.environ.get('CAP_YEARS', '112,113,114,115').split(',')]
 VERSION = 1
-STRANDS = {'歷': '歷史', '地': '地理', '公': '公民'}
+STRANDS = {n: n for n in CFG['names']}
 GRADES = ['七上', '七下', '八上', '八下', '九上', '九下']
 
 
@@ -26,7 +37,8 @@ def ladders():
     """每科的單元順序：key＝「七上|序」，label＝「七上 1-2 選才、稅制與統治正當性」"""
     rows = list(csv.DictReader(open(SYLLABUS, encoding='utf-8-sig')))
     out = {}
-    for code, name in STRANDS.items():
+    for name in CFG['names']:
+        code = name
         rs = [r for r in rows if r['科目'] == name]
         rs.sort(key=lambda r: (GRADES.index(r['年級']), int(r['序'])))
         out[code] = [{'key': f"{r['年級']}|{r['序']}", 'label': f"{r['年級']} {r['課次']}".strip(), 'grade': r['年級']} for r in rs]
@@ -35,22 +47,25 @@ def ladders():
 
 def analysis(year):
     """官方試題分析：每題的評量目標與學習內容編碼（依題號順序，數量必須是 54）"""
-    t = subprocess.run(['pdftotext', '-layout', os.path.join(B.DATA, str(year), f'{year}_社會試題分析.pdf'), '-'],
+    t = subprocess.run(['pdftotext', '-layout', os.path.join(B.DATA, str(year), f"{year}_{CFG['file']}試題分析.pdf"), '-'],
                        capture_output=True, text=True, check=True).stdout
     goals = [re.sub(r'\s+', '', g) for g in re.findall(r'評量目標：([^\n]+)', t)]
     conts = re.findall(r'學習內容：([^\n]*)', t)
-    if len(goals) != 54 or len(conts) != 54:
+    if len(goals) != CFG['n'] or len(conts) != CFG['n']:
         return None
     out = {}
     for i, (g, c) in enumerate(zip(goals, conts)):
         # 官方分析有的寫全形「Ⅳ」、有的寫半形「IV」（reviewer H1：只認全形會把編碼默默丟掉 → 出太早）
         c = c.replace('IV', 'Ⅳ')
-        parts = [x.strip() for x in re.split(r'[；;]', c) if x.strip()]
-        codes = [f'{a}{m}' for a, m in re.findall(r'([歷地公])\s*([A-Z][a-z]-Ⅳ-\d+)', c)]
-        # fail closed：有任何一段解析不出編碼（例：「歷 A-Ⅳ-1」單字母），這題就當作沒有編碼 → 不收
-        if len(parts) != len(codes):
-            codes = []
-        out[i + 1] = {'goal': g, 'codes': codes}
+        # 「無」（探究能力題，官方沒標內容）與跨科概念碼（INa-Ⅳ-5…）不參與判斷，也不算解析失敗
+        # 只拿掉 IN 開頭的「碼」本身，不整段丟（reviewer L1：「INa-Ⅳ-5、Ab-Ⅳ-3」整段丟會連 Ab 一起丟 → 出太早）
+        c = re.sub(r'\bIN[a-z]-Ⅳ-\d+', '', c)
+        parts = [x.strip(' 、,，') for x in re.split(r'[；;]', c)]
+        parts = [x for x in parts if x and x != '無']
+        codes = [f'{a}{m}' for a, m in re.findall(CFG['code_re'], ';'.join(parts))]
+        # fail closed：有任何一段解析不出編碼（例：「歷 A-Ⅳ-1」單字母），這題標記為壞 → 不收（題組也整組不收）
+        bad = len(parts) != len(codes)
+        out[i + 1] = {'goal': g, 'codes': [] if bad else codes, 'bad': bad}
     return out
 
 
@@ -61,7 +76,7 @@ def markers(pages):
             t = l['text'].strip()
             if l['x0'] > B.LEFT_MAX:
                 continue
-            if (m := re.search(r'回答第\s*(\d{1,2})\s*[至～~-]\s*(\d{1,2})\s*題', t)):
+            if (m := re.search(r'回答第?\s*(\d{1,2})\s*[至～~-]\s*(\d{1,2})\s*題', t)):
                 out.append({'kind': 'g', 'page': pi, 'y': l['y0'], 'a': int(m.group(1)), 'b': int(m.group(2))})
             elif (m := re.match(r'^(\d{1,2})\.(\s|$)', t)):
                 out.append({'kind': 'q', 'page': pi, 'y': l['y0'], 'n': int(m.group(1)), 'x': l['x0']})
@@ -79,6 +94,29 @@ def norm_label(t):
     return f'{m.group(1)}({m.group(2)})' if m else None
 
 
+CAP_FULL = re.compile(r'^\s*[圖表]\s*[\(（][一二三四五六七八九十0-9]{1,4}[\)）]\s*$')
+
+
+def caption_spans(page):
+    """圖說「圖(…)／表(…)」的位置：以文字片段（span）為單位找——圖說常跟題目文字排在同一行（112 自然第 14 題的「表(二)」）"""
+    import fitz  # noqa: WPS433
+    out = []
+    for bl in page.get_text('dict')['blocks']:
+        for ln in bl.get('lines', []):
+            spans = ln['spans']
+            whole = ''.join(sp['text'] for sp in spans)
+            if CAP_FULL.match(whole):
+                out.append((fitz.Rect(ln['bbox']), whole.strip()))
+                continue
+            # 同一行裡的片段：單獨一個片段就是「圖(…)」
+            for sp in spans:
+                t = sp['text']
+                m = re.search(r'([圖表]\s*[\(（][一二三四五六七八九十0-9]{1,4}[\)）])\s*$', t)
+                if m and t.strip() == m.group(1).strip():
+                    out.append((fitz.Rect(sp['bbox']), m.group(1)))
+    return out
+
+
 def smart_crops(pdf, segs_by_item, report_lines, item_text=None):
     item_text = item_text or {}
     import fitz  # noqa: WPS433
@@ -89,6 +127,7 @@ def smart_crops(pdf, segs_by_item, report_lines, item_text=None):
             by_page.setdefault(p, []).append((iid, k, y0, y1))
     out = {iid: [None] * len(segs) for iid, segs in segs_by_item.items()}
     owned_labels = {iid: set() for iid in segs_by_item}   # 自動檢查用：每題實際裁到的圖說
+    conflicts = set()                                      # 自動檢查用：圖跟圖說分不清楚的題
     sc = B.DPI / 72
     for p, owners in by_page.items():
         page = doc[p]
@@ -119,9 +158,7 @@ def smart_crops(pdf, segs_by_item, report_lines, item_text=None):
         texts = [t for t in texts if not any(abs(t.y0 - h.y0) < 1 and abs(t.x0 - h.x0) < 1 for h in hdr)]
         texts, graphics = [r for r in texts if ok(r)], [r for r in graphics if ok(r)]
         # 跟圖說「圖(…)／表(…)」重疊的圖形是看不見的路徑或遮罩（例：114 第 6 頁跨過圖(十) 把兩張圖接在一起）→ 不算
-        _cap_re = re.compile(r'^\s*[圖表]\s*[\(（][一二三四五六七八九十0-9]{1,4}[\)）]\s*$')
-        _caps = [fitz.Rect(ln['bbox']) for bl in page.get_text('dict')['blocks'] for ln in bl.get('lines', [])
-                 if _cap_re.match(''.join(sp['text'] for sp in ln['spans']))]
+        _caps = [r for r, _ in caption_spans(page)]
         graphics = [g for g in graphics if not any((g & fitz.Rect(c.x0 + 1, c.y0 + 1, c.x1 - 1, c.y1 - 1)).width > 0 and
                                                     (g & fitz.Rect(c.x0 + 1, c.y0 + 1, c.x1 - 1, c.y1 - 1)).height > 0 for c in _caps)]
         # 「橋」：上下跨過某個圖說、左右又緊貼它（20pt 內）的圖形——看不見的路徑，會把上下兩張圖串成一塊
@@ -133,12 +170,7 @@ def smart_crops(pdf, segs_by_item, report_lines, item_text=None):
                     return True
             return False
         graphics = [g for g in graphics if not is_bridge(g)]
-        cap_re = re.compile(r'^\s*[圖表]\s*[\(（]')
-        cap_rects = []
-        for bl in page.get_text('dict')['blocks']:
-            for ln in bl.get('lines', []):
-                if cap_re.match(''.join(sp['text'] for sp in ln['spans'])):
-                    cap_rects.append(fitz.Rect(ln['bbox']))
+        cap_rects = [r for r, _ in caption_spans(page)]
         def caption_between(a, b):
             # 有圖說夾在 a、b 兩個圖形之間（上下之間、左右重疊）→ 它們是兩張不同的圖，不合併
             lo, hi = (a, b) if a.y0 <= b.y0 else (b, a)
@@ -190,7 +222,7 @@ def smart_crops(pdf, segs_by_item, report_lines, item_text=None):
         for bl in page.get_text('dict')['blocks']:
             for ln in bl.get('lines', []):
                 page_lines[tuple(round(v, 1) for v in ln['bbox'])] = ''.join(sp['text'] for sp in ln['spans'])
-        captions = [(fitz.Rect(bb), tx) for bb, tx in page_lines.items() if cap_re.match(tx)]
+        captions = caption_spans(page)
         # 圖說歸屬：題目文字提到「圖(十四)」的那一題（最可靠）；沒人提到才看圖說自己的位置
         page_iids = {o[0]: o for o in [(x[0], x[1]) for x in owners]}
         def caption_owner(cr, tx):
@@ -209,7 +241,7 @@ def smart_crops(pdf, segs_by_item, report_lines, item_text=None):
         for gr in groups:
             b = gr['box']
             # 考卷慣例：「圖(…)」圖說在圖的下方；「表(…)」標題在表格上方 → 只往對的方向找
-            cap, best = None, None
+            cands = []
             for cr, tx in captions:
                 if min(cr.x1, b.x1) - max(cr.x0, b.x0) <= 0:
                     continue
@@ -222,8 +254,14 @@ def smart_crops(pdf, segs_by_item, report_lines, item_text=None):
                     gap = b.y0 - cr.y1
                 else:
                     gap = None
-                if gap is not None and -3 <= gap <= 70 and (best is None or gap < best):
-                    cap, best = cr, gap
+                if gap is not None and -3 <= gap <= 70:
+                    cands.append((gap, cr, cap_owner.get(tuple(round(v, 1) for v in cr))))
+            # 自動檢查：一張圖同時緊貼不同題的圖說 → 分不清楚，兩題都不收（fail closed；112 自然 14／15 題）
+            owners_c = {c[2] for c in cands if c[2]}
+            if len(owners_c) > 1:
+                for o in owners_c:
+                    conflicts.add(o[0])
+            cap = min(cands, key=lambda c: c[0])[1] if cands else None
             own = cap_owner.get(tuple(round(v, 1) for v in cap)) if cap else owner_at((b.y0 + b.y1) / 2)
             elements.append((b, gr['members'], own))
         if os.environ.get('CAP_DEBUG') == f'{os.path.basename(pdf)}:{p}':
@@ -274,15 +312,23 @@ def smart_crops(pdf, segs_by_item, report_lines, item_text=None):
             out[iid][k] = name
             if masked:
                 report_lines.append(f'{iid}-{k + 1} 遮白 {masked} 個別題元素')
-    return out, owned_labels
+    return out, owned_labels, conflicts
+
+
+def strand_of(c, cmap):
+    return CFG['prefix'][c[0]] if CFG['prefix'] else cmap[c].split('|')[0]
+
+
+def unit_key(c, cmap):
+    return cmap[c] if CFG['prefix'] else cmap[c].split('|', 1)[1]
 
 
 def build_year(year, lad, cmap, report):
-    pdf = os.path.join(B.DATA, str(year), f'{year}_社會.pdf')
+    pdf = os.path.join(B.DATA, str(year), f"{year}_{CFG['file']}.pdf")
     pages = B.bbox_pages(pdf)
-    ans = B.grid_column(os.path.join(B.DATA, str(year), f'{year}_參考答案.pdf'), lambda t: t == '社會', r'[A-D]', 14)
+    ans = B.grid_column(os.path.join(B.DATA, str(year), f'{year}_參考答案.pdf'), lambda t: t == CFG['col'], r'[A-D]', 14)
     rates = {k: float(v) for k, v in B.grid_column(os.path.join(B.DATA, str(year), f'{year}_各題通過率.pdf'),
-                                                   lambda t: t == '社會', r'[01]\.\d{2}', 26).items()}
+                                                   lambda t: t == CFG['col'], r'[01]\.\d{2}', 26).items()}
     info = analysis(year)
     mk = markers(pages)
     qn = [m['n'] for m in mk if m['kind'] == 'q']
@@ -297,11 +343,12 @@ def build_year(year, lad, cmap, report):
     for i, m in enumerate(bounds):
         nxt = bounds[i + 1] if i + 1 < len(bounds) else None
         nums = list(range(m['a'], m['b'] + 1)) if m['kind'] == 'g' else [m['n']]
-        iid = f'{year}-soc-{nums[0]:02d}' + (f'-{nums[-1]:02d}' if len(nums) > 1 else '')
+        iid = f'{year}-{SUBJ}-{nums[0]:02d}' + (f'-{nums[-1]:02d}' if len(nums) > 1 else '')
         all_segs[iid] = B.regions(pages, m, nxt)
         codes = [c for n in nums for c in info[n]['codes']]
-        strands = {c[0] for c in codes}
-        if any(not info[n]['codes'] for n in nums):
+        strands = {strand_of(c, cmap) for c in codes if c in cmap or CFG['prefix']}
+        # 單題：一定要有內容碼；題組：任何一小題解析失敗就不收，其餘至少一小題有內容碼（「無」的探究小題跟著整組）
+        if any(info[n]['bad'] for n in nums) or not codes or (len(nums) == 1 and not info[nums[0]]['codes']):
             excluded.append(f'{iid}（有題目沒有課綱編碼）'); continue
         if len(strands) != 1:
             excluded.append(f'{iid}（跨科 {"".join(sorted(strands))}）'); continue
@@ -309,26 +356,35 @@ def build_year(year, lad, cmap, report):
         miss = [c for c in codes if c not in cmap]
         if miss:
             excluded.append(f'{iid}（編碼沒有對照：{miss}）'); continue
-        mu = max(idx[s][cmap[c]] for c in codes)
+        # 逐題覆寫（reviewer H1）：題目用到的內容比官方碼晚 → 取較晚的課；科別不符就不收
+        ov = {n: OVR[f'{year}-{SUBJ}-{n:02d}'] for n in nums if f'{year}-{SUBJ}-{n:02d}' in OVR}
+        if any(v.split('|')[0] != s or v.split('|', 1)[1] not in idx[s] for v in ov.values()):
+            excluded.append(f'{iid}（逐題覆寫的科別或單元對不上）'); continue
+        ovi = {n: idx[s][v.split('|', 1)[1]] for n, v in ov.items()}
+        mu = max([idx[s][unit_key(c, cmap)] for c in codes] + list(ovi.values()))
         segs = B.regions(pages, m, nxt)
         all_segs[iid] = segs
         text = B.region_text(pages, segs)
         qs = []
         for n in nums:
             ch = B.parse_choices(text, n)
-            last = max(info[n]['codes'], key=lambda c: idx[s][cmap[c]])
-            qs.append({'n': n, 'id': f'{year}-soc-{n:02d}', 'answer': ans[n], 'answerText': ch.get(ans[n]) if ch else None,
+            last = max(info[n]['codes'] or codes, key=lambda c: idx[s][unit_key(c, cmap)])
+            qs.append({'n': n, 'id': f'{year}-{SUBJ}-{n:02d}', 'answer': ans[n], 'answerText': ch.get(ans[n]) if ch else None,
                        'goal': info[n]['goal'], 'pass': rates.get(n), 'codes': info[n]['codes'],
-                       'review': {'unit': lad[s][idx[s][cmap[last]]]['label'], 'words': []}})
+                       'review': {'unit': lad[s][max(idx[s][unit_key(last, cmap)], ovi.get(n, -1))]['label'], 'words': []}})
         imgs = None   # 下面整年一起依圖形位置裁切
-        items.append({'id': iid, 'year': year, 'type': 'group' if len(nums) > 1 else 'single', 'strand': STRANDS[s],
+        items.append({'id': iid, 'year': year, 'type': 'group' if len(nums) > 1 else 'single', 'strand': s,
                       'minUnit': lad[s][mu]['label'], 'minUnitIndex': mu, 'imgs': imgs, 'questions': qs,
-                      'source': f'{year} 年國中教育會考 社會 第 {nums[0]}' + (f'–{nums[-1]}' if len(nums) > 1 else '') + ' 題（心測中心）'})
+                      'source': f"{year} 年國中教育會考 {CFG['file']} 第 {nums[0]}" + (f'–{nums[-1]}' if len(nums) > 1 else '') + ' 題（心測中心）'})
     notes = []
     # 題目文字（排除只有「圖(…)／表(…)」的圖說行，否則圖說剛好排在哪一題的高度就會被當成那題提到）
     cap_only = re.compile(r'^\s*[圖表]\s*[\(（][^\)）]{1,6}[\)）]\s*$')
     item_text = {iid: '\n'.join(l for l in B.region_text(pages, sg).split('\n') if not cap_only.match(l)) for iid, sg in all_segs.items()}
-    crops, owned = smart_crops(pdf, all_segs, notes, item_text)
+    crops, owned, conflicts = smart_crops(pdf, all_segs, notes, item_text)
+    for it in items:
+        if it['id'] in conflicts:
+            excluded.append(f"{it['id']}（圖跟圖說分不清楚）")
+            it['imgs'] = []
     # 自動檢查：題目提到的圖／表，裁切結果裡要有那張圖說；沒有就不收（fail closed）
     for it in items:
         body = re.sub(r'\s', '', item_text[it['id']]).replace('（', '(').replace('）', ')')
@@ -353,15 +409,16 @@ def main():
         os.remove(os.path.join(OUT, 'img', f))
     cmap = {k: v for k, v in json.load(open(MAP, encoding='utf-8')).items() if not k.startswith('_')}
     lad = ladders()
-    for c, key in cmap.items():
-        if key not in {u['key'] for u in lad[c[0]]}:
-            raise SystemExit(f'對照表 {c} → {key} 不在升學王 {STRANDS[c[0]]} 單元清單')
+    for c in cmap:
+        st, key = strand_of(c, cmap), unit_key(c, cmap)
+        if st not in lad or key not in {u['key'] for u in lad[st]}:
+            raise SystemExit(f'對照表 {c} → {cmap[c]} 不在升學王 {st} 單元清單')
     report, items = [], []
     for y in YEARS:
         items += build_year(y, lad, cmap, report)
-    out = {'version': VERSION, 'subject': 'soc',
-           'strands': {STRANDS[c]: [u['label'] for u in lad[c]] for c in lad},
-           'strandGrades': {STRANDS[c]: [u['grade'] for u in lad[c]] for c in lad},
+    out = {'version': VERSION, 'subject': SUBJ,
+           'strands': {c: [u['label'] for u in lad[c]] for c in lad},
+           'strandGrades': {c: [u['grade'] for u in lad[c]] for c in lad},
            'items': items,
            'note': '題目：國中教育會考歷屆試題（心測中心公開），依著作權法第 9 條不受保護；答案以心測中心參考答案為準；單元對照依官方試題分析的課綱學習內容編碼。'}
     used = {f for it in items for f in it['imgs']}

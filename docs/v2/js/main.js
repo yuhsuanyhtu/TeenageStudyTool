@@ -23,7 +23,7 @@ import { renderRules } from './rules.js';
 import { fetchV2Events, recomputeFromEvents } from './sync.js';
 import { startPayoutMode } from './modes/payout.js';
 import { dictionaryStatus } from './dictionary.js';   // v2.43：主畫面顯示字典 API 狀態
-import { loadCapData, eligibleItems, pickRound, startCapMode } from './modes/cap.js';   // v2.50：會考題
+import { loadCapData, eligibleItems, pickRound, startCapMode, flaggedMap, unitIndex } from './modes/cap.js';   // v2.50：會考題
 import { remainingPre } from './wallet.js';
 import * as srs from './srs.js';
 
@@ -50,7 +50,7 @@ function allRemaining() {
 }
 
 // ---------- v2.50：會考題 ----------
-// s.hk = { paid:[題id], wrong:{題id: 最近答錯日期}, flagged:[題id] }；以人計，從 Sheet 重算後與本機聯集
+// s.hk = { paid:[題id], wrong:{題id: 最近答錯日期}, flagged:["題id~課序號"] }；以人計，從 Sheet 重算後與本機聯集
 //   paid：Sheet 的為準；本機只另外記「今天剛付、Sheet 可能還沒寫進去」的（paidToday），跨日就丟掉
 //     ——離線時錢沒寫進 Sheet 會消失，已領標記也要跟著消失，不然那幾題永遠領不到（reviewer M2）
 //   wrong／flagged：本機與 Sheet 聯集（寧可少付，不可多付）
@@ -90,8 +90,9 @@ function hkPayable(id) {
     // v2.9 起不再 log session_start（雜訊太多，每次刷新都會記一筆）
     // v2.17：URL 帶 #payout 直接進家長提領頁（隱藏入口，孩子在主畫面看不到按鈕）
     // v2.51：首頁「社會」→ v2/#hk=soc（共用錢包、同步、Service Worker）
-    if (window.location.hash === '#hk=soc') {
-      renderSocHome();
+    const hkm = window.location.hash.match(/^#hk=(soc|sci)$/);
+    if (hkm) {
+      renderHkHome(hkm[1]);
       syncInBackground();
       return;
     }
@@ -518,7 +519,7 @@ function renderModePicker() {
   const unitAtRender = currentUnit;
   loadCapData().then(data => {
     if (currentUnit !== unitAtRender) return;
-    const items = eligibleItems(data, currentUnit, new Set((s.hk && s.hk.flagged) || []));
+    const items = eligibleItems(data, currentUnit, flaggedMap(s.hk && s.hk.flagged));
     const card = root.querySelector('#cap-card');
     if (!card || !items.length) return;
     const qs = items.flatMap(it => it.questions);
@@ -758,18 +759,19 @@ if (typeof window !== 'undefined') {
 // v2.51：會考題通用（英文＝app 課本單元；社會＝分科＋升學王單元）
 //   ctx = { subject:'en'|'soc', unit, strand? }
 async function startCap(ctx = { subject: 'en', unit: currentUnit }) {
-  const back = () => (ctx.subject === 'en' ? renderModePicker() : renderSocHome(ctx.strand));
+  const back = () => (ctx.subject === 'en' ? renderModePicker() : renderHkHome(ctx.subject, ctx.strand));
   let data;
   try { data = await loadCapData(ctx.subject); }
   catch (e) { root.innerHTML = `<button class="back" id="back">← 回上一頁</button><p class="muted">${escapeHtml(e.message)}，請稍後再試。</p>`;
     root.querySelector('#back').addEventListener('click', back); currentModeMeta = null; return; }
-  const items = eligibleItems(data, ctx.unit, new Set((s.hk && s.hk.flagged) || []), ctx.strand);
+  const items = eligibleItems(data, ctx.unit, flaggedMap(s.hk && s.hk.flagged), ctx.strand);
   const round = pickRound(items, hkPayable);
   if (!round.length) { currentModeMeta = null; back(); return; }
   capPendingWrong = [];
   currentModeMeta = { mode: `hk_${ctx.subject}`, unit: ctx.unit, totalQuestions: round.reduce((n, it) => n + it.questions.length, 0), startedAt: Date.now() };
   startCapMode({
     root, unit: ctx.strand ? `${ctx.strand} ${ctx.unit}` : ctx.unit, round, subject: ctx.subject,
+    unitIdx: unitIndex(data, ctx.unit, ctx.strand),   // 「這題還沒教過」記下這一課，選到更後面的課才再出
     // reviewer H1：每題送出就記答錯（本機立刻存；關頁面時補送 Sheet）
     onAnswered: (rs) => {
       const wrong = rs.filter(x => !x.correct).map(x => x.id);
@@ -866,42 +868,51 @@ function renderCapResult({ ctx, result, correct, answered, pre, payable, nPaid, 
         <div class="mode-desc">到升學王找這一課的影片看一遍，再回來挑戰（開新分頁）</div>
       </a>`).join('')}` : ''}
     <button id="again">再來一卷</button>
-    <button id="home" class="secondary">${isEn ? '回題型選單' : '回社會科'}</button>`;
+    <button id="home" class="secondary">${isEn ? '回題型選單' : `回${HK_HOME[ctx.subject].label}`}</button>`;
   root.querySelectorAll('.cap-review').forEach(b => b.addEventListener('click', () => {
     if (!appData.units[b.dataset.unit]) return;
     currentUnit = b.dataset.unit;
     renderModePicker();
   }));
   root.querySelector('#again').addEventListener('click', () => { if (isEn) currentUnit = ctx.unit; startCap(ctx); });
-  root.querySelector('#home').addEventListener('click', () => { if (isEn) { currentUnit = ctx.unit; renderModePicker(); } else renderSocHome(ctx.strand); });
+  root.querySelector('#home').addEventListener('click', () => { if (isEn) { currentUnit = ctx.unit; renderModePicker(); } else renderHkHome(ctx.subject, ctx.strand); });
 }
 
 // v2.51：🌏 社會科會考題——選分科、選單元（七上～八下），點哪一課就出「這一課＋之前」的會考題
-const SOC_STRANDS = ['歷史', '地理', '公民'];
-const SOC_MAX_GRADE = ['七上', '七下', '八上', '八下'];   // 範圍上限：八年級（家長 09-24）
-async function renderSocHome(strand = SOC_STRANDS[0]) {
-  root.innerHTML = `<button class="back" id="back">← 回主畫面</button><h1>🌏 社會 會考題</h1><p class="muted">讀取題庫中…</p>`;
-  root.querySelector('#back').addEventListener('click', leaveSoc);
+// v2.51 社會／v2.52 自然：會考題首頁——選分科、選課（七上～八下），點哪一課就出「這一課＋之前」的會考題
+const HK_HOME = {
+  soc: { title: '🌏 社會 會考題', label: '社會科', strands: ['歷史', '地理', '公民'] },
+  sci: { title: '🔬 自然 會考題', label: '自然科', strands: ['生物', '理化', '地科'] },
+};
+const HK_MAX_GRADE = ['七上', '七下', '八上', '八下'];   // 範圍上限：八年級（家長 09-24）
+const renderSocHome = (strand) => renderHkHome('soc', strand);
+async function renderHkHome(subject, strand) {
+  const H = HK_HOME[subject];
+  strand = strand || H.strands[0];
+  root.innerHTML = `<button class="back" id="back">← 回主畫面</button><h1>${H.title}</h1><p class="muted">讀取題庫中…</p>`;
+  root.querySelector('#back').addEventListener('click', leaveHk);
   let data;
-  try { data = await loadCapData('soc'); }
+  try { data = await loadCapData(subject); }
   catch (e) { root.querySelector('p').textContent = `${e.message}，請稍後再試。`; return; }
-  const flagged = new Set((s.hk && s.hk.flagged) || []);
+  const flagged = flaggedMap(s.hk && s.hk.flagged);
   const units = data.strands[strand] || [];
   const grades = data.strandGrades[strand] || [];
-  // 不是正式課次的項目（入手方法、例題、圖像畫、統整、大剖析…）不列出來——清單太長孩子找不到自己那一課（reviewer L5）
-  const NOT_LESSON = /入手方法|例題|圖像畫|統整|大剖析|大解密|大彙整/;
-  const rows = units.map((u, i) => ({ u, g: grades[i] })).filter(r => SOC_MAX_GRADE.includes(r.g) && !NOT_LESSON.test(r.u));
-  const byGrade = SOC_MAX_GRADE.map(g => ({ g, rows: rows.filter(r => r.g === g) }));
+  // 不是正式課次的項目（入手方法、例題、圖像畫、統整、實驗…）不列出來——清單太長孩子找不到自己那一課（reviewer L5）
+  const NOT_LESSON = /入手方法|例題|圖像畫|統整|大剖析|大解密|大彙整|^\S+\s*實驗|入門先修|前情提要|【補充】|^\S+\s*主題-/;
+  const rows = units.map((u, i) => ({ u, g: grades[i] })).filter(r => HK_MAX_GRADE.includes(r.g) && !NOT_LESSON.test(r.u));
+  const byGrade = HK_MAX_GRADE.map(g => ({ g, rows: rows.filter(r => r.g === g) }));
   const line = (u) => {
     const qs = eligibleItems(data, u, flagged, strand).flatMap(it => it.questions);
     const pay = qs.filter(q => hkPayable(q.id)).length;
     return { n: qs.length, pay };
   };
+  const later = grades.length ? grades[0] : '';
   root.innerHTML = `
     <button class="back" id="back">← 回主畫面</button>
-    <h1>🌏 社會 會考題</h1>
+    <h1>${H.title}</h1>
     <p class="muted small">歷屆國中教育會考真題（心測中心）。選你<b>學校上到的那一課</b>，就出「這一課＋之前」的題目。一卷最多 10 題，每題答對 $${(s.cfg && s.cfg['rate.hk.per']) ?? 2}，同一題只付一次。</p>
-    <div class="quiz-size-row">${SOC_STRANDS.map(x => `<button class="quiz-size-btn ${x === strand ? 'active' : ''}" data-strand="${x}">${x}</button>`).join('')}</div>
+    <div class="quiz-size-row">${H.strands.map(x => `<button class="quiz-size-btn ${x === strand ? 'active' : ''}" data-strand="${x}">${x}</button>`).join('')}</div>
+    ${rows.length ? '' : `<div class="card"><p>${escapeHtml(strand)}是${escapeHtml(later)}開始的內容，升上那個年級就會出現。</p></div>`}
     ${byGrade.map(({ g, rows }) => rows.length ? `
       <h2>${g}</h2>
       ${rows.map(({ u }) => { const c = line(u); return `
@@ -909,12 +920,12 @@ async function renderSocHome(strand = SOC_STRANDS[0]) {
           <div class="mode-title">${escapeHtml(u.replace(/^[七八九][上下]\s*/, ''))}</div>
           <div class="mode-paid">${c.n ? `可以做 ${c.n} 題，其中 ${c.pay} 題還能領獎金` : '到這一課還沒有會考題'}</div>
         </button>`; }).join('')}` : '').join('')}`;
-  root.querySelector('#back').addEventListener('click', leaveSoc);
-  root.querySelectorAll('[data-strand]').forEach(b => b.addEventListener('click', () => renderSocHome(b.dataset.strand)));
-  root.querySelectorAll('.soc-unit').forEach(b => b.addEventListener('click', () => startCap({ subject: 'soc', strand, unit: b.dataset.unit })));
+  root.querySelector('#back').addEventListener('click', leaveHk);
+  root.querySelectorAll('[data-strand]').forEach(b => b.addEventListener('click', () => renderHkHome(subject, b.dataset.strand)));
+  root.querySelectorAll('.soc-unit').forEach(b => b.addEventListener('click', () => startCap({ subject, strand, unit: b.dataset.unit })));
 }
-function leaveSoc() {
-  // 社會科是從首頁的「社會」進來的（v2/#hk=soc）→ 回首頁
+function leaveHk() {
+  // 社會／自然是從首頁進來的（v2/#hk=soc、#hk=sci）→ 回首頁
   window.location.href = '../';
 }
 

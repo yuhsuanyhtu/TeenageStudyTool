@@ -17,6 +17,7 @@ export const CAP_ROUND_MAX = 10;
 export const CAP_SUBJECTS = {
   en:  { label: '英文', data: 'cap/en/index.v1.json',  img: 'cap/en/img/' },
   soc: { label: '社會', data: 'cap/soc/index.v1.json', img: 'cap/soc/img/' },
+  sci: { label: '自然', data: 'cap/sci/index.v1.json', img: 'cap/sci/img/' },
 };
 const cache = {};
 
@@ -31,11 +32,27 @@ export async function loadCapData(subject = 'en') {
 // 這一課可以出的題目（item 陣列）
 //   英文：unit 是 app 的課本單元（不在清單，例：A1 Unit 3 → 空）
 //   社會：strand（歷史／地理／公民）＋ unit（升學王單元名），只看同一分科
+//   flagged：Map(題id → 按「這題還沒教過」時所選那一課的序號)。選到更後面的課才重新出現（家長 09-24）
 export function eligibleItems(data, unit, flagged, strand) {
   const list = strand ? (data.strands[strand] || []) : data.units;
   const idx = list.indexOf(unit);
   if (idx < 0) return [];
-  return data.items.filter(it => (!strand || it.strand === strand) && it.minUnitIndex <= idx && !it.questions.some(q => flagged.has(q.id)));
+  const hidden = (id) => flagged && flagged.has(id) && (typeof flagged.get !== 'function' || idx <= flagged.get(id));   // Set＝永久隱藏
+  return data.items.filter(it => (!strand || it.strand === strand) && it.minUnitIndex <= idx && !it.questions.some(q => hidden(q.id)));
+}
+
+// s.hk.flagged 的記錄格式「題id~課序號」→ Map（同一題取最大序號；沒有序號的舊格式＝永久隱藏）
+export function flaggedMap(tokens) {
+  const m = new Map();
+  for (const t of tokens || []) {
+    const [id, n] = String(t).split('~');
+    const v = n === undefined ? Infinity : Number(n);
+    if (!m.has(id) || m.get(id) < v) m.set(id, v);
+  }
+  return m;
+}
+export function unitIndex(data, unit, strand) {
+  return (strand ? (data.strands[strand] || []) : data.units).indexOf(unit);
 }
 
 // 組一卷：可領錢的先、通過率高（簡單）的先；題組整組，總題數盡量不超過 max
@@ -60,7 +77,7 @@ export function pickRound(items, isPayable, max = CAP_ROUND_MAX) {
   return round;
 }
 
-export function startCapMode({ root, unit, round, onComplete, onAnswered, subject = 'en' }) {
+export function startCapMode({ root, unit, round, onComplete, onAnswered, subject = 'en', unitIdx = 0 }) {
   const IMG_BASE = CAP_SUBJECTS[subject].img;
   // 先把這一卷的圖片都載好（離線或網路慢時不會做到一半破圖）
   for (const it of round) for (const f of it.imgs) { const im = new Image(); im.src = IMG_BASE + encodeURIComponent(f); }
@@ -113,7 +130,7 @@ export function startCapMode({ root, unit, round, onComplete, onAnswered, subjec
       next(it);
     });
     root.querySelector('#flag').addEventListener('click', () => {
-      for (const q of it.questions) { flagged.push(q.id); results.push({ id: q.id, correct: false, skipped: true }); }
+      for (const q of it.questions) { flagged.push(`${q.id}~${unitIdx}`); results.push({ id: q.id, correct: false, skipped: true }); }
       next(it);
     });
     window.scrollTo(0, 0);
