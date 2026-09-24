@@ -991,3 +991,14 @@ button.back:hover { background: transparent; text-decoration: underline; }
 /* v2.45：題型卡「今天已領」小字 */
 .mode-paid { font-size: 12px; color: #8a867c; margin-top: 6px; }
 .mode-paid.all { color: #4c9a6f; }
+
+/* v2.50：🎯 會考題 */
+.cap-paper { background: #fff; border-radius: 12px; padding: 8px; margin: 8px 0; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.cap-img { display: block; width: 100%; height: auto; }
+.cap-img + .cap-img { border-top: 1px dashed #e4ded2; margin-top: 4px; padding-top: 4px; }
+.cap-q { margin: 12px 0; }
+.cap-qn { font-size: 14px; color: #6b6862; margin-bottom: 6px; }
+.cap-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.cap-choices .choice { text-align: center; padding: 12px 0; font-size: 18px; }
+.cap-aside { display: flex; justify-content: space-between; margin-top: 10px; }
+.linkish { background: none; border: none; color: #8a867c; font-size: 13px; text-decoration: underline; padding: 6px 0; cursor: pointer; width: auto; }

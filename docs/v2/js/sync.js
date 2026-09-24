@@ -110,6 +110,8 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
   const todayPaid = { en2zh: [], zh2en: [], vocab: [] };   // v2.45：今日已付錢的字（note 的 #paid:a|b|c）
   const todayMatchPaidUnits = [];                          // v2.45：今日已付過連連看的單元
   const completedDays = new Set();
+  // v2.50：會考題（以人計、不分日期）：領過錢的題、最近一次答錯的日期、孩子標「還沒教過」的題
+  const hkPaid = new Set(), hkWrong = {}, hkFlagged = new Set();
 
   for (const ev of real) {
     const event = String(ev.event || '');
@@ -117,6 +119,15 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
     const correct = Number(ev.correct) || 0;
     const date = formatDate(ev.timestamp);
 
+    if (isHkEvent(event) || event === 'v2_hk_flag') {
+      const note = String(ev.note || '');
+      const pm = note.match(/#paid:(\S*)/);
+      if (pm) for (const id of pm[1].split('|')) if (id) hkPaid.add(id);
+      const wm = note.match(/#wrong:(\S*)/);
+      if (wm) for (const id of wm[1].split('|')) if (id && (!hkWrong[id] || hkWrong[id] < date)) hkWrong[id] = date;
+      const fm = note.match(/#flag:(\S*)/);
+      if (fm) for (const id of fm[1].split('|')) if (id) hkFlagged.add(id);
+    }
     const subj = earnSubject(event);
     if (subj && subj !== 'en') {
       if (date === todayStr && amount > 0) todayPreOther += preOf(ev);
@@ -199,6 +210,7 @@ export function recomputeFromEvents(events, todayStr, myDevice) {
     cfg,                                        // v2.48：家長設定（上限／費率）
     streak,
     todayCompleted,
+    hk: { paid: [...hkPaid], wrong: hkWrong, flagged: [...hkFlagged] },   // v2.50
     eventCount: real.length,
     completedDayCount: completedDays.size,
     rawTodayEarned,

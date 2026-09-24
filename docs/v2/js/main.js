@@ -23,6 +23,8 @@ import { renderRules } from './rules.js';
 import { fetchV2Events, recomputeFromEvents } from './sync.js';
 import { startPayoutMode } from './modes/payout.js';
 import { dictionaryStatus } from './dictionary.js';   // v2.43：主畫面顯示字典 API 狀態
+import { loadCapData, eligibleItems, pickRound, startCapMode } from './modes/cap.js';   // v2.50：會考題
+import { remainingPre } from './wallet.js';
 import * as srs from './srs.js';
 
 const root = document.getElementById('app');
@@ -45,6 +47,34 @@ function allRemaining() {
   const capAll = Number(s.cfg && s.cfg['cap.all']) || 0;
   if (capAll <= 0) return undefined;
   return Math.max(0, capAll - (s.todayPreAll || 0));
+}
+
+// ---------- v2.50：會考題 ----------
+// s.hk = { paid:[題id], wrong:{題id: 最近答錯日期}, flagged:[題id] }；以人計，從 Sheet 重算後與本機聯集
+//   paid：Sheet 的為準；本機只另外記「今天剛付、Sheet 可能還沒寫進去」的（paidToday），跨日就丟掉
+//     ——離線時錢沒寫進 Sheet 會消失，已領標記也要跟著消失，不然那幾題永遠領不到（reviewer M2）
+//   wrong／flagged：本機與 Sheet 聯集（寧可少付，不可多付）
+function mergeHk(local, server, fromServer = false) {
+  const a = local || {}, b = server || {};
+  const wrong = { ...(a.wrong || {}) };
+  for (const [id, d] of Object.entries(b.wrong || {})) if (!wrong[id] || wrong[id] < d) wrong[id] = d;
+  const today = state.today();
+  const pt = (a.paidToday && a.paidToday.date === today) ? a.paidToday.ids : [];
+  return {
+    paid: fromServer ? [...(b.paid || [])] : [...new Set([...(a.paid || []), ...(b.paid || [])])],
+    paidToday: { date: today, ids: [...new Set([...pt, ...((!fromServer && b.paidToday && b.paidToday.ids) || [])])] },
+    wrong,
+    flagged: [...new Set([...(a.flagged || []), ...(b.flagged || [])])],
+  };
+}
+const HK_WRONG_COOLDOWN_DAYS = 14;   // 答錯的題 14 天內再答對不給錢（家長 09-24 定案）
+function daysBetween(a, b) { return Math.round((Date.parse(b) - Date.parse(a)) / 86400000); }
+function hkPayable(id) {
+  const hk = s.hk || {};
+  if ((hk.paid || []).includes(id)) return false;
+  if (hk.paidToday && hk.paidToday.date === state.today() && hk.paidToday.ids.includes(id)) return false;
+  const w = (hk.wrong || {})[id];
+  return !(w && daysBetween(w, state.today()) < HK_WRONG_COOLDOWN_DAYS);
 }
 
 (async function init() {
@@ -150,6 +180,7 @@ async function syncInBackground() {
   }
   s.dailyCap = computed.dailyCap;                      // v2.35：家長設定的每日上限（v2.48 起由 wallet.parseConfig 決定）
   s.cfg = computed.cfg;                                // v2.48：家長設定（上限／費率）
+  s.hk = mergeHk(s.hk, computed.hk, true);             // v2.50：會考題領過（Sheet 為準＋本機今天）／答錯／還沒教過
   reward.applyConfig(s.cfg);
   s.practiceMode = computed.practiceMode || 0;         // v2.42：練習量模式（家長頁設定，跨裝置同步）
   state.save(s);
@@ -453,6 +484,11 @@ function renderModePicker() {
       <div class="mode-desc">讀短文，每個空格選出最適合的答案。考時態、連接詞跟課文單字，跟段考題組一樣。</div>
     </button>
     ` : ''}
+    <button class="mode-card" data-mode="cap" id="cap-card" style="display:none">
+      <div class="mode-title">🎯 會考題（本課＋之前）</div>
+      <div class="mode-desc">歷屆國中教育會考真題，只出用國小＋國一程度的字就看得懂的題目。一卷最多 ${CAP_ROUND_MAX_LABEL} 題，簡單的先來。</div>
+      <div class="mode-paid" id="cap-count"></div>
+    </button>
     <button class="mode-card" data-mode="zh2en">
       <div class="mode-title">🇹🇼 → 🇬🇧 中翻英</div>
       <div class="mode-desc">把英文拼出來。難度最高，學最深。each / every 都是「每一」這種多答案會兩個都接受。</div>
@@ -470,7 +506,20 @@ function renderModePicker() {
   root.querySelectorAll('.mode-card').forEach(b => {
     b.addEventListener('click', () => startMode(b.dataset.mode));
   });
+  // v2.50：會考題卡片——題庫非同步載入，這一課有可出的題才顯示
+  const unitAtRender = currentUnit;
+  loadCapData().then(data => {
+    if (currentUnit !== unitAtRender) return;
+    const items = eligibleItems(data, currentUnit, new Set((s.hk && s.hk.flagged) || []));
+    const card = root.querySelector('#cap-card');
+    if (!card || !items.length) return;
+    const qs = items.flatMap(it => it.questions);
+    const pay = qs.filter(q => hkPayable(q.id)).length;
+    card.style.display = '';
+    root.querySelector('#cap-count').textContent = `可以做 ${qs.length} 題，其中 ${pay} 題還能領獎金`;
+  }).catch(() => {});
 }
+const CAP_ROUND_MAX_LABEL = 10;
 
 // v2.25：書架（閱讀練習列表）
 function renderBookshelf() {
@@ -658,6 +707,8 @@ function startMode(mode) {
       extraPool: buildA1Pool(),
       paidSet,
     });
+  } else if (mode === 'cap') {
+    startCap();
   } else if (mode === 'cloze') {
     // v2.40：克漏字 — 只有題庫有這個單元的短文時，題型卡才會出現
     startClozeMode({
@@ -673,7 +724,17 @@ function startMode(mode) {
 // 關瀏覽器 / 切到背景時，如果還在 mode 中，送一筆 beacon log
 // （fetch keepalive 也加了，但 sendBeacon 是專門設計給這場景，更可靠）
 if (typeof window !== 'undefined') {
+  // v2.50（reviewer H1）：會考卷做到一半關掉／切走 → 把已答錯的題補送 Sheet（amount 0），換裝置或清資料也繞不過 14 天冷卻。
+  //   pagehide 與 visibilitychange(hidden) 都送（iPad／手機上後者比較可靠）；送過的就清掉，不重送。
+  const flushCapWrong = () => {
+    if (!(currentModeMeta && currentModeMeta.mode === 'hk_en' && capPendingWrong.length)) return;
+    logEventBeacon({ event: 'v2_hk_en_paid', unit: currentModeMeta.unit, quizSize: currentModeMeta.totalQuestions, correct: 0, amount: 0,
+      note: `v2 會考題（離開頁面，沒做完） #pre:0 #wrong:${[...new Set(capPendingWrong)].join('|')} #paid:` }, s);
+    capPendingWrong = [];
+  };
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushCapWrong(); });
   window.addEventListener('pagehide', () => {
+    if (currentModeMeta && currentModeMeta.mode === 'hk_en') { flushCapWrong(); currentModeMeta = null; return; }
     if (currentModeMeta) {
       logEventBeacon({
         event: `v2_${currentModeMeta.mode}_pagehide`,
@@ -684,6 +745,111 @@ if (typeof window !== 'undefined') {
       currentModeMeta = null;
     }
   });
+}
+
+async function startCap() {
+  let data;
+  try { data = await loadCapData(); }
+  catch (e) { root.innerHTML = `<button class="back" id="back">← 回題型選單</button><p class="muted">${escapeHtml(e.message)}，請稍後再試。</p>`;
+    root.querySelector('#back').addEventListener('click', renderModePicker); currentModeMeta = null; return; }
+  const items = eligibleItems(data, currentUnit, new Set((s.hk && s.hk.flagged) || []));
+  const round = pickRound(items, hkPayable);
+  if (!round.length) { currentModeMeta = null; renderModePicker(); return; }
+  const unit = currentUnit;
+  capPendingWrong = [];
+  currentModeMeta = { mode: 'hk_en', unit, totalQuestions: round.reduce((n, it) => n + it.questions.length, 0), startedAt: Date.now() };
+  startCapMode({
+    root, unit, round,
+    // reviewer H1：每題送出就記答錯（本機立刻存；關頁面時 pagehide 補送 Sheet）
+    onAnswered: (rs) => {
+      const wrong = rs.filter(x => !x.correct).map(x => x.id);
+      if (!wrong.length) return;
+      s.hk = mergeHk(s.hk, { wrong: Object.fromEntries(wrong.map(id => [id, state.today()])) });
+      state.save(s);
+      capPendingWrong.push(...wrong);
+    },
+    onComplete: (r) => { currentModeMeta = null; capPendingWrong = []; handleCapComplete(unit, r); },
+  });
+}
+let capPendingWrong = [];   // 這一卷已答錯、但還沒寫進 Sheet 的題（pagehide 時補送）
+
+// v2.50：會考題結算——同一題只付一次、答錯 14 天內不付、不乘連勝、不給基礎、不算打卡；吃英文上限＋全科總上限
+function handleCapComplete(unit, result) {
+  // reviewer M1：另一個分頁可能剛結算過 → 先跟 localStorage 對齊，避免同一題付兩次
+  const fresh = state.load();
+  s.hk = mergeHk(s.hk, fresh.hk);
+  if (fresh.todayDate === s.todayDate) {
+    s.todayPreEarned = Math.max(s.todayPreEarned || 0, fresh.todayPreEarned || 0);
+    s.todayPreAll = Math.max(s.todayPreAll || 0, fresh.todayPreAll || 0);
+  }
+  const r0 = state.refreshDailyState(s); s = r0.state;
+  const today = state.today();
+  const cfg = s.cfg || {};
+  const rate = Number(cfg['rate.hk.per'] ?? 2);
+  const answered = result.results.filter(x => !x.skipped);
+  const correctIds = answered.filter(x => x.correct).map(x => x.id);
+  const wrongIds = answered.filter(x => !x.correct).map(x => x.id);
+  const payableIds = result.aborted ? [] : correctIds.filter(hkPayable);
+  const left = remainingPre(cfg, 'en', s.todayPreEarned || 0, s.todayPreAll || 0);
+  const nPaid = rate > 0 ? Math.min(payableIds.length, Math.floor(left / rate)) : 0;
+  const paidIds = payableIds.slice(0, nPaid);
+  const pre = nPaid * rate;
+  // 本機狀態
+  s.hk = mergeHk(s.hk, { paidToday: { date: today, ids: paidIds }, wrong: Object.fromEntries(wrongIds.map(id => [id, today])), flagged: result.flagged });
+  if (pre > 0) {
+    s.todayPreEarned = (s.todayPreEarned || 0) + pre;
+    s.todayPreAll = (s.todayPreAll || 0) + pre;
+    s.todayEarned = (s.todayEarned || 0) + pre;
+    s.totalEarned = (s.totalEarned || 0) + pre;
+    s.availableToWithdraw = Math.max(0, (s.totalEarned || 0) - (s.totalWithdrawn || 0) - (s.totalPenalty || 0));
+  }
+  state.save(s);
+  // Sheet：#paid: 一定放最後（sync.js 以前的比對會吃到行尾）
+  if (answered.length || result.flagged.length) {
+    logEvent({
+      event: 'v2_hk_en_paid',
+      unit,
+      quizSize: result.totalQuestions,
+      correct: correctIds.length,
+      amount: pre,
+      note: `v2 會考題${result.aborted ? '（中途離開）' : ''} #pre:${pre}` +
+        (wrongIds.length ? ` #wrong:${wrongIds.join('|')}` : '') +
+        (result.flagged.length ? ` #flag:${result.flagged.join('|')}` : '') +
+        ` #paid:${paidIds.join('|')}`,
+    }, s);
+  }
+  renderCapResult({ unit, result, correct: correctIds.length, answered: answered.length, pre, payable: payableIds.length, nPaid, rate });
+}
+
+function renderCapResult({ unit, result, correct, answered, pre, payable, nPaid, rate }) {
+  const capped = nPaid < payable;
+  const money = rate <= 0 ? '會考題目前沒有設定獎金（媽媽可以在家長頁調）。練習本身就很有用！'
+    : result.aborted ? '中途離開沒有獎金，下次做完整一卷再來！'
+    : pre > 0 ? `答對且第一次領的 ${nPaid} 題 × $${rate} = <b>$${pre}</b>${capped ? '（今天的上限到了，其餘明天再領）' : ''}`
+    : correct > 0 ? (capped ? '今天的獎金上限到了，這些題明天答對還能領！' : '答對的題目之前已經領過（或剛答錯過，14 天後再答對才會給錢）。練習本身就很有用！')
+    : '這卷沒有新的獎金，下次再來！';
+  root.innerHTML = `
+    <h1>🎯 會考題結果</h1>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">${correct} / ${answered}</div><div class="stat-label">答對</div></div>
+      <div class="stat"><div class="stat-num">$${pre}</div><div class="stat-label">這卷獎金</div></div>
+    </div>
+    <div class="card"><p>${money}</p>
+      <p class="muted small">會考題：同一題只付一次錢，不乘連勝、沒有基礎獎金。</p></div>
+    ${result.reviewUnits.length ? `<h2>📖 回去複習</h2>${result.reviewUnits.map(u => `
+      <button class="mode-card cap-review" data-unit="${escapeHtml(u.unit)}">
+        <div class="mode-title">${escapeHtml(u.unit)}</div>
+        <div class="mode-desc">答錯的題目用到：${u.words.map(w => escapeHtml(w.en)).join('、')}</div>
+      </button>`).join('')}` : ''}
+    <button id="again">再來一卷</button>
+    <button id="home" class="secondary">回題型選單</button>`;
+  root.querySelectorAll('.cap-review').forEach(b => b.addEventListener('click', () => {
+    if (!appData.units[b.dataset.unit]) return;
+    currentUnit = b.dataset.unit;
+    renderModePicker();
+  }));
+  root.querySelector('#again').addEventListener('click', () => { currentUnit = unit; startCap(); });
+  root.querySelector('#home').addEventListener('click', () => { currentUnit = unit; renderModePicker(); });
 }
 
 function handleComplete(mode, result) {

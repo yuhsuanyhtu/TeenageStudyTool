@@ -13,7 +13,8 @@
 //
 // 版本：只有在「快取格式」要換時才需要改 CACHE_NAME；一般改版不用動這裡。
 
-const CACHE_NAME = 'sv2-runtime-v4';   // v2.49：錢包科目清單（會考題與新科目），舊快取作廢。
+const CACHE_NAME = 'sv2-runtime-v5';   // v2.50：會考題（題庫 JSON＋題目圖片），舊快取作廢。
+                                       // v2.49：錢包科目清單（會考題與新科目），舊快取作廢。
                                        // v2.48：錢包綁人＋上限/費率改家長設定，舊快取作廢。
                                        // v2.46：獎金規則改了，舊快取一定要作廢——
                                        //   否則第一次開啟還會用舊費率算錢（staleWhileRevalidate 先給快取）
@@ -35,12 +36,12 @@ function isSameOrigin(url) {
   return url.origin === self.location.origin;
 }
 
-// 只快取 scope 底下的靜態資源（js / css / data / html）
+// 只快取 scope 底下的靜態資源（js / css / data / html；v2.50 起加會考題圖片 webp）
 function isCacheable(url) {
   if (!isSameOrigin(url)) return false;
   const scope = new URL(self.registration.scope).pathname;
   if (!url.pathname.startsWith(scope)) return false;
-  return /\.(js|css|json|html)$/.test(url.pathname) || url.pathname.endsWith('/');
+  return /\.(js|css|json|html|webp)$/.test(url.pathname) || url.pathname.endsWith('/');
 }
 
 self.addEventListener('fetch', (event) => {
@@ -50,12 +51,26 @@ self.addEventListener('fetch', (event) => {
   try { url = new URL(req.url); } catch (e) { return; }
   if (!isCacheable(url)) return;
 
+  // v2.50：會考題圖片內容不會變（改版會換檔名）→ cache-first，離線也看得到做過的題
+  if (/\/cap\/.+\.webp$/.test(url.pathname)) {
+    event.respondWith(cacheFirst(req));
+    return;
+  }
   if (req.mode === 'navigate') {
     event.respondWith(networkFirst(req));
   } else {
     event.respondWith(staleWhileRevalidate(req));
   }
 });
+
+async function cacheFirst(req) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(req);
+  if (cached) return cached;
+  const res = await fetch(req);
+  if (res && res.ok) cache.put(req, res.clone());
+  return res;
+}
 
 async function networkFirst(req) {
   const cache = await caches.open(CACHE_NAME);
