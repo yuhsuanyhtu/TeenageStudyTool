@@ -18,16 +18,19 @@ SUBJ = (sys.argv[1] if len(sys.argv) > 1 else 'soc')
 CFG = {
     # 社會：編碼帶分科前綴（歷／地／公）；自然：沒有前綴，分科看對照表對到哪一科的單元
     'soc': {'file': '社會', 'col': '社會', 'n': 54, 'map': 'soc_code_units.json', 'names': ['歷史', '地理', '公民'],
-            'code_re': r'([歷地公])\s*([A-Z][a-z]-Ⅳ-\d+)', 'prefix': {'歷': '歷史', '地': '地理', '公': '公民'}},
+            'code_re': r'([歷地公])\s*([A-Z][a-z]-Ⅳ-\d+)', 'prefix': {'歷': '歷史', '地': '地理', '公': '公民'},
+            'version': {'歷史': '南版', '地理': '南版', '公民': '南版'}},
     'sci': {'file': '自然', 'col': '自然', 'n': 50, 'map': 'sci_code_units.json', 'names': ['生物', '理化', '地科'],
-            'code_re': r'()\b([A-Z][a-z]-Ⅳ-\d+)', 'prefix': None, 'overrides': 'sci_item_overrides.json'},
+            'code_re': r'()\b([A-Z][a-z]-Ⅳ-\d+)', 'prefix': None, 'overrides': 'sci_item_overrides.json',
+            'version': {'生物': '翰版', '理化': '翰版', '地科': '翰版'}},
     # 數學：編碼中間是年級（N-8-1）；只收第一部分選擇題（非選擇題要手寫過程，不能自動改）
     'math': {'file': '數學', 'col': '數學', 'n': 27, 'map': 'math_code_units.json', 'names': ['數學'],
              'code_re': r'()\b([NSGAFD]-[789]-\d+)', 'prefix': None, 'overrides': 'math_item_overrides.json',
-             'stop': r'^第二部分：非選擇題'},
+             'stop': r'^第二部分：非選擇題', 'version': {'數學': '康版'}},
     # 國文：編碼不分年級；依題型掛課（見 cn_code_units.json）。'free' 那一課＝不鎖的題，答錯不指定回去讀哪一課
     'cn': {'file': '國文', 'col': '國文', 'n': 42, 'map': 'cn_code_units.json', 'names': ['國文'],
-           'code_re': r'()\b([A-E][a-f]-Ⅳ-\d+)', 'prefix': None, 'overrides': 'cn_item_overrides.json', 'free': '七上|1'},
+           'code_re': r'()\b([A-E][a-f]-Ⅳ-\d+)', 'prefix': None, 'overrides': 'cn_item_overrides.json', 'free': '七上|1',
+           'version': {'國文': '翰版'}},
 }[SUBJ]
 OUT = os.environ.get('CAP_OUT', os.path.join(B.REPO, 'docs', 'v2', 'cap', SUBJ))
 MAP = os.path.join(os.path.dirname(__file__), CFG['map'])
@@ -38,6 +41,13 @@ YEARS = [int(y) for y in os.environ.get('CAP_YEARS', '112,113,114,115').split(',
 VERSION = 1
 STRANDS = {n: n for n in CFG['names']}
 GRADES = ['七上', '七下', '八上', '八下', '九上', '九下']
+# v2.55：謙恩的課本版本（家長 09-25：三年先統一，今年同去年＝徐匯中學 114 學年七年級用書）。
+# 對照表（*_code_units.json、*_item_overrides.json）照舊寫升學王年級教材總表的 key；
+# ver_<科>.json 再把那一課翻成謙恩版本的那一課（教完同樣內容的那一課）。CAP_VERSION=0 → 用舊的年級教材總表。
+CATALOG = os.path.join(os.path.dirname(B.DATA), '升學王教材', '課程目錄', '全部課程_3491堂.csv')
+USE_VER = os.environ.get('CAP_VERSION', '1') != '0' and bool(CFG.get('version'))
+VERMAP = {s: {k: v for k, v in json.load(open(os.path.join(os.path.dirname(__file__), f'ver_{s}.json'), encoding='utf-8')).items()
+              if not k.startswith('_')} for s in CFG['names']} if USE_VER else {}
 
 
 def ladders():
@@ -49,6 +59,24 @@ def ladders():
         rs = [r for r in rows if r['科目'] == name]
         rs.sort(key=lambda r: (GRADES.index(r['年級']), int(r['序'])))
         out[code] = [{'key': f"{r['年級']}|{r['序']}", 'label': f"{r['年級']} {r['課次']}".strip(), 'grade': r['年級']} for r in rs]
+    if not USE_VER:
+        return out
+    base = out
+    cat = list(csv.DictReader(open(CATALOG, encoding='utf-8-sig')))
+    out = {}
+    for name in CFG['names']:
+        ver = CFG['version'][name]
+        rs = [r for r in cat if r['科目'] == name and r['版本'] == ver and r['冊次'] in GRADES]
+        rs.sort(key=lambda r: GRADES.index(r['冊次']))   # 同一冊保留目錄檔原本的順序
+        seq, lst = {}, []
+        for r in rs:
+            seq[r['冊次']] = seq.get(r['冊次'], 0) + 1
+            lst.append({'key': f"{r['冊次']}|{seq[r['冊次']]}", 'label': f"{r['冊次']} {r['課次']}".strip(), 'grade': r['冊次']})
+        out[name] = lst
+        keys = {u['key'] for u in lst}
+        bad = {k: v for k, v in VERMAP[name].items() if v not in keys or k not in {u['key'] for u in base[name]}}
+        if bad:
+            raise SystemExit(f'ver_{name}.json 有對不到的課：{list(bad.items())[:5]}')
     return out
 
 
@@ -362,6 +390,8 @@ def build_year(year, lad, cmap, report):
     in_group = lambda n: any(m['kind'] == 'g' and m['a'] <= n <= m['b'] for m in mk)
     bounds = [m for m in mk if m['kind'] == 'g' or (m['kind'] == 'q' and not in_group(m['n']))]
     idx = {c: {u['key']: i for i, u in enumerate(lad[c])} for c in lad}
+    if USE_VER:   # 對照表的 key 是年級教材總表的課 → 翻成謙恩版本那一課的位置
+        idx = {c: {k: idx[c][v] for k, v in VERMAP[c].items()} for c in lad}
     items, excluded = [], []
     all_segs = {}   # 每一項（含被排除的）的範圍都要記——別題的元素才遮得掉
     for i, m in enumerate(bounds):
@@ -436,8 +466,12 @@ def main():
     lad = ladders()
     for c in cmap:
         st, key = strand_of(c, cmap), unit_key(c, cmap)
-        if st not in lad or key not in {u['key'] for u in lad[st]}:
+        if st not in lad or key not in (VERMAP[st] if USE_VER else {u['key'] for u in lad[st]}):
             raise SystemExit(f'對照表 {c} → {cmap[c]} 不在升學王 {st} 單元清單')
+    for k, v in OVR.items():   # 逐題覆寫的課也要翻得過去，否則直接停（不要默默排除）
+        st, key = v.split('|', 1)
+        if st not in lad or key not in (VERMAP[st] if USE_VER else {u['key'] for u in lad[st]}):
+            raise SystemExit(f'逐題覆寫 {k} → {v} 對不到課')
     report, items = [], []
     for y in YEARS:
         items += build_year(y, lad, cmap, report)
@@ -445,6 +479,7 @@ def main():
            'strands': {c: [u['label'] for u in lad[c]] for c in lad},
            'strandGrades': {c: [u['grade'] for u in lad[c]] for c in lad},
            'items': items,
+           'versions': {c: CFG['version'][c] for c in lad} if USE_VER else None,
            'note': '題目：國中教育會考歷屆試題（心測中心公開），依著作權法第 9 條不受保護；答案以心測中心參考答案為準；單元對照依官方試題分析的課綱學習內容編碼。'}
     used = {f for it in items for f in it['imgs']}
     for f in os.listdir(os.path.join(OUT, 'img')):

@@ -900,7 +900,7 @@ async function renderHkHome(subject, strand) {
   const units = data.strands[strand] || [];
   const grades = data.strandGrades[strand] || [];
   // 不是正式課次的項目（入手方法、例題、圖像畫、統整、實驗…）不列出來——清單太長孩子找不到自己那一課（reviewer L5）
-  const NOT_LESSON = /入手方法|例題|圖像畫|統整|大剖析|大解密|大彙整|^\S+\s*實驗|入門先修|前情提要|【補充】|^\S+\s*主題-|重點回顧|難題精選|有趣的數學|^\S+\s*計算機$/;
+  const NOT_LESSON = /入手方法|例題|圖像畫|統整|大剖析|大解密|大彙整|^\S+\s*實驗|入門先修|前情提要|【補充】|^\S+\s*主題-|重點回顧|難題精選|有趣的數學|^\S+\s*計算機$|【延伸/;
   const rows = units.map((u, i) => ({ u, g: grades[i] })).filter(r => HK_MAX_GRADE.includes(r.g) && !NOT_LESSON.test(r.u));
   const byGrade = HK_MAX_GRADE.map(g => ({ g, rows: rows.filter(r => r.g === g) }));
   const line = (u) => {
@@ -912,6 +912,7 @@ async function renderHkHome(subject, strand) {
   root.innerHTML = `
     <button class="back" id="back">← 回主畫面</button>
     <h1>${H.title}</h1>
+    ${data.versions && data.versions[strand] ? `<p class="muted small">📘 課次照你的課本排：${escapeHtml(strand)} ${escapeHtml({ 翰版: '翰林', 康版: '康軒', 南版: '南一' }[data.versions[strand]] || data.versions[strand])}版</p>` : ''}
     <p class="muted small">歷屆國中教育會考真題（心測中心）。選你<b>學校上到的那一課</b>，就出「這一課＋之前」的題目。一卷最多 10 題，每題答對 $${(s.cfg && s.cfg['rate.hk.per']) ?? 2}，同一題只付一次。</p>
     <div class="quiz-size-row" ${H.strands.length > 1 ? '' : 'style="display:none"'}>${H.strands.map(x => `<button class="quiz-size-btn ${x === strand ? 'active' : ''}" data-strand="${x}">${x}</button>`).join('')}</div>
     ${rows.length ? '' : `<div class="card"><p>${escapeHtml(strand)}是${escapeHtml(later)}開始的內容，升上那個年級就會出現。</p></div>`}
