@@ -10,6 +10,7 @@ import * as state from './state.js';
 import * as tts from './tts.js';
 import * as reward from './reward.js';
 import { loadAll } from './data-loader.js';
+import { subjectBarHTML } from './subject-bar.js';
 import { startMatchMode } from './modes/match.js';
 import { startEn2ZhMode } from './modes/en2zh.js';
 import { startZh2EnMode } from './modes/zh2en.js';
@@ -286,6 +287,7 @@ function renderHome() {
   const unitNames = Object.keys(appData.units);
 
   root.innerHTML = `
+    ${subjectBarHTML('en')}
     <div class="header-row">
       <h1>謙恩的英文</h1>
       <button class="rules-link" id="tts-rate-btn">${tts.rateModeLabel()}</button>
@@ -891,7 +893,7 @@ const renderSocHome = (strand) => renderHkHome('soc', strand);
 async function renderHkHome(subject, strand) {
   const H = HK_HOME[subject];
   strand = strand || H.strands[0];
-  root.innerHTML = `<button class="back" id="back">← 回主畫面</button><h1>${H.title}</h1><p class="muted">讀取題庫中…</p>`;
+  root.innerHTML = `${subjectBarHTML(subject === 'cn' ? 'cn-hk' : subject)}<button class="back" id="back">← 回主畫面</button><h1>${H.title}</h1><p class="muted">讀取題庫中…</p>`;
   root.querySelector('#back').addEventListener('click', leaveHk);
   let data;
   try { data = await loadCapData(subject); }
@@ -910,6 +912,7 @@ async function renderHkHome(subject, strand) {
   };
   const later = grades.length ? grades[0] : '';
   root.innerHTML = `
+    ${subjectBarHTML(subject === 'cn' ? 'cn-hk' : subject)}
     <button class="back" id="back">← 回主畫面</button>
     <h1>${H.title}</h1>
     ${data.versions && data.versions[strand] ? `<p class="muted small">📘 課次照你的課本排：${escapeHtml(strand)} ${escapeHtml({ 翰版: '翰林', 康版: '康軒', 南版: '南一' }[data.versions[strand]] || data.versions[strand])}版</p>` : ''}

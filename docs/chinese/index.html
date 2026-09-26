@@ -97,6 +97,7 @@
 <div class="wrap">
 
   <div id="home" class="screen active">
+    <div id="subjectBar"></div>
     <header>
       <h1>📖 謙恩的國文練習</h1>
       <div class="sub">翰林 2上＋3上｜全部用「點」的，不用打字</div>
@@ -723,6 +724,10 @@ function showResult(total,unit){
 }
 renderHome();
 renderRateRow();
+</script>
+<script type="module">
+  import { mountSubjectBar } from '../v2/js/subject-bar.js?v=2.56';
+  mountSubjectBar(document.getElementById('subjectBar'), 'cn');
 </script>
 </body>
 </html>
